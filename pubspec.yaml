@@ -1,7 +1,7 @@
 name: rive
-description: Rive Flutter Runtime
-version: 0.0.1
-author:
+description: Rive 2 Flutter Runtime
+version: 0.0.1+1
+repository: https://github.com/rive-app/rive-flutter
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   graphs: ^0.2.0
+  meta: ^1.2.1
 
 dev_dependencies:
   flutter_test:
