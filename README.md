@@ -1,4 +1,4 @@
-# Rive [![Pub Version](https://img.shields.io/pub/v/rive)][https://pub.dev/packages/rive]
+# Rive [![Pub Version](https://img.shields.io/pub/v/rive)](https://pub.dev/packages/rive)
 [Flutter package](https://pub.dev/packages/rive) for Rive 2.
 
 ## Bring Your Apps and Games to Life with Real-Time Animation
