@@ -67,6 +67,7 @@ import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/rive_core/shapes/triangle.dart';
 
+// ignore: avoid_classes_with_only_static_members
 class RiveCoreContext {
   static Core makeCoreInstance(int typeKey) {
     switch (typeKey) {

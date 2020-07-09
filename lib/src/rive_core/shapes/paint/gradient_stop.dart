@@ -6,10 +6,8 @@ import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart';
 export 'package:rive/src/generated/shapes/paint/gradient_stop_base.dart';
 
 class GradientStop extends GradientStopBase {
-  @override
   Component get timelineParent =>
       _gradient is LinearGradient ? _gradient.parent : null;
-  @override
   String get timelineName =>
       'Stop ${_gradient.gradientStops.indexOf(this) + 1}';
   LinearGradient _gradient;

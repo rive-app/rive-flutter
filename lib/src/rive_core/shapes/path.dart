@@ -31,7 +31,6 @@ abstract class Path extends PathBase {
   Mat2D get pathTransform;
   Mat2D get inversePathTransform;
   Mat2D get inverseWorldTransform => _inverseWorldTransform;
-  @override
   Component get timelineParent => _shape;
   @override
   bool resolveArtboard() {
