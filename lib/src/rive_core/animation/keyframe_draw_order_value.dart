@@ -19,9 +19,4 @@ class KeyFrameDrawOrderValue extends KeyFrameDrawOrderValueBase {
       drawable.drawOrder = value;
     }
   }
-
-  int runtimeValueValue(int editorValue) {
-    assert(false, 'this should never get called');
-    return 0;
-  }
 }

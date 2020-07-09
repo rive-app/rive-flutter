@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:rive/src/rive_core/bounds_delegate.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
@@ -11,7 +10,6 @@ export 'package:rive/src/generated/node_base.dart';
 class Node extends NodeBase {
   final Mat2D transform = Mat2D();
   final Mat2D worldTransform = Mat2D();
-  BoundsDelegate _delegate;
   double _renderOpacity = 0;
   double get renderOpacity => _renderOpacity;
   @override
@@ -59,16 +57,6 @@ class Node extends NodeBase {
       Mat2D.multiply(worldTransform, parentNode.worldTransform, transform);
     } else {
       Mat2D.copy(worldTransform, transform);
-    }
-    _delegate?.boundsChanged();
-  }
-
-  @override
-  void userDataChanged(dynamic from, dynamic to) {
-    if (to is BoundsDelegate) {
-      _delegate = to;
-    } else {
-      _delegate = null;
     }
   }
 

@@ -10,7 +10,6 @@ export 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 
 class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   final List<GradientStop> gradientStops = [];
-  Component get timelineProxy => parent;
   bool _paintsInWorldSpace = true;
   bool get paintsInWorldSpace => _paintsInWorldSpace;
   set paintsInWorldSpace(bool value) {

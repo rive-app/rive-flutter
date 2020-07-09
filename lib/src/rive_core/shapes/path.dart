@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:ui' as ui;
-import 'package:rive/src/rive_core/bounds_delegate.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/aabb.dart';
@@ -31,25 +30,10 @@ abstract class Path extends PathBase {
   Mat2D get pathTransform;
   Mat2D get inversePathTransform;
   Mat2D get inverseWorldTransform => _inverseWorldTransform;
-  Component get timelineParent => _shape;
   @override
   bool resolveArtboard() {
     _changeShape(null);
     return super.resolveArtboard();
-  }
-
-  BoundsDelegate _delegate;
-  void markBoundsDirty() {
-    _delegate?.boundsChanged();
-  }
-
-  @override
-  void userDataChanged(dynamic from, dynamic to) {
-    if (to is BoundsDelegate) {
-      _delegate = to;
-    } else {
-      _delegate = null;
-    }
   }
 
   @override

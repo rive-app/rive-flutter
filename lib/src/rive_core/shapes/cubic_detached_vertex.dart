@@ -28,6 +28,7 @@ class CubicDetachedVertex extends CubicDetachedVertexBase {
       translation,
       Vec2D.fromValues(
           cos(outRotation) * outDistance, sin(outRotation) * outDistance));
+  @override
   set outPoint(Vec2D value) {
     _outPoint = Vec2D.clone(value);
   }
@@ -38,6 +39,7 @@ class CubicDetachedVertex extends CubicDetachedVertexBase {
       translation,
       Vec2D.fromValues(
           cos(inRotation) * inDistance, sin(inRotation) * inDistance));
+  @override
   set inPoint(Vec2D value) {
     _inPoint = Vec2D.clone(value);
   }

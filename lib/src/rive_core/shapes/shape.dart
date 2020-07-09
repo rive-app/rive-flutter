@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:rive/src/rive_core/bounds_delegate.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/aabb.dart';
@@ -34,17 +33,12 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   AABB _worldBounds;
   AABB _localBounds;
-  BoundsDelegate _delegate;
   @override
   AABB get worldBounds => _worldBounds ??= computeWorldBounds();
   @override
   AABB get localBounds => _localBounds ??= computeLocalBounds();
   void markBoundsDirty() {
     _worldBounds = _localBounds = null;
-    _delegate?.boundsChanged();
-    for (final path in paths) {
-      path.markBoundsDirty();
-    }
   }
 
   @override
@@ -200,15 +194,6 @@ class Shape extends ShapeBase with ShapePaintContainer {
               Mat2D.multiply(Mat2D(), toShapeTransform, path.pathTransform)));
     }
     return localBounds;
-  }
-
-  @override
-  void userDataChanged(dynamic from, dynamic to) {
-    if (to is BoundsDelegate) {
-      _delegate = to;
-    } else {
-      _delegate = null;
-    }
   }
 
   @override
