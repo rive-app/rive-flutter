@@ -7,7 +7,6 @@ import 'package:rive/src/generated/shapes/paint/solid_color_base.dart';
 export 'package:rive/src/generated/shapes/paint/solid_color_base.dart';
 
 class SolidColor extends SolidColorBase with ShapePaintMutator {
-  @override
   Component get timelineProxy => parent;
   Color get color => Color(colorValue);
   set color(Color c) {
