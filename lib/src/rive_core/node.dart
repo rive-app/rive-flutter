@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
+import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -127,4 +128,6 @@ class Node extends NodeBase {
     super.parentChanged(from, to);
     markWorldTransformDirty();
   }
+
+  AABB get localBounds => AABB.fromValues(x, y, x, y);
 }
