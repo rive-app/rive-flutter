@@ -204,7 +204,10 @@ abstract class Path extends PathBase {
     return true;
   }
 
-  AABB preciseComputeBounds(List<PathVertex> renderPoints, Mat2D transform) {
+  @override
+  AABB get localBounds => preciseComputeBounds(renderVertices, Mat2D());
+  AABB preciseComputeBounds(List<PathVertex> renderPoints, Mat2D transform,
+      {bool debug = false}) {
     if (renderPoints.isEmpty) {
       return AABB();
     }
@@ -230,7 +233,6 @@ abstract class Path extends PathBase {
           cin = Vec2D.transformMat2D(Vec2D(), cin, transform);
           cout = Vec2D.transformMat2D(Vec2D(), cout, transform);
         }
-        const double epsilon = 0.000000001;
         final double startX = lastPoint[0];
         final double startY = lastPoint[1];
         final double cpX1 = cout[0];
@@ -240,121 +242,55 @@ abstract class Path extends PathBase {
         final double endX = next[0];
         final double endY = next[1];
         lastPoint = next;
-        double extremaX;
-        double extremaY;
-        double a, b, c;
-        if (!(((startX < cpX1) && (cpX1 < cpX2) && (cpX2 < endX)) ||
-            ((startX > cpX1) && (cpX1 > cpX2) && (cpX2 > endX)))) {
-          a = -startX + (3 * (cpX1 - cpX2)) + endX;
-          b = 2 * (startX - (2 * cpX1) + cpX2);
-          c = -startX + cpX1;
-          double s = (b * b) - (4 * a * c);
-          if ((s >= 0.0) && (a.abs() > epsilon)) {
-            if (s == 0.0) {
-              final double t = -b / (2 * a);
-              final double tprime = 1.0 - t;
-              if ((t >= 0.0) && (t <= 1.0)) {
-                extremaX = ((tprime * tprime * tprime) * startX) +
-                    ((3 * tprime * tprime * t) * cpX1) +
-                    ((3 * tprime * t * t) * cpX2) +
-                    (t * t * t * endX);
-                if (extremaX < bounds[0]) {
-                  bounds[0] = extremaX;
-                }
-                if (extremaX > bounds[2]) {
-                  bounds[2] = extremaX;
-                }
-              }
-            } else {
-              s = sqrt(s);
-              double t = (-b - s) / (2 * a);
-              double tprime = 1.0 - t;
-              if ((t >= 0.0) && (t <= 1.0)) {
-                extremaX = ((tprime * tprime * tprime) * startX) +
-                    ((3 * tprime * tprime * t) * cpX1) +
-                    ((3 * tprime * t * t) * cpX2) +
-                    (t * t * t * endX);
-                if (extremaX < bounds[0]) {
-                  bounds[0] = extremaX;
-                }
-                if (extremaX > bounds[2]) {
-                  bounds[2] = extremaX;
-                }
-              }
-              t = (-b + s) / (2 * a);
-              tprime = 1.0 - t;
-              if ((t >= 0.0) && (t <= 1.0)) {
-                extremaX = ((tprime * tprime * tprime) * startX) +
-                    ((3 * tprime * tprime * t) * cpX1) +
-                    ((3 * tprime * t * t) * cpX2) +
-                    (t * t * t * endX);
-                if (extremaX < bounds[0]) {
-                  bounds[0] = extremaX;
-                }
-                if (extremaX > bounds[2]) {
-                  bounds[2] = extremaX;
-                }
-              }
-            }
-          }
-        }
-        if (!(((startY < cpY1) && (cpY1 < cpY2) && (cpY2 < endY)) ||
-            ((startY > cpY1) && (cpY1 > cpY2) && (cpY2 > endY)))) {
-          a = -startY + (3 * (cpY1 - cpY2)) + endY;
-          b = 2 * (startY - (2 * cpY1) + cpY2);
-          c = -startY + cpY1;
-          double s = (b * b) - (4 * a * c);
-          if ((s >= 0.0) && (a.abs() > epsilon)) {
-            if (s == 0.0) {
-              final double t = -b / (2 * a);
-              final double tprime = 1.0 - t;
-              if ((t >= 0.0) && (t <= 1.0)) {
-                extremaY = ((tprime * tprime * tprime) * startY) +
-                    ((3 * tprime * tprime * t) * cpY1) +
-                    ((3 * tprime * t * t) * cpY2) +
-                    (t * t * t * endY);
-                if (extremaY < bounds[1]) {
-                  bounds[1] = extremaY;
-                }
-                if (extremaY > bounds[3]) {
-                  bounds[3] = extremaY;
-                }
-              }
-            } else {
-              s = sqrt(s);
-              final double t = (-b - s) / (2 * a);
-              final double tprime = 1.0 - t;
-              if ((t >= 0.0) && (t <= 1.0)) {
-                extremaY = ((tprime * tprime * tprime) * startY) +
-                    ((3 * tprime * tprime * t) * cpY1) +
-                    ((3 * tprime * t * t) * cpY2) +
-                    (t * t * t * endY);
-                if (extremaY < bounds[1]) {
-                  bounds[1] = extremaY;
-                }
-                if (extremaY > bounds[3]) {
-                  bounds[3] = extremaY;
-                }
-              }
-              final double t2 = (-b + s) / (2 * a);
-              final double tprime2 = 1.0 - t2;
-              if ((t2 >= 0.0) && (t2 <= 1.0)) {
-                extremaY = ((tprime2 * tprime2 * tprime2) * startY) +
-                    ((3 * tprime2 * tprime2 * t2) * cpY1) +
-                    ((3 * tprime2 * t2 * t2) * cpY2) +
-                    (t2 * t2 * t2 * endY);
-                if (extremaY < bounds[1]) {
-                  bounds[1] = extremaY;
-                }
-                if (extremaY > bounds[3]) {
-                  bounds[3] = extremaY;
-                }
-              }
-            }
-          }
-        }
+        _expandBoundsForAxis(bounds, 0, startX, cpX1, cpX2, endX);
+        _expandBoundsForAxis(bounds, 1, startY, cpY1, cpY2, endY);
       }
     }
     return bounds;
+  }
+}
+
+void _expandBoundsToCubicPoint(AABB bounds, int component, double t, double a,
+    double b, double c, double d) {
+  if (t >= 0 && t <= 1) {
+    var ti = 1 - t;
+    double extremaY = ((ti * ti * ti) * a) +
+        ((3 * ti * ti * t) * b) +
+        ((3 * ti * t * t) * c) +
+        (t * t * t * d);
+    if (extremaY < bounds[component]) {
+      bounds[component] = extremaY;
+    }
+    if (extremaY > bounds[component + 2]) {
+      bounds[component + 2] = extremaY;
+    }
+  }
+}
+
+void _expandBoundsForAxis(AABB bounds, int component, double start, double cp1,
+    double cp2, double end) {
+  if (!(((start < cp1) && (cp1 < cp2) && (cp2 < end)) ||
+      ((start > cp1) && (cp1 > cp2) && (cp2 > end)))) {
+    var a = 3 * (cp1 - start);
+    var b = 3 * (cp2 - cp1);
+    var c = 3 * (end - cp2);
+    var d = a - 2 * b + c;
+    if (d != 0) {
+      var m1 = -sqrt(b * b - a * c);
+      var m2 = -a + b;
+      _expandBoundsToCubicPoint(
+          bounds, component, -(m1 + m2) / d, start, cp1, cp2, end);
+      _expandBoundsToCubicPoint(
+          bounds, component, -(-m1 + m2) / d, start, cp1, cp2, end);
+    } else if (b != c && d == 0) {
+      _expandBoundsToCubicPoint(
+          bounds, component, (2 * b - c) / (2 * (b - c)), start, cp1, cp2, end);
+    }
+    var d2a = 2 * (b - a);
+    var d2b = 2 * (c - b);
+    if (d2a != b) {
+      _expandBoundsToCubicPoint(
+          bounds, component, d2a / (d2a - d2b), start, cp1, cp2, end);
+    }
   }
 }

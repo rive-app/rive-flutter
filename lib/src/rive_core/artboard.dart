@@ -189,6 +189,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
     canvas.save();
     canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
+    canvas.translate(width * (originX ?? 0), height * (originY ?? 0));
     for (final drawable in _drawables) {
       drawable.draw(canvas);
     }
@@ -202,9 +203,15 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   Mat2D get worldTransform => Mat2D();
   @override
-  void originXChanged(double from, double to) {}
+  void originXChanged(double from, double to) {
+    addDirt(ComponentDirt.worldTransform);
+  }
+
   @override
-  void originYChanged(double from, double to) {}
+  void originYChanged(double from, double to) {
+    addDirt(ComponentDirt.worldTransform);
+  }
+
   bool internalAddAnimation(Animation animation) {
     if (_animations.contains(animation)) {
       return false;
