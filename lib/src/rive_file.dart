@@ -97,10 +97,10 @@ class RiveFile {
                   continue;
                 } else if (keyframe is KeyFrameDrawOrder) {
                   int numValues = reader.readVarUint();
-                  for (int i = 0; i < numValues; i++) {
+                  for (int m = 0; m < numValues; m++) {
                     var valueObject = KeyFrameDrawOrderValue();
                     valueObject.drawableId = reader.readVarInt();
-                    valueObject.value = i;
+                    valueObject.value = m;
                     keyframe.internalAddValue(valueObject);
                   }
                 }
