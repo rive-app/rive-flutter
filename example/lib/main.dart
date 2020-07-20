@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Load the animation file from the bundle, note that you could also
     // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/colors_juice.riv').then(
+    rootBundle.load('assets/teeny_tiny.riv').then(
       (data) async {
         var file = RiveFile();
         // Load the RiveFile from the binary data.
@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // Add a controller to play back a known animation on the main/default
           // artboard.We store a reference to it so we can toggle playback.
           artboard.addController(
-            _controller = SimpleAnimation('walk'),
+            _controller = SimpleAnimation('idle'),
           );
           setState(() => _riveArtboard = artboard);
         }

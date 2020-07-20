@@ -151,9 +151,11 @@ class BinaryWriter {
   /// Encode a string into the buffer. Strings are encoded with a varuint
   /// integer length written first followed by length number of utf8 encoded
   /// bytes.
-  void writeString(String value) {
+  void writeString(String value, {bool explicitLength = true}) {
     var list = _utf8Encoder.convert(value);
-    writeVarUint(list.length);
+    if (explicitLength) {
+      writeVarUint(list.length);
+    }
     write(list);
   }
 

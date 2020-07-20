@@ -115,8 +115,8 @@ class BinaryReader {
   /// Read a string encoded into the stream. Strings are encoded with a varuint
   /// integer length written first followed by length number of utf8 encoded
   /// bytes.
-  String readString() {
-    int length = readVarUint();
+  String readString({bool explicitLength = true}) {
+    int length = explicitLength ? readVarUint() : buffer.lengthInBytes;
     String value = _utf8Decoder.convert(Uint8List.view(
         buffer.buffer, buffer.offsetInBytes + _readIndex, length));
     _readIndex += length;
