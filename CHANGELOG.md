@@ -1,3 +1,7 @@
+## [0.0.3] - 2020-07-19 18:18:50
+
+- Support shorter string encoding. Format bumps to version 2.0 as it breaks backwards compatibility.
+
 ## [0.0.1+3] - 2020-07-09 11:13:22
 
 - Fixing up ```flutter analyze``` issues thanks to @creativecreatorormaybenot.
