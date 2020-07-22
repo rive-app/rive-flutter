@@ -77,18 +77,9 @@ abstract class Path extends PathBase {
 
   void markPathDirty() {
     addDirt(ComponentDirt.path);
-    _shape?.pathChanged(this);
-  }
-
-  void _invalidatePath() {
     _isValid = false;
     _cachedRenderVertices = null;
-  }
-
-  @override
-  bool addDirt(int value, {bool recurse = false}) {
-    _invalidatePath();
-    return super.addDirt(value, recurse: recurse);
+    _shape?.pathChanged(this);
   }
 
   List<PathVertex> get vertices;
