@@ -1,1 +1,1 @@
-double circleConstant = 0.552284749831;
+const circleConstant = 0.552284749831;

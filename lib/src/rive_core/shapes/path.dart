@@ -4,6 +4,7 @@ import 'package:rive/src/rive_core/bounds_delegate.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/aabb.dart';
+import 'package:rive/src/rive_core/math/circle_constant.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
@@ -124,8 +125,7 @@ abstract class Path extends PathBase {
     }
     List<PathVertex> renderPoints = [];
     int pl = pts.length;
-    const double arcConstant = 0.55;
-    const double iarcConstant = 1.0 - arcConstant;
+    const double iarcConstant = 1.0 - circleConstant;
     PathVertex previous = isClosed ? pts[pl - 1] : null;
     for (int i = 0; i < pl; i++) {
       PathVertex point = pts[i];
