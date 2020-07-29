@@ -99,7 +99,7 @@ class RiveFile {
                   int numValues = reader.readVarUint();
                   for (int m = 0; m < numValues; m++) {
                     var valueObject = KeyFrameDrawOrderValue();
-                    valueObject.drawableId = reader.readVarInt();
+                    valueObject.drawableId = reader.readVarUint();
                     valueObject.value = m;
                     keyframe.internalAddValue(valueObject);
                   }
@@ -153,30 +153,15 @@ T readRuntimeObject<T extends Core<CoreContext>>(BinaryReader reader,
       // Terminator. https://media.giphy.com/media/7TtvTUMm9mp20/giphy.gif
       break;
     }
-    int propertyLength = reader.readVarUint();
-    Uint8List valueBytes = reader.read(propertyLength);
 
     var fieldType = RiveCoreContext.coreType(propertyKey);
     if (fieldType == null) {
-      // This is considered an acceptable failure. A runtime may not support
-      // the same properties that were exported. The older object could still
-      // function without them, however, so it's up to the implementation to
-      // make sure that major versions are revved when breaking properties are
-      // added. Note that we intentionally first read the entire value bytes
-      // for the property so we can advance as expected even if we are
-      // skipping this value.
-      continue;
+      throw UnsupportedError('Unsupported property key $propertyKey. '
+          'A new runtime is likely necessary to play this file.');
     }
 
-    // We know what to expect, let's try to read the value. We instance a new
-    // reader here so that we don't overflow the exact length we're allowed to
-    // read.
-    var valueReader = BinaryReader.fromList(valueBytes);
-
-    // This will attempt to set the object property, but failure here is
-    // acceptable.
     RiveCoreContext.setObjectProperty(
-        object, propertyKey, fieldType.deserialize(valueReader));
+        object, propertyKey, fieldType.deserialize(reader));
   }
   return object as T;
 }

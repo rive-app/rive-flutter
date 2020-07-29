@@ -7,6 +7,7 @@ class BinaryReader {
   final ByteData buffer;
   final Endian endian;
   int _readIndex = 0;
+  int get position => _readIndex;
 
   BinaryReader(this.buffer, {this.endian = Endian.little});
 

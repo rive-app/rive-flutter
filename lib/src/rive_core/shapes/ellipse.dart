@@ -1,9 +1,8 @@
+import 'package:rive/src/rive_core/math/circle_constant.dart';
 import 'package:rive/src/rive_core/shapes/cubic_detached_vertex.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/generated/shapes/ellipse_base.dart';
 export 'package:rive/src/generated/shapes/ellipse_base.dart';
-
-const double circleConstant = 0.55;
 
 class Ellipse extends EllipseBase {
   @override

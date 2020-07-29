@@ -48,6 +48,10 @@ class Mat2D {
   Mat2D.fromScaling(Vec2D scaling) {
     _buffer = Float32List.fromList([scaling[0], 0, 0, scaling[1], 0, 0]);
   }
+  Mat2D.fromMat4(Float64List mat4) {
+    _buffer = Float32List.fromList(
+        [mat4[0], mat4[1], mat4[4], mat4[5], mat4[12], mat4[13]]);
+  }
   Mat2D.clone(Mat2D copy) {
     _buffer = Float32List.fromList(copy.values);
   }
