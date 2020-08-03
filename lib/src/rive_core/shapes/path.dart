@@ -99,8 +99,8 @@ abstract class Path extends PathBase {
     }
     List<PathVertex> renderPoints = [];
     int pl = pts.length;
-    const arcConstant = circleConstant;
-    const double iarcConstant = 1.0 - arcConstant;
+    const double iarcConstant = 1.0 - circleConstant;
+
     PathVertex previous = isClosed ? pts[pl - 1] : null;
     for (int i = 0; i < pl; i++) {
       PathVertex point = pts[i];
