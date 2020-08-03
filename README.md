@@ -1,4 +1,4 @@
-# Rive
+# Rive [![Pub Version](https://img.shields.io/pub/v/rive)](https://pub.dev/packages/rive)
 [Flutter package](https://pub.dev/packages/rive) for Rive 2.
 
 ## Bring Your Apps and Games to Life with Real-Time Animation
@@ -7,8 +7,8 @@
 ## Add to pubspec.yaml
 ```yaml
 dependencies:
-  rive: ^0.0.1+2
+  rive: ^0.0.1+3
 ```
 
 ## Example
-See how to use it in [example](example/).
+See how to use it in [example](example).

@@ -3,10 +3,5 @@ import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 
 class CoreDoubleType extends CoreFieldType<double> {
   @override
-  double deserialize(BinaryReader reader) => reader.buffer.lengthInBytes == 4
-      ? reader.readFloat32()
-      : reader.readFloat64();
-
-  @override
-  double lerp(double from, double to, double f) => from + (to - from) * f;
+  double deserialize(BinaryReader reader) => reader.readFloat32();
 }

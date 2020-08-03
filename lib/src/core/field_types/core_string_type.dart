@@ -3,8 +3,6 @@ import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 
 class CoreStringType extends CoreFieldType<String> {
   @override
-  String deserialize(BinaryReader reader) => reader.readString();
-
-  @override
-  String lerp(String from, String to, double f) => from;
+  String deserialize(BinaryReader reader) =>
+      reader.readString(explicitLength: true);
 }

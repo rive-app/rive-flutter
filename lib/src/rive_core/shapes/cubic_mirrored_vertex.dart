@@ -14,9 +14,20 @@ class CubicMirroredVertex extends CubicMirroredVertexBase {
   }
 
   @override
+  set outPoint(Vec2D value) {
+    _outPoint = Vec2D.clone(value);
+  }
+
+  @override
   Vec2D get inPoint {
     return _inPoint ??= Vec2D.add(Vec2D(), translation,
         Vec2D.fromValues(cos(rotation) * -distance, sin(rotation) * -distance));
+  }
+
+  @override
+  set inPoint(Vec2D value) {
+    var diffIn = Vec2D.fromValues(value[0] - x, value[1] - y);
+    outPoint = Vec2D.subtract(Vec2D(), translation, diffIn);
   }
 
   @override

@@ -17,12 +17,22 @@ class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
   }
 
   @override
+  set outPoint(Vec2D value) {
+    _outPoint = Vec2D.clone(value);
+  }
+
+  @override
   Vec2D get inPoint {
     return _inPoint ??= Vec2D.add(
         Vec2D(),
         translation,
         Vec2D.fromValues(
             cos(rotation) * -inDistance, sin(rotation) * -inDistance));
+  }
+
+  @override
+  set inPoint(Vec2D value) {
+    _inPoint = Vec2D.clone(value);
   }
 
   @override

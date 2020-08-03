@@ -21,8 +21,6 @@ abstract class ShapePaint extends ShapePaintBase {
   set blendMode(BlendMode value) => _paint.blendMode = value;
   double get renderOpacity => _paintMutator.renderOpacity;
   set renderOpacity(double value) => _paintMutator.renderOpacity = value;
-  @override
-  Component get timelineParent => _shapePaintContainer as Component;
   ShapePaintMutator get paintMutator => _paintMutator;
   void _changeMutator(ShapePaintMutator mutator) {
     _paint = makePaint();

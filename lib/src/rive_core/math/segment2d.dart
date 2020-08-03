@@ -12,7 +12,7 @@ class Segment2D {
   Vec2D diff;
   double lengthSquared;
   Segment2D(this.start, this.end);
-  ProjectionResult projectPoint(Vec2D point) {
+  ProjectionResult projectPoint(Vec2D point, {bool clamp = true}) {
     if (diff == null) {
       diff = Vec2D.subtract(Vec2D(), start, end);
       lengthSquared = Vec2D.squaredLength(diff);
@@ -23,11 +23,13 @@ class Segment2D {
     double t = ((point[0] - start[0]) * (end[0] - start[0]) +
             (point[1] - start[1]) * (end[1] - start[1])) /
         lengthSquared;
-    if (t < 0.0) {
-      return ProjectionResult(0, start);
-    }
-    if (t > 1.0) {
-      return ProjectionResult(1, end);
+    if (clamp) {
+      if (t < 0.0) {
+        return ProjectionResult(0, start);
+      }
+      if (t > 1.0) {
+        return ProjectionResult(1, end);
+      }
     }
     return ProjectionResult(
         t,
