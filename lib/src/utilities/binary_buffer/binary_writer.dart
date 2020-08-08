@@ -107,28 +107,6 @@ class BinaryWriter {
     _writeIndex += length;
   }
 
-  /// Write an integer as a list of bytes that contain an LEB128 signed integer.
-  /// The size of the integer is decided automatically.
-  void writeVarInt(int value) {
-    var more = true;
-    int index = 0;
-    while (more) {
-      var byte = value & 0x7f;
-      //ignore: parameter_assignments
-      value >>= 7;
-      if (value == 0 && (byte & 0x40) == 0) {
-        more = false;
-      } else if (value == -1 && (byte & 0x40) > 0) {
-        more = false;
-      } else {
-        byte |= 0x80;
-      }
-      _variableEncodeList[index++] = byte;
-    }
-
-    write(_variableEncodeList, index);
-  }
-
   /// Write an integer as a list of bytes that contain an LEB128 unsigned
   /// integer. The size of the integer is decided automatically.
   void writeVarUint(int value) {
@@ -157,12 +135,5 @@ class BinaryWriter {
       writeVarUint(list.length);
     }
     write(list);
-  }
-
-  /// Write a list of integers as varint.
-  void writeIntList(List<int> list) {
-    assert(list != null);
-    writeVarUint(list.length);
-    list.forEach(writeVarInt);
   }
 }

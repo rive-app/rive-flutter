@@ -3,7 +3,6 @@ import 'package:rive/src/core/field_types/core_bool_type.dart';
 import 'package:rive/src/core/field_types/core_color_type.dart';
 import 'package:rive/src/core/field_types/core_double_type.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
-import 'package:rive/src/core/field_types/core_int_type.dart';
 import 'package:rive/src/core/field_types/core_string_type.dart';
 import 'package:rive/src/core/field_types/core_uint_type.dart';
 import 'package:rive/src/generated/animation/animation_base.dart';
@@ -479,7 +478,6 @@ class RiveCoreContext {
   }
 
   static CoreFieldType uintType = CoreUintType();
-  static CoreFieldType intType = CoreIntType();
   static CoreFieldType stringType = CoreStringType();
   static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType colorType = CoreColorType();
@@ -487,25 +485,24 @@ class RiveCoreContext {
   static CoreFieldType coreType(int propertyKey) {
     switch (propertyKey) {
       case KeyedObjectBase.objectIdPropertyKey:
-      case KeyFrameBase.interpolatorIdPropertyKey:
-      case KeyFrameDrawOrderValueBase.drawableIdPropertyKey:
-      case KeyFrameDrawOrderValueBase.valuePropertyKey:
-      case ComponentBase.parentIdPropertyKey:
-      case DrawableBase.drawOrderPropertyKey:
-        return uintType;
       case KeyedPropertyBase.propertyKeyPropertyKey:
       case KeyFrameBase.framePropertyKey:
       case KeyFrameBase.interpolationTypePropertyKey:
+      case KeyFrameBase.interpolatorIdPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
       case LinearAnimationBase.loopValuePropertyKey:
       case LinearAnimationBase.workStartPropertyKey:
       case LinearAnimationBase.workEndPropertyKey:
+      case KeyFrameDrawOrderValueBase.drawableIdPropertyKey:
+      case KeyFrameDrawOrderValueBase.valuePropertyKey:
+      case ComponentBase.parentIdPropertyKey:
       case StrokeBase.capPropertyKey:
       case StrokeBase.joinPropertyKey:
       case FillBase.fillRulePropertyKey:
+      case DrawableBase.drawOrderPropertyKey:
       case DrawableBase.blendModeValuePropertyKey:
-        return intType;
+        return uintType;
       case AnimationBase.namePropertyKey:
       case ComponentBase.namePropertyKey:
         return stringType;
@@ -568,28 +565,14 @@ class RiveCoreContext {
     switch (propertyKey) {
       case KeyedObjectBase.objectIdPropertyKey:
         return (object as KeyedObjectBase).objectId;
-      case KeyFrameBase.interpolatorIdPropertyKey:
-        return (object as KeyFrameBase).interpolatorId;
-      case KeyFrameDrawOrderValueBase.drawableIdPropertyKey:
-        return (object as KeyFrameDrawOrderValueBase).drawableId;
-      case KeyFrameDrawOrderValueBase.valuePropertyKey:
-        return (object as KeyFrameDrawOrderValueBase).value;
-      case ComponentBase.parentIdPropertyKey:
-        return (object as ComponentBase).parentId;
-      case DrawableBase.drawOrderPropertyKey:
-        return (object as DrawableBase).drawOrder;
-    }
-    return 0;
-  }
-
-  static int getInt(Core object, int propertyKey) {
-    switch (propertyKey) {
       case KeyedPropertyBase.propertyKeyPropertyKey:
         return (object as KeyedPropertyBase).propertyKey;
       case KeyFrameBase.framePropertyKey:
         return (object as KeyFrameBase).frame;
       case KeyFrameBase.interpolationTypePropertyKey:
         return (object as KeyFrameBase).interpolationType;
+      case KeyFrameBase.interpolatorIdPropertyKey:
+        return (object as KeyFrameBase).interpolatorId;
       case LinearAnimationBase.fpsPropertyKey:
         return (object as LinearAnimationBase).fps;
       case LinearAnimationBase.durationPropertyKey:
@@ -600,12 +583,20 @@ class RiveCoreContext {
         return (object as LinearAnimationBase).workStart;
       case LinearAnimationBase.workEndPropertyKey:
         return (object as LinearAnimationBase).workEnd;
+      case KeyFrameDrawOrderValueBase.drawableIdPropertyKey:
+        return (object as KeyFrameDrawOrderValueBase).drawableId;
+      case KeyFrameDrawOrderValueBase.valuePropertyKey:
+        return (object as KeyFrameDrawOrderValueBase).value;
+      case ComponentBase.parentIdPropertyKey:
+        return (object as ComponentBase).parentId;
       case StrokeBase.capPropertyKey:
         return (object as StrokeBase).cap;
       case StrokeBase.joinPropertyKey:
         return (object as StrokeBase).join;
       case FillBase.fillRulePropertyKey:
         return (object as FillBase).fillRule;
+      case DrawableBase.drawOrderPropertyKey:
+        return (object as DrawableBase).drawOrder;
       case DrawableBase.blendModeValuePropertyKey:
         return (object as DrawableBase).blendModeValue;
     }
@@ -739,26 +730,6 @@ class RiveCoreContext {
       case KeyedObjectBase.objectIdPropertyKey:
         (object as KeyedObjectBase).objectId = value;
         break;
-      case KeyFrameBase.interpolatorIdPropertyKey:
-        (object as KeyFrameBase).interpolatorId = value;
-        break;
-      case KeyFrameDrawOrderValueBase.drawableIdPropertyKey:
-        (object as KeyFrameDrawOrderValueBase).drawableId = value;
-        break;
-      case KeyFrameDrawOrderValueBase.valuePropertyKey:
-        (object as KeyFrameDrawOrderValueBase).value = value;
-        break;
-      case ComponentBase.parentIdPropertyKey:
-        (object as ComponentBase).parentId = value;
-        break;
-      case DrawableBase.drawOrderPropertyKey:
-        (object as DrawableBase).drawOrder = value;
-        break;
-    }
-  }
-
-  static void setInt(Core object, int propertyKey, int value) {
-    switch (propertyKey) {
       case KeyedPropertyBase.propertyKeyPropertyKey:
         (object as KeyedPropertyBase).propertyKey = value;
         break;
@@ -767,6 +738,9 @@ class RiveCoreContext {
         break;
       case KeyFrameBase.interpolationTypePropertyKey:
         (object as KeyFrameBase).interpolationType = value;
+        break;
+      case KeyFrameBase.interpolatorIdPropertyKey:
+        (object as KeyFrameBase).interpolatorId = value;
         break;
       case LinearAnimationBase.fpsPropertyKey:
         (object as LinearAnimationBase).fps = value;
@@ -783,6 +757,15 @@ class RiveCoreContext {
       case LinearAnimationBase.workEndPropertyKey:
         (object as LinearAnimationBase).workEnd = value;
         break;
+      case KeyFrameDrawOrderValueBase.drawableIdPropertyKey:
+        (object as KeyFrameDrawOrderValueBase).drawableId = value;
+        break;
+      case KeyFrameDrawOrderValueBase.valuePropertyKey:
+        (object as KeyFrameDrawOrderValueBase).value = value;
+        break;
+      case ComponentBase.parentIdPropertyKey:
+        (object as ComponentBase).parentId = value;
+        break;
       case StrokeBase.capPropertyKey:
         (object as StrokeBase).cap = value;
         break;
@@ -791,6 +774,9 @@ class RiveCoreContext {
         break;
       case FillBase.fillRulePropertyKey:
         (object as FillBase).fillRule = value;
+        break;
+      case DrawableBase.drawOrderPropertyKey:
+        (object as DrawableBase).drawOrder = value;
         break;
       case DrawableBase.blendModeValuePropertyKey:
         (object as DrawableBase).blendModeValue = value;

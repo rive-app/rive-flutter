@@ -3,5 +3,5 @@ import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 
 class CoreIntType extends CoreFieldType<int> {
   @override
-  int deserialize(BinaryReader reader) => reader.readVarInt();
+  int deserialize(BinaryReader reader) => reader.readVarUint();
 }

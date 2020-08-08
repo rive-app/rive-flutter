@@ -77,28 +77,6 @@ class BinaryReader {
     return value;
   }
 
-  /// Read a variable length signed integer from the buffer encoded as an LEB128
-  /// signed integer.
-  int readVarInt() {
-    int result = 0;
-    int shift = 0;
-    while (true) {
-      int byte = buffer.getUint8(_readIndex);
-      result |= (byte & 0x7f) << shift;
-      shift += 7;
-      if ((byte & 0x80) == 0) {
-        break;
-      } else {
-        _readIndex++;
-      }
-    }
-    if ((shift < 64) && (buffer.getUint8(_readIndex) & 0x40) != 0) {
-      result |= ~0 << shift;
-    }
-    _readIndex += 1;
-    return result;
-  }
-
   /// Read a variable length unsigned integer from the buffer encoded as an
   /// LEB128 unsigned integer.
   int readVarUint() {
@@ -129,15 +107,5 @@ class BinaryReader {
         buffer.buffer, buffer.offsetInBytes + _readIndex, length);
     _readIndex += length;
     return allocNew ? Uint8List.fromList(view) : view;
-  }
-
-  /// Read a list of encoded integers.
-  List<int> readIntList() {
-    int length = readVarUint();
-    var list = List<int>(length);
-    for (int i = 0; i < length; i++) {
-      list[i] = readVarInt();
-    }
-    return list;
   }
 }

@@ -1,3 +1,7 @@
+## [0.0.5] - 2020-08-07 20:05:18
+
+- Updating format to only use unsigned integers to overcome a dart2js weakness with signed integers on the web.
+
 ## [0.0.4] - 2020-07-28 18:35:44
 
 - Fundamental changes to runtime format enabling smaller file sizes. Format bumps to version 3.0 as it breaks backwards compatibility.
