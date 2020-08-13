@@ -1,3 +1,7 @@
+## [0.0.6] - 2020-08-12 18:09:07
+
+- Adding support for version 4 with first cut of bones.
+
 ## [0.0.5] - 2020-08-07 20:05:18
 
 - Updating format to only use unsigned integers to overcome a dart2js weakness with signed integers on the web.
