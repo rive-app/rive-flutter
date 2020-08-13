@@ -17,3 +17,12 @@ Set<T> tops<T extends Parentable<T>>(Iterable<T> parentables) {
   }
   return tips;
 }
+
+bool isChildOf<T extends Parentable<T>>(T child, Iterable<T> parents) {
+  for (var parent = child; parent != null; parent = parent.parent) {
+    if (parents.contains(parent)) {
+      return true;
+    }
+  }
+  return false;
+}

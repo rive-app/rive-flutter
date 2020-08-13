@@ -6,8 +6,12 @@ var _utf8Decoder = const Utf8Decoder();
 class BinaryReader {
   final ByteData buffer;
   final Endian endian;
-  int _readIndex = 0;
-  int get position => _readIndex;
+
+  /// TODO: remove setter for readIndex when we remove _readVarInt from
+  /// core_double_type.dart
+  int readIndex = 0;
+
+  int get position => readIndex;
 
   BinaryReader(this.buffer, {this.endian = Endian.little});
 
@@ -15,65 +19,65 @@ class BinaryReader {
       : buffer =
             ByteData.view(list.buffer, list.offsetInBytes, list.lengthInBytes);
 
-  bool get isEOF => _readIndex >= buffer.lengthInBytes;
+  bool get isEOF => readIndex >= buffer.lengthInBytes;
 
   double readFloat32() {
-    double value = buffer.getFloat32(_readIndex, endian);
-    _readIndex += 4;
+    double value = buffer.getFloat32(readIndex, endian);
+    readIndex += 4;
     return value;
   }
 
   double readFloat64() {
-    double value = buffer.getFloat64(_readIndex, endian);
-    _readIndex += 8;
+    double value = buffer.getFloat64(readIndex, endian);
+    readIndex += 8;
     return value;
   }
 
   int readInt8() {
-    int value = buffer.getInt8(_readIndex);
-    _readIndex += 1;
+    int value = buffer.getInt8(readIndex);
+    readIndex += 1;
     return value;
   }
 
   int readUint8() {
-    int value = buffer.getUint8(_readIndex);
-    _readIndex += 1;
+    int value = buffer.getUint8(readIndex);
+    readIndex += 1;
     return value;
   }
 
   int readInt16() {
-    int value = buffer.getInt16(_readIndex, endian);
-    _readIndex += 2;
+    int value = buffer.getInt16(readIndex, endian);
+    readIndex += 2;
     return value;
   }
 
   int readUint16() {
-    int value = buffer.getUint16(_readIndex, endian);
-    _readIndex += 2;
+    int value = buffer.getUint16(readIndex, endian);
+    readIndex += 2;
     return value;
   }
 
   int readInt32() {
-    int value = buffer.getInt32(_readIndex, endian);
-    _readIndex += 4;
+    int value = buffer.getInt32(readIndex, endian);
+    readIndex += 4;
     return value;
   }
 
   int readUint32() {
-    int value = buffer.getUint32(_readIndex, endian);
-    _readIndex += 4;
+    int value = buffer.getUint32(readIndex, endian);
+    readIndex += 4;
     return value;
   }
 
   int readInt64() {
-    int value = buffer.getInt64(_readIndex, endian);
-    _readIndex += 8;
+    int value = buffer.getInt64(readIndex, endian);
+    readIndex += 8;
     return value;
   }
 
   int readUint64() {
-    int value = buffer.getUint64(_readIndex, endian);
-    _readIndex += 8;
+    int value = buffer.getUint64(readIndex, endian);
+    readIndex += 8;
     return value;
   }
 
@@ -83,7 +87,7 @@ class BinaryReader {
     int result = 0;
     int shift = 0;
     while (true) {
-      int byte = buffer.getUint8(_readIndex++) & 0xff;
+      int byte = buffer.getUint8(readIndex++) & 0xff;
       result |= (byte & 0x7f) << shift;
       if ((byte & 0x80) == 0) break;
       shift += 7;
@@ -97,15 +101,15 @@ class BinaryReader {
   String readString({bool explicitLength = true}) {
     int length = explicitLength ? readVarUint() : buffer.lengthInBytes;
     String value = _utf8Decoder.convert(Uint8List.view(
-        buffer.buffer, buffer.offsetInBytes + _readIndex, length));
-    _readIndex += length;
+        buffer.buffer, buffer.offsetInBytes + readIndex, length));
+    readIndex += length;
     return value;
   }
 
   Uint8List read(int length, [bool allocNew = false]) {
-    var view = Uint8List.view(
-        buffer.buffer, buffer.offsetInBytes + _readIndex, length);
-    _readIndex += length;
+    var view =
+        Uint8List.view(buffer.buffer, buffer.offsetInBytes + readIndex, length);
+    readIndex += length;
     return allocNew ? Uint8List.fromList(view) : view;
   }
 }

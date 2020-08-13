@@ -1,27 +1,31 @@
-/// Core automatically generated lib/src/generated/node_base.dart.
+/// Core automatically generated lib/src/generated/bones/root_bone_base.dart.
 /// Do not modify manually.
 
+import 'package:rive/src/generated/bones/bone_base.dart';
+import 'package:rive/src/generated/bones/skeletal_component_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
-import 'package:rive/src/rive_core/transform_component.dart';
+import 'package:rive/src/rive_core/bones/bone.dart';
 
-abstract class NodeBase extends TransformComponent {
-  static const int typeKey = 2;
+abstract class RootBoneBase extends Bone {
+  static const int typeKey = 41;
   @override
-  int get coreType => NodeBase.typeKey;
+  int get coreType => RootBoneBase.typeKey;
   @override
   Set<int> get coreTypes => {
-        NodeBase.typeKey,
+        RootBoneBase.typeKey,
+        BoneBase.typeKey,
+        SkeletalComponentBase.typeKey,
         TransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
 
   /// --------------------------------------------------------------------------
-  /// X field with key 13.
+  /// X field with key 90.
   double _x = 0;
-  static const int xPropertyKey = 13;
+  static const int xPropertyKey = 90;
   @override
   double get x => _x;
 
@@ -40,9 +44,9 @@ abstract class NodeBase extends TransformComponent {
   void xChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
-  /// Y field with key 14.
+  /// Y field with key 91.
   double _y = 0;
-  static const int yPropertyKey = 14;
+  static const int yPropertyKey = 91;
   @override
   double get y => _y;
 

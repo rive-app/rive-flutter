@@ -4,6 +4,7 @@
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
+import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/rive_core/node.dart';
 
 abstract class DrawableBase extends Node {
@@ -14,6 +15,7 @@ abstract class DrawableBase extends Node {
   Set<int> get coreTypes => {
         DrawableBase.typeKey,
         NodeBase.typeKey,
+        TransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };

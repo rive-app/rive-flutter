@@ -1,20 +1,19 @@
-/// Core automatically generated lib/src/generated/shapes/path_base.dart.
+/// Core automatically generated
+/// lib/src/generated/bones/skeletal_component_base.dart.
 /// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
-import 'package:rive/src/generated/node_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
-import 'package:rive/src/rive_core/node.dart';
+import 'package:rive/src/rive_core/transform_component.dart';
 
-abstract class PathBase extends Node {
-  static const int typeKey = 12;
+abstract class SkeletalComponentBase extends TransformComponent {
+  static const int typeKey = 39;
   @override
-  int get coreType => PathBase.typeKey;
+  int get coreType => SkeletalComponentBase.typeKey;
   @override
   Set<int> get coreTypes => {
-        PathBase.typeKey,
-        NodeBase.typeKey,
+        SkeletalComponentBase.typeKey,
         TransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey

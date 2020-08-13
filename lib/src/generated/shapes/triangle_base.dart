@@ -6,6 +6,7 @@ import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
+import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/rive_core/shapes/parametric_path.dart';
 
 abstract class TriangleBase extends ParametricPath {
@@ -18,6 +19,7 @@ abstract class TriangleBase extends ParametricPath {
         ParametricPathBase.typeKey,
         PathBase.typeKey,
         NodeBase.typeKey,
+        TransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
