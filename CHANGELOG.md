@@ -1,3 +1,7 @@
+## [0.0.7] - 2020-08-15 15:53:17
+
+- Adding support for clipping with Rive format version 5.
+
 ## [0.0.6] - 2020-08-12 18:09:07
 
 - Adding support for version 4 with first cut of bones.
