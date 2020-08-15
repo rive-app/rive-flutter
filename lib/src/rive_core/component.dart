@@ -136,13 +136,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   void onDependencyRemoved(Component dependent) {}
   @override
-  @mustCallSuper
-  void onAdded() {
-    if (!canBeOrphaned && parent == null) {
-      remove();
-    }
-  }
-
+  void onAdded() {}
   @override
   void onAddedDirty() {
     if (parentId != null) {

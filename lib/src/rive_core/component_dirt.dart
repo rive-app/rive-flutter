@@ -8,4 +8,5 @@ class ComponentDirt {
   static const int worldTransform = 1 << 6;
   static const int paint = 1 << 7;
   static const int stops = 1 << 8;
+  static const int clip = 1 << 9;
 }

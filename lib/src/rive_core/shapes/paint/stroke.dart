@@ -37,7 +37,7 @@ class Stroke extends StrokeBase {
   void transformAffectsStrokeChanged(bool from, bool to) {
     var parentShape = parent;
     if (parentShape is Shape) {
-      parentShape.transformAffectsStrokeChanged();
+      parentShape.paintChanged();
     }
   }
 
