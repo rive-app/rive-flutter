@@ -11,6 +11,6 @@ class RiveUnsupportedVersionException implements Exception {
   @override
   String toString() {
     return 'File contains version $fileMajorVersion.$fileMinorVersion. '
-        'This runtime can only support $fileMajorVersion.$fileMinorVersion';
+        'This runtime can only support $majorVersion.$minorVersion';
   }
 }
