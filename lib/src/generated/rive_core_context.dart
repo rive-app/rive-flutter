@@ -18,7 +18,11 @@ import 'package:rive/src/generated/animation/linear_animation_base.dart';
 import 'package:rive/src/generated/artboard_base.dart';
 import 'package:rive/src/generated/backboard_base.dart';
 import 'package:rive/src/generated/bones/bone_base.dart';
+import 'package:rive/src/generated/bones/cubic_weight_base.dart';
 import 'package:rive/src/generated/bones/root_bone_base.dart';
+import 'package:rive/src/generated/bones/skin_base.dart';
+import 'package:rive/src/generated/bones/tendon_base.dart';
+import 'package:rive/src/generated/bones/weight_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -55,7 +59,11 @@ import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
+import 'package:rive/src/rive_core/bones/cubic_weight.dart';
 import 'package:rive/src/rive_core/bones/root_bone.dart';
+import 'package:rive/src/rive_core/bones/skin.dart';
+import 'package:rive/src/rive_core/bones/tendon.dart';
+import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
 import 'package:rive/src/rive_core/shapes/cubic_asymmetric_vertex.dart';
@@ -113,8 +121,12 @@ class RiveCoreContext {
         return Node();
       case ShapeBase.typeKey:
         return Shape();
+      case WeightBase.typeKey:
+        return Weight();
       case StraightVertexBase.typeKey:
         return StraightVertex();
+      case CubicWeightBase.typeKey:
+        return CubicWeight();
       case CubicAsymmetricVertexBase.typeKey:
         return CubicAsymmetricVertex();
       case PointsPathBase.typeKey:
@@ -141,6 +153,10 @@ class RiveCoreContext {
         return Bone();
       case RootBoneBase.typeKey:
         return RootBone();
+      case SkinBase.typeKey:
+        return Skin();
+      case TendonBase.typeKey:
+        return Tendon();
       default:
         return null;
     }
@@ -387,9 +403,39 @@ class RiveCoreContext {
           object.y = value;
         }
         break;
+      case WeightBase.valuesPropertyKey:
+        if (object is WeightBase && value is int) {
+          object.values = value;
+        }
+        break;
+      case WeightBase.indicesPropertyKey:
+        if (object is WeightBase && value is int) {
+          object.indices = value;
+        }
+        break;
       case StraightVertexBase.radiusPropertyKey:
         if (object is StraightVertexBase && value is double) {
           object.radius = value;
+        }
+        break;
+      case CubicWeightBase.inValuesPropertyKey:
+        if (object is CubicWeightBase && value is int) {
+          object.inValues = value;
+        }
+        break;
+      case CubicWeightBase.inIndicesPropertyKey:
+        if (object is CubicWeightBase && value is int) {
+          object.inIndices = value;
+        }
+        break;
+      case CubicWeightBase.outValuesPropertyKey:
+        if (object is CubicWeightBase && value is int) {
+          object.outValues = value;
+        }
+        break;
+      case CubicWeightBase.outIndicesPropertyKey:
+        if (object is CubicWeightBase && value is int) {
+          object.outIndices = value;
         }
         break;
       case CubicAsymmetricVertexBase.rotationPropertyKey:
@@ -517,6 +563,71 @@ class RiveCoreContext {
           object.y = value;
         }
         break;
+      case SkinBase.xxPropertyKey:
+        if (object is SkinBase && value is double) {
+          object.xx = value;
+        }
+        break;
+      case SkinBase.yxPropertyKey:
+        if (object is SkinBase && value is double) {
+          object.yx = value;
+        }
+        break;
+      case SkinBase.xyPropertyKey:
+        if (object is SkinBase && value is double) {
+          object.xy = value;
+        }
+        break;
+      case SkinBase.yyPropertyKey:
+        if (object is SkinBase && value is double) {
+          object.yy = value;
+        }
+        break;
+      case SkinBase.txPropertyKey:
+        if (object is SkinBase && value is double) {
+          object.tx = value;
+        }
+        break;
+      case SkinBase.tyPropertyKey:
+        if (object is SkinBase && value is double) {
+          object.ty = value;
+        }
+        break;
+      case TendonBase.boneIdPropertyKey:
+        if (object is TendonBase && value is int) {
+          object.boneId = value;
+        }
+        break;
+      case TendonBase.xxPropertyKey:
+        if (object is TendonBase && value is double) {
+          object.xx = value;
+        }
+        break;
+      case TendonBase.yxPropertyKey:
+        if (object is TendonBase && value is double) {
+          object.yx = value;
+        }
+        break;
+      case TendonBase.xyPropertyKey:
+        if (object is TendonBase && value is double) {
+          object.xy = value;
+        }
+        break;
+      case TendonBase.yyPropertyKey:
+        if (object is TendonBase && value is double) {
+          object.yy = value;
+        }
+        break;
+      case TendonBase.txPropertyKey:
+        if (object is TendonBase && value is double) {
+          object.tx = value;
+        }
+        break;
+      case TendonBase.tyPropertyKey:
+        if (object is TendonBase && value is double) {
+          object.ty = value;
+        }
+        break;
     }
   }
 
@@ -545,8 +656,15 @@ class RiveCoreContext {
       case FillBase.fillRulePropertyKey:
       case DrawableBase.drawOrderPropertyKey:
       case DrawableBase.blendModeValuePropertyKey:
+      case WeightBase.valuesPropertyKey:
+      case WeightBase.indicesPropertyKey:
+      case CubicWeightBase.inValuesPropertyKey:
+      case CubicWeightBase.inIndicesPropertyKey:
+      case CubicWeightBase.outValuesPropertyKey:
+      case CubicWeightBase.outIndicesPropertyKey:
       case ClippingShapeBase.shapeIdPropertyKey:
       case ClippingShapeBase.clipOpValuePropertyKey:
+      case TendonBase.boneIdPropertyKey:
         return uintType;
       case AnimationBase.namePropertyKey:
       case ComponentBase.namePropertyKey:
@@ -594,6 +712,18 @@ class RiveCoreContext {
       case BoneBase.lengthPropertyKey:
       case RootBoneBase.xPropertyKey:
       case RootBoneBase.yPropertyKey:
+      case SkinBase.xxPropertyKey:
+      case SkinBase.yxPropertyKey:
+      case SkinBase.xyPropertyKey:
+      case SkinBase.yyPropertyKey:
+      case SkinBase.txPropertyKey:
+      case SkinBase.tyPropertyKey:
+      case TendonBase.xxPropertyKey:
+      case TendonBase.yxPropertyKey:
+      case TendonBase.xyPropertyKey:
+      case TendonBase.yyPropertyKey:
+      case TendonBase.txPropertyKey:
+      case TendonBase.tyPropertyKey:
         return doubleType;
       case KeyFrameColorBase.valuePropertyKey:
       case SolidColorBase.colorValuePropertyKey:
@@ -648,10 +778,24 @@ class RiveCoreContext {
         return (object as DrawableBase).drawOrder;
       case DrawableBase.blendModeValuePropertyKey:
         return (object as DrawableBase).blendModeValue;
+      case WeightBase.valuesPropertyKey:
+        return (object as WeightBase).values;
+      case WeightBase.indicesPropertyKey:
+        return (object as WeightBase).indices;
+      case CubicWeightBase.inValuesPropertyKey:
+        return (object as CubicWeightBase).inValues;
+      case CubicWeightBase.inIndicesPropertyKey:
+        return (object as CubicWeightBase).inIndices;
+      case CubicWeightBase.outValuesPropertyKey:
+        return (object as CubicWeightBase).outValues;
+      case CubicWeightBase.outIndicesPropertyKey:
+        return (object as CubicWeightBase).outIndices;
       case ClippingShapeBase.shapeIdPropertyKey:
         return (object as ClippingShapeBase).shapeId;
       case ClippingShapeBase.clipOpValuePropertyKey:
         return (object as ClippingShapeBase).clipOpValue;
+      case TendonBase.boneIdPropertyKey:
+        return (object as TendonBase).boneId;
     }
     return 0;
   }
@@ -754,6 +898,30 @@ class RiveCoreContext {
         return (object as RootBoneBase).x;
       case RootBoneBase.yPropertyKey:
         return (object as RootBoneBase).y;
+      case SkinBase.xxPropertyKey:
+        return (object as SkinBase).xx;
+      case SkinBase.yxPropertyKey:
+        return (object as SkinBase).yx;
+      case SkinBase.xyPropertyKey:
+        return (object as SkinBase).xy;
+      case SkinBase.yyPropertyKey:
+        return (object as SkinBase).yy;
+      case SkinBase.txPropertyKey:
+        return (object as SkinBase).tx;
+      case SkinBase.tyPropertyKey:
+        return (object as SkinBase).ty;
+      case TendonBase.xxPropertyKey:
+        return (object as TendonBase).xx;
+      case TendonBase.yxPropertyKey:
+        return (object as TendonBase).yx;
+      case TendonBase.xyPropertyKey:
+        return (object as TendonBase).xy;
+      case TendonBase.yyPropertyKey:
+        return (object as TendonBase).yy;
+      case TendonBase.txPropertyKey:
+        return (object as TendonBase).tx;
+      case TendonBase.tyPropertyKey:
+        return (object as TendonBase).ty;
     }
     return 0.0;
   }
@@ -842,11 +1010,32 @@ class RiveCoreContext {
       case DrawableBase.blendModeValuePropertyKey:
         (object as DrawableBase).blendModeValue = value;
         break;
+      case WeightBase.valuesPropertyKey:
+        (object as WeightBase).values = value;
+        break;
+      case WeightBase.indicesPropertyKey:
+        (object as WeightBase).indices = value;
+        break;
+      case CubicWeightBase.inValuesPropertyKey:
+        (object as CubicWeightBase).inValues = value;
+        break;
+      case CubicWeightBase.inIndicesPropertyKey:
+        (object as CubicWeightBase).inIndices = value;
+        break;
+      case CubicWeightBase.outValuesPropertyKey:
+        (object as CubicWeightBase).outValues = value;
+        break;
+      case CubicWeightBase.outIndicesPropertyKey:
+        (object as CubicWeightBase).outIndices = value;
+        break;
       case ClippingShapeBase.shapeIdPropertyKey:
         (object as ClippingShapeBase).shapeId = value;
         break;
       case ClippingShapeBase.clipOpValuePropertyKey:
         (object as ClippingShapeBase).clipOpValue = value;
+        break;
+      case TendonBase.boneIdPropertyKey:
+        (object as TendonBase).boneId = value;
         break;
     }
   }
@@ -992,6 +1181,42 @@ class RiveCoreContext {
         break;
       case RootBoneBase.yPropertyKey:
         (object as RootBoneBase).y = value;
+        break;
+      case SkinBase.xxPropertyKey:
+        (object as SkinBase).xx = value;
+        break;
+      case SkinBase.yxPropertyKey:
+        (object as SkinBase).yx = value;
+        break;
+      case SkinBase.xyPropertyKey:
+        (object as SkinBase).xy = value;
+        break;
+      case SkinBase.yyPropertyKey:
+        (object as SkinBase).yy = value;
+        break;
+      case SkinBase.txPropertyKey:
+        (object as SkinBase).tx = value;
+        break;
+      case SkinBase.tyPropertyKey:
+        (object as SkinBase).ty = value;
+        break;
+      case TendonBase.xxPropertyKey:
+        (object as TendonBase).xx = value;
+        break;
+      case TendonBase.yxPropertyKey:
+        (object as TendonBase).yx = value;
+        break;
+      case TendonBase.xyPropertyKey:
+        (object as TendonBase).xy = value;
+        break;
+      case TendonBase.yyPropertyKey:
+        (object as TendonBase).yy = value;
+        break;
+      case TendonBase.txPropertyKey:
+        (object as TendonBase).tx = value;
+        break;
+      case TendonBase.tyPropertyKey:
+        (object as TendonBase).ty = value;
         break;
     }
   }

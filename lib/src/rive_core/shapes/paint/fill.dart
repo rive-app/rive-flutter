@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive/src/generated/shapes/paint/fill_base.dart';
 export 'package:rive/src/generated/shapes/paint/fill_base.dart';
 
@@ -15,6 +16,14 @@ class Fill extends FillBase {
 
   @override
   void update(int dirt) {}
+  @override
+  void onAdded() {
+    super.onAdded();
+    if (parent is ShapePaintContainer) {
+      (parent as ShapePaintContainer).addFill(this);
+    }
+  }
+
   @override
   void draw(Canvas canvas, Path path) {
     if (!isVisible) {

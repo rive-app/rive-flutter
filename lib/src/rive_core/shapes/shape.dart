@@ -1,9 +1,5 @@
 import 'dart:ui' as ui;
-import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/shapes/paint/fill.dart';
 import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart' as core;
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
@@ -32,42 +28,6 @@ class Shape extends ShapeBase with ShapePaintContainer {
   }
 
   ui.Path get fillPath => _pathComposer.fillPath;
-  AABB _worldBounds;
-  AABB _localBounds;
-  @override
-  AABB get worldBounds => _worldBounds ??= computeWorldBounds();
-  @override
-  AABB get localBounds => _localBounds ??= computeLocalBounds();
-  void markBoundsDirty() {
-    _worldBounds = _localBounds = null;
-  }
-
-  @override
-  void childAdded(Component child) {
-    super.childAdded(child);
-    switch (child.coreType) {
-      case FillBase.typeKey:
-        addFill(child as Fill);
-        break;
-      case StrokeBase.typeKey:
-        addStroke(child as Stroke);
-        break;
-    }
-  }
-
-  @override
-  void childRemoved(Component child) {
-    super.childRemoved(child);
-    switch (child.coreType) {
-      case FillBase.typeKey:
-        removeFill(child as Fill);
-        break;
-      case StrokeBase.typeKey:
-        removeStroke(child as Stroke);
-        break;
-    }
-  }
-
   bool addPath(Path path) {
     paintChanged();
     return paths.add(path);
@@ -153,51 +113,6 @@ class Shape extends ShapeBase with ShapePaintContainer {
   bool removePath(Path path) {
     paintChanged();
     return paths.remove(path);
-  }
-
-  AABB computeWorldBounds() {
-    if (paths.isEmpty) {
-      return AABB.fromMinMax(worldTranslation, worldTranslation);
-    }
-    var path = paths.first;
-    var renderPoints = path.renderVertices;
-    if (renderPoints.isEmpty) {
-      return AABB.fromMinMax(worldTranslation, worldTranslation);
-    }
-    AABB worldBounds =
-        path.preciseComputeBounds(renderPoints, path.pathTransform);
-    for (final path in paths.skip(1)) {
-      var renderPoints = path.renderVertices;
-      AABB.combine(worldBounds, worldBounds,
-          path.preciseComputeBounds(renderPoints, path.pathTransform));
-    }
-    return worldBounds;
-  }
-
-  AABB computeLocalBounds() {
-    if (paths.isEmpty) {
-      return AABB();
-    }
-    var path = paths.first;
-    var renderPoints = path.renderVertices;
-    if (renderPoints.isEmpty) {
-      return AABB();
-    }
-    var toShapeTransform = Mat2D();
-    if (!Mat2D.invert(toShapeTransform, worldTransform)) {
-      Mat2D.identity(toShapeTransform);
-    }
-    AABB localBounds = path.preciseComputeBounds(renderPoints,
-        Mat2D.multiply(Mat2D(), toShapeTransform, path.pathTransform));
-    for (final path in paths.skip(1)) {
-      var renderPoints = path.renderVertices;
-      AABB.combine(
-          localBounds,
-          localBounds,
-          path.preciseComputeBounds(renderPoints,
-              Mat2D.multiply(Mat2D(), toShapeTransform, path.pathTransform)));
-    }
-    return localBounds;
   }
 
   @override

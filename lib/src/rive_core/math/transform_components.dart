@@ -1,6 +1,6 @@
 import 'dart:math';
-import "dart:typed_data";
-import "vec2d.dart";
+import 'dart:typed_data';
+import 'vec2d.dart';
 
 class TransformComponents {
   Float32List _buffer;

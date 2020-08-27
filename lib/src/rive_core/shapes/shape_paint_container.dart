@@ -1,5 +1,4 @@
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/paint/fill.dart';
@@ -15,7 +14,6 @@ abstract class ShapePaintContainer {
   void onFillsChanged();
   @protected
   void onStrokesChanged();
-  @protected
   bool addFill(Fill fill) {
     if (fills.add(fill)) {
       onFillsChanged();
@@ -24,7 +22,6 @@ abstract class ShapePaintContainer {
     return false;
   }
 
-  @protected
   bool removeFill(Fill fill) {
     if (fills.remove(fill)) {
       onFillsChanged();
@@ -33,7 +30,6 @@ abstract class ShapePaintContainer {
     return false;
   }
 
-  @protected
   bool addStroke(Stroke stroke) {
     if (strokes.add(stroke)) {
       onStrokesChanged();
@@ -42,7 +38,6 @@ abstract class ShapePaintContainer {
     return false;
   }
 
-  @protected
   bool removeStroke(Stroke stroke) {
     if (strokes.remove(stroke)) {
       onStrokesChanged();
@@ -51,8 +46,6 @@ abstract class ShapePaintContainer {
     return false;
   }
 
-  AABB get worldBounds;
-  AABB get localBounds;
   bool addDirt(int value, {bool recurse = false});
   bool addDependent(Component dependent);
   void appendChild(Component child);

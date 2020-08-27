@@ -13,7 +13,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   dynamic _userData;
   bool get canBeOrphaned => false;
   int graphOrder = 0;
-  int dirt = 255;
+  int dirt = 0xFFFF;
   static const int maxTreeDepth = 5000;
   bool addDirt(int value, {bool recurse = false}) {
     if ((dirt & value) == value) {

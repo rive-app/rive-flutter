@@ -1,3 +1,4 @@
+import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
@@ -7,13 +8,13 @@ export 'package:rive/src/generated/shapes/points_path_base.dart';
 
 enum PointsPathEditMode { off, creating, editing }
 
-class PointsPath extends PointsPathBase {
+class PointsPath extends PointsPathBase with Skinnable {
   final List<PathVertex> _vertices = [];
   PointsPath() {
     isClosed = false;
   }
   @override
-  Mat2D get pathTransform => worldTransform;
+  Mat2D get pathTransform => skin != null ? Mat2D() : worldTransform;
   @override
   Mat2D get inversePathTransform => inverseWorldTransform;
   @override
@@ -39,5 +40,27 @@ class PointsPath extends PointsPathBase {
   @override
   void isClosedChanged(bool from, bool to) {
     markPathDirty();
+  }
+
+  @override
+  void buildDependencies() {
+    super.buildDependencies();
+    skin?.addDependent(this);
+  }
+
+  @override
+  void markPathDirty() {
+    skin?.addDirt(ComponentDirt.path);
+    super.markPathDirty();
+  }
+
+  @override
+  void markSkinDirty() => super.markPathDirty();
+  @override
+  void update(int dirt) {
+    if (dirt & ComponentDirt.path != 0) {
+      skin?.deform(_vertices);
+    }
+    super.update(dirt);
   }
 }

@@ -2,14 +2,19 @@
 /// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
-import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/generated/container_component_base.dart';
+import 'package:rive/src/rive_core/container_component.dart';
 
-abstract class PathVertexBase extends Component {
+abstract class PathVertexBase extends ContainerComponent {
   static const int typeKey = 14;
   @override
   int get coreType => PathVertexBase.typeKey;
   @override
-  Set<int> get coreTypes => {PathVertexBase.typeKey, ComponentBase.typeKey};
+  Set<int> get coreTypes => {
+        PathVertexBase.typeKey,
+        ContainerComponentBase.typeKey,
+        ComponentBase.typeKey
+      };
 
   /// --------------------------------------------------------------------------
   /// X field with key 24.

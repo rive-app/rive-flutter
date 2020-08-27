@@ -1,3 +1,9 @@
+## [0.5.1] - 2020-08-26 18:09:13
+
+- Bumping version number to match the runtime file version (5.1).
+- Adding support for bones.
+- Adding support for bone binding (deformation).
+
 ## [0.0.7] - 2020-08-15 15:53:17
 
 - Adding support for clipping with Rive format version 5.

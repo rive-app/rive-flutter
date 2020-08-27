@@ -44,6 +44,13 @@ class AABB {
       -double.maxFinite
     ]);
   }
+  bool get isEmpty {
+    return _buffer[0] == double.maxFinite &&
+        _buffer[1] == double.maxFinite &&
+        _buffer[2] == -double.maxFinite &&
+        _buffer[3] == -double.maxFinite;
+  }
+
   Vec2D includePoint(Vec2D point, Mat2D transform) {
     var transformedPoint = transform == null
         ? point

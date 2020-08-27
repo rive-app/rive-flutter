@@ -2,13 +2,11 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/circle_constant.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
-import 'package:rive/src/rive_core/shapes/render_cubic_vertex.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
@@ -16,12 +14,12 @@ export 'package:rive/src/generated/shapes/path_base.dart';
 
 abstract class Path extends PathBase {
   final Mat2D _inverseWorldTransform = Mat2D();
-  final ui.Path _uiPath = ui.Path();
+  final RenderPath _renderPath = RenderPath();
   ui.Path get uiPath {
     if (!_isValid) {
       _buildPath();
     }
-    return _uiPath;
+    return _renderPath.uiPath;
   }
 
   bool _isValid = false;
@@ -63,7 +61,7 @@ abstract class Path extends PathBase {
   void updateWorldTransform() {
     super.updateWorldTransform();
     _shape?.pathChanged(this);
-    if (!Mat2D.invert(_inverseWorldTransform, worldTransform)) {
+    if (!Mat2D.invert(_inverseWorldTransform, pathTransform)) {
       Mat2D.identity(_inverseWorldTransform);
     }
   }
@@ -79,210 +77,165 @@ abstract class Path extends PathBase {
   void markPathDirty() {
     addDirt(ComponentDirt.path);
     _isValid = false;
-    _cachedRenderVertices = null;
     _shape?.pathChanged(this);
   }
 
   List<PathVertex> get vertices;
-  List<PathVertex> _cachedRenderVertices;
-  List<PathVertex> get renderVertices {
-    if (_cachedRenderVertices != null) {
-      return _cachedRenderVertices;
-    }
-    return _cachedRenderVertices = makeRenderVertices(vertices, isClosed);
-  }
-
-  static List<PathVertex> makeRenderVertices(
-      List<PathVertex> pts, bool isClosed) {
-    if (pts == null || pts.isEmpty) {
-      return [];
-    }
-    List<PathVertex> renderPoints = [];
-    int pl = pts.length;
-    const arcConstant = circleConstant;
-    const double iarcConstant = 1.0 - arcConstant;
-    PathVertex previous = isClosed ? pts[pl - 1] : null;
-    for (int i = 0; i < pl; i++) {
-      PathVertex point = pts[i];
-      switch (point.coreType) {
-        case StraightVertexBase.typeKey:
-          {
-            StraightVertex straightPoint = point as StraightVertex;
-            double radius = straightPoint.radius;
-            if (radius != null && radius > 0) {
-              if (!isClosed && (i == 0 || i == pl - 1)) {
-                renderPoints.add(point);
-                previous = point;
-              } else {
-                PathVertex next = pts[(i + 1) % pl];
-                Vec2D prevPoint = previous is CubicVertex
-                    ? previous.outPoint
-                    : previous.translation;
-                Vec2D nextPoint =
-                    next is CubicVertex ? next.inPoint : next.translation;
-                Vec2D pos = point.translation;
-                Vec2D toPrev = Vec2D.subtract(Vec2D(), prevPoint, pos);
-                double toPrevLength = Vec2D.length(toPrev);
-                toPrev[0] /= toPrevLength;
-                toPrev[1] /= toPrevLength;
-                Vec2D toNext = Vec2D.subtract(Vec2D(), nextPoint, pos);
-                double toNextLength = Vec2D.length(toNext);
-                toNext[0] /= toNextLength;
-                toNext[1] /= toNextLength;
-                double renderRadius =
-                    min(toPrevLength, min(toNextLength, radius));
-                Vec2D translation =
-                    Vec2D.scaleAndAdd(Vec2D(), pos, toPrev, renderRadius);
-                renderPoints.add(RenderCubicVertex()
-                  ..translation = translation
-                  ..inPoint = translation
-                  ..outPoint = Vec2D.scaleAndAdd(
-                      Vec2D(), pos, toPrev, iarcConstant * renderRadius));
-                translation =
-                    Vec2D.scaleAndAdd(Vec2D(), pos, toNext, renderRadius);
-                previous = RenderCubicVertex()
-                  ..translation = translation
-                  ..inPoint = Vec2D.scaleAndAdd(
-                      Vec2D(), pos, toNext, iarcConstant * renderRadius)
-                  ..outPoint = translation;
-                renderPoints.add(previous);
-              }
-            } else {
-              renderPoints.add(point);
-              previous = point;
-            }
-            break;
-          }
-        default:
-          renderPoints.add(point);
-          previous = point;
-          break;
-      }
-    }
-    return renderPoints;
-  }
-
   bool _buildPath() {
     _isValid = true;
-    _uiPath.reset();
-    List<PathVertex> pts = vertices;
-    if (pts == null || pts.isEmpty) {
+    _renderPath.reset();
+    List<PathVertex> vertices = this.vertices;
+    var length = vertices.length;
+    if (vertices == null || length < 2) {
       return false;
     }
-    var renderPoints = makeRenderVertices(pts, isClosed);
-    PathVertex firstPoint = renderPoints[0];
-    _uiPath.moveTo(firstPoint.translation[0], firstPoint.translation[1]);
-    for (int i = 0,
-            l = isClosed ? renderPoints.length : renderPoints.length - 1,
-            pl = renderPoints.length;
-        i < l;
-        i++) {
-      PathVertex point = renderPoints[i];
-      PathVertex nextPoint = renderPoints[(i + 1) % pl];
-      Vec2D cin = nextPoint is CubicVertex ? nextPoint.inPoint : null;
-      Vec2D cout = point is CubicVertex ? point.outPoint : null;
-      if (cin == null && cout == null) {
-        _uiPath.lineTo(nextPoint.translation[0], nextPoint.translation[1]);
+    var firstPoint = vertices.first;
+    double outX, outY;
+    bool prevIsCubic;
+    double startX, startY;
+    double startInX, startInY;
+    bool startIsCubic;
+    if (firstPoint is CubicVertex) {
+      startIsCubic = prevIsCubic = true;
+      var inPoint = firstPoint.renderIn;
+      startInX = inPoint[0];
+      startInY = inPoint[1];
+      var outPoint = firstPoint.renderOut;
+      outX = outPoint[0];
+      outY = outPoint[1];
+      var translation = firstPoint.renderTranslation;
+      startX = translation[0];
+      startY = translation[1];
+      _renderPath.moveTo(startX, startY);
+    } else {
+      startIsCubic = prevIsCubic = false;
+      var point = firstPoint as StraightVertex;
+      var radius = point.radius;
+      if (radius > 0) {
+        var prev = vertices[length - 1];
+        var pos = point.renderTranslation;
+        var toPrev = Vec2D.subtract(Vec2D(),
+            prev is CubicVertex ? prev.renderOut : prev.renderTranslation, pos);
+        var toPrevLength = Vec2D.length(toPrev);
+        toPrev[0] /= toPrevLength;
+        toPrev[1] /= toPrevLength;
+        var next = vertices[1];
+        var toNext = Vec2D.subtract(Vec2D(),
+            next is CubicVertex ? next.renderIn : next.renderTranslation, pos);
+        var toNextLength = Vec2D.length(toNext);
+        toNext[0] /= toNextLength;
+        toNext[1] /= toNextLength;
+        var renderRadius = min(toPrevLength, min(toNextLength, radius));
+        var translation = Vec2D.scaleAndAdd(Vec2D(), pos, toPrev, renderRadius);
+        _renderPath.moveTo(startInX = startX = translation[0],
+            startInY = startY = translation[1]);
+        var outPoint = Vec2D.scaleAndAdd(
+            Vec2D(), pos, toPrev, icircleConstant * renderRadius);
+        var inPoint = Vec2D.scaleAndAdd(
+            Vec2D(), pos, toNext, icircleConstant * renderRadius);
+        var posNext = Vec2D.scaleAndAdd(Vec2D(), pos, toNext, renderRadius);
+        _renderPath.cubicTo(outPoint[0], outPoint[1], inPoint[0], inPoint[1],
+            outX = posNext[0], outY = posNext[1]);
+        prevIsCubic = false;
       } else {
-        cout ??= point.translation;
-        cin ??= nextPoint.translation;
-        _uiPath.cubicTo(cout[0], cout[1], cin[0], cin[1],
-            nextPoint.translation[0], nextPoint.translation[1]);
+        var translation = point.renderTranslation;
+        outX = translation[0];
+        outY = translation[1];
+        _renderPath.moveTo(startInX = startX = outX, startInY = startY = outY);
+      }
+    }
+    for (int i = 1; i < length; i++) {
+      var vertex = vertices[i];
+      if (vertex is CubicVertex) {
+        var inPoint = vertex.renderIn;
+        var translation = vertex.renderTranslation;
+        _renderPath.cubicTo(
+            outX, outY, inPoint[0], inPoint[1], translation[0], translation[1]);
+        prevIsCubic = true;
+        var outPoint = vertex.renderOut;
+        outX = outPoint[0];
+        outY = outPoint[1];
+      } else {
+        var point = vertex as StraightVertex;
+        var radius = point.radius;
+        if (radius > 0) {
+          var pos = point.renderTranslation;
+          var toPrev =
+              Vec2D.subtract(Vec2D(), Vec2D.fromValues(outX, outY), pos);
+          var toPrevLength = Vec2D.length(toPrev);
+          toPrev[0] /= toPrevLength;
+          toPrev[1] /= toPrevLength;
+          var next = vertices[(i + 1) % length];
+          var toNext = Vec2D.subtract(
+              Vec2D(),
+              next is CubicVertex ? next.renderIn : next.renderTranslation,
+              pos);
+          var toNextLength = Vec2D.length(toNext);
+          toNext[0] /= toNextLength;
+          toNext[1] /= toNextLength;
+          var renderRadius = min(toPrevLength, min(toNextLength, radius));
+          var translation =
+              Vec2D.scaleAndAdd(Vec2D(), pos, toPrev, renderRadius);
+          if (prevIsCubic) {
+            _renderPath.cubicTo(outX, outY, translation[0], translation[1],
+                translation[0], translation[1]);
+          } else {
+            _renderPath.lineTo(translation[0], translation[1]);
+          }
+          var outPoint = Vec2D.scaleAndAdd(
+              Vec2D(), pos, toPrev, icircleConstant * renderRadius);
+          var inPoint = Vec2D.scaleAndAdd(
+              Vec2D(), pos, toNext, icircleConstant * renderRadius);
+          var posNext = Vec2D.scaleAndAdd(Vec2D(), pos, toNext, renderRadius);
+          _renderPath.cubicTo(outPoint[0], outPoint[1], inPoint[0], inPoint[1],
+              outX = posNext[0], outY = posNext[1]);
+          prevIsCubic = false;
+        } else if (prevIsCubic) {
+          var translation = point.renderTranslation;
+          var x = translation[0];
+          var y = translation[1];
+          _renderPath.cubicTo(outX, outY, x, y, x, y);
+          prevIsCubic = false;
+          outX = x;
+          outY = y;
+        } else {
+          var translation = point.renderTranslation;
+          outX = translation[0];
+          outY = translation[1];
+          _renderPath.lineTo(outX, outY);
+        }
       }
     }
     if (isClosed) {
-      _uiPath.close();
+      if (prevIsCubic || startIsCubic) {
+        _renderPath.cubicTo(outX, outY, startInX, startInY, startX, startY);
+      }
+      _renderPath.close();
     }
     return true;
   }
-
-  @override
-  AABB get localBounds => preciseComputeBounds(renderVertices, Mat2D());
-  AABB preciseComputeBounds(List<PathVertex> renderPoints, Mat2D transform,
-      {bool debug = false}) {
-    if (renderPoints.isEmpty) {
-      return AABB();
-    }
-    AABB bounds = AABB.empty();
-    PathVertex firstPoint = renderPoints[0];
-    Vec2D lastPoint = bounds.includePoint(firstPoint.translation, transform);
-    for (int i = 0,
-            l = isClosed ? renderPoints.length : renderPoints.length - 1,
-            pl = renderPoints.length;
-        i < l;
-        i++) {
-      PathVertex point = renderPoints[i];
-      PathVertex nextPoint = renderPoints[(i + 1) % pl];
-      Vec2D cin = nextPoint is CubicVertex ? nextPoint.inPoint : null;
-      Vec2D cout = point is CubicVertex ? point.outPoint : null;
-      if (cin == null && cout == null) {
-        lastPoint = bounds.includePoint(nextPoint.translation, transform);
-      } else {
-        cout ??= point.translation;
-        cin ??= nextPoint.translation;
-        var next = bounds.includePoint(nextPoint.translation, transform);
-        if (transform != null) {
-          cin = Vec2D.transformMat2D(Vec2D(), cin, transform);
-          cout = Vec2D.transformMat2D(Vec2D(), cout, transform);
-        }
-        final double startX = lastPoint[0];
-        final double startY = lastPoint[1];
-        final double cpX1 = cout[0];
-        final double cpY1 = cout[1];
-        final double cpX2 = cin[0];
-        final double cpY2 = cin[1];
-        final double endX = next[0];
-        final double endY = next[1];
-        lastPoint = next;
-        _expandBoundsForAxis(bounds, 0, startX, cpX1, cpX2, endX);
-        _expandBoundsForAxis(bounds, 1, startY, cpY1, cpY2, endY);
-      }
-    }
-    return bounds;
-  }
 }
 
-void _expandBoundsToCubicPoint(AABB bounds, int component, double t, double a,
-    double b, double c, double d) {
-  if (t >= 0 && t <= 1) {
-    var ti = 1 - t;
-    double extremaY = ((ti * ti * ti) * a) +
-        ((3 * ti * ti * t) * b) +
-        ((3 * ti * t * t) * c) +
-        (t * t * t * d);
-    if (extremaY < bounds[component]) {
-      bounds[component] = extremaY;
-    }
-    if (extremaY > bounds[component + 2]) {
-      bounds[component + 2] = extremaY;
-    }
+class RenderPath {
+  final ui.Path _uiPath = ui.Path();
+  ui.Path get uiPath => _uiPath;
+  void reset() {
+    _uiPath.reset();
   }
-}
 
-void _expandBoundsForAxis(AABB bounds, int component, double start, double cp1,
-    double cp2, double end) {
-  if (!(((start < cp1) && (cp1 < cp2) && (cp2 < end)) ||
-      ((start > cp1) && (cp1 > cp2) && (cp2 > end)))) {
-    var a = 3 * (cp1 - start);
-    var b = 3 * (cp2 - cp1);
-    var c = 3 * (end - cp2);
-    var d = a - 2 * b + c;
-    if (d != 0) {
-      var m1 = -sqrt(b * b - a * c);
-      var m2 = -a + b;
-      _expandBoundsToCubicPoint(
-          bounds, component, -(m1 + m2) / d, start, cp1, cp2, end);
-      _expandBoundsToCubicPoint(
-          bounds, component, -(-m1 + m2) / d, start, cp1, cp2, end);
-    } else if (b != c && d == 0) {
-      _expandBoundsToCubicPoint(
-          bounds, component, (2 * b - c) / (2 * (b - c)), start, cp1, cp2, end);
-    }
-    var d2a = 2 * (b - a);
-    var d2b = 2 * (c - b);
-    if (d2a != b) {
-      _expandBoundsToCubicPoint(
-          bounds, component, d2a / (d2a - d2b), start, cp1, cp2, end);
-    }
+  void lineTo(double x, double y) {
+    _uiPath.lineTo(x, y);
+  }
+
+  void moveTo(double x, double y) {
+    _uiPath.moveTo(x, y);
+  }
+
+  void cubicTo(double ox, double oy, double ix, double iy, double x, double y) {
+    _uiPath.cubicTo(ox, oy, ix, iy, x, y);
+  }
+
+  void close() {
+    _uiPath.close();
   }
 }

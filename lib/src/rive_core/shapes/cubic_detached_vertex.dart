@@ -58,7 +58,7 @@ class CubicDetachedVertex extends CubicDetachedVertexBase {
 
   @override
   void yChanged(double from, double to) {
-    super.xChanged(from, to);
+    super.yChanged(from, to);
     _outPoint = _inPoint = null;
   }
 

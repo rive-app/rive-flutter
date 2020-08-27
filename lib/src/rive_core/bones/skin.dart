@@ -1,0 +1,138 @@
+import 'dart:typed_data';
+import 'package:rive/src/rive_core/bones/skinnable.dart';
+import 'package:rive/src/rive_core/bones/tendon.dart';
+import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/math/mat2d.dart';
+import 'package:rive/src/rive_core/math/transform_components.dart';
+import 'package:rive/src/rive_core/shapes/path_vertex.dart';
+import 'package:rive/src/generated/bones/skin_base.dart';
+export 'package:rive/src/generated/bones/skin_base.dart';
+
+class Skin extends SkinBase {
+  final List<Tendon> _tendons = [];
+  List<Tendon> get tendons => _tendons;
+  Float32List _boneTransforms;
+  final Mat2D _worldTransform = Mat2D();
+  @override
+  void onDirty(int mask) {
+    (parent as Skinnable).markSkinDirty();
+  }
+
+  @override
+  void update(int dirt) {
+    var size = (_tendons.length + 1) * 6;
+    if (_boneTransforms == null || _boneTransforms.length != size) {
+      _boneTransforms = Float32List(size);
+      _boneTransforms[0] = 1;
+      _boneTransforms[1] = 0;
+      _boneTransforms[2] = 0;
+      _boneTransforms[3] = 1;
+      _boneTransforms[4] = 0;
+      _boneTransforms[5] = 0;
+    }
+    var temp = Mat2D();
+    var bidx = 6;
+    for (final tendon in _tendons) {
+      var boneWorld = tendon.bone.worldTransform;
+      var wt = Mat2D.multiply(temp, boneWorld, tendon.inverseBind);
+      var tc = TransformComponents();
+      Mat2D.decompose(boneWorld, tc);
+      _boneTransforms[bidx++] = wt[0];
+      _boneTransforms[bidx++] = wt[1];
+      _boneTransforms[bidx++] = wt[2];
+      _boneTransforms[bidx++] = wt[3];
+      _boneTransforms[bidx++] = wt[4];
+      _boneTransforms[bidx++] = wt[5];
+    }
+  }
+
+  void deform(List<PathVertex> vertices) {
+    for (final vertex in vertices) {
+      vertex.deform(_worldTransform, _boneTransforms);
+    }
+  }
+
+  @override
+  void onAddedDirty() {
+    super.onAddedDirty();
+    if (parent is Skinnable) {
+      (parent as Skinnable).addSkin(this);
+      parent.markRebuildDependencies();
+    }
+  }
+
+  @override
+  void onRemoved() {
+    if (parent is Skinnable) {
+      (parent as Skinnable).removeSkin(this);
+      parent.markRebuildDependencies();
+    }
+    super.onRemoved();
+  }
+
+  @override
+  void buildDependencies() {
+    super.buildDependencies();
+    for (final tendon in _tendons) {
+      tendon.bone.addDependent(this);
+    }
+  }
+
+  @override
+  void childAdded(Component child) {
+    super.childAdded(child);
+    switch (child.coreType) {
+      case TendonBase.typeKey:
+        _tendons.add(child as Tendon);
+        markRebuildDependencies();
+        parent?.markRebuildDependencies();
+        break;
+    }
+  }
+
+  @override
+  void childRemoved(Component child) {
+    super.childRemoved(child);
+    switch (child.coreType) {
+      case TendonBase.typeKey:
+        _tendons.remove(child as Tendon);
+        if (_tendons.isEmpty) {
+          remove();
+        } else {
+          markRebuildDependencies();
+        }
+        parent?.markRebuildDependencies();
+        break;
+    }
+  }
+
+  @override
+  void txChanged(double from, double to) {
+    _worldTransform[4] = to;
+  }
+
+  @override
+  void tyChanged(double from, double to) {
+    _worldTransform[5] = to;
+  }
+
+  @override
+  void xxChanged(double from, double to) {
+    _worldTransform[0] = to;
+  }
+
+  @override
+  void xyChanged(double from, double to) {
+    _worldTransform[1] = to;
+  }
+
+  @override
+  void yxChanged(double from, double to) {
+    _worldTransform[2] = to;
+  }
+
+  @override
+  void yyChanged(double from, double to) {
+    _worldTransform[3] = to;
+  }
+}

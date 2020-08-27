@@ -43,9 +43,6 @@ class PathComposer extends PathComposerBase {
         localPath.addPath(path.uiPath, ui.Offset.zero,
             matrix4: localTransform?.mat4);
       }
-      if (!buildWorldPath) {
-        _shape.markBoundsDirty();
-      }
     }
     if (buildWorldPath) {
       worldPath.reset();
@@ -53,7 +50,6 @@ class PathComposer extends PathComposerBase {
         worldPath.addPath(path.uiPath, ui.Offset.zero,
             matrix4: path.pathTransform?.mat4);
       }
-      _shape.markBoundsDirty();
     }
     _fillPath = _shape.fillInWorld ? worldPath : localPath;
   }
