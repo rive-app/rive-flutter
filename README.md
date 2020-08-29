@@ -7,7 +7,7 @@
 ## Add to pubspec.yaml
 ```yaml
 dependencies:
-  rive: ^0.0.1+3
+  rive: ^0.5.2
 ```
 
 ## Example

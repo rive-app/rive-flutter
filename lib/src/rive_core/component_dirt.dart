@@ -9,4 +9,5 @@ class ComponentDirt {
   static const int paint = 1 << 7;
   static const int stops = 1 << 8;
   static const int clip = 1 << 9;
+  static const int blendMode = 1 << 10;
 }

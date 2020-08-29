@@ -3,7 +3,6 @@ import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/generated/bones/skin_base.dart';
 export 'package:rive/src/generated/bones/skin_base.dart';
@@ -35,8 +34,6 @@ class Skin extends SkinBase {
     for (final tendon in _tendons) {
       var boneWorld = tendon.bone.worldTransform;
       var wt = Mat2D.multiply(temp, boneWorld, tendon.inverseBind);
-      var tc = TransformComponents();
-      Mat2D.decompose(boneWorld, tc);
       _boneTransforms[bidx++] = wt[0];
       _boneTransforms[bidx++] = wt[1];
       _boneTransforms[bidx++] = wt[2];

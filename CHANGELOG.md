@@ -1,3 +1,7 @@
+## [0.5.2] - 2020-08-28 18:24:45
+
+- Adding trim paths.
+
 ## [0.5.1] - 2020-08-26 18:09:13
 
 - Bumping version number to match the runtime file version (5.1).

@@ -38,6 +38,7 @@ import 'package:rive/src/generated/shapes/paint/radial_gradient_base.dart';
 import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 import 'package:rive/src/generated/shapes/paint/solid_color_base.dart';
 import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
+import 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/generated/shapes/path_composer_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
@@ -76,6 +77,7 @@ import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart';
 import 'package:rive/src/rive_core/shapes/paint/radial_gradient.dart';
 import 'package:rive/src/rive_core/shapes/paint/solid_color.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
+import 'package:rive/src/rive_core/shapes/paint/trim_path.dart';
 import 'package:rive/src/rive_core/shapes/path_composer.dart';
 import 'package:rive/src/rive_core/shapes/points_path.dart';
 import 'package:rive/src/rive_core/shapes/rectangle.dart';
@@ -115,6 +117,8 @@ class RiveCoreContext {
         return SolidColor();
       case GradientStopBase.typeKey:
         return GradientStop();
+      case TrimPathBase.typeKey:
+        return TrimPath();
       case FillBase.typeKey:
         return Fill();
       case NodeBase.typeKey:
@@ -346,6 +350,26 @@ class RiveCoreContext {
       case GradientStopBase.positionPropertyKey:
         if (object is GradientStopBase && value is double) {
           object.position = value;
+        }
+        break;
+      case TrimPathBase.startPropertyKey:
+        if (object is TrimPathBase && value is double) {
+          object.start = value;
+        }
+        break;
+      case TrimPathBase.endPropertyKey:
+        if (object is TrimPathBase && value is double) {
+          object.end = value;
+        }
+        break;
+      case TrimPathBase.offsetPropertyKey:
+        if (object is TrimPathBase && value is double) {
+          object.offset = value;
+        }
+        break;
+      case TrimPathBase.modeValuePropertyKey:
+        if (object is TrimPathBase && value is int) {
+          object.modeValue = value;
         }
         break;
       case FillBase.fillRulePropertyKey:
@@ -653,6 +677,7 @@ class RiveCoreContext {
       case ComponentBase.parentIdPropertyKey:
       case StrokeBase.capPropertyKey:
       case StrokeBase.joinPropertyKey:
+      case TrimPathBase.modeValuePropertyKey:
       case FillBase.fillRulePropertyKey:
       case DrawableBase.drawOrderPropertyKey:
       case DrawableBase.blendModeValuePropertyKey:
@@ -682,6 +707,9 @@ class RiveCoreContext {
       case LinearGradientBase.opacityPropertyKey:
       case StrokeBase.thicknessPropertyKey:
       case GradientStopBase.positionPropertyKey:
+      case TrimPathBase.startPropertyKey:
+      case TrimPathBase.endPropertyKey:
+      case TrimPathBase.offsetPropertyKey:
       case TransformComponentBase.rotationPropertyKey:
       case TransformComponentBase.scaleXPropertyKey:
       case TransformComponentBase.scaleYPropertyKey:
@@ -772,6 +800,8 @@ class RiveCoreContext {
         return (object as StrokeBase).cap;
       case StrokeBase.joinPropertyKey:
         return (object as StrokeBase).join;
+      case TrimPathBase.modeValuePropertyKey:
+        return (object as TrimPathBase).modeValue;
       case FillBase.fillRulePropertyKey:
         return (object as FillBase).fillRule;
       case DrawableBase.drawOrderPropertyKey:
@@ -838,6 +868,12 @@ class RiveCoreContext {
         return (object as StrokeBase).thickness;
       case GradientStopBase.positionPropertyKey:
         return (object as GradientStopBase).position;
+      case TrimPathBase.startPropertyKey:
+        return (object as TrimPathBase).start;
+      case TrimPathBase.endPropertyKey:
+        return (object as TrimPathBase).end;
+      case TrimPathBase.offsetPropertyKey:
+        return (object as TrimPathBase).offset;
       case TransformComponentBase.rotationPropertyKey:
         return (object as TransformComponentBase).rotation;
       case TransformComponentBase.scaleXPropertyKey:
@@ -1001,6 +1037,9 @@ class RiveCoreContext {
       case StrokeBase.joinPropertyKey:
         (object as StrokeBase).join = value;
         break;
+      case TrimPathBase.modeValuePropertyKey:
+        (object as TrimPathBase).modeValue = value;
+        break;
       case FillBase.fillRulePropertyKey:
         (object as FillBase).fillRule = value;
         break;
@@ -1091,6 +1130,15 @@ class RiveCoreContext {
         break;
       case GradientStopBase.positionPropertyKey:
         (object as GradientStopBase).position = value;
+        break;
+      case TrimPathBase.startPropertyKey:
+        (object as TrimPathBase).start = value;
+        break;
+      case TrimPathBase.endPropertyKey:
+        (object as TrimPathBase).end = value;
+        break;
+      case TrimPathBase.offsetPropertyKey:
+        (object as TrimPathBase).offset = value;
         break;
       case TransformComponentBase.rotationPropertyKey:
         (object as TransformComponentBase).rotation = value;

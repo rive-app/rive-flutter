@@ -82,6 +82,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   void heightChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
+    invalidateStrokeEffects();
   }
 
   void onComponentDirty(Component component) {
@@ -122,6 +123,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   void widthChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
+    invalidateStrokeEffects();
   }
 
   @override

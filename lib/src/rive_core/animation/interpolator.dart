@@ -1,4 +1,3 @@
-
 abstract class Interpolator {
   int get id;
   double transform(double value);

@@ -5,7 +5,7 @@ import 'exceptions/rive_format_error_exception.dart';
 
 class RuntimeHeader {
   static const int majorVersion = 5;
-  static const int minorVersion = 1;
+  static const int minorVersion = 2;
   static const String fingerprint = 'RIVE';
   final int ownerId;
   final int fileId;

@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/shapes/paint/stroke_effect.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 export 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 
 class Stroke extends StrokeBase {
+  StrokeEffect _effect;
+  StrokeEffect get effect => _effect;
+  // ignore: use_setters_to_change_properties
+  void addStrokeEffect(StrokeEffect effect) {
+    _effect = effect;
+  }
+
+  void removeStrokeEffect(StrokeEffect effect) {
+    if (effect == _effect) {
+      _effect = null;
+    }
+  }
+
   @override
   Paint makePaint() => Paint()
     ..style = PaintingStyle.stroke
@@ -52,11 +66,15 @@ class Stroke extends StrokeBase {
     }
   }
 
+  void invalidateEffects() {
+    _effect?.invalidateEffect();
+  }
+
   @override
   void draw(Canvas canvas, Path path) {
     if (!isVisible) {
       return;
     }
-    canvas.drawPath(path, paint);
+    canvas.drawPath(_effect?.effectPath(path) ?? path, paint);
   }
 }

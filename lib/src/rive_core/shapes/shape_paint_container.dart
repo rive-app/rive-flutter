@@ -14,6 +14,12 @@ abstract class ShapePaintContainer {
   void onFillsChanged();
   @protected
   void onStrokesChanged();
+  void invalidateStrokeEffects() {
+    for (final stroke in strokes) {
+      stroke.invalidateEffects();
+    }
+  }
+
   bool addFill(Fill fill) {
     if (fills.add(fill)) {
       onFillsChanged();

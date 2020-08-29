@@ -33,16 +33,18 @@ class Shape extends ShapeBase with ShapePaintContainer {
     return paths.add(path);
   }
 
-  void pathChanged(Path path) {
+  void _markComposerDirty() {
     _pathComposer?.addDirt(ComponentDirt.path);
+    invalidateStrokeEffects();
   }
 
+  void pathChanged(Path path) => _markComposerDirty();
   void paintChanged() {
     addDirt(ComponentDirt.path);
     for (final d in dependents) {
       d.addDirt(ComponentDirt.worldTransform);
     }
-    _pathComposer?.addDirt(ComponentDirt.path);
+    _markComposerDirty();
   }
 
   @override
@@ -60,7 +62,7 @@ class Shape extends ShapeBase with ShapePaintContainer {
   @override
   void update(int dirt) {
     super.update(dirt);
-    if (dirt & ComponentDirt.paint != 0) {
+    if (dirt & ComponentDirt.blendMode != 0) {
       for (final fill in fills) {
         fill.blendMode = blendMode;
       }
@@ -152,7 +154,7 @@ class Shape extends ShapeBase with ShapePaintContainer {
     }
   }
 
-  void _markBlendModeDirty() => addDirt(ComponentDirt.paint);
+  void _markBlendModeDirty() => addDirt(ComponentDirt.blendMode);
   @override
   void onPaintMutatorChanged(ShapePaintMutator mutator) {
     paintChanged();
