@@ -3,6 +3,8 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/draw_rules.dart';
+import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
@@ -18,9 +20,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool get canBeOrphaned => true;
   final Path path = Path();
   List<Component> _dependencyOrder = [];
-  final DrawableList _drawables = DrawableList();
+  final List<Drawable> _drawables = [];
+  final List<DrawRules> _rules = [];
+  List<DrawTarget> _sortedDrawRules;
   final Set<Component> _components = {};
-  DrawableList get drawables => _drawables;
+  List<Drawable> get drawables => _drawables;
   final AnimationList _animations = AnimationList();
   AnimationList get animations => _animations;
   bool get hasAnimations => _animations.isNotEmpty;
@@ -38,7 +42,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool updateComponents() {
     bool didUpdate = false;
     if ((_dirt & ComponentDirt.drawOrder) != 0) {
-      _drawables.sortDrawables();
+      sortDrawOrder();
       _dirt &= ~ComponentDirt.drawOrder;
       didUpdate = true;
     }
@@ -145,18 +149,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     if (!_components.add(component)) {
       return;
     }
-    if (component is Drawable) {
-      assert(!_drawables.contains(component));
-      _drawables.add(component);
-      markDrawOrderDirty();
-    }
   }
 
   void removeComponent(Component component) {
     _components.remove(component);
-    if (component is Drawable) {
-      _drawables.remove(component);
-    }
   }
 
   void markDrawOrderDirty() {
@@ -173,7 +169,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     canvas.save();
     canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
     canvas.translate(width * (originX ?? 0), height * (originY ?? 0));
-    for (final drawable in _drawables) {
+    for (var drawable = _firstDrawable;
+        drawable != null;
+        drawable = drawable.prev) {
       drawable.draw(canvas);
     }
     canvas.restore();
@@ -238,4 +236,92 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void onStrokesChanged() {}
   @override
   Vec2D get worldTranslation => Vec2D();
+  Drawable _firstDrawable;
+  void computeDrawOrder() {
+    _drawables.clear();
+    _rules.clear();
+    buildDrawOrder(_drawables, null, _rules);
+    Set<DrawTarget> rootRules = {};
+    for (final nodeRules in _rules) {
+      for (final target in nodeRules.targets) {
+        var dependentRules = target.drawable?.flattenedDrawRules;
+        if (dependentRules != null) {
+          for (final dependentRule in dependentRules.targets) {
+            dependentRule.dependents.add(target);
+          }
+        } else {
+          rootRules.add(target);
+        }
+      }
+    }
+    var sorter = DependencySorter<Component>();
+    sorter.reset();
+    if (rootRules.isNotEmpty) {
+      rootRules.forEach(sorter.visit);
+    }
+    _sortedDrawRules = sorter.order.cast<DrawTarget>();
+    sortDrawOrder();
+  }
+
+  void sortDrawOrder() {
+    for (final rule in _sortedDrawRules) {
+      rule.first = rule.last = null;
+    }
+    _firstDrawable = null;
+    Drawable lastDrawable;
+    for (final drawable in _drawables) {
+      var rules = drawable.flattenedDrawRules;
+      var target = rules?.activeTarget;
+      if (target != null) {
+        if (target.first == null) {
+          target.first = target.last = drawable;
+          drawable.prev = drawable.next = null;
+        } else {
+          target.last.next = drawable;
+          drawable.prev = target.last;
+          target.last = drawable;
+          drawable.next = null;
+        }
+      } else {
+        drawable.prev = lastDrawable;
+        drawable.next = null;
+        if (lastDrawable == null) {
+          lastDrawable = _firstDrawable = drawable;
+        } else {
+          lastDrawable.next = drawable;
+          lastDrawable = drawable;
+        }
+      }
+    }
+    for (final rule in _sortedDrawRules) {
+      if (rule.first == null) {
+        continue;
+      }
+      switch (rule.placement) {
+        case DrawTargetPlacement.before:
+          if (rule.drawable.prev != null) {
+            rule.drawable.prev.next = rule.first;
+            rule.first.prev = rule.drawable.prev;
+          }
+          if (rule.drawable == _firstDrawable) {
+            _firstDrawable = rule.first;
+          }
+          rule.drawable.prev = rule.last;
+          rule.last.next = rule.drawable;
+          break;
+        case DrawTargetPlacement.after:
+          if (rule.drawable.next != null) {
+            rule.drawable.next.prev = rule.last;
+            rule.last.next = rule.drawable.next;
+          }
+          if (rule.drawable == lastDrawable) {
+            lastDrawable = rule.last;
+          }
+          rule.drawable.next = rule.first;
+          rule.first.prev = rule.drawable;
+          break;
+      }
+    }
+    _firstDrawable = lastDrawable;
+  }
 }

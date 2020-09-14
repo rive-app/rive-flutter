@@ -15,6 +15,7 @@ class DependencySorter<T extends DependencyGraphNode<T>> {
   HashSet<T> _perm;
   HashSet<T> _temp;
   List<T> _order;
+  List<T> get order => _order;
 
   DependencySorter() {
     _perm = HashSet<T>();
@@ -27,6 +28,10 @@ class DependencySorter<T extends DependencyGraphNode<T>> {
       return null;
     }
     return _order;
+  }
+
+  void reset() {
+    _order = <T>[];
   }
 
   bool visit(T n) {

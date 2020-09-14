@@ -106,9 +106,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @override
   Set<Component> get dependents => _dependents;
   bool addDependent(Component dependent) {
-    assert(dependent != null, "Dependent cannot be null.");
+    assert(dependent != null, 'Dependent cannot be null.');
     assert(artboard == dependent.artboard,
-        "Components must be in the same artboard.");
+        'Components must be in the same artboard.');
     if (!_dependents.add(dependent)) {
       return false;
     }

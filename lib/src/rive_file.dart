@@ -1,7 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:rive/src/rive_core/animation/keyframe_draw_order.dart';
-import 'package:rive/src/rive_core/animation/keyframe_draw_order_value.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/rive_core/backboard.dart';
@@ -95,14 +93,6 @@ class RiveFile {
                 var keyframe = readRuntimeObject<KeyFrame>(reader);
                 if (keyframe == null) {
                   continue;
-                } else if (keyframe is KeyFrameDrawOrder) {
-                  int numValues = reader.readVarUint();
-                  for (int m = 0; m < numValues; m++) {
-                    var valueObject = KeyFrameDrawOrderValue();
-                    valueObject.drawableId = reader.readVarUint();
-                    valueObject.value = m;
-                    keyframe.internalAddValue(valueObject);
-                  }
                 }
                 artboard.addObject(keyframe);
                 keyedProperty.internalAddKeyFrame(keyframe);

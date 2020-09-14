@@ -10,6 +10,7 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
     implements KeyFrameInterface {
   double _timeInSeconds;
   double get seconds => _timeInSeconds;
+  bool get canInterpolate => true;
   KeyFrameInterpolation get interpolation => interpolationType == null
       ? null
       : KeyFrameInterpolation.values[interpolationType];

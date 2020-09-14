@@ -71,7 +71,7 @@ class Skin extends SkinBase {
   void buildDependencies() {
     super.buildDependencies();
     for (final tendon in _tendons) {
-      tendon.bone.addDependent(this);
+      tendon.bone?.addDependent(this);
     }
   }
 

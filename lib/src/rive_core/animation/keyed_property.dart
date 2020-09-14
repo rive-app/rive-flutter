@@ -64,9 +64,15 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   bool internalRemoveKeyFrame(KeyFrame frame) {
     var removed = _keyframes.remove(frame);
     if (_keyframes.isEmpty) {
-      context.removeObject(this);
+      context?.dirty(_checkShouldRemove);
     }
     return removed;
+  }
+
+  void _checkShouldRemove() {
+    if (_keyframes.isEmpty) {
+      context?.removeObject(this);
+    }
   }
 
   void markKeyFrameOrderDirty() {

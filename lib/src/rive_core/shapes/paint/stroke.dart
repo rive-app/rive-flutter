@@ -9,7 +9,7 @@ export 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 class Stroke extends StrokeBase {
   StrokeEffect _effect;
   StrokeEffect get effect => _effect;
-  // ignore: use_setters_to_change_properties
+// ignore: use_setters_to_change_properties
   void addStrokeEffect(StrokeEffect effect) {
     _effect = effect;
   }

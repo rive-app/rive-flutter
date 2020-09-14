@@ -21,25 +21,6 @@ abstract class DrawableBase extends Node {
       };
 
   /// --------------------------------------------------------------------------
-  /// DrawOrder field with key 22.
-  int _drawOrder;
-  static const int drawOrderPropertyKey = 22;
-  int get drawOrder => _drawOrder;
-
-  /// Change the [_drawOrder] field value.
-  /// [drawOrderChanged] will be invoked only if the field's value has changed.
-  set drawOrder(int value) {
-    if (_drawOrder == value) {
-      return;
-    }
-    int from = _drawOrder;
-    _drawOrder = value;
-    drawOrderChanged(from, value);
-  }
-
-  void drawOrderChanged(int from, int to);
-
-  /// --------------------------------------------------------------------------
   /// BlendModeValue field with key 23.
   int _blendModeValue = 3;
   static const int blendModeValuePropertyKey = 23;

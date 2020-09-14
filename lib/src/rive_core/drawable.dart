@@ -1,22 +1,29 @@
 import 'dart:ui';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
+import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
 import 'package:rive/src/generated/drawable_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 export 'package:rive/src/generated/drawable_base.dart';
 
 abstract class Drawable extends DrawableBase {
+  DrawRules flattenedDrawRules;
+  Drawable prev;
+  Drawable next;
+  @override
+  void buildDrawOrder(
+      List<Drawable> drawables, DrawRules rules, List<DrawRules> allRules) {
+    flattenedDrawRules = drawRules ?? rules;
+    drawables.add(this);
+    super.buildDrawOrder(drawables, rules, allRules);
+  }
+
   void draw(Canvas canvas);
   BlendMode get blendMode => BlendMode.values[blendModeValue];
   set blendMode(BlendMode value) => blendModeValue = value.index;
   @override
   void blendModeValueChanged(int from, int to) {}
-  @override
-  void drawOrderChanged(int from, int to) {
-    artboard?.markDrawOrderDirty();
-  }
-
   List<ClippingShape> _clippingShapes;
   bool clip(Canvas canvas) {
     if (_clippingShapes == null) {

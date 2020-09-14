@@ -60,6 +60,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
       }
 
       sortDependencies();
+      computeDrawOrder();
     }
   }
 
