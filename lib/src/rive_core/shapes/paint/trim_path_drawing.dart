@@ -15,6 +15,7 @@ double _appendPathSegmentSequential(Iterator<PathMetric> metricsIterator,
         break;
       }
     }
+    // ignore: parameter_assignments
     offset = nextOffset;
   } while (metricsIterator.moveNext());
   return offset;

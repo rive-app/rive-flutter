@@ -165,6 +165,7 @@ abstract class TransformComponent extends TransformComponentBase {
   void buildDrawOrder(
       List<Drawable> drawables, DrawRules rules, List<DrawRules> allRules) {
     if (drawRules != null) {
+      // ignore: parameter_assignments
       rules = drawRules;
       allRules.add(rules);
     }
