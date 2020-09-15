@@ -14,7 +14,7 @@ class RuntimeHeader {
   RuntimeHeader(
       {@required this.ownerId,
       @required this.fileId,
-      @required this.propertyToFieldIndex});
+      this.propertyToFieldIndex});
   factory RuntimeHeader.read(BinaryReader reader) {
     var fingerprint = RuntimeHeader.fingerprint.codeUnits;
     for (int i = 0; i < fingerprint.length; i++) {
@@ -24,8 +24,7 @@ class RuntimeHeader {
     }
     int readMajorVersion = reader.readVarUint();
     int readMinorVersion = reader.readVarUint();
-    if (readMajorVersion > majorVersion ||
-        (readMajorVersion == majorVersion && readMinorVersion > minorVersion)) {
+    if (readMajorVersion > majorVersion) {
       throw RiveUnsupportedVersionException(
           majorVersion, minorVersion, readMajorVersion, readMinorVersion);
     }

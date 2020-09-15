@@ -155,6 +155,19 @@ abstract class FractionallyIndexedList<T> extends ListBase<T> {
         FractionalIndex.between(before != null ? orderOf(before) : _minIndex,
             after != null ? orderOf(after) : _maxIndex));
   }
+
+  void reverse() {
+    var indices = <FractionalIndex>[];
+    for (final item in _values) {
+      indices.add(orderOf(item));
+    }
+
+    var length = _values.length;
+    for (int i = 0; i < length; i++) {
+      setOrderOf(_values[i], indices[length - 1 - i]);
+    }
+    sortFractional();
+  }
 }
 
 class FractionalIndex {
