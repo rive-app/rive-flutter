@@ -1,11 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
-import 'package:rive/src/core/field_types/core_color_type.dart';
-import 'package:rive/src/core/field_types/core_double_type.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
-import 'package:rive/src/core/field_types/core_string_type.dart';
-import 'package:rive/src/core/field_types/core_uint_type.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/rive_core/backboard.dart';
@@ -25,8 +21,6 @@ class RiveFile {
   Backboard _backboard;
   Backboard get backboard => _backboard;
 
-  final _propertyToField = HashMap<int, CoreFieldType>();
-
   final List<Artboard> _artboards = [];
   List<Artboard> get artboards => _artboards;
 
@@ -37,7 +31,9 @@ class RiveFile {
     var reader = BinaryReader(bytes);
     _header = RuntimeHeader.read(reader);
 
-    // Read property fields toc.
+    // Property fields toc.
+    final propertyToField = HashMap<int, CoreFieldType>();
+
     final indexToField = <CoreFieldType>[
       RiveCoreContext.uintType,
       RiveCoreContext.stringType,
@@ -45,29 +41,15 @@ class RiveFile {
       RiveCoreContext.colorType
     ];
 
-    var propertyKeys = <int>[];
-    for (int propertyKey = reader.readVarUint();
-        propertyKey != 0;
-        propertyKey = reader.readVarUint()) {
-      propertyKeys.add(propertyKey);
-    }
-    int currentInt = 0;
-    int currentBit = 8;
-    for (final propertyKey in propertyKeys) {
-      if (currentBit == 8) {
-        currentInt = reader.readUint32();
-        currentBit = 0;
-      }
-      int fieldIndex = (currentInt >> currentBit) & 3;
+    _header.propertyToFieldIndex.forEach((key, fieldIndex) {
       if (fieldIndex < 0 || fieldIndex >= indexToField.length) {
         throw RiveFormatErrorException('unexpected field index $fieldIndex');
       }
 
-      _propertyToField[propertyKey] = indexToField[fieldIndex];
-      currentBit += 2;
-    }
+      propertyToField[key] = indexToField[fieldIndex];
+    });
 
-    _backboard = _readRuntimeObject<Backboard>(reader);
+    _backboard = _readRuntimeObject<Backboard>(reader, propertyToField);
     if (_backboard == null) {
       throw const RiveFormatErrorException(
           'expected first object to be a Backboard');
@@ -80,7 +62,8 @@ class RiveFile {
         throw const RiveFormatErrorException(
             'artboards must contain at least one object (themselves)');
       }
-      var artboard = _readRuntimeObject(reader, RuntimeArtboard());
+      var artboard =
+          _readRuntimeObject(reader, propertyToField, RuntimeArtboard());
       // Kind of weird, but the artboard is the core context at runtime, so we
       // want other objects to be able to resolve it. It's always at the 0
       // index.
@@ -88,7 +71,7 @@ class RiveFile {
       _artboards.add(artboard);
       // var objects = List<Core<RiveCoreContext>>(numObjects);
       for (int i = 1; i < numObjects; i++) {
-        Core<CoreContext> object = _readRuntimeObject(reader);
+        Core<CoreContext> object = _readRuntimeObject(reader, propertyToField);
         // N.B. we add objects that don't load (null) too as we need to look
         // them up by index.
         artboard.addObject(object);
@@ -98,7 +81,7 @@ class RiveFile {
       // in before the hierarchy resolves (batch add completes).
       var numAnimations = reader.readVarUint();
       for (int i = 0; i < numAnimations; i++) {
-        var animation = _readRuntimeObject<Animation>(reader);
+        var animation = _readRuntimeObject<Animation>(reader, propertyToField);
         if (animation == null) {
           continue;
         }
@@ -108,7 +91,8 @@ class RiveFile {
           var numKeyedObjects = reader.readVarUint();
           var keyedObjects = List<KeyedObject>(numKeyedObjects);
           for (int j = 0; j < numKeyedObjects; j++) {
-            var keyedObject = _readRuntimeObject<KeyedObject>(reader);
+            var keyedObject =
+                _readRuntimeObject<KeyedObject>(reader, propertyToField);
             if (keyedObject == null) {
               continue;
             }
@@ -119,7 +103,8 @@ class RiveFile {
 
             var numKeyedProperties = reader.readVarUint();
             for (int k = 0; k < numKeyedProperties; k++) {
-              var keyedProperty = _readRuntimeObject<KeyedProperty>(reader);
+              var keyedProperty =
+                  _readRuntimeObject<KeyedProperty>(reader, propertyToField);
               if (keyedProperty == null) {
                 continue;
               }
@@ -128,7 +113,8 @@ class RiveFile {
 
               var numKeyframes = reader.readVarUint();
               for (int l = 0; l < numKeyframes; l++) {
-                var keyframe = _readRuntimeObject<KeyFrame>(reader);
+                var keyframe =
+                    _readRuntimeObject<KeyFrame>(reader, propertyToField);
                 if (keyframe == null) {
                   continue;
                 }
@@ -164,38 +150,40 @@ class RiveFile {
 
     return true;
   }
+}
 
-  void _skipProperty(BinaryReader reader, int propertyKey) {
-    var field = _propertyToField[propertyKey];
-    if (field == null) {
-      throw UnsupportedError('Unsupported property key $propertyKey. '
-          'A new runtime is likely necessary to play this file.');
-    }
-    // Desrialize but don't do anything with the contents...
-    field.deserialize(reader);
+void _skipProperty(BinaryReader reader, int propertyKey,
+    HashMap<int, CoreFieldType> propertyToField) {
+  var field = propertyToField[propertyKey];
+  if (field == null) {
+    throw UnsupportedError('Unsupported property key $propertyKey. '
+        'A new runtime is likely necessary to play this file.');
   }
+  // Desrialize but don't do anything with the contents...
+  field.deserialize(reader);
+}
 
-  T _readRuntimeObject<T extends Core<CoreContext>>(BinaryReader reader,
-      [T instance]) {
-    int coreObjectKey = reader.readVarUint();
+T _readRuntimeObject<T extends Core<CoreContext>>(
+    BinaryReader reader, HashMap<int, CoreFieldType> propertyToField,
+    [T instance]) {
+  int coreObjectKey = reader.readVarUint();
 
-    var object = instance ?? RiveCoreContext.makeCoreInstance(coreObjectKey);
+  var object = instance ?? RiveCoreContext.makeCoreInstance(coreObjectKey);
 
-    while (true) {
-      int propertyKey = reader.readVarUint();
-      if (propertyKey == 0) {
-        // Terminator. https://media.giphy.com/media/7TtvTUMm9mp20/giphy.gif
-        break;
-      }
-
-      var fieldType = RiveCoreContext.coreType(propertyKey);
-      if (fieldType == null || object == null) {
-        _skipProperty(reader, propertyKey);
-      } else if (object != null) {
-        RiveCoreContext.setObjectProperty(
-            object, propertyKey, fieldType.deserialize(reader));
-      }
+  while (true) {
+    int propertyKey = reader.readVarUint();
+    if (propertyKey == 0) {
+      // Terminator. https://media.giphy.com/media/7TtvTUMm9mp20/giphy.gif
+      break;
     }
-    return object as T;
+
+    var fieldType = RiveCoreContext.coreType(propertyKey);
+    if (fieldType == null || object == null) {
+      _skipProperty(reader, propertyKey, propertyToField);
+    } else {
+      RiveCoreContext.setObjectProperty(
+          object, propertyKey, fieldType.deserialize(reader));
+    }
   }
+  return object as T;
 }

@@ -22,16 +22,16 @@ class DrawTarget extends DrawTargetBase {
   set placement(DrawTargetPlacement value) => placementValue = value.index;
   @override
   void drawableIdChanged(int from, int to) {
-    _drawable = context?.resolve(to);
+    drawable = context?.resolve(to);
   }
 
   @override
   void onAddedDirty() {
     super.onAddedDirty();
     if (drawableId != null) {
-      _drawable = context?.resolve(drawableId);
+      drawable = context?.resolve(drawableId);
     } else {
-      _drawable = null;
+      drawable = null;
     }
   }
 
