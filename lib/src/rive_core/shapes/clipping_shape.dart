@@ -1,62 +1,83 @@
+import 'dart:ui';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
+import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
 export 'package:rive/src/generated/shapes/clipping_shape_base.dart';
 
-enum ClipOp { intersection, difference }
-
 class ClippingShape extends ClippingShapeBase {
-  ClipOp get clipOp => ClipOp.values[clipOpValue];
-  set clipOp(ClipOp value) => clipOpValue = value.index;
-  Mat2D _shapeInverseWorld;
-  Mat2D get shapeInverseWorld => _shapeInverseWorld;
-  Shape _shape;
-  Shape get shape => _shape;
-  set shape(Shape value) {
-    if (_shape == value) {
+  final Path clippingPath = Path();
+  final List<Shape> _shapes = [];
+  PathFillType get fillType => PathFillType.values[fillRule];
+  set fillType(PathFillType type) => fillRule = type.index;
+  Node _source;
+  Node get source => _source;
+  set source(Node value) {
+    if (_source == value) {
       return;
     }
-    _shape = value;
-    shapeId = value?.id;
+    _source = value;
+    sourceId = value?.id;
   }
 
   @override
-  void clipOpValueChanged(int from, int to) {
+  void fillRuleChanged(int from, int to) {
     parent?.addDirt(ComponentDirt.clip, recurse: true);
+    addDirt(ComponentDirt.path);
   }
 
   @override
-  void shapeIdChanged(int from, int to) {
-    shape = context?.resolve(to);
+  void sourceIdChanged(int from, int to) {
+    _source = context?.resolve(to);
   }
 
   @override
   void onAddedDirty() {
     super.onAddedDirty();
-    if (shapeId != null) {
-      shape = context?.resolve(shapeId);
+    if (sourceId != null) {
+      _source = context?.resolve(sourceId);
     }
   }
 
   @override
   void buildDependencies() {
     super.buildDependencies();
-    shape?.addDependent(this);
+    _shapes.clear();
+    _source?.forAll((component) {
+      if (component is Shape) {
+        _shapes.add(component);
+        component.pathComposer.addDependent(this);
+      }
+      return true;
+    });
+    addDirt(ComponentDirt.path);
+  }
+
+  @override
+  void onRemoved() {
+    super.onRemoved();
+    _shapes.clear();
   }
 
   @override
   void update(int dirt) {
-    if (dirt & ComponentDirt.worldTransform != 0 &&
-        shape != null &&
-        !shape.fillInWorld) {
-      _shapeInverseWorld ??= Mat2D();
-      Mat2D.invert(_shapeInverseWorld, shape.worldTransform);
+    if (dirt & (ComponentDirt.worldTransform | ComponentDirt.path) != 0 &&
+        source != null) {
+      clippingPath.reset();
+      clippingPath.fillType = fillType;
+      for (final shape in _shapes) {
+        if (!shape.fillInWorld) {
+          clippingPath.addPath(shape.fillPath, Offset.zero,
+              matrix4: shape.worldTransform.mat4);
+        } else {
+          clippingPath.addPath(shape.fillPath, Offset.zero);
+        }
+      }
     }
   }
 
   @override
   void isVisibleChanged(bool from, bool to) {
-    _shape?.addDirt(ComponentDirt.paint);
+    _source?.addDirt(ComponentDirt.paint);
   }
 }

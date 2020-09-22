@@ -34,7 +34,7 @@ class Shape extends ShapeBase with ShapePaintContainer {
   }
 
   void _markComposerDirty() {
-    _pathComposer?.addDirt(ComponentDirt.path);
+    _pathComposer?.addDirt(ComponentDirt.path, recurse: true);
     invalidateStrokeEffects();
   }
 

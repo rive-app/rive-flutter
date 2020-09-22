@@ -83,28 +83,33 @@ class TarjansDependencySorter<T extends DependencyGraphNode<T>>
 
     if (!visit(root)) {
       // if we detect cycles, go find them all
-      _perm.clear();
-      _temp.clear();
-      _cycleNodes.clear();
-      _order.clear();
-
-      var cycles =
-          stronglyConnectedComponents<T>([root], (T node) => node.dependents);
-
-      cycles.forEach((cycle) {
-        // cycles of len 1 are not cycles.
-        if (cycle.length > 1) {
-          cycle.forEach((cycleMember) {
-            _cycleNodes.add(cycleMember);
-          });
-        }
-      });
+      findCycles(root);
 
       // revisit the tree, skipping nodes on any cycle.
       visit(root);
     }
 
     return _order;
+  }
+
+  HashSet<T> findCycles(T n) {
+    _perm.clear();
+    _temp.clear();
+    _cycleNodes.clear();
+    _order.clear();
+
+    var cycles =
+        stronglyConnectedComponents<T>([n], (T node) => node.dependents);
+
+    cycles.forEach((cycle) {
+      // cycles of len 1 are not cycles.
+      if (cycle.length > 1) {
+        cycle.forEach((cycleMember) {
+          _cycleNodes.add(cycleMember);
+        });
+      }
+    });
+    return _cycleNodes;
   }
 
   @override

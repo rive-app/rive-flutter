@@ -515,14 +515,14 @@ class RiveCoreContext {
           object.distance = value;
         }
         break;
-      case ClippingShapeBase.shapeIdPropertyKey:
+      case ClippingShapeBase.sourceIdPropertyKey:
         if (object is ClippingShapeBase && value is int) {
-          object.shapeId = value;
+          object.sourceId = value;
         }
         break;
-      case ClippingShapeBase.clipOpValuePropertyKey:
+      case ClippingShapeBase.fillRulePropertyKey:
         if (object is ClippingShapeBase && value is int) {
-          object.clipOpValue = value;
+          object.fillRule = value;
         }
         break;
       case ClippingShapeBase.isVisiblePropertyKey:
@@ -703,8 +703,8 @@ class RiveCoreContext {
       case CubicWeightBase.inIndicesPropertyKey:
       case CubicWeightBase.outValuesPropertyKey:
       case CubicWeightBase.outIndicesPropertyKey:
-      case ClippingShapeBase.shapeIdPropertyKey:
-      case ClippingShapeBase.clipOpValuePropertyKey:
+      case ClippingShapeBase.sourceIdPropertyKey:
+      case ClippingShapeBase.fillRulePropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
         return uintType;
@@ -844,10 +844,10 @@ class RiveCoreContext {
         return (object as CubicWeightBase).outValues;
       case CubicWeightBase.outIndicesPropertyKey:
         return (object as CubicWeightBase).outIndices;
-      case ClippingShapeBase.shapeIdPropertyKey:
-        return (object as ClippingShapeBase).shapeId;
-      case ClippingShapeBase.clipOpValuePropertyKey:
-        return (object as ClippingShapeBase).clipOpValue;
+      case ClippingShapeBase.sourceIdPropertyKey:
+        return (object as ClippingShapeBase).sourceId;
+      case ClippingShapeBase.fillRulePropertyKey:
+        return (object as ClippingShapeBase).fillRule;
       case DrawRulesBase.drawTargetIdPropertyKey:
         return (object as DrawRulesBase).drawTargetId;
       case TendonBase.boneIdPropertyKey:
@@ -1094,11 +1094,11 @@ class RiveCoreContext {
       case CubicWeightBase.outIndicesPropertyKey:
         (object as CubicWeightBase).outIndices = value;
         break;
-      case ClippingShapeBase.shapeIdPropertyKey:
-        (object as ClippingShapeBase).shapeId = value;
+      case ClippingShapeBase.sourceIdPropertyKey:
+        (object as ClippingShapeBase).sourceId = value;
         break;
-      case ClippingShapeBase.clipOpValuePropertyKey:
-        (object as ClippingShapeBase).clipOpValue = value;
+      case ClippingShapeBase.fillRulePropertyKey:
+        (object as ClippingShapeBase).fillRule = value;
         break;
       case DrawRulesBase.drawTargetIdPropertyKey:
         (object as DrawRulesBase).drawTargetId = value;

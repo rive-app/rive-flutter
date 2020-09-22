@@ -34,27 +34,7 @@ abstract class Drawable extends DrawableBase {
       if (!clip.isVisible) {
         continue;
       }
-      var shape = clip.shape;
-      var fillInWorld = shape.fillInWorld;
-      if (!fillInWorld) {
-        canvas.transform(shape.worldTransform.mat4);
-      }
-      if (clip.clipOp == ClipOp.difference) {
-        var path = Path();
-        path.fillType = PathFillType.evenOdd;
-        path.addPath(artboard.path, Offset.zero);
-        path.addPath(clip.shape.fillPath, Offset.zero);
-        canvas.clipPath(path);
-      } else {
-        canvas.clipPath(clip.shape.fillPath);
-      }
-      if (!fillInWorld) {
-        assert(
-            clip.shapeInverseWorld != null,
-            'Expect shapeInverseWorld to have been '
-            'created by the time we draw');
-        canvas.transform(clip.shapeInverseWorld.mat4);
-      }
+      canvas.clipPath(clip.clippingPath);
     }
     return true;
   }

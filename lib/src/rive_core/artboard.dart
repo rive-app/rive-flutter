@@ -241,25 +241,25 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     _drawables.clear();
     _rules.clear();
     buildDrawOrder(_drawables, null, _rules);
-    Set<DrawTarget> rootRules = {};
+    var root = DrawTarget();
     for (final nodeRules in _rules) {
       for (final target in nodeRules.targets) {
+        target.dependents.clear();
+      }
+    }
+    for (final nodeRules in _rules) {
+      for (final target in nodeRules.targets) {
+        root.dependents.add(target);
         var dependentRules = target.drawable?.flattenedDrawRules;
         if (dependentRules != null) {
           for (final dependentRule in dependentRules.targets) {
             dependentRule.dependents.add(target);
           }
-        } else {
-          rootRules.add(target);
         }
       }
     }
     var sorter = DependencySorter<Component>();
-    sorter.reset();
-    if (rootRules.isNotEmpty) {
-      rootRules.forEach(sorter.visit);
-    }
-    _sortedDrawRules = sorter.order.cast<DrawTarget>();
+    _sortedDrawRules = sorter.sort(root).cast<DrawTarget>().skip(1).toList();
     sortDrawOrder();
   }
 
