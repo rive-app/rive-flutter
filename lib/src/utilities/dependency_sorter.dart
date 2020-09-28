@@ -15,7 +15,7 @@ class DependencySorter<T extends DependencyGraphNode<T>> {
   HashSet<T> _perm;
   HashSet<T> _temp;
   List<T> _order;
-  List<T> get order => _order;
+  List<T> get order => _order.reversed.toList();
 
   DependencySorter() {
     _perm = HashSet<T>();
@@ -27,7 +27,7 @@ class DependencySorter<T extends DependencyGraphNode<T>> {
     if (!visit(root)) {
       return null;
     }
-    return _order;
+    return _order.reversed.toList();
   }
 
   void reset() {
@@ -54,7 +54,11 @@ class DependencySorter<T extends DependencyGraphNode<T>> {
       }
     }
     _perm.add(n);
-    _order.insert(0, n);
+
+    // Note that we're adding in reverse order intentionally so we don't have to
+    // keep inserting at the start and re-alloc-ing the whole list...It does
+    // mean we need to reverse the list afterwards.
+    _order.add(n);
 
     return true;
   }
@@ -89,7 +93,7 @@ class TarjansDependencySorter<T extends DependencyGraphNode<T>>
       visit(root);
     }
 
-    return _order;
+    return _order.reversed.toList();
   }
 
   HashSet<T> findCycles(T n) {

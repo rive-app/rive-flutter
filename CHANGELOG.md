@@ -1,3 +1,9 @@
+## [0.6.0] - 2020-09-28 16:22:43
+
+- Adding a ToC to files indicating included core properties and their backing field types so that they may be skipped by runtimes that do not understand those properties. This will allow newer minor version files to be read by older minor version runtimes.
+- New clipping system allowing for recursive shapes to be included as sources by selecting a node for clipping.
+- New draw order system using draw targets.
+
 ## [0.5.2] - 2020-08-28 18:24:45
 
 - Adding trim paths.
