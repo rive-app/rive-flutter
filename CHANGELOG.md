@@ -1,3 +1,7 @@
+## [0.6.0+1] - 2020-09-30 11:55:07
+
+- Fixing a mixing issue with double keyframes.
+
 ## [0.6.0] - 2020-09-28 16:22:43
 
 - Adding a ToC to files indicating included core properties and their backing field types so that they may be skipped by runtimes that do not understand those properties. This will allow newer minor version files to be read by older minor version runtimes.

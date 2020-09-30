@@ -43,6 +43,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     _artboard?.addComponent(this);
   }
 
+  @mustCallSuper
   void visitAncestor(Component ancestor) {}
   bool resolveArtboard() {
     int sanity = maxTreeDepth;
