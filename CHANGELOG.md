@@ -1,3 +1,7 @@
+## [0.6.1] - 2020-09-30 12:21:32
+
+- Bumping all runtimes to 0.6.1 to match (no functional changes in the Flutter one).
+
 ## [0.6.0+1] - 2020-09-30 11:55:07
 
 - Fixing a mixing issue with double keyframes.
