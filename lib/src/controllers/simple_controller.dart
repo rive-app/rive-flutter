@@ -11,6 +11,8 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
   final String animationName;
   SimpleAnimation(this.animationName);
 
+  LinearAnimationInstance get instance => _instance;
+
   @override
   bool init(RuntimeArtboard artboard) {
     var animation = artboard.animations.firstWhere(
