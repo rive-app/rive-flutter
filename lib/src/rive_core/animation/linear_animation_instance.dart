@@ -5,7 +5,12 @@ class LinearAnimationInstance {
   final LinearAnimation animation;
   double _time = 0;
   int direction = 1;
-  LinearAnimationInstance(this.animation);
+
+  LinearAnimationInstance(this.animation)
+      : _time =
+            (animation.enableWorkArea ? animation.workStart : 0).toDouble() /
+                animation.fps;
+
   double get time => _time;
   set time(double value) {
     if (_time == value) {

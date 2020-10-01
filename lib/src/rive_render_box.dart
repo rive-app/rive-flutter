@@ -92,6 +92,7 @@ abstract class RiveRenderBox extends RenderBox {
   void _frameCallback(Duration duration) {
     _elapsedSeconds = _stopwatch.elapsedTicks / _stopwatch.frequency;
     _stopwatch.reset();
+    _stopwatch.start();
     markNeedsPaint();
   }
 
@@ -109,6 +110,8 @@ abstract class RiveRenderBox extends RenderBox {
     _frameCallbackId = null;
     if (advance(_elapsedSeconds)) {
       scheduleRepaint();
+    } else {
+      _stopwatch.stop();
     }
     _elapsedSeconds = 0;
 
