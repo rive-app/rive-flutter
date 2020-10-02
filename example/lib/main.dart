@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     rootBundle.load('assets/off_road_car.riv').then(
       (data) async {
         var file = RiveFile();
+
         // Load the RiveFile from the binary data.
         var success = file.import(data);
         if (success) {

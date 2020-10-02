@@ -1,3 +1,11 @@
+## [0.6.2] - 2020-10-02 15:45:10
+
+- Exposed major and minor runtime version (issue #15) via riveVersion.
+- Exposed major and minor version of loaded files via RiveFile().version.
+- SimpleAnimation exposes the underlying LinearAnimationInstance.
+- Export Loop enum such that it is available to users of the package.
+- Fixed start point of LinearAnimationInstance when using a work area (custom start/end).
+
 ## [0.6.1] - 2020-09-30 12:21:32
 
 - Bumping all runtimes to 0.6.1 to match (no functional changes in the Flutter one).
