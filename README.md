@@ -16,3 +16,5 @@ dependencies:
 ## Example
 
 See how to use it in [example](example).
+
+For an in-depth tutorial on how to use the runtime, check out [this blog post](https://blog.rive.app/rives-flutter-runtime-part-1/).
