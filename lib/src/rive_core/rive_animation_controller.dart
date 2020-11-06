@@ -17,10 +17,10 @@ abstract class RiveAnimationController<T> {
   }
 
   @protected
-  void onActivate();
+  void onActivate() {}
   @protected
-  void onDeactivate();
+  void onDeactivate() {}
   void apply(T core, double elapsedSeconds);
   bool init(T core) => true;
-  void dispose();
+  void dispose() {}
 }
