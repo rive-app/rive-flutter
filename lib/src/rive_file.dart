@@ -21,10 +21,18 @@ class RiveFile {
   Backboard _backboard;
   Backboard get backboard => _backboard;
 
-  final List<Artboard> _artboards = [];
+  final _artboards = <Artboard>[];
+
+  /// Returns all artboards in the file
   List<Artboard> get artboards => _artboards;
 
+  /// Returns the first (main) artboard
   Artboard get mainArtboard => _artboards.first;
+
+  /// Returns an artboard from the specified name, or null if no artboard with
+  /// that name exists in the file
+  Artboard artboardByName(String name) =>
+      _artboards.firstWhere((a) => a.name == name, orElse: () => null);
 
   bool import(ByteData bytes) {
     assert(_header == null, 'can only import once');
