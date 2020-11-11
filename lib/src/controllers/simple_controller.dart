@@ -34,13 +34,4 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
       isActive = false;
     }
   }
-
-  @override
-  void dispose() {}
-
-  @override
-  void onActivate() {}
-
-  @override
-  void onDeactivate() {}
 }
