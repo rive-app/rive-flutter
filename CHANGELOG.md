@@ -1,4 +1,9 @@
-## [0.6.2+1] - 2020-11-?? ??:??:??
+## [0.6.2+2] - 2020-11-11 12:13:00
+
+- Added RiveFile tests.
+- Added artboardByName(String) function to RiveFile.
+
+## [0.6.2+1] - 2020-11-06 12:00:00
 
 - Added default noop implementation to `onActivate`, `onDeactivate`, and `dispose`
   in `RiveAnimationController`, which removes the need for noop overrides in subclasses
