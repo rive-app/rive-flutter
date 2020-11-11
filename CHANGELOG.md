@@ -1,3 +1,9 @@
+## [0.6.2+1] - 2020-11-?? ??:??:??
+
+- Added default noop implementation to `onActivate`, `onDeactivate`, and `dispose`
+  in `RiveAnimationController`, which removes the need for noop overrides in subclasses
+  like `SimpleAnimation`.
+
 ## [0.6.2] - 2020-10-02 15:45:10
 
 - Exposed major and minor runtime version (issue #15) via riveVersion.
