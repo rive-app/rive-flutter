@@ -13,7 +13,6 @@ import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
-import 'package:rive/src/rive_core/artboard.dart';
 
 class RiveFile {
   RuntimeHeader _header;
@@ -21,17 +20,17 @@ class RiveFile {
   Backboard _backboard;
   Backboard get backboard => _backboard;
 
-  final _artboards = <Artboard>[];
+  final _artboards = <RuntimeArtboard>[];
 
   /// Returns all artboards in the file
-  List<Artboard> get artboards => _artboards;
+  List<RuntimeArtboard> get artboards => _artboards;
 
   /// Returns the first (main) artboard
-  Artboard get mainArtboard => _artboards.first;
+  RuntimeArtboard get mainArtboard => _artboards.first;
 
   /// Returns an artboard from the specified name, or null if no artboard with
   /// that name exists in the file
-  Artboard artboardByName(String name) =>
+  RuntimeArtboard artboardByName(String name) =>
       _artboards.firstWhere((a) => a.name == name, orElse: () => null);
 
   bool import(ByteData bytes) {

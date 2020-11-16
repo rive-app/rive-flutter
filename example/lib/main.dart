@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// Tracks if the animation is playing by whether controller is running.
   bool get isPlaying => _controller?.isActive ?? false;
 
-  Artboard _riveArtboard;
+  RuntimeArtboard _riveArtboard;
   RiveAnimationController _controller;
   @override
   void initState() {

@@ -12,9 +12,7 @@ void main() {
         File('assets/multiple_artboards_0_6_2.riv').readAsBytesSync());
   }
 
-  setUp(() {
-    loadTestAssets();
-  });
+  setUp(loadTestAssets);
 
   test('Rive files load', () {
     // Create a dummy RiveFile

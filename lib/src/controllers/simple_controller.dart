@@ -1,4 +1,3 @@
-import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/runtime_artboard.dart';
@@ -15,14 +14,7 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
 
   @override
   bool init(RuntimeArtboard artboard) {
-    var animation = artboard.animations.firstWhere(
-      (animation) =>
-          animation is LinearAnimation && animation.name == animationName,
-      orElse: () => null,
-    );
-    if (animation != null) {
-      _instance = LinearAnimationInstance(animation as LinearAnimation);
-    }
+    _instance = artboard.animationByName(animationName);
     isActive = true;
     return _instance != null;
   }
