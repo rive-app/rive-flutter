@@ -1,3 +1,8 @@
+## [0.6.2+3] - 2020-11-11 12:13:00
+
+- Added Artboard tests.
+- Added animationByName(String) function to Artboard.
+
 ## [0.6.2+2] - 2020-11-11 12:13:00
 
 - Added RiveFile tests.
