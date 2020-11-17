@@ -4,6 +4,9 @@ import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/core/core.dart';
 
+/// This artboard type is purely for use by the runtime system and should not be
+/// directly referenced. Use the Artboard type for any direct interactions with
+/// an artboard, and use extension methods to add functionality to Artboard.
 class RuntimeArtboard extends Artboard implements CoreContext {
   final _redraw = Event();
   ChangeNotifier get redraw => _redraw;

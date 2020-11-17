@@ -34,14 +34,17 @@ class RiveFile {
   Artboard artboardByName(String name) =>
       _artboards.firstWhere((a) => a.name == name, orElse: () => null);
 
+  /// Imports a Rive file from an array of bytes. Returns true if successfully
+  /// imported, false otherwise.
   bool import(ByteData bytes) {
     assert(_header == null, 'can only import once');
     var reader = BinaryReader(bytes);
     _header = RuntimeHeader.read(reader);
 
-    // Property fields toc.
+    /// Property fields table of contents
     final propertyToField = HashMap<int, CoreFieldType>();
 
+    // List of core file types
     final indexToField = <CoreFieldType>[
       RiveCoreContext.uintType,
       RiveCoreContext.stringType,
