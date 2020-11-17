@@ -17,3 +17,4 @@ export 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart';
 export 'package:rive/src/rive_core/shapes/paint/radial_gradient.dart';
 export 'package:rive/src/rive_core/runtime/runtime_header.dart'
     show riveVersion;
+export 'package:rive/src/extensions.dart';

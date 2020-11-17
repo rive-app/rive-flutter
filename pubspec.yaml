@@ -1,11 +1,11 @@
 name: rive
 description: Rive 2 Flutter Runtime. This package provides runtime functionality for playing back and interacting with animations built with the Rive editor available at https://rive.app.
-version: 0.6.2+2
+version: 0.6.2+3
 repository: https://github.com/rive-app/rive-flutter
 homepage: https://rive.app
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
