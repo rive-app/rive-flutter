@@ -64,9 +64,7 @@ class RiveRenderObject extends RiveRenderBox {
   AABB get aabb {
     var width = _artboard.width;
     var height = _artboard.height;
-    double minX = -1 * _artboard.originX * width;
-    double minY = -1 * _artboard.originY * height;
-    return AABB.fromValues(minX, minY, minX + width, minY + height);
+    return AABB.fromValues(0, 0, width, height);
   }
 
   @override

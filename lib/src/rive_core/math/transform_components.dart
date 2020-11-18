@@ -78,6 +78,15 @@ class TransformComponents {
     return Vec2D.fromValues(_buffer[2], _buffer[3]);
   }
 
+  static void copy(TransformComponents source, TransformComponents other) {
+    source._buffer[0] = other._buffer[0];
+    source._buffer[1] = other._buffer[1];
+    source._buffer[2] = other._buffer[2];
+    source._buffer[3] = other._buffer[3];
+    source._buffer[4] = other._buffer[4];
+    source._buffer[5] = other._buffer[5];
+  }
+
   @override
   String toString() {
     return 'TransformComponents(x: $x y: $y sx: $scaleX '

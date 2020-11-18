@@ -105,7 +105,7 @@ abstract class ArtboardBase extends ContainerComponent {
   double _originX;
   static const int originXPropertyKey = 11;
 
-  /// Origin x in normalized coordinates (0 = center, -1 = left, 1 = right).
+  /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
   double get originX => _originX;
 
   /// Change the [_originX] field value.
@@ -126,7 +126,7 @@ abstract class ArtboardBase extends ContainerComponent {
   double _originY;
   static const int originYPropertyKey = 12;
 
-  /// Origin y in normalized coordinates (0 = center, -1 = left, 1 = right).
+  /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
   double get originY => _originY;
 
   /// Change the [_originY] field value.

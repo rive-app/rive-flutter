@@ -40,6 +40,12 @@ abstract class Drawable extends DrawableBase {
   }
 
   @override
+  void parentChanged(ContainerComponent from, ContainerComponent to) {
+    super.parentChanged(from, to);
+    addDirt(ComponentDirt.clip);
+  }
+
+  @override
   void update(int dirt) {
     super.update(dirt);
     if (dirt & ComponentDirt.clip != 0) {

@@ -45,13 +45,7 @@ class AABB {
     ]);
   }
   double get area => width * height;
-  bool get isEmpty {
-    return _buffer[0] == double.maxFinite &&
-        _buffer[1] == double.maxFinite &&
-        _buffer[2] == -double.maxFinite &&
-        _buffer[3] == -double.maxFinite;
-  }
-
+  bool get isEmpty => !AABB.isValid(this);
   Vec2D includePoint(Vec2D point, Mat2D transform) {
     var transformedPoint = transform == null
         ? point

@@ -13,6 +13,10 @@ abstract class ContainerComponent extends ContainerComponentBase {
     child.parent = this;
   }
 
+  void prependChild(Component child) {
+    child.parent = this;
+  }
+
   @mustCallSuper
   void childAdded(Component child) {}
   void childRemoved(Component child) {}

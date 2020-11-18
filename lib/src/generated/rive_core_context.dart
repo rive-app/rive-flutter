@@ -500,6 +500,16 @@ class RiveCoreContext {
           object.height = value;
         }
         break;
+      case ParametricPathBase.originXPropertyKey:
+        if (object is ParametricPathBase && value is double) {
+          object.originX = value;
+        }
+        break;
+      case ParametricPathBase.originYPropertyKey:
+        if (object is ParametricPathBase && value is double) {
+          object.originY = value;
+        }
+        break;
       case RectangleBase.cornerRadiusPropertyKey:
         if (object is RectangleBase && value is double) {
           object.cornerRadius = value;
@@ -738,6 +748,8 @@ class RiveCoreContext {
       case CubicAsymmetricVertexBase.outDistancePropertyKey:
       case ParametricPathBase.widthPropertyKey:
       case ParametricPathBase.heightPropertyKey:
+      case ParametricPathBase.originXPropertyKey:
+      case ParametricPathBase.originYPropertyKey:
       case RectangleBase.cornerRadiusPropertyKey:
       case CubicMirroredVertexBase.rotationPropertyKey:
       case CubicMirroredVertexBase.distancePropertyKey:
@@ -918,6 +930,10 @@ class RiveCoreContext {
         return (object as ParametricPathBase).width;
       case ParametricPathBase.heightPropertyKey:
         return (object as ParametricPathBase).height;
+      case ParametricPathBase.originXPropertyKey:
+        return (object as ParametricPathBase).originX;
+      case ParametricPathBase.originYPropertyKey:
+        return (object as ParametricPathBase).originY;
       case RectangleBase.cornerRadiusPropertyKey:
         return (object as RectangleBase).cornerRadius;
       case CubicMirroredVertexBase.rotationPropertyKey:
@@ -1200,6 +1216,12 @@ class RiveCoreContext {
         break;
       case ParametricPathBase.heightPropertyKey:
         (object as ParametricPathBase).height = value;
+        break;
+      case ParametricPathBase.originXPropertyKey:
+        (object as ParametricPathBase).originX = value;
+        break;
+      case ParametricPathBase.originYPropertyKey:
+        (object as ParametricPathBase).originY = value;
         break;
       case RectangleBase.cornerRadiusPropertyKey:
         (object as RectangleBase).cornerRadius = value;

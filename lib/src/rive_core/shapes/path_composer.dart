@@ -30,18 +30,17 @@ class PathComposer extends PathComposerBase {
       localPath.reset();
       var world = _shape.worldTransform;
       Mat2D inverseWorld = Mat2D();
-      if (!Mat2D.invert(inverseWorld, world)) {
-        Mat2D.identity(inverseWorld);
-      }
-      for (final path in _shape.paths) {
-        Mat2D localTransform;
-        var transform = path.pathTransform;
-        if (transform != null) {
-          localTransform = Mat2D();
-          Mat2D.multiply(localTransform, inverseWorld, transform);
+      if (Mat2D.invert(inverseWorld, world)) {
+        for (final path in _shape.paths) {
+          Mat2D localTransform;
+          var transform = path.pathTransform;
+          if (transform != null) {
+            localTransform = Mat2D();
+            Mat2D.multiply(localTransform, inverseWorld, transform);
+          }
+          localPath.addPath(path.uiPath, ui.Offset.zero,
+              matrix4: localTransform?.mat4);
         }
-        localPath.addPath(path.uiPath, ui.Offset.zero,
-            matrix4: localTransform?.mat4);
       }
     }
     if (buildWorldPath) {

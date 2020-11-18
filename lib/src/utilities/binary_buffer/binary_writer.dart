@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'dart:typed_data';
 
-var _variableEncodeList = Uint8List(8);
-var _utf8Encoder = const Utf8Encoder();
-
 class BinaryWriter {
+  final _variableEncodeList = Uint8List(8);
+  final _utf8Encoder = const Utf8Encoder();
+
   /// Stride we allocate buffer in chunks of.
   final int _alignment;
   int get alignment => _alignment;

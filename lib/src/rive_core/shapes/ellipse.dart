@@ -6,36 +6,41 @@ export 'package:rive/src/generated/shapes/ellipse_base.dart';
 
 class Ellipse extends EllipseBase {
   @override
-  List<PathVertex> get vertices => [
-        CubicDetachedVertex.fromValues(
-            x: 0,
-            y: -radiusY,
-            inX: -radiusX * circleConstant,
-            inY: -radiusY,
-            outX: radiusX * circleConstant,
-            outY: -radiusY),
-        CubicDetachedVertex.fromValues(
-            x: radiusX,
-            y: 0,
-            inX: radiusX,
-            inY: circleConstant * -radiusY,
-            outX: radiusX,
-            outY: circleConstant * radiusY),
-        CubicDetachedVertex.fromValues(
-            x: 0,
-            y: radiusY,
-            inX: radiusX * circleConstant,
-            inY: radiusY,
-            outX: -radiusX * circleConstant,
-            outY: radiusY),
-        CubicDetachedVertex.fromValues(
-            x: -radiusX,
-            y: 0,
-            inX: -radiusX,
-            inY: radiusY * circleConstant,
-            outX: -radiusX,
-            outY: -radiusY * circleConstant)
-      ];
+  List<PathVertex> get vertices {
+    double ox = -originX * width + radiusX;
+    double oy = -originY * height + radiusY;
+    return [
+      CubicDetachedVertex.fromValues(
+          x: ox,
+          y: oy - radiusY,
+          inX: ox - radiusX * circleConstant,
+          inY: oy - radiusY,
+          outX: ox + radiusX * circleConstant,
+          outY: oy - radiusY),
+      CubicDetachedVertex.fromValues(
+          x: ox + radiusX,
+          y: oy,
+          inX: ox + radiusX,
+          inY: oy + circleConstant * -radiusY,
+          outX: ox + radiusX,
+          outY: oy + circleConstant * radiusY),
+      CubicDetachedVertex.fromValues(
+          x: ox,
+          y: oy + radiusY,
+          inX: ox + radiusX * circleConstant,
+          inY: oy + radiusY,
+          outX: ox - radiusX * circleConstant,
+          outY: oy + radiusY),
+      CubicDetachedVertex.fromValues(
+          x: ox - radiusX,
+          y: oy,
+          inX: ox - radiusX,
+          inY: oy + radiusY * circleConstant,
+          outX: ox - radiusX,
+          outY: oy - radiusY * circleConstant)
+    ];
+  }
+
   double get radiusX => width / 2;
   double get radiusY => height / 2;
 }

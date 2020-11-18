@@ -10,7 +10,7 @@ export 'package:rive/src/generated/shapes/path_vertex_base.dart';
 abstract class PathVertex<T extends Weight> extends PathVertexBase {
   T _weight;
   T get weight => _weight;
-  Path get path => parent as Path;
+  Path get path => parent is Path ? parent as Path : null;
   @override
   void update(int dirt) {}
   final Vec2D _renderTranslation = Vec2D();

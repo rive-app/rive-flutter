@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-var _utf8Decoder = const Utf8Decoder();
-
 class BinaryReader {
+  final _utf8Decoder = const Utf8Decoder();
   final ByteData buffer;
   final Endian endian;
 
@@ -106,7 +105,7 @@ class BinaryReader {
     return value;
   }
 
-  Uint8List read(int length, [bool allocNew = false]) {
+  Uint8List read(int length, [bool allocNew = true]) {
     var view =
         Uint8List.view(buffer.buffer, buffer.offsetInBytes + readIndex, length);
     readIndex += length;

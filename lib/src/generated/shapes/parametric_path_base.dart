@@ -64,4 +64,46 @@ abstract class ParametricPathBase extends Path {
   }
 
   void heightChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// OriginX field with key 123.
+  double _originX = 0.5;
+  static const int originXPropertyKey = 123;
+
+  /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
+  double get originX => _originX;
+
+  /// Change the [_originX] field value.
+  /// [originXChanged] will be invoked only if the field's value has changed.
+  set originX(double value) {
+    if (_originX == value) {
+      return;
+    }
+    double from = _originX;
+    _originX = value;
+    originXChanged(from, value);
+  }
+
+  void originXChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// OriginY field with key 124.
+  double _originY = 0.5;
+  static const int originYPropertyKey = 124;
+
+  /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
+  double get originY => _originY;
+
+  /// Change the [_originY] field value.
+  /// [originYChanged] will be invoked only if the field's value has changed.
+  set originY(double value) {
+    if (_originY == value) {
+      return;
+    }
+    double from = _originY;
+    _originY = value;
+    originYChanged(from, value);
+  }
+
+  void originYChanged(double from, double to);
 }
