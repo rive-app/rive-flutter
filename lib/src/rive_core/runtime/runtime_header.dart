@@ -10,7 +10,7 @@ class RuntimeVersion {
   const RuntimeVersion(this.major, this.minor);
 }
 
-const riveVersion = RuntimeVersion(6, 2);
+const riveVersion = RuntimeVersion(6, 3);
 
 class RuntimeHeader {
   static const String fingerprint = 'RIVE';

@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Load the animation file from the bundle, note that you could also
     // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/off_road_car.riv').then(
+    rootBundle.load('assets/animation_playground.riv').then(
       (data) async {
         final file = RiveFile();
 
@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
           final artboard = file.mainArtboard;
           // Add a controller to play back a known animation on the main/default
           // artboard.We store a reference to it so we can toggle playback.
-          artboard.addController(_controller = SimpleAnimation('idle'));
+          artboard.addController(_controller = SimpleAnimation('Untitled 1'));
           setState(() => _riveArtboard = artboard);
         }
       },
