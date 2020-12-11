@@ -7,9 +7,16 @@ import 'package:rive/src/runtime_artboard.dart';
 /// by an artist. All playback parameters (looping, speed, keyframes) are artist
 /// defined in the Rive editor.
 class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
+  SimpleAnimation(this.animationName, {double mix})
+      : _mix = mix?.clamp(0, 1)?.toDouble() ?? 1.0;
+
   LinearAnimationInstance _instance;
   final String animationName;
-  SimpleAnimation(this.animationName);
+
+  // Controls the level of mix for the animation, clamped between 0 and 1
+  double _mix;
+  double get mix => _mix;
+  set mix(double value) => _mix = value?.clamp(0, 1)?.toDouble() ?? 1;
 
   LinearAnimationInstance get instance => _instance;
 
@@ -29,7 +36,7 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
 
   @override
   void apply(RuntimeArtboard artboard, double elapsedSeconds) {
-    _instance.animation.apply(_instance.time, coreContext: artboard);
+    _instance.animation.apply(_instance.time, coreContext: artboard, mix: mix);
     if (!_instance.advance(elapsedSeconds)) {
       isActive = false;
     }
