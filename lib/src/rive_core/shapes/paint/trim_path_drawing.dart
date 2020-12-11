@@ -1,94 +1,118 @@
+import 'dart:math';
 import 'dart:ui';
 
-double _appendPathSegmentSequential(Iterator<PathMetric> metricsIterator,
-    Path to, double offset, double start, double stop) {
-  double nextOffset = offset;
-  do {
-    PathMetric metric = metricsIterator.current;
-    nextOffset = offset + metric.length;
+class _FirstExtractedPath {
+  final Path path;
+  double length;
+  final PathMetric metric;
+  _FirstExtractedPath(this.path, this.metric, this.length);
+}
+
+_FirstExtractedPath _appendPathSegmentSequential(
+    Iterable<PathMetric> metrics, Path result, double start, double stop,
+    {_FirstExtractedPath first}) {
+  double nextOffset = 0;
+  double offset = 0;
+  for (final metric in metrics) {
+    nextOffset += metric.length;
     if (start < nextOffset) {
-      Path extracted = metric.extractPath(start - offset, stop - offset);
+      var st = max(0.0, start - offset);
+      var et = min(metric.length, stop - offset);
+      var extractLength = et - st;
+      Path extracted = metric.extractPath(st, et);
       if (extracted != null) {
-        to.addPath(extracted, Offset.zero);
+        if (first == null) {
+          // ignore: parameter_assignments
+          first = _FirstExtractedPath(extracted, metric, extractLength);
+        } else if (first.metric == metric) {
+          first.length += extractLength;
+          first.path.extendWithPath(extracted, Offset.zero);
+        } else {
+          if (metric.isClosed && extractLength == metric.length) {
+            extracted.close();
+          }
+          result.addPath(extracted, Offset.zero);
+        }
       }
       if (stop < nextOffset) {
         break;
       }
     }
-    // ignore: parameter_assignments
     offset = nextOffset;
-  } while (metricsIterator.moveNext());
-  return offset;
+  }
+  return first;
 }
 
 void _appendPathSegmentSync(
-    PathMetric metric, Path to, double offset, double start, double stop) {
-  double nextOffset = offset + metric.length;
+    PathMetric metric, Path to, double start, double stop,
+    {bool startWithMoveTo = true}) {
+  double nextOffset = metric.length;
   if (start < nextOffset) {
-    Path extracted = metric.extractPath(start - offset, stop - offset);
+    Path extracted = metric.extractPath(start, stop);
     if (extracted != null) {
-      to.addPath(extracted, Offset.zero);
+      if (startWithMoveTo) {
+        to.addPath(extracted, Offset.zero);
+      } else {
+        to.extendWithPath(extracted, Offset.zero);
+      }
     }
   }
 }
 
 void _trimPathSequential(
     Path path, Path result, double startT, double stopT, bool complement) {
-  PathMetrics metrics = path.computeMetrics();
+  var metrics = path.computeMetrics().toList(growable: false);
   double totalLength = 0.0;
-  for (final PathMetric metric in metrics) {
+  for (final metric in metrics) {
     totalLength += metric.length;
   }
-  metrics = path.computeMetrics();
   double trimStart = totalLength * startT;
   double trimStop = totalLength * stopT;
-  double offset = 0.0;
-  Iterator<PathMetric> metricsIterator = metrics.iterator;
-  metricsIterator.moveNext();
+  _FirstExtractedPath first;
   if (complement) {
-    if (trimStart > 0.0) {
-      offset = _appendPathSegmentSequential(
-          metricsIterator, result, offset, 0.0, trimStart);
-    }
     if (trimStop < totalLength) {
-      offset = _appendPathSegmentSequential(
-          metricsIterator, result, offset, trimStop, totalLength);
+      first =
+          _appendPathSegmentSequential(metrics, result, trimStop, totalLength);
     }
-  } else {
-    if (trimStart < trimStop) {
-      offset = _appendPathSegmentSequential(
-          metricsIterator, result, offset, trimStart, trimStop);
+    if (trimStart > 0.0) {
+      _appendPathSegmentSequential(metrics, result, 0.0, trimStart,
+          first: first);
     }
+  } else if (trimStart < trimStop) {
+    first = _appendPathSegmentSequential(metrics, result, trimStart, trimStop);
+  }
+  if (first != null) {
+    if (first.length == first.metric.length) {
+      first.path.close();
+    }
+    result.addPath(first.path, Offset.zero);
   }
 }
 
 void _trimPathSync(
     Path path, Path result, double startT, double stopT, bool complement) {
-  final PathMetrics metrics = path.computeMetrics();
-  for (final PathMetric metric in metrics) {
+  final metrics = path.computeMetrics().toList(growable: false);
+  for (final metric in metrics) {
     double length = metric.length;
     double trimStart = length * startT;
     double trimStop = length * stopT;
     if (complement) {
+      bool extractStart = trimStop < length;
+      if (extractStart) {
+        _appendPathSegmentSync(metric, result, trimStop, length);
+      }
       if (trimStart > 0.0) {
-        _appendPathSegmentSync(metric, result, 0.0, 0.0, trimStart);
+        _appendPathSegmentSync(metric, result, 0.0, trimStart,
+            startWithMoveTo: !extractStart || !metric.isClosed);
       }
-      if (trimStop < length) {
-        _appendPathSegmentSync(metric, result, 0.0, trimStop, length);
-      }
-    } else {
-      if (trimStart < trimStop) {
-        _appendPathSegmentSync(metric, result, 0.0, trimStart, trimStop);
-      }
+    } else if (trimStart < trimStop) {
+      _appendPathSegmentSync(metric, result, trimStart, trimStop);
     }
   }
 }
 
 void updateTrimPath(Path path, Path result, double startT, double stopT,
-    bool complement, bool isSequential) {
-  if (isSequential) {
-    _trimPathSequential(path, result, startT, stopT, complement);
-  } else {
-    _trimPathSync(path, result, startT, stopT, complement);
-  }
-}
+        bool complement, bool isSequential) =>
+    isSequential
+        ? _trimPathSequential(path, result, startT, stopT, complement)
+        : _trimPathSync(path, result, startT, stopT, complement);

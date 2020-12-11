@@ -1,3 +1,14 @@
+## [0.6.4] - 2020-12-11 15:43:01
+
+- Adding support for parametric polygon and star shapes.
+- Fixes to trim paths that wrap around the entire shape.
+- Expose mix value in SimpleAnimation, allows for mixing multiple animations together.
+  
+## [0.6.3] - 2020-11-17 16:02:47
+
+- Added support for parametric path origins.
+- Fixes for rendering artboards with non-zero origin values.
+
 ## [0.6.2+3] - 2020-11-11 12:13:00
 
 - Added Artboard tests.

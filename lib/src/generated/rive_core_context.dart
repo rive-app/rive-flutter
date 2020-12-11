@@ -44,8 +44,10 @@ import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/generated/shapes/path_composer_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
 import 'package:rive/src/generated/shapes/points_path_base.dart';
+import 'package:rive/src/generated/shapes/polygon_base.dart';
 import 'package:rive/src/generated/shapes/rectangle_base.dart';
 import 'package:rive/src/generated/shapes/shape_base.dart';
+import 'package:rive/src/generated/shapes/star_base.dart';
 import 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 import 'package:rive/src/generated/shapes/triangle_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
@@ -82,8 +84,10 @@ import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive/src/rive_core/shapes/paint/trim_path.dart';
 import 'package:rive/src/rive_core/shapes/path_composer.dart';
 import 'package:rive/src/rive_core/shapes/points_path.dart';
+import 'package:rive/src/rive_core/shapes/polygon.dart';
 import 'package:rive/src/rive_core/shapes/rectangle.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
+import 'package:rive/src/rive_core/shapes/star.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/rive_core/shapes/triangle.dart';
 
@@ -147,6 +151,10 @@ class RiveCoreContext {
         return Ellipse();
       case ClippingShapeBase.typeKey:
         return ClippingShape();
+      case PolygonBase.typeKey:
+        return Polygon();
+      case StarBase.typeKey:
+        return Star();
       case PathComposerBase.typeKey:
         return PathComposer();
       case CubicDetachedVertexBase.typeKey:
@@ -540,6 +548,21 @@ class RiveCoreContext {
           object.isVisible = value;
         }
         break;
+      case PolygonBase.pointsPropertyKey:
+        if (object is PolygonBase && value is int) {
+          object.points = value;
+        }
+        break;
+      case PolygonBase.cornerRadiusPropertyKey:
+        if (object is PolygonBase && value is double) {
+          object.cornerRadius = value;
+        }
+        break;
+      case StarBase.innerRadiusPropertyKey:
+        if (object is StarBase && value is double) {
+          object.innerRadius = value;
+        }
+        break;
       case CubicDetachedVertexBase.inRotationPropertyKey:
         if (object is CubicDetachedVertexBase && value is double) {
           object.inRotation = value;
@@ -715,6 +738,7 @@ class RiveCoreContext {
       case CubicWeightBase.outIndicesPropertyKey:
       case ClippingShapeBase.sourceIdPropertyKey:
       case ClippingShapeBase.fillRulePropertyKey:
+      case PolygonBase.pointsPropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
         return uintType;
@@ -753,6 +777,8 @@ class RiveCoreContext {
       case RectangleBase.cornerRadiusPropertyKey:
       case CubicMirroredVertexBase.rotationPropertyKey:
       case CubicMirroredVertexBase.distancePropertyKey:
+      case PolygonBase.cornerRadiusPropertyKey:
+      case StarBase.innerRadiusPropertyKey:
       case CubicDetachedVertexBase.inRotationPropertyKey:
       case CubicDetachedVertexBase.inDistancePropertyKey:
       case CubicDetachedVertexBase.outRotationPropertyKey:
@@ -860,6 +886,8 @@ class RiveCoreContext {
         return (object as ClippingShapeBase).sourceId;
       case ClippingShapeBase.fillRulePropertyKey:
         return (object as ClippingShapeBase).fillRule;
+      case PolygonBase.pointsPropertyKey:
+        return (object as PolygonBase).points;
       case DrawRulesBase.drawTargetIdPropertyKey:
         return (object as DrawRulesBase).drawTargetId;
       case TendonBase.boneIdPropertyKey:
@@ -940,6 +968,10 @@ class RiveCoreContext {
         return (object as CubicMirroredVertexBase).rotation;
       case CubicMirroredVertexBase.distancePropertyKey:
         return (object as CubicMirroredVertexBase).distance;
+      case PolygonBase.cornerRadiusPropertyKey:
+        return (object as PolygonBase).cornerRadius;
+      case StarBase.innerRadiusPropertyKey:
+        return (object as StarBase).innerRadius;
       case CubicDetachedVertexBase.inRotationPropertyKey:
         return (object as CubicDetachedVertexBase).inRotation;
       case CubicDetachedVertexBase.inDistancePropertyKey:
@@ -1116,6 +1148,9 @@ class RiveCoreContext {
       case ClippingShapeBase.fillRulePropertyKey:
         (object as ClippingShapeBase).fillRule = value;
         break;
+      case PolygonBase.pointsPropertyKey:
+        (object as PolygonBase).points = value;
+        break;
       case DrawRulesBase.drawTargetIdPropertyKey:
         (object as DrawRulesBase).drawTargetId = value;
         break;
@@ -1231,6 +1266,12 @@ class RiveCoreContext {
         break;
       case CubicMirroredVertexBase.distancePropertyKey:
         (object as CubicMirroredVertexBase).distance = value;
+        break;
+      case PolygonBase.cornerRadiusPropertyKey:
+        (object as PolygonBase).cornerRadius = value;
+        break;
+      case StarBase.innerRadiusPropertyKey:
+        (object as StarBase).innerRadius = value;
         break;
       case CubicDetachedVertexBase.inRotationPropertyKey:
         (object as CubicDetachedVertexBase).inRotation = value;
