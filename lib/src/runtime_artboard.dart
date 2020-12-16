@@ -18,8 +18,10 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   @override
   T addObject<T extends Core>(T object) {
-    object.context = this;
-    object.id = _objects.length;
+    if (object != null) {
+      object.context = this;
+      object.id = _objects.length;
+    }
     _objects.add(object);
     return object;
   }

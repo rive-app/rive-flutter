@@ -153,8 +153,11 @@ class RiveFile {
 
       assert(!artboard.children.contains(artboard),
           'artboard should never contain itself as a child');
-      for (final object in artboard.objects) {
-        object?.onAdded();
+      for (final object in artboard.objects.toList(growable:false)) {
+        if(object == null) {
+          continue;
+        }
+        object.onAdded();
       }
       artboard.clean();
     }
@@ -165,7 +168,8 @@ class RiveFile {
 
 void _skipProperty(BinaryReader reader, int propertyKey,
     HashMap<int, CoreFieldType> propertyToField) {
-  var field = propertyToField[propertyKey];
+  var field =
+      RiveCoreContext.coreType(propertyKey) ?? propertyToField[propertyKey];
   if (field == null) {
     throw UnsupportedError('Unsupported property key $propertyKey. '
         'A new runtime is likely necessary to play this file.');
