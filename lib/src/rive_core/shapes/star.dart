@@ -11,7 +11,8 @@ class Star extends StarBase {
   @override
   List<PathVertex<Weight>> get vertices {
     var actualPoints = points * 2;
-    var vertexList = List<StraightVertex>(actualPoints);
+    var vertexList =
+        List<StraightVertex>.filled(actualPoints, null, growable: false);
     var halfWidth = width / 2;
     var halfHeight = height / 2;
     var innerHalfWidth = width * innerRadius / 2;

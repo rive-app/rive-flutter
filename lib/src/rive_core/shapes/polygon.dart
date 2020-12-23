@@ -12,7 +12,7 @@ class Polygon extends PolygonBase {
   void pointsChanged(int from, int to) => markPathDirty();
   @override
   List<PathVertex<Weight>> get vertices {
-    var vertexList = List<StraightVertex>(points);
+    var vertexList = List<StraightVertex>.filled(points, null);
     var halfWidth = width / 2;
     var halfHeight = height / 2;
     var angle = -pi / 2;

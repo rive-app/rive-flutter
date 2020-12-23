@@ -19,4 +19,23 @@ abstract class PathBase extends Node {
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
+
+  /// --------------------------------------------------------------------------
+  /// PathFlags field with key 128.
+  int _pathFlags = 0;
+  static const int pathFlagsPropertyKey = 128;
+  int get pathFlags => _pathFlags;
+
+  /// Change the [_pathFlags] field value.
+  /// [pathFlagsChanged] will be invoked only if the field's value has changed.
+  set pathFlags(int value) {
+    if (_pathFlags == value) {
+      return;
+    }
+    int from = _pathFlags;
+    _pathFlags = value;
+    pathFlagsChanged(from, value);
+  }
+
+  void pathFlagsChanged(int from, int to);
 }

@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/component_flags.dart';
 import 'package:rive/src/rive_core/math/circle_constant.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
@@ -215,6 +216,10 @@ abstract class Path extends PathBase {
     }
     return true;
   }
+
+  @override
+  void pathFlagsChanged(int from, int to) => markPathDirty();
+  bool get isHidden => (pathFlags & ComponentFlags.hidden) != 0;
 }
 
 class RenderPath {

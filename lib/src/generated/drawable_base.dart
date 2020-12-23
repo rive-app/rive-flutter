@@ -39,4 +39,24 @@ abstract class DrawableBase extends Node {
   }
 
   void blendModeValueChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// DrawableFlags field with key 129.
+  int _drawableFlags = 0;
+  static const int drawableFlagsPropertyKey = 129;
+  int get drawableFlags => _drawableFlags;
+
+  /// Change the [_drawableFlags] field value.
+  /// [drawableFlagsChanged] will be invoked only if the field's value has
+  /// changed.
+  set drawableFlags(int value) {
+    if (_drawableFlags == value) {
+      return;
+    }
+    int from = _drawableFlags;
+    _drawableFlags = value;
+    drawableFlagsChanged(from, value);
+  }
+
+  void drawableFlagsChanged(int from, int to);
 }

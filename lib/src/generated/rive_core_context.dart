@@ -41,6 +41,7 @@ import 'package:rive/src/generated/shapes/paint/solid_color_base.dart';
 import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 import 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';
+import 'package:rive/src/generated/shapes/path_base.dart';
 import 'package:rive/src/generated/shapes/path_composer_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
 import 'package:rive/src/generated/shapes/points_path_base.dart';
@@ -428,9 +429,19 @@ class RiveCoreContext {
           object.y = value;
         }
         break;
+      case PathBase.pathFlagsPropertyKey:
+        if (object is PathBase && value is int) {
+          object.pathFlags = value;
+        }
+        break;
       case DrawableBase.blendModeValuePropertyKey:
         if (object is DrawableBase && value is int) {
           object.blendModeValue = value;
+        }
+        break;
+      case DrawableBase.drawableFlagsPropertyKey:
+        if (object is DrawableBase && value is int) {
+          object.drawableFlags = value;
         }
         break;
       case PathVertexBase.xPropertyKey:
@@ -729,7 +740,9 @@ class RiveCoreContext {
       case StrokeBase.joinPropertyKey:
       case TrimPathBase.modeValuePropertyKey:
       case FillBase.fillRulePropertyKey:
+      case PathBase.pathFlagsPropertyKey:
       case DrawableBase.blendModeValuePropertyKey:
+      case DrawableBase.drawableFlagsPropertyKey:
       case WeightBase.valuesPropertyKey:
       case WeightBase.indicesPropertyKey:
       case CubicWeightBase.inValuesPropertyKey:
@@ -868,8 +881,12 @@ class RiveCoreContext {
         return (object as TrimPathBase).modeValue;
       case FillBase.fillRulePropertyKey:
         return (object as FillBase).fillRule;
+      case PathBase.pathFlagsPropertyKey:
+        return (object as PathBase).pathFlags;
       case DrawableBase.blendModeValuePropertyKey:
         return (object as DrawableBase).blendModeValue;
+      case DrawableBase.drawableFlagsPropertyKey:
+        return (object as DrawableBase).drawableFlags;
       case WeightBase.valuesPropertyKey:
         return (object as WeightBase).values;
       case WeightBase.indicesPropertyKey:
@@ -1121,8 +1138,14 @@ class RiveCoreContext {
       case FillBase.fillRulePropertyKey:
         (object as FillBase).fillRule = value;
         break;
+      case PathBase.pathFlagsPropertyKey:
+        (object as PathBase).pathFlags = value;
+        break;
       case DrawableBase.blendModeValuePropertyKey:
         (object as DrawableBase).blendModeValue = value;
+        break;
+      case DrawableBase.drawableFlagsPropertyKey:
+        (object as DrawableBase).drawableFlags = value;
         break;
       case WeightBase.valuesPropertyKey:
         (object as WeightBase).values = value;
