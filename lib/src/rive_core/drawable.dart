@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/component_flags.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
@@ -60,4 +61,8 @@ abstract class Drawable extends DrawableBase {
       _clippingShapes = clippingShapes.isEmpty ? null : clippingShapes;
     }
   }
+
+  @override
+  void drawableFlagsChanged(int from, int to) => addDirt(ComponentDirt.paint);
+  bool get isHidden => (drawableFlags & ComponentFlags.hidden) != 0;
 }

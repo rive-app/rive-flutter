@@ -1,3 +1,9 @@
+## [0.6.5] - 2020-12-22 16:49:39
+
+- Fixing issue with older minor versions crashing when newer minor files included objects with unknown keys. The runtime can now read beyond those.
+- Shapes and paths hidden in the editor will not show up at runtime. 
+- Runtime header now exposes Rive project id.
+
 ## [0.6.4] - 2020-12-11 15:43:01
 
 - Adding support for parametric polygon and star shapes.

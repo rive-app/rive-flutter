@@ -172,6 +172,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     for (var drawable = _firstDrawable;
         drawable != null;
         drawable = drawable.prev) {
+      if (drawable.isHidden) {
+        continue;
+      }
       drawable.draw(canvas);
     }
     canvas.restore();

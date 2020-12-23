@@ -32,6 +32,9 @@ class PathComposer extends PathComposerBase {
       Mat2D inverseWorld = Mat2D();
       if (Mat2D.invert(inverseWorld, world)) {
         for (final path in _shape.paths) {
+          if (path.isHidden) {
+            continue;
+          }
           Mat2D localTransform;
           var transform = path.pathTransform;
           if (transform != null) {
@@ -46,6 +49,9 @@ class PathComposer extends PathComposerBase {
     if (buildWorldPath) {
       worldPath.reset();
       for (final path in _shape.paths) {
+        if (path.isHidden) {
+          continue;
+        }
         worldPath.addPath(path.uiPath, ui.Offset.zero,
             matrix4: path.pathTransform?.mat4);
       }

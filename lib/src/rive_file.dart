@@ -100,7 +100,7 @@ class RiveFile {
         animation.artboard = artboard;
         if (animation is LinearAnimation) {
           var numKeyedObjects = reader.readVarUint();
-          var keyedObjects = List<KeyedObject>(numKeyedObjects);
+          var keyedObjects = List<KeyedObject>.filled(numKeyedObjects, null);
           for (int j = 0; j < numKeyedObjects; j++) {
             var keyedObject =
                 _readRuntimeObject<KeyedObject>(reader, propertyToField);
@@ -153,8 +153,8 @@ class RiveFile {
 
       assert(!artboard.children.contains(artboard),
           'artboard should never contain itself as a child');
-      for (final object in artboard.objects.toList(growable:false)) {
-        if(object == null) {
+      for (final object in artboard.objects.toList(growable: false)) {
+        if (object == null) {
           continue;
         }
         object.onAdded();

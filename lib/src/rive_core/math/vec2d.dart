@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:rive/src/utilities/utilities.dart';
 import 'mat2d.dart';
 
 class Vec2D {
@@ -163,7 +164,13 @@ class Vec2D {
 
   @override
   String toString() {
-    String v = _buffer[0].toString() + ", ";
+    String v = _buffer[0].toString() + ', ';
     return v + _buffer[1].toString();
   }
+
+  @override
+  bool operator ==(Object o) =>
+      o is Vec2D && _buffer[0] == o[0] && _buffer[1] == o[1];
+  @override
+  int get hashCode => szudzik(_buffer[0].hashCode, _buffer[1].hashCode);
 }

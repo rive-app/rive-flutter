@@ -44,7 +44,18 @@ class AABB {
       -double.maxFinite
     ]);
   }
-  double get area => width * height;
+  factory AABB.expand(AABB from, double amount) {
+    var aabb = AABB.clone(from);
+    if (aabb.width < amount) {
+      aabb[0] -= amount / 2;
+      aabb[2] += amount / 2;
+    }
+    if (aabb.height < amount) {
+      aabb[1] -= amount / 2;
+      aabb[3] += amount / 2;
+    }
+    return aabb;
+  }
   bool get isEmpty => !AABB.isValid(this);
   Vec2D includePoint(Vec2D point, Mat2D transform) {
     var transformedPoint = transform == null
