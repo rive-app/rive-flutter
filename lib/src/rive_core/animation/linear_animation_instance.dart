@@ -3,23 +3,50 @@ import 'package:rive/src/rive_core/animation/loop.dart';
 
 class LinearAnimationInstance {
   final LinearAnimation animation;
-  double _time = 0;
-  int direction = 1;
+  double _time;
+  int _direction = 1;
+
   LinearAnimationInstance(this.animation)
-      : _time =
+      : assert(animation != null),
+        _time =
             (animation.enableWorkArea ? animation.workStart : 0).toDouble() /
                 animation.fps;
-  double get time => _time;
+
+  /// Note that when time is set, the direction will be changed to 1
   set time(double value) {
     if (_time == value) {
       return;
     }
     _time = value;
-    direction = 1;
+    _direction = 1;
   }
 
+  /// Returns the current time position of the animation in seconds
+  double get time => _time;
+
+  /// Direction should only be +1 or -1
+  set direction(int value) => _direction = value == -1 ? -1 : 1;
+
+  /// Returns the animation's play direction: 1 for forwards, -1 for backwards
+  int get direction => _direction;
+
+  /// Returns the end time of the animation in seconds
+  double get endTime =>
+      (animation.enableWorkArea ? animation.workEnd : animation.duration)
+          .toDouble() /
+      animation.fps;
+
+  /// Returns the start time of the animation in seconds
+  double get startTime =>
+      (animation.enableWorkArea ? animation.workStart : 0).toDouble() /
+      animation.fps;
+
+  /// Resets the animation to the starting frame
+  void reset() => _time = startTime;
+
+  /// Advances the animation by the time provided
   bool advance(double elapsedSeconds) {
-    _time += elapsedSeconds * animation.speed * direction;
+    _time += elapsedSeconds * animation.speed * _direction;
     double frames = _time * animation.fps;
     var start = animation.enableWorkArea ? animation.workStart : 0;
     var end = animation.enableWorkArea ? animation.workEnd : animation.duration;
@@ -42,12 +69,12 @@ class LinearAnimationInstance {
         break;
       case Loop.pingPong:
         while (true) {
-          if (direction == 1 && frames >= end) {
-            direction = -1;
+          if (_direction == 1 && frames >= end) {
+            _direction = -1;
             frames = end + (end - frames);
             _time = frames / animation.fps;
-          } else if (direction == -1 && frames < start) {
-            direction = 1;
+          } else if (_direction == -1 && frames < start) {
+            _direction = 1;
             frames = start + (start - frames);
             _time = frames / animation.fps;
           } else {
