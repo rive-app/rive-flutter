@@ -1,3 +1,7 @@
+## [0.6.6] - Not yet released
+
+- Adds getters for start/endTime and reset() in LinearAnimationInstance
+
 ## [0.6.5] - 2020-12-22 16:49:39
 
 - Fixing issue with older minor versions crashing when newer minor files included objects with unknown keys. The runtime can now read beyond those.
