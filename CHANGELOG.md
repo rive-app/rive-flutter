@@ -1,3 +1,7 @@
+## [0.6.6+1] - 2021-01-18 17:06:17
+
+- Fixes a crashing issue introduced in 0.6.6.
+
 ## [0.6.6] - 2021-01-18 16:40:10
 
 - Adds getters for start/endTime and reset() in LinearAnimationInstance
