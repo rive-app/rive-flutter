@@ -41,6 +41,8 @@ class Shape extends ShapeBase with ShapePaintContainer {
   void pathChanged(Path path) => _markComposerDirty();
   void paintChanged() {
     addDirt(ComponentDirt.path);
+    _markBlendModeDirty();
+    _markRenderOpacityDirty();
     for (final d in dependents) {
       d.addDirt(ComponentDirt.worldTransform);
     }
@@ -155,21 +157,14 @@ class Shape extends ShapeBase with ShapePaintContainer {
   }
 
   void _markBlendModeDirty() => addDirt(ComponentDirt.blendMode);
+  void _markRenderOpacityDirty() => addDirt(ComponentDirt.worldTransform);
   @override
   void onPaintMutatorChanged(ShapePaintMutator mutator) {
     paintChanged();
-    _markBlendModeDirty();
   }
 
   @override
-  void onStrokesChanged() {
-    paintChanged();
-    _markBlendModeDirty();
-  }
-
+  void onStrokesChanged() => paintChanged();
   @override
-  void onFillsChanged() {
-    paintChanged();
-    _markBlendModeDirty();
-  }
+  void onFillsChanged() => paintChanged();
 }

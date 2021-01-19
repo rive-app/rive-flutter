@@ -93,10 +93,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   int get numFrames => _keyframes.length;
   KeyFrame getFrameAt(int index) => _keyframes[index];
-  void apply(double seconds, double mix, Core object) {
-    if (_keyframes.isEmpty) {
-      return;
-    }
+  int closestFrameIndex(double seconds) {
     int idx = 0;
     int mid = 0;
     double closestSeconds = 0;
@@ -115,6 +112,14 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       }
       idx = start;
     }
+    return idx;
+  }
+
+  void apply(double seconds, double mix, Core object) {
+    if (_keyframes.isEmpty) {
+      return;
+    }
+    int idx = closestFrameIndex(seconds);
     int pk = propertyKey;
     if (idx == 0) {
       var first = _keyframes[0];

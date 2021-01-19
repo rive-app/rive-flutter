@@ -26,7 +26,11 @@ _FirstExtractedPath _appendPathSegmentSequential(
           first = _FirstExtractedPath(extracted, metric, extractLength);
         } else if (first.metric == metric) {
           first.length += extractLength;
-          first.path.extendWithPath(extracted, Offset.zero);
+          if (metric.isClosed) {
+            first.path.extendWithPath(extracted, Offset.zero);
+          } else {
+            result.addPath(extracted, Offset.zero);
+          }
         } else {
           if (metric.isClosed && extractLength == metric.length) {
             extracted.close();

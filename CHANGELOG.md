@@ -1,6 +1,8 @@
-## [0.6.6] - Not yet released
+## [0.6.6] - 2021-01-18 16:40:10
 
 - Adds getters for start/endTime and reset() in LinearAnimationInstance
+- Fixes an issue with artboard background gradients when rendering with non-default origin values.
+- Fixes an issue with trim paths across open paths.
 
 ## [0.6.5] - 2020-12-22 16:49:39
 

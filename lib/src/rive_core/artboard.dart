@@ -118,7 +118,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   void update(int dirt) {
     if (dirt & ComponentDirt.worldTransform != 0) {
-      var rect = Rect.fromLTWH(0, 0, width, height);
+      var rect = Rect.fromLTWH(
+          width * (-originX ?? 0), height * (-originY ?? 0), width, height);
       path.reset();
       path.addRect(rect);
     }
@@ -163,12 +164,12 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   void draw(Canvas canvas) {
-    for (final fill in fills) {
-      fill.draw(canvas, path);
-    }
     canvas.save();
     canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
     canvas.translate(width * (originX ?? 0), height * (originY ?? 0));
+    for (final fill in fills) {
+      fill.draw(canvas, path);
+    }
     for (var drawable = _firstDrawable;
         drawable != null;
         drawable = drawable.prev) {
