@@ -1,3 +1,7 @@
+## [0.6.7] - 2021-01-23 11:11:02
+
+- Adds support for Rive.useIntrinsicSize to allow Rive widgets to be self sized by their artboard. Set useIntrinsicSize to false when you want the widget to try to occupy the entire space provided by the parent.
+
 ## [0.6.6+1] - 2021-01-18 17:06:17
 
 - Fixes a crashing issue introduced in 0.6.6.
