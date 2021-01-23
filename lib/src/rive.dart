@@ -24,6 +24,8 @@ class Rive extends LeafRenderObjectWidget {
       ..artboard = artboard
       ..fit = fit
       ..alignment = alignment
+      ..intrinsicSize =
+          artboard == null ? Size.zero : Size(artboard.width, artboard.height)
       ..useIntrinsicSize = useIntrinsicSize;
   }
 
@@ -34,6 +36,8 @@ class Rive extends LeafRenderObjectWidget {
       ..artboard = artboard
       ..fit = fit
       ..alignment = alignment
+      ..intrinsicSize =
+          artboard == null ? Size.zero : Size(artboard.width, artboard.height)
       ..useIntrinsicSize = useIntrinsicSize;
   }
 
