@@ -12,12 +12,6 @@ abstract class RiveRenderBox extends RenderBox {
   Alignment _alignment;
   bool _useIntrinsicSize = false;
 
-  @override
-  Size computeDryLayout(BoxConstraints constraints) {
-    return constraints
-        .constrainSizeAndAttemptToPreserveAspectRatio(_intrinsicSize);
-  }
-
   bool get useIntrinsicSize => _useIntrinsicSize;
   set useIntrinsicSize(bool value) {
     if (_useIntrinsicSize == value) {
@@ -63,7 +57,8 @@ abstract class RiveRenderBox extends RenderBox {
   @override
   void performLayout() {
     if (!sizedByParent) {
-      size = constraints.constrain(_intrinsicSize);
+      size = constraints
+        .constrainSizeAndAttemptToPreserveAspectRatio(_intrinsicSize);
     }
   }
 
@@ -72,9 +67,6 @@ abstract class RiveRenderBox extends RenderBox {
 
   @override
   void performResize() {
-    if (_useIntrinsicSize) {
-      super.performResize();
-    }
     size = constraints.biggest;
   }
 
