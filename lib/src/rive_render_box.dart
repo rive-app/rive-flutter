@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -10,32 +11,36 @@ abstract class RiveRenderBox extends RenderBox {
   final Stopwatch _stopwatch = Stopwatch();
   BoxFit _fit;
   Alignment _alignment;
-  bool _useIntrinsicSize = false;
+  bool _useArtboardSize = false;
 
-  bool get useIntrinsicSize => _useIntrinsicSize;
-  set useIntrinsicSize(bool value) {
-    if (_useIntrinsicSize == value) {
+  bool get useArtboardSize => _useArtboardSize;
+
+  set useArtboardSize(bool value) {
+    if (_useArtboardSize == value) {
       return;
     }
-    _useIntrinsicSize = value;
+    _useArtboardSize = value;
     if (parent != null) {
       markNeedsLayoutForSizedByParentChange();
     }
   }
 
-  Size _intrinsicSize;
-  Size get intrinsicSize => _intrinsicSize;
-  set intrinsicSize(Size value) {
-    if (_intrinsicSize == value) {
+  Size _artboardSize;
+
+  Size get artboardSize => _artboardSize;
+
+  set artboardSize(Size value) {
+    if (_artboardSize == value) {
       return;
     }
-    _intrinsicSize = value;
+    _artboardSize = value;
     if (parent != null) {
       markNeedsLayoutForSizedByParentChange();
     }
   }
 
   BoxFit get fit => _fit;
+
   set fit(BoxFit value) {
     if (value != _fit) {
       _fit = value;
@@ -44,6 +49,7 @@ abstract class RiveRenderBox extends RenderBox {
   }
 
   Alignment get alignment => _alignment;
+
   set alignment(Alignment value) {
     if (value != _alignment) {
       _alignment = value;
@@ -52,23 +58,93 @@ abstract class RiveRenderBox extends RenderBox {
   }
 
   @override
-  bool get sizedByParent => !_useIntrinsicSize || _intrinsicSize == null;
+  bool get sizedByParent => !useArtboardSize || artboardSize == null;
 
-  @override
-  void performLayout() {
-    if (!sizedByParent) {
-      size = constraints
-        .constrainSizeAndAttemptToPreserveAspectRatio(_intrinsicSize);
+  /// Finds the intrinsic size for the rive render box given the [constraints]
+  /// and [sizedByParent].
+  ///
+  /// The difference between the intrinsic size returned here and the size we
+  /// use for [performResize] is that the intrinsics contract does not allow
+  /// infinite sizes, i.e. we cannot return biggest constraints.
+  /// Consequently, the smallest constraint is returned in case we are
+  /// [sizedByParent].
+  Size _intrinsicSizeForConstraints(BoxConstraints constraints) {
+    if (sizedByParent) {
+      return constraints.smallest;
     }
+
+    return constraints
+        .constrainSizeAndAttemptToPreserveAspectRatio(artboardSize);
   }
 
   @override
-  bool hitTestSelf(Offset screenOffset) => true;
+  double computeMinIntrinsicWidth(double height) {
+    assert(height >= 0.0);
+    // If not sized by parent, this returns the constrained (trying to preserve
+    // aspect ratio) artboard size.
+    // If sized by parent, this returns 0 (because an infinite width does not
+    // make sense as an intrinsic width and is therefore not allowed).
+    return _intrinsicSizeForConstraints(
+            BoxConstraints.tightForFinite(height: height))
+        .width;
+  }
+
+  @override
+  double computeMaxIntrinsicWidth(double height) {
+    assert(height >= 0.0);
+    // This is equivalent to the min intrinsic width because we cannot provide
+    // any greater intrinsic width beyond which increasing the width never
+    // decreases the preferred height.
+    // When we have an artboard size, the intrinsic min and max width are
+    // obviously equivalent and if sized by parent, we can also only return the
+    // smallest width constraint (which is 0 in the case of intrinsic width).
+    return _intrinsicSizeForConstraints(
+            BoxConstraints.tightForFinite(height: height))
+        .width;
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) {
+    assert(width >= 0.0);
+    // If not sized by parent, this returns the constrained (trying to preserve
+    // aspect ratio) artboard size.
+    // If sized by parent, this returns 0 (because an infinite height does not
+    // make sense as an intrinsic height and is therefore not allowed).
+    return _intrinsicSizeForConstraints(
+            BoxConstraints.tightForFinite(width: width))
+        .height;
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    assert(width >= 0.0);
+    // This is equivalent to the min intrinsic height because we cannot provide
+    // any greater intrinsic height beyond which increasing the height never
+    // decreases the preferred width.
+    // When we have an artboard size, the intrinsic min and max height are
+    // obviously equivalent and if sized by parent, we can also only return the
+    // smallest height constraint (which is 0 in the case of intrinsic height).
+    return _intrinsicSizeForConstraints(
+            BoxConstraints.tightForFinite(width: width))
+        .height;
+  }
 
   @override
   void performResize() {
     size = constraints.biggest;
   }
+
+  @override
+  void performLayout() {
+    if (!sizedByParent) {
+      // We can use the intrinsic size here because the intrinsic size matches
+      // the constrained artboard size when not sized by parent.
+      size = _intrinsicSizeForConstraints(constraints);
+    }
+  }
+
+  @override
+  bool hitTestSelf(Offset screenOffset) => true;
 
   @override
   void detach() {
@@ -78,18 +154,21 @@ abstract class RiveRenderBox extends RenderBox {
 
   @override
   void attach(PipelineOwner owner) {
-    _stopwatch.start();
     super.attach(owner);
+    _stopwatch.start();
   }
 
   /// Get the Axis Aligned Bounding Box that encompasses the world space scene
   AABB get aabb;
 
   void draw(Canvas canvas, Mat2D viewTransform);
+
   void beforeDraw(Canvas canvas, Offset offset) {}
+
   void afterDraw(Canvas canvas, Offset offset) {}
 
   double _elapsedSeconds = 0;
+
   void _frameCallback(Duration duration) {
     _elapsedSeconds = _stopwatch.elapsedTicks / _stopwatch.frequency;
     _stopwatch.reset();
@@ -98,6 +177,7 @@ abstract class RiveRenderBox extends RenderBox {
   }
 
   int _frameCallbackId;
+
   void scheduleRepaint() {
     if (_frameCallbackId != null) {
       return;

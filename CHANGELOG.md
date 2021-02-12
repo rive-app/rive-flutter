@@ -1,3 +1,10 @@
+## [0.6.8] - 2021-02-12 11:11:11
+
+- Adds support for Flutter's `getMinIntrinsicWidth` (max, height, etc.), e.g. for `IntrinsicWidth`
+  and `IntrinsicHeight` usage.
+- Renames `Rive.useIntrinsicSize` to `Rive.useArtboardSize` by deprecating the former. The
+  motivation for this is avoiding ambiguity with Flutter's intrinsics contract.
+
 ## [0.6.7] - 2021-01-23 11:11:02
 
 - Adds support for Rive.useIntrinsicSize to allow Rive widgets to be self sized by their artboard. Set useIntrinsicSize to false when you want the widget to try to occupy the entire space provided by the parent.
