@@ -12,6 +12,7 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
 
   LinearAnimationInstance _instance;
   final String animationName;
+  bool _stopOnNextApply = false;
 
   // Controls the level of mix for the animation, clamped between 0 and 1
   double _mix;
@@ -36,9 +37,27 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
 
   @override
   void apply(RuntimeArtboard artboard, double elapsedSeconds) {
-    _instance.animation.apply(_instance.time, coreContext: artboard, mix: mix);
-    if (!_instance.advance(elapsedSeconds)) {
+    if (_stopOnNextApply) {
       isActive = false;
     }
+
+    // We apply before advancing. So we want to stop rendering only once the
+    // last advanced frame has been applied. This means tracking when the last
+    // frame is advanced, ensuring the next apply happens, and then finally
+    // stopping playback. We do this by tracking _stopOnNextApply making sure to
+    // reset it when the controller is re-activated. Fixes #28 and should help
+    // with issues #51 and #56.
+    _instance.animation.apply(_instance.time, coreContext: artboard, mix: mix);
+    if (!_instance.advance(elapsedSeconds)) {
+      _stopOnNextApply = true;
+    }
+  }
+
+  @override
+  void onActivate() {
+    // We override onActivate to reset stopOnNextApply. This ensures that when
+    // the controller is re-activated after stopping, it doesn't prematurely
+    // stop itself.
+    _stopOnNextApply = false;
   }
 }
