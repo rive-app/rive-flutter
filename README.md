@@ -10,7 +10,7 @@
 
 ```yaml
 dependencies:
-  rive: ^0.6.7
+  rive: ^0.6.8
 ```
 
 ## Examples

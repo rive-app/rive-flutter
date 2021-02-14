@@ -4,6 +4,7 @@
   and `IntrinsicHeight` usage.
 - Renames `Rive.useIntrinsicSize` to `Rive.useArtboardSize` by deprecating the former. The
   motivation for this is avoiding ambiguity with Flutter's intrinsics contract.
+- Fixes issue #28 where the last frame of a one-shot animation isn't displayed.
 
 ## [0.6.7] - 2021-01-23 11:11:02
 
