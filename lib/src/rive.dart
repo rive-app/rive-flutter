@@ -7,16 +7,40 @@ import 'package:rive/src/runtime_artboard.dart';
 
 class Rive extends LeafRenderObjectWidget {
   final Artboard artboard;
-  final bool useIntrinsicSize;
+
+  /// Determines whether to use the inherent size of the [artboard], i.e. the
+  /// absolute size defined by the artboard, or size the widget based on the
+  /// available constraints only (sized by parent).
+  ///
+  /// Defaults to `false`, i.e. defaults to sizing based on the available
+  /// constraints instead of the artboard size.
+  ///
+  /// When `true`, the artboard size is constrained by the parent constraints.
+  /// Using the artboard size has the benefit that the widget now has an
+  /// *intrinsic* size.
+  ///
+  /// When `false`, the intrinsic size is `(0, 0)` because
+  /// there is no size intrinsically - it only comes from the parent
+  /// constraints. Consequently, if you intend to use the widget in the subtree
+  /// of an [IntrinsicWidth] or [IntrinsicHeight] widget or intend to directly
+  /// obtain the [RenderBox.getMinIntrinsicWidth] et al., you will want to set
+  /// this to `true`.
+  final bool useArtboardSize;
+
   final BoxFit fit;
   final Alignment alignment;
 
   const Rive({
-    @required this.artboard,
-    this.useIntrinsicSize = false,
+    @required
+        this.artboard,
+    @Deprecated("Replaced by [useArtboardSize] in order to avoid confusion "
+        "with Flutter's intrinsics contract.")
+        bool useIntrinsicSize,
+    bool useArtboardSize = false,
     this.fit = BoxFit.contain,
     this.alignment = Alignment.center,
-  });
+  })  : assert(useArtboardSize != null),
+        useArtboardSize = useIntrinsicSize ?? useArtboardSize;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -24,9 +48,9 @@ class Rive extends LeafRenderObjectWidget {
       ..artboard = artboard
       ..fit = fit
       ..alignment = alignment
-      ..intrinsicSize =
+      ..artboardSize =
           artboard == null ? Size.zero : Size(artboard.width, artboard.height)
-      ..useIntrinsicSize = useIntrinsicSize;
+      ..useArtboardSize = useArtboardSize;
   }
 
   @override
@@ -36,9 +60,9 @@ class Rive extends LeafRenderObjectWidget {
       ..artboard = artboard
       ..fit = fit
       ..alignment = alignment
-      ..intrinsicSize =
+      ..artboardSize =
           artboard == null ? Size.zero : Size(artboard.width, artboard.height)
-      ..useIntrinsicSize = useIntrinsicSize;
+      ..useArtboardSize = useArtboardSize;
   }
 
   @override
@@ -49,7 +73,9 @@ class Rive extends LeafRenderObjectWidget {
 
 class RiveRenderObject extends RiveRenderBox {
   RuntimeArtboard _artboard;
+
   RuntimeArtboard get artboard => _artboard;
+
   set artboard(Artboard value) {
     if (_artboard == value) {
       return;
