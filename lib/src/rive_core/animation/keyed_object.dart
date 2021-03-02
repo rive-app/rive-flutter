@@ -13,7 +13,10 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   @override
   void onAddedDirty() {}
   @override
-  void onRemoved() {}
+  void onRemoved() {
+    super.onRemoved();
+  }
+
   bool internalAddKeyedProperty(KeyedProperty property) {
     var value = _keyedProperties[property.propertyKey];
     if (value != null && value != property) {

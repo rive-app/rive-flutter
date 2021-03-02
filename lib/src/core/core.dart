@@ -1,4 +1,6 @@
 export 'package:rive/src/animation_list.dart';
+export 'package:rive/src/state_machine_components.dart';
+export 'package:rive/src/state_transition_conditions.dart';
 export 'package:rive/src/container_children.dart';
 export 'package:rive/src/runtime_artboard.dart';
 export 'package:rive/src/generated/rive_core_context.dart';
@@ -14,7 +16,8 @@ abstract class Core<T extends CoreContext> {
 
   void onAddedDirty();
   void onAdded();
-  void onRemoved();
+  void onRemoved() {}
+  void remove() => context?.removeObject(this);
 }
 
 abstract class CoreContext {

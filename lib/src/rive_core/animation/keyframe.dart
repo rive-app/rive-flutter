@@ -39,7 +39,10 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
   }
 
   @override
-  void onRemoved() {}
+  void onRemoved() {
+    super.onRemoved();
+  }
+
   @override
   void frameChanged(int from, int to) {}
   void apply(Core object, int propertyKey, double mix);

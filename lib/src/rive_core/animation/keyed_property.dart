@@ -51,7 +51,10 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   @override
   void onAddedDirty() {}
   @override
-  void onRemoved() {}
+  void onRemoved() {
+    super.onRemoved();
+  }
+
   bool internalAddKeyFrame(KeyFrame frame) {
     if (_keyframes.contains(frame)) {
       return false;

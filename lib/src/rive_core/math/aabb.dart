@@ -1,7 +1,7 @@
 import 'dart:math';
-import "dart:typed_data";
+import 'dart:typed_data';
 import 'package:rive/src/rive_core/math/mat2d.dart';
-import "vec2d.dart";
+import 'package:rive/src/rive_core/math/vec2d.dart';
 
 class AABB {
   Float32List _buffer;
@@ -27,6 +27,10 @@ class AABB {
     return Vec2D.fromValues(_buffer[2], _buffer[3]);
   }
 
+  double get minX => _buffer[0];
+  double get maxX => _buffer[2];
+  double get minY => _buffer[1];
+  double get maxY => _buffer[3];
   AABB() {
     _buffer = Float32List.fromList([0.0, 0.0, 0.0, 0.0]);
   }
@@ -54,6 +58,14 @@ class AABB {
       aabb[1] -= amount / 2;
       aabb[3] += amount / 2;
     }
+    return aabb;
+  }
+  factory AABB.pad(AABB from, double amount) {
+    var aabb = AABB.clone(from);
+    aabb[0] -= amount;
+    aabb[2] += amount;
+    aabb[1] -= amount;
+    aabb[3] += amount;
     return aabb;
   }
   bool get isEmpty => !AABB.isValid(this);

@@ -72,10 +72,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   void userDataChanged(dynamic from, dynamic to) {}
   @override
-  void parentIdChanged(int from, int to) {
-    parent = context?.resolve(to);
-  }
-
+  void parentIdChanged(int from, int to) => parent = context?.resolve(to);
   ContainerComponent _parent;
   @override
   ContainerComponent get parent => _parent;
@@ -148,6 +145,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @override
   @mustCallSuper
   void onRemoved() {
+    super.onRemoved();
     for (final parentDep in _dependsOn) {
       parentDep._dependents.remove(this);
     }
@@ -168,10 +166,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   @override
   String toString() {
-    return '${super.toString()} ($id)';
+    return '${super.toString()} ($id) -> $name';
   }
 
-  void remove() => context?.removeObject(this);
   @override
   void nameChanged(String from, String to) {}
 }

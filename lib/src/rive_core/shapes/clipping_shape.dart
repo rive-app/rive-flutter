@@ -35,7 +35,7 @@ class ClippingShape extends ClippingShapeBase {
   void onAddedDirty() {
     super.onAddedDirty();
     if (sourceId != null) {
-      _source = context?.resolve(sourceId);
+      source = context?.resolve(sourceId);
     }
   }
 

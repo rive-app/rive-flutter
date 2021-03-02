@@ -22,6 +22,7 @@ class Animation extends AnimationBase<RuntimeArtboard> {
   @override
   void onRemoved() {
     artboard = null;
+    super.onRemoved();
   }
 
   @override
