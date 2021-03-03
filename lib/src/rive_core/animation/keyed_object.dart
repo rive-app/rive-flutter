@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/generated/animation/keyed_object_base.dart';
+import 'linear_animation.dart';
 export 'package:rive/src/generated/animation/keyed_object_base.dart';
 
 class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
@@ -46,4 +47,14 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
 
   @override
   void objectIdChanged(int from, int to) {}
+  @override
+  bool import(ImportStack stack) {
+    var animationHelper =
+        stack.latest<LinearAnimationImporter>(LinearAnimationBase.typeKey);
+    if (animationHelper == null) {
+      return false;
+    }
+    animationHelper.addKeyedObject(this);
+    return super.import(stack);
+  }
 }

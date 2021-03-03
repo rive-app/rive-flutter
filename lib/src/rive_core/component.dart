@@ -171,4 +171,13 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   @override
   void nameChanged(String from, String to) {}
+  @override
+  bool import(ImportStack stack) {
+    var artboardImporter = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+    if (artboardImporter == null) {
+      return false;
+    }
+    artboardImporter.addComponent(this);
+    return super.import(stack);
+  }
 }

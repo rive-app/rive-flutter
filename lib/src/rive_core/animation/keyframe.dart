@@ -57,4 +57,15 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
     _interpolator = value;
     interpolatorId = value?.id;
   }
+
+  @override
+  bool import(ImportStack importStack) {
+    var keyedPropertyHelper =
+        importStack.latest<KeyedPropertyImporter>(KeyedPropertyBase.typeKey);
+    if (keyedPropertyHelper == null) {
+      return false;
+    }
+    keyedPropertyHelper.addKeyFrame(this);
+    return super.import(importStack);
+  }
 }

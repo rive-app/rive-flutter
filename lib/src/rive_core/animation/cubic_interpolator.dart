@@ -1,5 +1,7 @@
 import 'dart:typed_data';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
+import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 
 const int newtonIterations = 4;
@@ -41,8 +43,6 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
   @override
   void onAddedDirty() {}
   @override
-  void onRemoved() {}
-  @override
   double transform(double value) => _ease.transform(value);
   @override
   void x1Changed(double from, double to) => _updateStoredCubic();
@@ -54,6 +54,16 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
   void y2Changed(double from, double to) => _updateStoredCubic();
   void _updateStoredCubic() {
     _ease = _CubicEase.make(x1, y1, x2, y2);
+  }
+
+  @override
+  bool import(ImportStack stack) {
+    var artboardHelper = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+    if (artboardHelper == null) {
+      return false;
+    }
+    artboardHelper.addComponent(this);
+    return super.import(stack);
   }
 }
 

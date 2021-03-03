@@ -1,4 +1,5 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
 export 'package:rive/src/generated/animation/keyed_property_base.dart';
@@ -149,4 +150,13 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   @override
   void propertyKeyChanged(int from, int to) {}
+  @override
+  bool import(ImportStack stack) {
+    var importer = stack.latest<KeyedObjectImporter>(KeyedObjectBase.typeKey);
+    if (importer == null) {
+      return false;
+    }
+    importer.addKeyedProperty(this);
+    return super.import(stack);
+  }
 }

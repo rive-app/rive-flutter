@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
+import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/generated/animation/linear_animation_base.dart';
 export 'package:rive/src/generated/animation/linear_animation_base.dart';
 
@@ -44,4 +45,13 @@ class LinearAnimation extends LinearAnimationBase {
   void workEndChanged(int from, int to) {}
   @override
   void workStartChanged(int from, int to) {}
+  @override
+  bool import(ImportStack stack) {
+    var artboardImporter = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+    if (artboardImporter == null) {
+      return false;
+    }
+    artboardImporter.addAnimation(this);
+    return super.import(stack);
+  }
 }
