@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
 export 'package:rive/src/generated/animation/state_machine_component_base.dart';
@@ -13,7 +12,6 @@ abstract class StateMachineComponent extends StateMachineComponentBase {
     }
     var from = _stateMachine;
     _stateMachine = value;
-    machineId = value?.id;
     machineChanged(from, _stateMachine);
   }
 
@@ -28,24 +26,11 @@ abstract class StateMachineComponent extends StateMachineComponentBase {
   }
 
   @override
-  @mustCallSuper
-  void machineIdChanged(int from, int to) {
-    if (context != null) {
-      stateMachine = context.resolve(to);
-    }
-  }
-
-  @override
   void nameChanged(String from, String to) {}
   @override
   void onAdded() {}
   @override
-  void onAddedDirty() {
-    if (machineId != null) {
-      stateMachine = context?.resolve(machineId);
-    }
-  }
-
+  void onAddedDirty() {}
   @override
   void onRemoved() {
     super.onRemoved();

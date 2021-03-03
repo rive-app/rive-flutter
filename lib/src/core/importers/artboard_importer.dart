@@ -1,5 +1,7 @@
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/animation.dart';
+import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 class ArtboardImporter extends ImportStackObject {
@@ -8,10 +10,12 @@ class ArtboardImporter extends ImportStackObject {
 
   void addComponent(Core<CoreContext> object) => artboard.addObject(object);
 
-  void addAnimation(LinearAnimation animation) {
+  void addAnimation(Animation animation) {
     artboard.addObject(animation);
     animation.artboard = artboard;
   }
+
+  void addStateMachine(StateMachine animation) => addAnimation(animation);
 
   @override
   void resolve() {

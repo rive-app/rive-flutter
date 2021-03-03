@@ -13,27 +13,6 @@ abstract class StateMachineComponentBase<T extends CoreContext>
   Set<int> get coreTypes => {StateMachineComponentBase.typeKey};
 
   /// --------------------------------------------------------------------------
-  /// MachineId field with key 137.
-  int _machineId;
-  static const int machineIdPropertyKey = 137;
-
-  /// Id of the state machine this component belongs to.
-  int get machineId => _machineId;
-
-  /// Change the [_machineId] field value.
-  /// [machineIdChanged] will be invoked only if the field's value has changed.
-  set machineId(int value) {
-    if (_machineId == value) {
-      return;
-    }
-    int from = _machineId;
-    _machineId = value;
-    machineIdChanged(from, value);
-  }
-
-  void machineIdChanged(int from, int to);
-
-  /// --------------------------------------------------------------------------
   /// Name field with key 138.
   String _name;
   static const int namePropertyKey = 138;

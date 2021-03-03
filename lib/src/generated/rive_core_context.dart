@@ -287,11 +287,6 @@ class RiveCoreContext {
           }
         }
         break;
-      case StateMachineComponentBase.machineIdPropertyKey:
-        if (object is StateMachineComponentBase && value is int) {
-          object.machineId = value;
-        }
-        break;
       case StateMachineComponentBase.namePropertyKey:
         if (object is StateMachineComponentBase) {
           if (value is String) {
@@ -855,7 +850,6 @@ class RiveCoreContext {
       case AnimationStateBase.animationIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
       case TransitionConditionBase.inputIdPropertyKey:
-      case StateMachineComponentBase.machineIdPropertyKey:
       case KeyedPropertyBase.propertyKeyPropertyKey:
       case KeyFrameBase.framePropertyKey:
       case KeyFrameBase.interpolationTypePropertyKey:
@@ -996,8 +990,6 @@ class RiveCoreContext {
         return (object as KeyedObjectBase).objectId;
       case TransitionConditionBase.inputIdPropertyKey:
         return (object as TransitionConditionBase).inputId;
-      case StateMachineComponentBase.machineIdPropertyKey:
-        return (object as StateMachineComponentBase).machineId;
       case KeyedPropertyBase.propertyKeyPropertyKey:
         return (object as KeyedPropertyBase).propertyKey;
       case KeyFrameBase.framePropertyKey:
@@ -1263,9 +1255,6 @@ class RiveCoreContext {
         break;
       case TransitionConditionBase.inputIdPropertyKey:
         (object as TransitionConditionBase).inputId = value;
-        break;
-      case StateMachineComponentBase.machineIdPropertyKey:
-        (object as StateMachineComponentBase).machineId = value;
         break;
       case KeyedPropertyBase.propertyKeyPropertyKey:
         (object as KeyedPropertyBase).propertyKey = value;

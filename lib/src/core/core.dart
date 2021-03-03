@@ -10,6 +10,7 @@ export 'package:rive/src/core/importers/artboard_importer.dart';
 export 'package:rive/src/core/importers/linear_animation_importer.dart';
 export 'package:rive/src/core/importers/keyed_object_importer.dart';
 export 'package:rive/src/core/importers/keyed_property_importer.dart';
+export 'package:rive/src/core/importers/state_machine_importer.dart';
 
 typedef PropertyChangeCallback = void Function(dynamic from, dynamic to);
 typedef BatchAddCallback = void Function();
