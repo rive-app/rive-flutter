@@ -1,4 +1,6 @@
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
+import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/generated/animation/transition_condition_base.dart';
 export 'package:rive/src/generated/animation/transition_condition_base.dart';
 
@@ -32,5 +34,16 @@ abstract class TransitionCondition extends TransitionConditionBase {
   @override
   void onAddedDirty() {
     input = inputId == null ? null : context.resolve(inputId);
+  }
+
+  @override
+  bool import(ImportStack importStack) {
+    var importer = importStack
+        .latest<StateTransitionImporter>(StateTransitionBase.typeKey);
+    if (importer == null) {
+      return false;
+    }
+    importer.addCondition(this);
+    return super.import(importStack);
   }
 }

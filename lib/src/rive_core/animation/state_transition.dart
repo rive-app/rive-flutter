@@ -8,6 +8,7 @@ export 'package:rive/src/generated/animation/state_transition_base.dart';
 class StateTransition extends StateTransitionBase {
   final StateTransitionConditions conditions = StateTransitionConditions();
   LayerState stateTo;
+  LayerState stateFrom;
   @override
   void onAdded() {}
   @override
@@ -23,6 +24,17 @@ class StateTransition extends StateTransitionBase {
   }
 
   bool get isDisabled => (flags & StateTransitionFlags.disabled) != 0;
+  @override
+  bool import(ImportStack importStack) {
+    var importer =
+        importStack.latest<LayerStateImporter>(LayerStateBase.typeKey);
+    if (importer == null) {
+      return false;
+    }
+    importer.addTransition(this);
+    return super.import(importStack);
+  }
+
   bool internalAddCondition(TransitionCondition condition) {
     if (conditions.contains(condition)) {
       return false;

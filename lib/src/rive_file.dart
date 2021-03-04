@@ -2,9 +2,14 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:rive/src/core/field_types/core_field_type.dart';
+import 'package:rive/src/generated/animation/animation_state_base.dart';
+import 'package:rive/src/generated/animation/any_state_base.dart';
+import 'package:rive/src/generated/animation/entry_state_base.dart';
+import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/generated/animation/state_machine_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
+import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
@@ -72,6 +77,7 @@ class RiveFile {
       }
 
       ImportStackObject stackObject;
+      var stackType = object.coreType;
       switch (object.coreType) {
         case ArtboardBase.typeKey:
           stackObject = ArtboardImporter(object as RuntimeArtboard);
@@ -96,9 +102,14 @@ class RiveFile {
             break;
           }
         case StateMachineBase.typeKey:
-        stackObject = StateMachineImporter(object as StateMachine);
-          // stackObject = _LinearAnimationStackObject(object as
-          // LinearAnimation); helper = _AnimationImportHelper();
+          stackObject = StateMachineImporter(object as StateMachine);
+          break;
+        case EntryStateBase.typeKey:
+        case AnyStateBase.typeKey:
+        case ExitStateBase.typeKey:
+        case AnimationStateBase.typeKey:
+          stackObject = LayerStateImporter(object as LayerState);
+          stackType = LayerStateBase.typeKey;
           break;
         default:
           if (object is Component) {
@@ -107,7 +118,7 @@ class RiveFile {
           break;
       }
 
-      importStack.makeLatest(object.coreType, stackObject);
+      importStack.makeLatest(stackType, stackObject);
 
       if (object?.import(importStack) ?? true) {
         switch (object.coreType) {
