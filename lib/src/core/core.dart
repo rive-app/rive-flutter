@@ -47,12 +47,6 @@ abstract class ImportStackObject {
   void resolve();
 }
 
-/// Interface to help objects that need to parent themselves to some other
-/// object previously imported.
-abstract class ImportHelper<T extends Core<CoreContext>> {
-  bool import(T object, ImportStack stack) => true;
-}
-
 /// Stack to help the RiveFile locate latest ImportStackObject created of a
 /// certain type.
 class ImportStack {
