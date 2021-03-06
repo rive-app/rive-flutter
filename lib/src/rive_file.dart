@@ -67,7 +67,7 @@ class RiveFile {
     });
     var importStack = ImportStack();
     while (!reader.isEOF) {
-      var object = _readRuntimeObject(reader, propertyToField);
+      final object = _readRuntimeObject(reader, propertyToField);
       if (object == null) {
         continue;
       }
@@ -122,7 +122,7 @@ class RiveFile {
         return false;
       }
 
-      if (object?.import(importStack) ?? true) {
+      if (object.import(importStack)) {
         switch (object.coreType) {
           case ArtboardBase.typeKey:
             _artboards.add(object as Artboard);
