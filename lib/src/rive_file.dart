@@ -118,7 +118,9 @@ class RiveFile {
           break;
       }
 
-      importStack.makeLatest(stackType, stackObject);
+      if (!importStack.makeLatest(stackType, stackObject)) {
+        return false;
+      }
 
       if (object?.import(importStack) ?? true) {
         switch (object.coreType) {
@@ -132,9 +134,7 @@ class RiveFile {
         }
       }
     }
-    importStack.resolve();
-
-    return true;
+    return importStack.resolve();
   }
 }
 

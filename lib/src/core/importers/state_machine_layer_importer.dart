@@ -16,7 +16,7 @@ class StateMachineLayerImporter extends ImportStackObject {
   }
 
   @override
-  void resolve() {
+  bool resolve() {
     for (final state in importedStates) {
       for (final transition in state.transitions) {
         // At import time the stateToId is an index relative to the entire layer
@@ -34,5 +34,6 @@ class StateMachineLayerImporter extends ImportStackObject {
         // transition.stateTo = importedStates[transition.stateToId];
       }
     }
+    return true;
   }
 }

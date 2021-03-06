@@ -18,7 +18,7 @@ class ArtboardImporter extends ImportStackObject {
   void addStateMachine(StateMachine animation) => addAnimation(animation);
 
   @override
-  void resolve() {
+  bool resolve() {
     for (final object in artboard.objects.skip(1)) {
       if (object is Component && object.parentId == null) {
         object.parent = artboard;
@@ -34,5 +34,6 @@ class ArtboardImporter extends ImportStackObject {
       object.onAdded();
     }
     artboard.clean();
+    return true;
   }
 }

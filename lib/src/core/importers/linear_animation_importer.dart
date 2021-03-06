@@ -16,9 +16,10 @@ class LinearAnimationImporter extends ImportStackObject {
   }
 
   @override
-  void resolve() {
+  bool resolve() {
     for (final keyedObject in keyedObjects) {
       keyedObject?.objectId ??= linearAnimation.artboard.id;
     }
+    return true;
   }
 }

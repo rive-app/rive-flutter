@@ -13,5 +13,5 @@ class KeyedObjectImporter extends ImportStackObject {
   }
 
   @override
-  void resolve() {}
+  bool resolve() => true;
 }

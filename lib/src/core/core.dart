@@ -44,7 +44,7 @@ abstract class CoreContext {
 
 // ignore: one_member_abstracts
 abstract class ImportStackObject {
-  void resolve();
+  bool resolve();
 }
 
 /// Stack to help the RiveFile locate latest ImportStackObject created of a
@@ -59,17 +59,27 @@ class ImportStack {
     return null;
   }
 
-  void makeLatest(int coreType, ImportStackObject importObject) {
+  bool makeLatest(int coreType, ImportStackObject importObject) {
+    var latest = _latests[coreType];
+    if (latest != null) {
+      if (!latest.resolve()) {
+        return false;
+      }
+    }
     if (importObject != null) {
       _latests[coreType] = importObject;
     } else {
       _latests.remove(coreType);
     }
+    return true;
   }
 
-  void resolve() {
+  bool resolve() {
     for (final object in _latests.values) {
-      object.resolve();
+      if (!object.resolve()) {
+        return false;
+      }
     }
+    return true;
   }
 }
