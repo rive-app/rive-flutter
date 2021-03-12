@@ -11,6 +11,7 @@ import 'package:rive/src/generated/animation/state_machine_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
+import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/rive_core/backboard.dart';
@@ -20,6 +21,8 @@ import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exceptio
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+
+import 'rive_core/animation/state_transition.dart';
 
 class RiveFile {
   RuntimeHeader _header;
@@ -71,10 +74,6 @@ class RiveFile {
       if (object == null) {
         continue;
       }
-      var previousOfType = importStack.latest(object.coreType);
-      if (previousOfType != null) {
-        previousOfType.resolve();
-      }
 
       ImportStackObject stackObject;
       var stackType = object.coreType;
@@ -104,6 +103,16 @@ class RiveFile {
         case StateMachineBase.typeKey:
           stackObject = StateMachineImporter(object as StateMachine);
           break;
+        case StateMachineLayerBase.typeKey:
+          {
+            // Needs artboard importer to resolve linear animations.
+            var artboardImporter =
+                importStack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+            assert(artboardImporter != null);
+            stackObject = StateMachineLayerImporter(
+                object as StateMachineLayer, artboardImporter);
+            break;
+          }
         case EntryStateBase.typeKey:
         case AnyStateBase.typeKey:
         case ExitStateBase.typeKey:
@@ -111,6 +120,15 @@ class RiveFile {
           stackObject = LayerStateImporter(object as LayerState);
           stackType = LayerStateBase.typeKey;
           break;
+        case StateTransitionBase.typeKey:
+          {
+            var stateMachineImporter = importStack
+                .latest<StateMachineImporter>(StateMachineBase.typeKey);
+            assert(stateMachineImporter != null);
+            stackObject = StateTransitionImporter(
+                object as StateTransition, stateMachineImporter);
+            break;
+          }
         default:
           if (object is Component) {
             // helper = _ArtboardObjectImportHelper();

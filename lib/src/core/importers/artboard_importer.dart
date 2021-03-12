@@ -7,10 +7,14 @@ import 'package:rive/src/rive_core/component.dart';
 class ArtboardImporter extends ImportStackObject {
   final RuntimeArtboard artboard;
   ArtboardImporter(this.artboard);
+  final List<LinearAnimation> animations = [];
 
   void addComponent(Core<CoreContext> object) => artboard.addObject(object);
 
   void addAnimation(Animation animation) {
+    if (animation is LinearAnimation) {
+      animations.add(animation);
+    }
     artboard.addObject(animation);
     animation.artboard = artboard;
   }

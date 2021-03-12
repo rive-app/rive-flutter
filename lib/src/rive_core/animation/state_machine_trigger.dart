@@ -11,4 +11,9 @@ class StateMachineTrigger extends StateMachineTriggerBase {
   void reset() {
     _triggered = false;
   }
+
+  @override
+  bool isValidType<T>() => T == bool;
+  @override
+  dynamic get controllerValue => _triggered;
 }

@@ -1,10 +1,16 @@
+import 'dart:collection';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
+import 'package:rive/src/rive_core/animation/transition_condition.dart';
 import 'package:rive/src/generated/animation/transition_bool_condition_base.dart';
 export 'package:rive/src/generated/animation/transition_bool_condition_base.dart';
 
 class TransitionBoolCondition extends TransitionBoolConditionBase {
   @override
-  void valueChanged(bool from, bool to) {}
-  @override
-  bool validate() => input == null || input is StateMachineBool;
+  bool evaluate(HashMap<int, dynamic> values) {
+    var boolInput = input as StateMachineBool;
+    dynamic providedValue = values[input.id];
+    bool value = providedValue is bool ? providedValue : boolInput.value;
+    return (value && op == TransitionConditionOp.equal) ||
+        (!value && op == TransitionConditionOp.notEqual);
+  }
 }

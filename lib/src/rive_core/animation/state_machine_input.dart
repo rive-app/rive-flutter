@@ -8,4 +8,6 @@ abstract class StateMachineInput extends StateMachineInputBase {
   @override
   ListBase<StateMachineComponent> machineComponentList(StateMachine machine) =>
       machine?.inputs;
+  bool isValidType<T>() => false;
+  dynamic get controllerValue => null;
 }

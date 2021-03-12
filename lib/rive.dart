@@ -18,3 +18,5 @@ export 'package:rive/src/rive_core/shapes/paint/radial_gradient.dart';
 export 'package:rive/src/rive_core/runtime/runtime_header.dart'
     show riveVersion;
 export 'package:rive/src/extensions.dart';
+export 'package:rive/src/rive_core/animation/state_machine.dart';
+export 'package:rive/src/state_machine_controller.dart';

@@ -8,7 +8,7 @@ class LayerStateImporter extends ImportStackObject {
 
   void addTransition(StateTransition transition) {
     state.context.addObject(transition);
-    transition.stateFrom = state;
+    state.internalAddTransition(transition);
   }
 
   @override

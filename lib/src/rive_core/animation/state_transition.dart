@@ -8,7 +8,6 @@ export 'package:rive/src/generated/animation/state_transition_base.dart';
 class StateTransition extends StateTransitionBase {
   final StateTransitionConditions conditions = StateTransitionConditions();
   LayerState stateTo;
-  LayerState stateFrom;
   @override
   void onAdded() {}
   @override

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
@@ -36,6 +37,7 @@ abstract class TransitionCondition extends TransitionConditionBase {
     input = inputId == null ? null : context.resolve(inputId);
   }
 
+  bool evaluate(HashMap<int, dynamic> values);
   @override
   bool import(ImportStack importStack) {
     var importer = importStack

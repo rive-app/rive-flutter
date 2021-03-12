@@ -1,10 +1,12 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 
 class StateMachineLayerImporter extends ImportStackObject {
   final StateMachineLayer layer;
-  StateMachineLayerImporter(this.layer);
+  final ArtboardImporter artboardImporter;
+  StateMachineLayerImporter(this.layer, this.artboardImporter);
 
   final List<LayerState> importedStates = [];
 
@@ -15,9 +17,19 @@ class StateMachineLayerImporter extends ImportStackObject {
     layer.internalAddState(state);
   }
 
+  bool _resolved = false;
   @override
   bool resolve() {
+    assert(!_resolved);
+    _resolved = true;
     for (final state in importedStates) {
+      if (state is AnimationState) {
+        int artboardAnimationIndex = state.animationId;
+        assert(artboardAnimationIndex >= 0 &&
+            artboardAnimationIndex < artboardImporter.animations.length);
+        state.animationId =
+            artboardImporter.animations[artboardAnimationIndex].id;
+      }
       for (final transition in state.transitions) {
         // At import time the stateToId is an index relative to the entire layer
         // (which state in this layer). We can use that to find the matching

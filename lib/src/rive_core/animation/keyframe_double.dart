@@ -4,6 +4,10 @@ import 'package:rive/src/generated/animation/keyframe_double_base.dart';
 import 'package:rive/src/generated/rive_core_context.dart';
 export 'package:rive/src/generated/animation/keyframe_double_base.dart';
 
+double toDegrees(double rad) {
+  return rad / 3.14 * 180;
+}
+
 void _apply(
     Core<CoreContext> object, int propertyKey, double mix, double value) {
   if (mix == 1) {
