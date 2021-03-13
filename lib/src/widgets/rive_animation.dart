@@ -20,10 +20,10 @@ class RiveAnimation extends StatefulWidget {
 
   /// A name of the [Artboard] to display the animation.
   ///
-  /// By default, the widget loads the main [Artboard].
+  /// By default, loads the main [Artboard].
   final String artboardName;
 
-  /// A [RiveAnimationController] to control this animation's playback.
+  /// A [RiveAnimationController] to control the animation's playback.
   final RiveAnimationController controller;
 
   /// A [BoxFit] that determines how to inscribe this animation into the space
@@ -49,25 +49,25 @@ class RiveAnimation extends StatefulWidget {
   ///
   /// The [artboardProvider] must not be null.
   ///
-  /// Specify the [artboardName] to specify the specific artboard to display
+  /// Specify the [artboardName] to load the specific [Artboard] to display
   /// the animation.
   ///
   /// Specify the [controller] to be able to control the animation playback.
   ///
-  /// Specify the [loadingBuilder] to specify the widget's appearance when the
+  /// Specify the [loadingBuilder] to determine the [Widget] to display when the
   /// animation is still loading.
   ///
   /// Specify the [alignment] to determine how to align this animation
-  /// within its bounds.
+  /// within the available space.
   ///
-  /// Specify the [fit] to determine how inscribe this animation into the space
-  /// allocated during layout.
+  /// Specify the [fit] to determine how this animation should be inscribed
+  /// within the available space.
   ///
   /// Specify the [useArtboardSize] to determine whether to use the absolute
-  /// size defined by the artboard, or size the widget based on the available
-  /// constraints only.
+  /// size defined by the [Artboard], or the available space defined by the
+  /// parent constraints.
   ///
-  /// See [RiveAnimation.asset] to load the animation from [AssetBundle]s.
+  /// See [RiveAnimation.asset] to load the animation from assets.
   const RiveAnimation({
     @required this.artboardProvider,
     Key key,
@@ -88,22 +88,23 @@ class RiveAnimation extends StatefulWidget {
   ///
   /// The [assetName] must not be `null`.
   ///
-  /// Specify the [bundle] to use the specific [AssetBundle].
+  /// Specify the [artboardName] to load the specific [Artboard] to display
+  /// the animation.
   ///
   /// Specify the [controller] to be able to control the animation playback.
   ///
-  /// Specify the [loadingBuilder] to specify the widget's appearance when the
+  /// Specify the [loadingBuilder] to determine the [Widget] to display when the
   /// animation is still loading.
   ///
   /// Specify the [alignment] to determine how to align this animation
-  /// within its bounds.
+  /// within the available space.
   ///
-  /// Specify the [fit] to determine how inscribe this animation into the space
-  /// allocated during layout.
+  /// Specify the [fit] to determine how this animation should be inscribed
+  /// within the available space.
   ///
   /// Specify the [useArtboardSize] to determine whether to use the absolute
-  /// size defined by the artboard, or size the widget based on the available
-  /// constraints only.
+  /// size defined by the [Artboard], or the available space defined by the
+  /// parent constraints.
   RiveAnimation.asset(
     String assetName, {
     Key key,
