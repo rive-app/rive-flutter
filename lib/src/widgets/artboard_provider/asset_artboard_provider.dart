@@ -6,7 +6,7 @@ import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/widgets/artboard_provider/artboard_provider.dart';
 
-/// An [ArtboardProvider] that allows loading [Artboard]s from [AssetBundle]s.
+/// An [ArtboardProvider] that allows loading [Artboard]s from assets.
 class AssetArtboardProvider implements ArtboardProvider {
   /// A name of the animation asset to load.
   final String assetName;
@@ -16,12 +16,10 @@ class AssetArtboardProvider implements ArtboardProvider {
   /// By default, equals to [rootBundle].
   final AssetBundle bundle;
 
-  /// Creates a new instance of the [AssetArtboardProvider] with the given [key]
-  /// and [bundle].
+  /// Creates a new instance of the [AssetArtboardProvider] with the given
+  /// [assetName] and [bundle].
   ///
-  /// The [key] must not be `null`.
-  ///
-  /// Throws an [AssertionError] if the given [key] is `null`.
+  /// The [assetName] must not be `null`.
   AssetArtboardProvider({
     @required this.assetName,
     AssetBundle bundle,
