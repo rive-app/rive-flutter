@@ -35,7 +35,7 @@ void main() {
     );
 
     test(
-      "creates an instance with the rootBundle as bundle if the given bundle is null",
+      "creates an instance with the rootBundle as the asset bundle if the given bundle is null",
       () {
         final assetProvider = AssetArtboardProvider(
           assetName: assetName,
@@ -43,19 +43,6 @@ void main() {
         );
 
         expect(assetProvider.bundle, equals(rootBundle));
-      },
-    );
-
-    test(
-      ".load() loads the animation bytes from the given bundle",
-      () async {
-        when(
-          assetBundle.load(assetName),
-        ).thenAnswer((_) => Future.value(assetByteData));
-
-        assetProvider.load();
-
-        verify(assetBundle.load(assetName)).called(1);
       },
     );
 
@@ -79,14 +66,14 @@ void main() {
           assetBundle.load(assetName),
         ).thenAnswer((_) => Future.value(assetByteData));
 
-        final artboard = await assetProvider.load();
+        final artboard = await assetProvider.load(artboardName: null);
 
         expect(artboard.name, equals(mainArtboardName));
       },
     );
 
     test(
-      ".load() loads the artboard with the given name if the given artboard name is provided",
+      ".load() loads the artboard with the given name if the artboard name is provided",
       () async {
         for (final artboardName in allArtboardNames) {
           when(
