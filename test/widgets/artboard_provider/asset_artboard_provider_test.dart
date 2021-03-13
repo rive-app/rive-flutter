@@ -25,17 +25,7 @@ void main() {
     });
 
     test(
-      "throws an AssertionError if the given asset name is null",
-      () {
-        expect(
-          () => AssetArtboardProvider(assetName: null),
-          throwsAssertionError,
-        );
-      },
-    );
-
-    test(
-      "creates an instance with the rootBundle as the asset bundle if the given bundle is null",
+      "creates an instance with the rootBundle as the default asset bundle if the given one is null",
       () {
         final assetProvider = AssetArtboardProvider(
           assetName: assetName,
@@ -47,7 +37,7 @@ void main() {
     );
 
     test(
-      ".load() uses the given bundle to load the animation bytes",
+      ".load() uses the given asset bundle to load the animation bytes",
       () async {
         when(
           assetBundle.load(assetName),
@@ -73,7 +63,7 @@ void main() {
     );
 
     test(
-      ".load() loads the artboard with the given name if the artboard name is provided",
+      ".load() loads the artboard with the given name",
       () async {
         for (final artboardName in allArtboardNames) {
           when(

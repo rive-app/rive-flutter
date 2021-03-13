@@ -38,7 +38,7 @@ void main() {
     });
 
     testWidgets(
-      "displays the SizedBox as the default loading builder",
+      "displays a SizedBox when loading the animation if the given loading builder is null",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
 
@@ -85,7 +85,7 @@ void main() {
     );
 
     testWidgets(
-      "loads the artboard with the given name using the artboard provider",
+      "loads the artboard with the given name using the given artboard provider",
       (WidgetTester tester) async {
         const expectedArtboardName = 'name';
         when(
@@ -125,7 +125,7 @@ void main() {
     );
 
     testWidgets(
-      "displays the Rive widget with the artboard having the given animation controller",
+      "displays the Rive widget with the artboard controlled by the given animation controller",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
 
@@ -172,7 +172,7 @@ void main() {
     );
 
     testWidgets(
-      "displays the Rive widget with the default Alignment.center if the given alignment is `null`",
+      "displays the Rive widget with the default Alignment.center if the given one is null",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
 
@@ -212,7 +212,7 @@ void main() {
     );
 
     testWidgets(
-      "displays the Rive widget with the default BoxFit.contain if the given fit is null",
+      "displays the Rive widget with the default BoxFit.contain if the given one is null",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
 
@@ -232,7 +232,7 @@ void main() {
     );
 
     testWidgets(
-      "displays the Rive widget that applies the given use artboard size parameter",
+      "displays the Rive widget with the given useArtboardSsize parameter",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
 
@@ -252,7 +252,7 @@ void main() {
     );
 
     testWidgets(
-      "displays the Rive widget with the default false use artboard size parameter if the given use artboard size parameter is null",
+      "displays the Rive widget with the default 'false' useArtboardSize parameter if the given one is null",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
 
@@ -315,7 +315,7 @@ void main() {
     );
 
     testWidgets(
-      ".asset() uses the AssetArtboardProvider with the rootBundle as asset bundle if the given asset bundle is null",
+      ".asset() uses the AssetArtboardProvider with the default rootBundle asset bundle if the given one is null",
       (WidgetTester tester) async {
         await tester.runAsync(() async {
           ServicesBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
@@ -364,7 +364,7 @@ void main() {
     );
 
     testWidgets(
-      ".asset() displays the SizedBox as the default loading builder",
+      ".asset() displays a SizedBox when loading the animation if the given loading builder is null",
       (WidgetTester tester) async {
         when(
           assetBundle.load(assetName),
@@ -401,7 +401,7 @@ void main() {
     );
 
     testWidgets(
-      "displays the Rive widget with the artboard having the given animation controller",
+      "displays the Rive widget with the artboard controlled by the given animation controller",
       (WidgetTester tester) async {
         when(
           assetBundle.load(assetName),
@@ -454,7 +454,7 @@ void main() {
     );
 
     testWidgets(
-      ".asset() displays the Rive widget with the default Alignment.center if the given alignment is null",
+      ".asset() displays the Rive widget with the default Alignment.center if the given one is null",
       (WidgetTester tester) async {
         when(
           assetBundle.load(assetName),
@@ -500,7 +500,7 @@ void main() {
     );
 
     testWidgets(
-      ".asset() displays the Rive widget with the default BoxFit.contain if the given fit is null",
+      ".asset() displays the Rive widget with the default BoxFit.contain if the given one is null",
       (WidgetTester tester) async {
         when(
           assetBundle.load(assetName),
@@ -523,7 +523,7 @@ void main() {
     );
 
     testWidgets(
-      ".asset() displays the Rive that applies the given use artboard size parameter",
+      ".asset() displays the Rive widget with the given useArtboardSize parameter",
       (WidgetTester tester) async {
         when(
           assetBundle.load(assetName),
@@ -546,7 +546,7 @@ void main() {
     );
 
     testWidgets(
-      ".asset() displays the Rive with the default false use artboard size parameter if the given use artboard size parameter is null",
+      ".asset() displays the Rive widget with the default 'false' useArtboardSize parameter if the given one is null",
       (WidgetTester tester) async {
         when(
           assetBundle.load(assetName),
