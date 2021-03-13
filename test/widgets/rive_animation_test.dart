@@ -172,6 +172,26 @@ void main() {
     );
 
     testWidgets(
+      "displays the Rive widget with the default Alignment.center if the given alignment is `null`",
+      (WidgetTester tester) async {
+        when(artboardProvider.load()).thenAnswer((_) => artboard);
+
+        await tester.pumpWidget(_MaterialAppTestbed(
+          child: RiveAnimation(
+            artboardProvider: artboardProvider,
+            alignment: null,
+          ),
+        ));
+
+        await tester.pump();
+
+        final rive = _getRive(tester);
+
+        expect(rive.alignment, equals(Alignment.center));
+      },
+    );
+
+    testWidgets(
       "displays the Rive widget with the given fit",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
@@ -192,6 +212,26 @@ void main() {
     );
 
     testWidgets(
+      "displays the Rive widget with the default BoxFit.contain if the given fit is null",
+      (WidgetTester tester) async {
+        when(artboardProvider.load()).thenAnswer((_) => artboard);
+
+        await tester.pumpWidget(_MaterialAppTestbed(
+          child: RiveAnimation(
+            artboardProvider: artboardProvider,
+            fit: null,
+          ),
+        ));
+
+        await tester.pump();
+
+        final rive = _getRive(tester);
+
+        expect(rive.fit, equals(BoxFit.contain));
+      },
+    );
+
+    testWidgets(
       "displays the Rive widget that applies the given use artboard size parameter",
       (WidgetTester tester) async {
         when(artboardProvider.load()).thenAnswer((_) => artboard);
@@ -208,6 +248,26 @@ void main() {
         final rive = _getRive(tester);
 
         expect(rive.useArtboardSize, equals(useArtboardSize));
+      },
+    );
+
+    testWidgets(
+      "displays the Rive widget with the default false use artboard size parameter if the given use artboard size parameter is null",
+      (WidgetTester tester) async {
+        when(artboardProvider.load()).thenAnswer((_) => artboard);
+
+        await tester.pumpWidget(_MaterialAppTestbed(
+          child: RiveAnimation(
+            artboardProvider: artboardProvider,
+            useArtboardSize: null,
+          ),
+        ));
+
+        await tester.pump();
+
+        final rive = _getRive(tester);
+
+        expect(rive.useArtboardSize, isFalse);
       },
     );
 
@@ -394,6 +454,29 @@ void main() {
     );
 
     testWidgets(
+      ".asset() displays the Rive widget with the default Alignment.center if the given alignment is null",
+      (WidgetTester tester) async {
+        when(
+          assetBundle.load(assetName),
+        ).thenAnswer((_) => Future.value(assetByteData));
+
+        await tester.pumpWidget(_MaterialAppTestbed(
+          child: RiveAnimation.asset(
+            assetName,
+            bundle: assetBundle,
+            alignment: null,
+          ),
+        ));
+
+        await tester.pump();
+
+        final rive = _getRive(tester);
+
+        expect(rive.alignment, equals(Alignment.center));
+      },
+    );
+
+    testWidgets(
       ".asset() displays the Rive widget with the given fit",
       (WidgetTester tester) async {
         when(
@@ -417,6 +500,29 @@ void main() {
     );
 
     testWidgets(
+      ".asset() displays the Rive widget with the default BoxFit.contain if the given fit is null",
+      (WidgetTester tester) async {
+        when(
+          assetBundle.load(assetName),
+        ).thenAnswer((_) => Future.value(assetByteData));
+
+        await tester.pumpWidget(_MaterialAppTestbed(
+          child: RiveAnimation.asset(
+            assetName,
+            bundle: assetBundle,
+            fit: null,
+          ),
+        ));
+
+        await tester.pump();
+
+        final rive = _getRive(tester);
+
+        expect(rive.fit, equals(BoxFit.contain));
+      },
+    );
+
+    testWidgets(
       ".asset() displays the Rive that applies the given use artboard size parameter",
       (WidgetTester tester) async {
         when(
@@ -436,6 +542,29 @@ void main() {
         final rive = _getRive(tester);
 
         expect(rive.useArtboardSize, equals(useArtboardSize));
+      },
+    );
+
+    testWidgets(
+      ".asset() displays the Rive with the default false use artboard size parameter if the given use artboard size parameter is null",
+      (WidgetTester tester) async {
+        when(
+          assetBundle.load(assetName),
+        ).thenAnswer((_) => Future.value(assetByteData));
+
+        await tester.pumpWidget(_MaterialAppTestbed(
+          child: RiveAnimation.asset(
+            assetName,
+            bundle: assetBundle,
+            useArtboardSize: null,
+          ),
+        ));
+
+        await tester.pump();
+
+        final rive = _getRive(tester);
+
+        expect(rive.useArtboardSize, isFalse);
       },
     );
   });
