@@ -14,7 +14,8 @@ abstract class KeyFrameColorBase extends KeyFrame {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 88.
-  int _value;
+  static const int valueInitialValue = 0;
+  int _value = valueInitialValue;
   static const int valuePropertyKey = 88;
   int get value => _value;
 

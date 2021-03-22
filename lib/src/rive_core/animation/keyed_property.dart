@@ -12,7 +12,7 @@ class KeyFrameList<T extends KeyFrameInterface> {
   List<T> _keyframes = [];
   Iterable<T> get keyframes => _keyframes;
   set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
-  T after(T keyframe) {
+  T? after(T keyframe) {
     var index = _keyframes.indexOf(keyframe);
     if (index != -1 && index + 1 < _keyframes.length) {
       return _keyframes[index + 1];
@@ -68,22 +68,23 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   bool internalRemoveKeyFrame(KeyFrame frame) {
     var removed = _keyframes.remove(frame);
     if (_keyframes.isEmpty) {
-      context?.dirty(_checkShouldRemove);
+      context.dirty(_checkShouldRemove);
     }
     return removed;
   }
 
   void _checkShouldRemove() {
     if (_keyframes.isEmpty) {
-      context?.removeObject(this);
+      context.removeObject(this);
     }
   }
 
   void markKeyFrameOrderDirty() {
-    context?.dirty(_sortAndValidateKeyFrames);
+    context.dirty(_sortAndValidateKeyFrames);
   }
 
   void _sortAndValidateKeyFrames() {
+    assert(hasValidated);
     sort();
     for (int i = 0; i < _keyframes.length - 1; i++) {
       var a = _keyframes[i];

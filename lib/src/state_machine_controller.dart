@@ -1,4 +1,3 @@
-
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
@@ -30,7 +29,7 @@ class StateMachineController extends core.StateMachineController {
     isActive = true;
   }
 
-  factory StateMachineController.fromArtboard(
+  static StateMachineController? fromArtboard(
       Artboard artboard, String stateMachineName) {
     for (final animation in artboard.animations) {
       if (animation is StateMachine && animation.name == stateMachineName) {
@@ -40,7 +39,7 @@ class StateMachineController extends core.StateMachineController {
     return null;
   }
 
-  StateMachineInput<T> findInput<T>(String name) {
+  StateMachineInput<T>? findInput<T>(String name) {
     for (final input in stateMachine.inputs) {
       if (input.name == name && input.isValidType<T>()) {
         inputValues[input.id] = input.controllerValue;

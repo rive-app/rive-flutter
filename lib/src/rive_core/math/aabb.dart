@@ -31,23 +31,17 @@ class AABB {
   double get maxX => _buffer[2];
   double get minY => _buffer[1];
   double get maxY => _buffer[3];
-  AABB() {
-    _buffer = Float32List.fromList([0.0, 0.0, 0.0, 0.0]);
-  }
-  AABB.clone(AABB a) {
-    _buffer = Float32List.fromList(a.values);
-  }
-  AABB.fromValues(double a, double b, double c, double d) {
-    _buffer = Float32List.fromList([a, b, c, d]);
-  }
-  AABB.empty() {
-    _buffer = Float32List.fromList([
-      double.maxFinite,
-      double.maxFinite,
-      -double.maxFinite,
-      -double.maxFinite
-    ]);
-  }
+  AABB() : _buffer = Float32List.fromList([0.0, 0.0, 0.0, 0.0]);
+  AABB.clone(AABB a) : _buffer = Float32List.fromList(a.values);
+  AABB.fromValues(double a, double b, double c, double d)
+      : _buffer = Float32List.fromList([a, b, c, d]);
+  AABB.empty()
+      : _buffer = Float32List.fromList([
+          double.maxFinite,
+          double.maxFinite,
+          -double.maxFinite,
+          -double.maxFinite
+        ]);
   factory AABB.expand(AABB from, double amount) {
     var aabb = AABB.clone(from);
     if (aabb.width < amount) {
@@ -69,7 +63,7 @@ class AABB {
     return aabb;
   }
   bool get isEmpty => !AABB.isValid(this);
-  Vec2D includePoint(Vec2D point, Mat2D transform) {
+  Vec2D includePoint(Vec2D point, Mat2D? transform) {
     var transformedPoint = transform == null
         ? point
         : Vec2D.transformMat2D(Vec2D(), point, transform);
@@ -94,9 +88,8 @@ class AABB {
     }
   }
 
-  AABB.fromMinMax(Vec2D min, Vec2D max) {
-    _buffer = Float32List.fromList([min[0], min[1], max[0], max[1]]);
-  }
+  AABB.fromMinMax(Vec2D min, Vec2D max)
+      : _buffer = Float32List.fromList([min[0], min[1], max[0], max[1]]);
   static bool areEqual(AABB a, AABB b) {
     return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3];
   }
@@ -202,8 +195,8 @@ class AABB {
     ], transform: matrix);
   }
 
-  AABB.fromPoints(Iterable<Vec2D> points,
-      {Mat2D transform, double expand = 0}) {
+  factory AABB.fromPoints(Iterable<Vec2D> points,
+      {Mat2D? transform, double expand = 0}) {
     double minX = double.maxFinite;
     double minY = double.maxFinite;
     double maxX = -double.maxFinite;
@@ -243,6 +236,6 @@ class AABB {
         maxY += diff;
       }
     }
-    _buffer = Float32List.fromList([minX, minY, maxX, maxY]);
+    return AABB.fromValues(minX, minY, maxX, maxY);
   }
 }

@@ -8,9 +8,9 @@ import 'package:rive/src/generated/shapes/path_vertex_base.dart';
 export 'package:rive/src/generated/shapes/path_vertex_base.dart';
 
 abstract class PathVertex<T extends Weight> extends PathVertexBase {
-  T _weight;
-  T get weight => _weight;
-  Path get path => parent is Path ? parent as Path : null;
+  T? _weight;
+  T? get weight => _weight;
+  Path get path => parent as Path;
   @override
   void update(int dirt) {}
   final Vec2D _renderTranslation = Vec2D();
@@ -24,13 +24,13 @@ abstract class PathVertex<T extends Weight> extends PathVertexBase {
   @override
   void xChanged(double from, double to) {
     _renderTranslation[0] = to;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
   void yChanged(double from, double to) {
     _renderTranslation[1] = to;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
@@ -55,7 +55,7 @@ abstract class PathVertex<T extends Weight> extends PathVertexBase {
   }
 
   void deform(Mat2D world, Float32List boneTransforms) {
-    Weight.deform(x, y, weight.indices, weight.values, world, boneTransforms,
-        _weight.translation);
+    Weight.deform(x, y, weight!.indices, weight!.values, world, boneTransforms,
+        _weight!.translation);
   }
 }

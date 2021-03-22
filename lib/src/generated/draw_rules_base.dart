@@ -18,7 +18,8 @@ abstract class DrawRulesBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// DrawTargetId field with key 121.
-  int _drawTargetId;
+  static const int drawTargetIdInitialValue = -1;
+  int _drawTargetId = drawTargetIdInitialValue;
   static const int drawTargetIdPropertyKey = 121;
 
   /// Id of the DrawTarget that is currently active for this set of rules.

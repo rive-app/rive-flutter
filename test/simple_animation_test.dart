@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
 
 void main() {
-  ByteData riveData;
+  late ByteData riveData;
 
   void loadTestAssets() {
     riveData = ByteData.sublistView(
@@ -17,8 +17,7 @@ void main() {
 
   test('SimpleAnimation exposes mix', () {
     // Load a Rive file
-    final riveFile = RiveFile();
-    expect(riveFile.import(riveData), true);
+    final riveFile = RiveFile.import(riveData);
     expect(riveFile.mainArtboard.name, 'My Artboard');
 
     final firstController =

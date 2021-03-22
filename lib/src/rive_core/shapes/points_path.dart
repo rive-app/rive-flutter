@@ -14,7 +14,7 @@ class PointsPath extends PointsPathBase with Skinnable {
     isClosed = false;
   }
   @override
-  Mat2D get pathTransform => skin != null ? Mat2D() : worldTransform;
+  Mat2D get pathTransform => skin != null ? Mat2D.identity : worldTransform;
   @override
   Mat2D get inversePathTransform =>
       skin != null ? Mat2D() : inverseWorldTransform;

@@ -28,7 +28,8 @@ abstract class StarBase extends Polygon {
 
   /// --------------------------------------------------------------------------
   /// InnerRadius field with key 127.
-  double _innerRadius = 0.5;
+  static const double innerRadiusInitialValue = 0.5;
+  double _innerRadius = innerRadiusInitialValue;
   static const int innerRadiusPropertyKey = 127;
 
   /// Percentage of width/height to project inner points of the star.

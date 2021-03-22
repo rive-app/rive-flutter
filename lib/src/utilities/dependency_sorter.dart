@@ -12,20 +12,15 @@ abstract class DependencyGraphNode<T> {
 /// scenarios. Use this as a best case first run and fall back to a more complex
 /// solver if this one finds a cycle.
 class DependencySorter<T extends DependencyGraphNode<T>> {
-  HashSet<T> _perm;
-  HashSet<T> _temp;
-  List<T> _order;
+  final _perm = HashSet<T>();
+  final _temp = HashSet<T>();
+  var _order = <T>[];
   List<T> get order => _order.reversed.toList();
-
-  DependencySorter() {
-    _perm = HashSet<T>();
-    _temp = HashSet<T>();
-  }
 
   List<T> sort(T root) {
     _order = <T>[];
     if (!visit(root)) {
-      return null;
+      return [];
     }
     return _order.reversed.toList();
   }
@@ -45,12 +40,10 @@ class DependencySorter<T extends DependencyGraphNode<T>> {
 
     _temp.add(n);
 
-    Set<T> dependents = n.dependents;
-    if (dependents != null) {
-      for (final T d in dependents) {
-        if (!visit(d)) {
-          return false;
-        }
+    final dependents = n.dependents;
+    for (final T d in dependents) {
+      if (!visit(d)) {
+        return false;
       }
     }
     _perm.add(n);
@@ -72,12 +65,7 @@ class DependencySorter<T extends DependencyGraphNode<T>> {
 /// on A
 class TarjansDependencySorter<T extends DependencyGraphNode<T>>
     extends DependencySorter<T> {
-  HashSet<T> _cycleNodes;
-  TarjansDependencySorter() {
-    _perm = HashSet<T>();
-    _temp = HashSet<T>();
-    _cycleNodes = HashSet<T>();
-  }
+  final _cycleNodes = HashSet<T>();
 
   HashSet<T> get cycleNodes => _cycleNodes;
 
@@ -102,15 +90,12 @@ class TarjansDependencySorter<T extends DependencyGraphNode<T>>
     _cycleNodes.clear();
     _order.clear();
 
-    var cycles =
-        stronglyConnectedComponents<T>([n], (T node) => node.dependents);
+    var cycles = stronglyConnectedComponents<T>([n], (node) => node.dependents);
 
     cycles.forEach((cycle) {
       // cycles of len 1 are not cycles.
       if (cycle.length > 1) {
-        cycle.forEach((cycleMember) {
-          _cycleNodes.add(cycleMember);
-        });
+        cycle.forEach(_cycleNodes.add);
       }
     });
     return _cycleNodes;

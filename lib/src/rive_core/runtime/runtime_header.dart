@@ -1,8 +1,7 @@
 import 'dart:collection';
-import 'package:meta/meta.dart';
+import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_unsupported_version_exception.dart';
 import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
-import 'exceptions/rive_format_error_exception.dart';
 
 class RuntimeVersion {
   final int major;
@@ -11,8 +10,6 @@ class RuntimeVersion {
   String versionString() {
     return '$major.$minor';
   }
-
-  bool get includesStateMachines => major >= 6 && minor >= 4;
 }
 
 const riveVersion = RuntimeVersion(7, 0);
@@ -23,9 +20,9 @@ class RuntimeHeader {
   final int fileId;
   final HashMap<int, int> propertyToFieldIndex;
   RuntimeHeader(
-      {@required this.fileId,
-      @required this.version,
-      this.propertyToFieldIndex});
+      {required this.fileId,
+      required this.version,
+      required this.propertyToFieldIndex});
   factory RuntimeHeader.read(BinaryReader reader) {
     var fingerprint = RuntimeHeader.fingerprint.codeUnits;
     for (int i = 0; i < fingerprint.length; i++) {

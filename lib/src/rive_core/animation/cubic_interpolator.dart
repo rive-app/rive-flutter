@@ -23,7 +23,7 @@ double _getSlope(double aT, double aA1, double aA2) {
 }
 
 class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
-  _CubicEase _ease;
+  _CubicEase _ease = _CubicEase.make(0.42, 0, 0.58, 1);
   @override
   bool equalParameters(Interpolator other) {
     if (other is CubicInterpolator) {
@@ -36,10 +36,7 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
   }
 
   @override
-  void onAdded() {
-    _updateStoredCubic();
-  }
-
+  void onAdded() => _updateStoredCubic();
   @override
   void onAddedDirty() {}
   @override
@@ -68,10 +65,9 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
 }
 
 class _Cubic extends _CubicEase {
-  Float64List _values;
+  final Float64List _values = Float64List(splineTableSize);
   final double x1, y1, x2, y2;
   _Cubic(this.x1, this.y1, this.x2, this.y2) {
-    _values = Float64List(splineTableSize);
     for (int i = 0; i < splineTableSize; ++i) {
       _values[i] = _calcBezier(i * sampleStepSize, x1, x2);
     }

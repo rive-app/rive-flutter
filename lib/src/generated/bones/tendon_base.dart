@@ -13,7 +13,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// BoneId field with key 95.
-  int _boneId;
+  static const int boneIdInitialValue = -1;
+  int _boneId = boneIdInitialValue;
   static const int boneIdPropertyKey = 95;
 
   /// Identifier used to track the bone this tendon connects to.
@@ -34,7 +35,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Xx field with key 96.
-  double _xx = 1;
+  static const double xxInitialValue = 1;
+  double _xx = xxInitialValue;
   static const int xxPropertyKey = 96;
 
   /// x component of x unit vector in the bind transform
@@ -55,7 +57,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Yx field with key 97.
-  double _yx = 0;
+  static const double yxInitialValue = 0;
+  double _yx = yxInitialValue;
   static const int yxPropertyKey = 97;
 
   /// y component of x unit vector in the bind transform
@@ -76,7 +79,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Xy field with key 98.
-  double _xy = 0;
+  static const double xyInitialValue = 0;
+  double _xy = xyInitialValue;
   static const int xyPropertyKey = 98;
 
   /// x component of y unit vector in the bind transform
@@ -97,7 +101,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Yy field with key 99.
-  double _yy = 1;
+  static const double yyInitialValue = 1;
+  double _yy = yyInitialValue;
   static const int yyPropertyKey = 99;
 
   /// y component of y unit vector in the bind transform
@@ -118,7 +123,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Tx field with key 100.
-  double _tx = 0;
+  static const double txInitialValue = 0;
+  double _tx = txInitialValue;
   static const int txPropertyKey = 100;
 
   /// x position component of the bind transform
@@ -139,7 +145,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Ty field with key 101.
-  double _ty = 0;
+  static const double tyInitialValue = 0;
+  double _ty = tyInitialValue;
   static const int tyPropertyKey = 101;
 
   /// y position component of the bind transform

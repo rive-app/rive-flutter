@@ -12,16 +12,16 @@ class Polygon extends PolygonBase {
   void pointsChanged(int from, int to) => markPathDirty();
   @override
   List<PathVertex<Weight>> get vertices {
-    var vertexList = List<StraightVertex>.filled(points, null);
+    var vertexList = <PathVertex<Weight>>[];
     var halfWidth = width / 2;
     var halfHeight = height / 2;
     var angle = -pi / 2;
     var inc = 2 * pi / points;
     for (int i = 0; i < points; i++) {
-      vertexList[i] = StraightVertex()
+      vertexList.add(StraightVertex()
         ..x = cos(angle) * halfWidth
         ..y = sin(angle) * halfHeight
-        ..radius = cornerRadius;
+        ..radius = cornerRadius);
       angle += inc;
     }
     return vertexList;

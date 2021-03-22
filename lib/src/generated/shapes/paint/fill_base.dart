@@ -20,7 +20,8 @@ abstract class FillBase extends ShapePaint {
 
   /// --------------------------------------------------------------------------
   /// FillRule field with key 40.
-  int _fillRule = 0;
+  static const int fillRuleInitialValue = 0;
+  int _fillRule = fillRuleInitialValue;
   static const int fillRulePropertyKey = 40;
   int get fillRule => _fillRule;
 

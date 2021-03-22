@@ -5,9 +5,12 @@ import 'package:rive/src/generated/animation/state_machine_input_base.dart';
 export 'package:rive/src/generated/animation/state_machine_input_base.dart';
 
 abstract class StateMachineInput extends StateMachineInputBase {
+  static final StateMachineInput unknown = _StateMachineUnknownInput();
   @override
   ListBase<StateMachineComponent> machineComponentList(StateMachine machine) =>
-      machine?.inputs;
+      stateMachine.inputs;
   bool isValidType<T>() => false;
   dynamic get controllerValue => null;
 }
+
+class _StateMachineUnknownInput extends StateMachineInput {}

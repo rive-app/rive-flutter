@@ -7,14 +7,18 @@ export 'package:rive/src/generated/animation/state_transition_base.dart';
 
 class StateTransition extends StateTransitionBase {
   final StateTransitionConditions conditions = StateTransitionConditions();
-  LayerState stateTo;
+  LayerState stateTo = LayerState.unknown;
+  static final StateTransition unknown = StateTransition();
+  @override
+  bool validate() {
+    return super.validate() && stateTo != LayerState.unknown;
+  }
+
   @override
   void onAdded() {}
   @override
   void onAddedDirty() {
-    if (stateToId != null) {
-      stateTo = context?.resolve(stateToId);
-    }
+    stateTo = context.resolveWithDefault(stateToId, LayerState.unknown);
   }
 
   @override
@@ -52,5 +56,5 @@ class StateTransition extends StateTransitionBase {
   @override
   void durationChanged(int from, int to) {}
   @override
-  void stateToIdChanged(int from, int to) => stateTo = context?.resolve(to);
+  void stateToIdChanged(int from, int to) {}
 }

@@ -13,7 +13,8 @@ abstract class DrawTargetBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// DrawableId field with key 119.
-  int _drawableId;
+  static const int drawableIdInitialValue = -1;
+  int _drawableId = drawableIdInitialValue;
   static const int drawableIdPropertyKey = 119;
 
   /// Id of the drawable this target references.
@@ -34,7 +35,8 @@ abstract class DrawTargetBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// PlacementValue field with key 120.
-  int _placementValue = 0;
+  static const int placementValueInitialValue = 0;
+  int _placementValue = placementValueInitialValue;
   static const int placementValuePropertyKey = 120;
 
   /// Backing enum value for the Placement.

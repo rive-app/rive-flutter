@@ -15,7 +15,8 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// StateToId field with key 151.
-  int _stateToId;
+  static const int stateToIdInitialValue = -1;
+  int _stateToId = stateToIdInitialValue;
   static const int stateToIdPropertyKey = 151;
 
   /// Id of the state this transition originates from.
@@ -36,7 +37,8 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// Flags field with key 152.
-  int _flags = 0;
+  static const int flagsInitialValue = 0;
+  int _flags = flagsInitialValue;
   static const int flagsPropertyKey = 152;
   int get flags => _flags;
 
@@ -55,7 +57,8 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// Duration field with key 158.
-  int _duration = 0;
+  static const int durationInitialValue = 0;
+  int _duration = durationInitialValue;
   static const int durationPropertyKey = 158;
 
   /// Duration of the trasition (mix time) in milliseconds.

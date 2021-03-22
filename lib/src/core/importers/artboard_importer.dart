@@ -24,7 +24,8 @@ class ArtboardImporter extends ImportStackObject {
   @override
   bool resolve() {
     for (final object in artboard.objects.skip(1)) {
-      if (object is Component && object.parentId == null) {
+      if (object is Component &&
+          object.parentId == ComponentBase.parentIdInitialValue) {
         object.parent = artboard;
       }
       object?.onAddedDirty();

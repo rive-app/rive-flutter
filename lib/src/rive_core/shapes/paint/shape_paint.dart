@@ -2,18 +2,16 @@ import 'dart:ui';
 import 'package:meta/meta.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 export 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 
 abstract class ShapePaint extends ShapePaintBase {
-  Paint _paint;
+  late Paint _paint;
   Paint get paint => _paint;
-  ShapePaintMutator _paintMutator;
-  ShapePaintContainer _shapePaintContainer;
-  ShapePaintContainer get shapePaintContainer => _shapePaintContainer;
+  ShapePaintMutator _paintMutator = ShapePaintMutator.unknown;
+  ShapePaintContainer get shapePaintContainer => parent as ShapePaintContainer;
   ShapePaint() {
     _paint = makePaint();
   }
@@ -39,8 +37,15 @@ abstract class ShapePaint extends ShapePaintBase {
   }
 
   @override
+  bool validate() =>
+      super.validate() &&
+      parent is ShapePaintContainer &&
+      _paintMutator != ShapePaintMutator.unknown;
+  @override
   void isVisibleChanged(bool from, bool to) {
-    _shapePaintContainer?.addDirt(ComponentDirt.paint);
+    if (hasValidated) {
+      shapePaintContainer.addDirt(ComponentDirt.paint);
+    }
   }
 
   @override
@@ -48,24 +53,13 @@ abstract class ShapePaint extends ShapePaintBase {
     super.childRemoved(child);
     if (child is ShapePaintMutator &&
         _paintMutator == child as ShapePaintMutator) {
-      _changeMutator(null);
-    }
-  }
-
-  @override
-  void parentChanged(ContainerComponent from, ContainerComponent to) {
-    super.parentChanged(from, to);
-    if (parent is ShapePaintContainer) {
-      _shapePaintContainer = parent as ShapePaintContainer;
-      _initMutator();
-    } else {
-      _shapePaintContainer = null;
+      _changeMutator(ShapePaintMutator.unknown);
     }
   }
 
   void _initMutator() {
-    if (_shapePaintContainer != null && _paintMutator != null) {
-      _paintMutator.initializePaintMutator(_shapePaintContainer, paint);
+    if (hasValidated) {
+      _paintMutator.initializePaintMutator(shapePaintContainer, paint);
     }
   }
 

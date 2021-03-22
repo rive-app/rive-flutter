@@ -10,10 +10,6 @@ class LinearAnimation extends LinearAnimationBase {
   final _keyedObjects = HashMap<int, KeyedObject>();
   Iterable<KeyedObject> get keyedObjects => _keyedObjects.values;
   bool internalAddKeyedObject(KeyedObject object) {
-    assert(
-        object.objectId != null,
-        'KeyedObject must be referencing a Core object '
-        'before being added to an animation.');
     var value = _keyedObjects[object.objectId];
     if (value != null && value != object) {
       return false;
@@ -22,8 +18,7 @@ class LinearAnimation extends LinearAnimationBase {
     return true;
   }
 
-  void apply(double time, {double mix = 1, CoreContext coreContext}) {
-    coreContext ??= context;
+  void apply(double time, {required CoreContext coreContext, double mix = 1}) {
     for (final keyedObject in _keyedObjects.values) {
       keyedObject.apply(time, mix, coreContext);
     }

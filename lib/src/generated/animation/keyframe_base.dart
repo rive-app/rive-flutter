@@ -12,7 +12,8 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Frame field with key 67.
-  int _frame;
+  static const int frameInitialValue = 0;
+  int _frame = frameInitialValue;
   static const int framePropertyKey = 67;
 
   /// Timecode as frame number can be converted to time by dividing by animation
@@ -34,7 +35,8 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// InterpolationType field with key 68.
-  int _interpolationType;
+  static const int interpolationTypeInitialValue = 0;
+  int _interpolationType = interpolationTypeInitialValue;
   static const int interpolationTypePropertyKey = 68;
 
   /// The type of interpolation index in KeyframeInterpolation applied to this
@@ -57,7 +59,8 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// InterpolatorId field with key 69.
-  int _interpolatorId;
+  static const int interpolatorIdInitialValue = -1;
+  int _interpolatorId = interpolatorIdInitialValue;
   static const int interpolatorIdPropertyKey = 69;
 
   /// The id of the custom interpolator used when interpolation is Cubic.

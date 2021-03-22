@@ -5,15 +5,15 @@ export 'package:rive/src/generated/bones/tendon_base.dart';
 
 class Tendon extends TendonBase {
   final Mat2D _bind = Mat2D();
-  Mat2D _inverseBind;
-  SkeletalComponent _bone;
+  Mat2D? _inverseBind = Mat2D();
+  SkeletalComponent _bone = SkeletalComponent.unknown;
   SkeletalComponent get bone => _bone;
   Mat2D get inverseBind {
     if (_inverseBind == null) {
       _inverseBind = Mat2D();
-      Mat2D.invert(_inverseBind, _bind);
+      Mat2D.invert(_inverseBind!, _bind);
     }
-    return _inverseBind;
+    return _inverseBind!;
   }
 
   @override
@@ -21,9 +21,7 @@ class Tendon extends TendonBase {
   @override
   void onAddedDirty() {
     super.onAddedDirty();
-    if (boneId != null) {
-      _bone = context?.resolve(boneId);
-    }
+    _bone = context.resolveWithDefault(boneId, SkeletalComponent.unknown);
   }
 
   @override

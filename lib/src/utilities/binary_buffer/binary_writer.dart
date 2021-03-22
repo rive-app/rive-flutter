@@ -12,13 +12,13 @@ class BinaryWriter {
   int get alignment => _alignment;
 
   final Endian endian;
-  Uint8List _buffer;
+  late Uint8List _buffer;
   ByteData get buffer =>
       ByteData.view(_buffer.buffer, _buffer.offsetInBytes, size);
   Uint8List get uint8Buffer =>
       Uint8List.view(_buffer.buffer, _buffer.offsetInBytes, size);
 
-  ByteData _byteData;
+  late ByteData _byteData;
   int _writeIndex = 0;
   int get size => _writeIndex;
 
@@ -100,7 +100,7 @@ class BinaryWriter {
 
   /// Write bytes into the buffer. Optional [length] to write a specific number
   /// of [bytes], otherwise the length from [bytes] is used.
-  void write(Uint8List bytes, [int length]) {
+  void write(Uint8List bytes, [int? length]) {
     length ??= bytes.length;
     _ensureAvailable(length);
     _buffer.setRange(_writeIndex, _writeIndex + length, bytes);

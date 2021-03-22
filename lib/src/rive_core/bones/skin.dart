@@ -10,7 +10,7 @@ export 'package:rive/src/generated/bones/skin_base.dart';
 class Skin extends SkinBase {
   final List<Tendon> _tendons = [];
   List<Tendon> get tendons => _tendons;
-  Float32List _boneTransforms;
+  Float32List _boneTransforms = Float32List(0);
   final Mat2D _worldTransform = Mat2D();
   @override
   void onDirty(int mask) {
@@ -20,7 +20,7 @@ class Skin extends SkinBase {
   @override
   void update(int dirt) {
     var size = (_tendons.length + 1) * 6;
-    if (_boneTransforms == null || _boneTransforms.length != size) {
+    if (_boneTransforms.length != size) {
       _boneTransforms = Float32List(size);
       _boneTransforms[0] = 1;
       _boneTransforms[1] = 0;
@@ -71,7 +71,7 @@ class Skin extends SkinBase {
   void buildDependencies() {
     super.buildDependencies();
     for (final tendon in _tendons) {
-      tendon.bone?.addDependent(this);
+      tendon.bone.addDependent(this);
     }
   }
 
@@ -82,7 +82,7 @@ class Skin extends SkinBase {
       case TendonBase.typeKey:
         _tendons.add(child as Tendon);
         markRebuildDependencies();
-        parent?.markRebuildDependencies();
+        parent.markRebuildDependencies();
         break;
     }
   }
@@ -98,7 +98,7 @@ class Skin extends SkinBase {
         } else {
           markRebuildDependencies();
         }
-        parent?.markRebuildDependencies();
+        parent.markRebuildDependencies();
         break;
     }
   }

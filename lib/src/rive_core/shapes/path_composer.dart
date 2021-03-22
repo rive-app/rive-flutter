@@ -6,20 +6,21 @@ import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/generated/shapes/path_composer_base.dart';
 
 class PathComposer extends PathComposerBase {
-  Shape _shape;
+  static final PathComposer unknown = PathComposer();
+  Shape _shape = Shape.unknown;
   Shape get shape => _shape;
   final ui.Path worldPath = ui.Path();
   final ui.Path localPath = ui.Path();
-  ui.Path _fillPath;
+  ui.Path _fillPath = ui.Path();
   ui.Path get fillPath => _fillPath;
   void _changeShape(Shape value) {
     if (value == _shape) {
       return;
     }
-    if (_shape != null && _shape.pathComposer == this) {
-      _shape.pathComposer = null;
+    if (_shape != Shape.unknown && _shape.pathComposer == this) {
+      _shape.pathComposer = PathComposer.unknown;
     }
-    value?.pathComposer = this;
+    value.pathComposer = this;
     _shape = value;
   }
 
@@ -35,14 +36,10 @@ class PathComposer extends PathComposerBase {
           if (path.isHidden) {
             continue;
           }
-          Mat2D localTransform;
-          var transform = path.pathTransform;
-          if (transform != null) {
-            localTransform = Mat2D();
-            Mat2D.multiply(localTransform, inverseWorld, transform);
-          }
           localPath.addPath(path.uiPath, ui.Offset.zero,
-              matrix4: localTransform?.mat4);
+              matrix4:
+                  Mat2D.multiplySkipIdentity(inverseWorld, path.pathTransform)
+                      .mat4);
         }
       }
     }
@@ -53,7 +50,7 @@ class PathComposer extends PathComposerBase {
           continue;
         }
         worldPath.addPath(path.uiPath, ui.Offset.zero,
-            matrix4: path.pathTransform?.mat4);
+            matrix4: path.pathTransform.mat4);
       }
     }
     _fillPath = _shape.fillInWorld ? worldPath : localPath;
@@ -62,11 +59,9 @@ class PathComposer extends PathComposerBase {
   @override
   void buildDependencies() {
     super.buildDependencies();
-    if (_shape != null) {
-      _shape.addDependent(this);
-      for (final path in _shape?.paths) {
-        path.addDependent(this);
-      }
+    _shape.addDependent(this);
+    for (final path in _shape.paths) {
+      path.addDependent(this);
     }
   }
 
@@ -79,14 +74,14 @@ class PathComposer extends PathComposerBase {
 
   @override
   bool resolveArtboard() {
-    _changeShape(null);
+    _changeShape(Shape.unknown);
     return super.resolveArtboard();
   }
 
   @override
   void visitAncestor(Component ancestor) {
     super.visitAncestor(ancestor);
-    if (_shape == null && ancestor is Shape) {
+    if (_shape == Shape.unknown && ancestor is Shape) {
       _changeShape(ancestor);
     }
   }

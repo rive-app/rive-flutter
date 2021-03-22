@@ -19,7 +19,8 @@ abstract class TransformComponentBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 15.
-  double _rotation = 0;
+  static const double rotationInitialValue = 0;
+  double _rotation = rotationInitialValue;
   static const int rotationPropertyKey = 15;
   double get rotation => _rotation;
 
@@ -38,7 +39,8 @@ abstract class TransformComponentBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ScaleX field with key 16.
-  double _scaleX = 1;
+  static const double scaleXInitialValue = 1;
+  double _scaleX = scaleXInitialValue;
   static const int scaleXPropertyKey = 16;
   double get scaleX => _scaleX;
 
@@ -57,7 +59,8 @@ abstract class TransformComponentBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ScaleY field with key 17.
-  double _scaleY = 1;
+  static const double scaleYInitialValue = 1;
+  double _scaleY = scaleYInitialValue;
   static const int scaleYPropertyKey = 17;
   double get scaleY => _scaleY;
 
@@ -76,7 +79,8 @@ abstract class TransformComponentBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Opacity field with key 18.
-  double _opacity = 1;
+  static const double opacityInitialValue = 1;
+  double _opacity = opacityInitialValue;
   static const int opacityPropertyKey = 18;
   double get opacity => _opacity;
 

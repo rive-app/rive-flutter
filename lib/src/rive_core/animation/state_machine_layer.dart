@@ -10,19 +10,16 @@ import 'package:rive/src/generated/animation/state_machine_layer_base.dart';
 export 'package:rive/src/generated/animation/state_machine_layer_base.dart';
 
 class StateMachineLayer extends StateMachineLayerBase {
-  LayerState _entryState;
-  LayerState _anyState;
-  LayerState _exitState;
+  LayerState _entryState = LayerState.unknown;
+  LayerState _anyState = LayerState.unknown;
+  LayerState _exitState = LayerState.unknown;
   LayerState get entryState => _entryState;
   LayerState get anyState => _anyState;
   LayerState get exitState => _exitState;
   @override
   ListBase<StateMachineComponent> machineComponentList(StateMachine machine) =>
-      machine?.layers;
-  @override
-  void onAdded() {}
+      stateMachine.layers;
   bool internalAddState(LayerState state) {
-    assert(state != null);
     switch (state.coreType) {
       case AnyStateBase.typeKey:
         _anyState = state;

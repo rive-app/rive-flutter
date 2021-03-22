@@ -14,7 +14,8 @@ abstract class KeyFrameIdBase extends KeyFrame {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 122.
-  int _value;
+  static const int valueInitialValue = -1;
+  int _value = valueInitialValue;
   static const int valuePropertyKey = 122;
   int get value => _value;
 

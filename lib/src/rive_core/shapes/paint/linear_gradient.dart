@@ -8,8 +8,11 @@ import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 export 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 
+class _UnknownGradient extends LinearGradient {}
+
 class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   final List<GradientStop> gradientStops = [];
+  static final LinearGradient unknown = _UnknownGradient();
   bool _paintsInWorldSpace = true;
   bool get paintsInWorldSpace => _paintsInWorldSpace;
   set paintsInWorldSpace(bool value) {
@@ -27,7 +30,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   @override
   void buildDependencies() {
     super.buildDependencies();
-    shapePaintContainer?.addDependent(this);
+    shapePaintContainer.addDependent(this);
   }
 
   @override
@@ -108,12 +111,12 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   @override
   void opacityChanged(double from, double to) {
     syncColor();
-    shapePaintContainer?.addDirt(ComponentDirt.paint);
+    shapePaintContainer.addDirt(ComponentDirt.paint);
   }
 
   @override
   void syncColor() {
-    paint?.color = const ui.Color(0xFFFFFFFF)
+    paint.color = const ui.Color(0xFFFFFFFF)
         .withOpacity((opacity * renderOpacity).clamp(0, 1).toDouble());
   }
 }

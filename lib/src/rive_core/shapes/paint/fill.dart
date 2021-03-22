@@ -10,10 +10,7 @@ class Fill extends FillBase {
   PathFillType get fillType => PathFillType.values[fillRule];
   set fillType(PathFillType type) => fillRule = type.index;
   @override
-  void fillRuleChanged(int from, int to) {
-    parent?.addDirt(ComponentDirt.paint);
-  }
-
+  void fillRuleChanged(int from, int to) => parent.addDirt(ComponentDirt.paint);
   @override
   void update(int dirt) {}
   @override

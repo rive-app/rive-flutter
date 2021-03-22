@@ -14,7 +14,7 @@ class SolidColor extends SolidColorBase with ShapePaintMutator {
   @override
   void colorValueChanged(int from, int to) {
     syncColor();
-    shapePaintContainer?.addDirt(ComponentDirt.paint);
+    shapePaintContainer.addDirt(ComponentDirt.paint);
   }
 
   @override
@@ -27,7 +27,7 @@ class SolidColor extends SolidColorBase with ShapePaintMutator {
 
   @override
   void syncColor() {
-    paint?.color = color
+    paint.color = color
         .withOpacity((color.opacity * renderOpacity).clamp(0, 1).toDouble());
   }
 }

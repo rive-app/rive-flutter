@@ -123,7 +123,7 @@ import 'package:rive/src/rive_core/shapes/triangle.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class RiveCoreContext {
-  static Core makeCoreInstance(int typeKey) {
+  static Core? makeCoreInstance(int typeKey) {
     switch (typeKey) {
       case DrawTargetBase.typeKey:
         return DrawTarget();
@@ -237,12 +237,8 @@ class RiveCoreContext {
   static void setObjectProperty(Core object, int propertyKey, Object value) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
-        if (object is ComponentBase) {
-          if (value is String) {
-            object.name = value;
-          } else if (value == null) {
-            object.name = null;
-          }
+        if (object is ComponentBase && value is String) {
+          object.name = value;
         }
         break;
       case ComponentBase.parentIdPropertyKey:
@@ -251,12 +247,8 @@ class RiveCoreContext {
         }
         break;
       case DrawTargetBase.drawableIdPropertyKey:
-        if (object is DrawTargetBase) {
-          if (value is int) {
-            object.drawableId = value;
-          } else if (value == null) {
-            object.drawableId = null;
-          }
+        if (object is DrawTargetBase && value is int) {
+          object.drawableId = value;
         }
         break;
       case DrawTargetBase.placementValuePropertyKey:
@@ -265,12 +257,8 @@ class RiveCoreContext {
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
-        if (object is AnimationStateBase) {
-          if (value is int) {
-            object.animationId = value;
-          } else if (value == null) {
-            object.animationId = null;
-          }
+        if (object is AnimationStateBase && value is int) {
+          object.animationId = value;
         }
         break;
       case KeyedObjectBase.objectIdPropertyKey:
@@ -279,21 +267,13 @@ class RiveCoreContext {
         }
         break;
       case TransitionConditionBase.inputIdPropertyKey:
-        if (object is TransitionConditionBase) {
-          if (value is int) {
-            object.inputId = value;
-          } else if (value == null) {
-            object.inputId = null;
-          }
+        if (object is TransitionConditionBase && value is int) {
+          object.inputId = value;
         }
         break;
       case StateMachineComponentBase.namePropertyKey:
-        if (object is StateMachineComponentBase) {
-          if (value is String) {
-            object.name = value;
-          } else if (value == null) {
-            object.name = null;
-          }
+        if (object is StateMachineComponentBase && value is String) {
+          object.name = value;
         }
         break;
       case KeyedPropertyBase.propertyKeyPropertyKey:
@@ -317,12 +297,8 @@ class RiveCoreContext {
         }
         break;
       case KeyFrameBase.interpolatorIdPropertyKey:
-        if (object is KeyFrameBase) {
-          if (value is int) {
-            object.interpolatorId = value;
-          } else if (value == null) {
-            object.interpolatorId = null;
-          }
+        if (object is KeyFrameBase && value is int) {
+          object.interpolatorId = value;
         }
         break;
       case KeyFrameIdBase.valuePropertyKey:
@@ -838,7 +814,7 @@ class RiveCoreContext {
   static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType colorType = CoreColorType();
   static CoreFieldType boolType = CoreBoolType();
-  static CoreFieldType coreType(int propertyKey) {
+  static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
       case StateMachineComponentBase.namePropertyKey:
@@ -973,7 +949,7 @@ class RiveCoreContext {
       case AnimationBase.namePropertyKey:
         return (object as AnimationBase).name;
     }
-    return null;
+    return '';
   }
 
   static int getUint(Core object, int propertyKey) {

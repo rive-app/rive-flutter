@@ -14,7 +14,8 @@ abstract class ClippingShapeBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// SourceId field with key 92.
-  int _sourceId;
+  static const int sourceIdInitialValue = -1;
+  int _sourceId = sourceIdInitialValue;
   static const int sourceIdPropertyKey = 92;
 
   /// Identifier used to track the node to use as a clipping source.
@@ -35,7 +36,8 @@ abstract class ClippingShapeBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// FillRule field with key 93.
-  int _fillRule = 0;
+  static const int fillRuleInitialValue = 0;
+  int _fillRule = fillRuleInitialValue;
   static const int fillRulePropertyKey = 93;
 
   /// Backing enum value for the clipping fill rule (nonZero or evenOdd).
@@ -56,7 +58,8 @@ abstract class ClippingShapeBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// IsVisible field with key 94.
-  bool _isVisible = true;
+  static const bool isVisibleInitialValue = true;
+  bool _isVisible = isVisibleInitialValue;
   static const int isVisiblePropertyKey = 94;
   bool get isVisible => _isVisible;
 

@@ -5,22 +5,23 @@ import 'package:rive/src/generated/shapes/cubic_detached_vertex_base.dart';
 export 'package:rive/src/generated/shapes/cubic_detached_vertex_base.dart';
 
 class CubicDetachedVertex extends CubicDetachedVertexBase {
-  Vec2D _inPoint;
-  Vec2D _outPoint;
+  Vec2D? _inPoint;
+  Vec2D? _outPoint;
   CubicDetachedVertex();
   CubicDetachedVertex.fromValues(
-      {double x,
-      double y,
-      double inX,
-      double inY,
-      double outX,
-      double outY,
-      Vec2D inPoint,
-      Vec2D outPoint}) {
+      {required double x,
+      required double y,
+      double? inX,
+      double? inY,
+      double? outX,
+      double? outY,
+      Vec2D? inPoint,
+      Vec2D? outPoint}) {
     this.x = x;
     this.y = y;
-    this.inPoint = Vec2D.fromValues(inX ?? inPoint[0], inY ?? inPoint[1]);
-    this.outPoint = Vec2D.fromValues(outX ?? outPoint[0], outY ?? outPoint[1]);
+    this.inPoint = Vec2D.fromValues(inX ?? inPoint![0], inY ?? inPoint![1]);
+    this.outPoint =
+        Vec2D.fromValues(outX ?? outPoint![0], outY ?? outPoint![1]);
   }
   @override
   Vec2D get outPoint => _outPoint ??= Vec2D.add(
@@ -66,27 +67,27 @@ class CubicDetachedVertex extends CubicDetachedVertexBase {
   void inDistanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
   void inRotationChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
   void outDistanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _outPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
   void outRotationChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _outPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 }

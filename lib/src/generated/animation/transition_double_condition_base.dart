@@ -19,7 +19,8 @@ abstract class TransitionDoubleConditionBase extends TransitionValueCondition {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 157.
-  double _value = 0;
+  static const double valueInitialValue = 0;
+  double _value = valueInitialValue;
   static const int valuePropertyKey = 157;
   double get value => _value;
 

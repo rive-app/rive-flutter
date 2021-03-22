@@ -10,11 +10,11 @@ import 'package:rive/src/rive_core/rive_animation_controller.dart';
 
 class LayerController {
   final StateMachineLayer layer;
-  LayerState _currentState;
-  LinearAnimationInstance _animationInstanceFrom;
-  StateTransition _transition;
+  LayerState _currentState = LayerState.unknown;
+  LinearAnimationInstance? _animationInstanceFrom;
+  StateTransition? _transition;
   double _mix = 1.0;
-  LinearAnimationInstance _animationInstance;
+  LinearAnimationInstance? _animationInstance;
   LayerController(this.layer) {
     _changeState(layer.entryState);
   }
@@ -27,13 +27,13 @@ class LayerController {
   }
 
   void dispose() {
-    _changeState(null);
+    _changeState(LayerState.unknown);
   }
 
   bool apply(CoreContext core, double elapsedSeconds,
       HashMap<int, dynamic> inputValues) {
     if (_animationInstance != null) {
-      _animationInstance.advance(elapsedSeconds);
+      _animationInstance!.advance(elapsedSeconds);
     }
     for (int i = 0; updateState(inputValues); i++) {
       if (i == 100) {
@@ -41,8 +41,8 @@ class LayerController {
         return false;
       }
     }
-    if (_transition != null && _transition.duration != 0) {
-      _mix = (_mix + elapsedSeconds / (_transition.duration / 1000))
+    if (_transition != null && _transition!.duration != 0) {
+      _mix = (_mix + elapsedSeconds / (_transition!.duration / 1000))
           .clamp(0, 1)
           .toDouble();
     } else {
@@ -50,14 +50,14 @@ class LayerController {
     }
     var keepGoing = _mix != 1;
     if (_animationInstanceFrom != null && _mix < 1) {
-      _animationInstanceFrom.advance(elapsedSeconds);
-      _animationInstanceFrom.animation
-          .apply(_animationInstanceFrom.time, mix: 1 - _mix, coreContext: core);
+      _animationInstanceFrom!.advance(elapsedSeconds);
+      _animationInstanceFrom!.animation.apply(_animationInstanceFrom!.time,
+          mix: 1 - _mix, coreContext: core);
     }
     if (_animationInstance != null) {
-      _animationInstance.animation
-          .apply(_animationInstance.time, mix: _mix, coreContext: core);
-      if (_animationInstance.keepGoing) {
+      _animationInstance!.animation
+          .apply(_animationInstance!.time, mix: _mix, coreContext: core);
+      if (_animationInstance!.keepGoing) {
         keepGoing = true;
       }
     }
@@ -65,7 +65,7 @@ class LayerController {
   }
 
   bool updateState(HashMap<int, dynamic> inputValues) {
-    if (layer.anyState != null && tryChangeState(layer.anyState, inputValues)) {
+    if (tryChangeState(layer.anyState, inputValues)) {
       return true;
     }
     return tryChangeState(_currentState, inputValues);
@@ -86,10 +86,15 @@ class LayerController {
           _animationInstanceFrom = _animationInstance;
         }
         if (_currentState is AnimationState) {
+          var animationState = _currentState as AnimationState;
           var spilledTime = _animationInstanceFrom?.spilledTime ?? 0;
-          _animationInstance = LinearAnimationInstance(
-              (_currentState as AnimationState).animation);
-          _animationInstance.advance(spilledTime);
+          if (animationState.animation != null) {
+            _animationInstance =
+                LinearAnimationInstance(animationState.animation!);
+            _animationInstance!.advance(spilledTime);
+          } else {
+            _animationInstance = null;
+          }
           _mix = 0;
         } else {
           _animationInstance = null;

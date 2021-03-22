@@ -1,3 +1,4 @@
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/generated/draw_rules_base.dart';
@@ -6,23 +7,20 @@ export 'package:rive/src/generated/draw_rules_base.dart';
 class DrawRules extends DrawRulesBase {
   final Set<DrawTarget> _targets = {};
   Set<DrawTarget> get targets => _targets;
-  DrawTarget _activeTarget;
-  DrawTarget get activeTarget => _activeTarget;
-  set activeTarget(DrawTarget value) => drawTargetId = value?.id;
+  DrawTarget? _activeTarget;
+  DrawTarget? get activeTarget => _activeTarget;
+  set activeTarget(DrawTarget? value) =>
+      drawTargetId = value?.id ?? Core.missingId;
   @override
   void drawTargetIdChanged(int from, int to) {
-    _activeTarget = to == null ? null : context?.resolve(to);
-    artboard?.markDrawOrderDirty();
+    _activeTarget = context.resolve(to);
+    artboard.markDrawOrderDirty();
   }
 
   @override
   void onAddedDirty() {
     super.onAddedDirty();
-    if (drawTargetId != null) {
-      _activeTarget = context?.resolve(drawTargetId);
-    } else {
-      _activeTarget = null;
-    }
+    _activeTarget = context.resolve(drawTargetId);
   }
 
   @override

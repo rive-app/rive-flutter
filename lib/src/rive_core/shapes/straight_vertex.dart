@@ -5,12 +5,12 @@ import 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 export 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 
 class StraightVertex extends StraightVertexBase {
-  Weight _weight;
+  Weight? _weight;
   @override
   String toString() => 'x[$x], y[$y], r[$radius]';
   @override
   void radiusChanged(double from, double to) {
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override

@@ -10,11 +10,11 @@ enum TrimPathMode { none, sequential, synchronized }
 
 class TrimPath extends TrimPathBase implements StrokeEffect {
   final Path _trimmedPath = Path();
-  Path _renderPath;
+  Path? _renderPath;
   @override
   Path effectPath(Path source) {
     if (_renderPath != null) {
-      return _renderPath;
+      return _renderPath!;
     }
     _trimmedPath.reset();
     var isSequential = mode == TrimPathMode.sequential;
@@ -54,7 +54,7 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
   @override
   void invalidateEffect() {
     _renderPath = null;
-    stroke?.shapePaintContainer?.addDirt(ComponentDirt.paint);
+    stroke.shapePaintContainer.addDirt(ComponentDirt.paint);
   }
 
   @override
@@ -70,13 +70,13 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
   @override
   void onAdded() {
     super.onAdded();
-    stroke?.addStrokeEffect(this);
+    stroke.addStrokeEffect(this);
     _renderPath = null;
   }
 
   @override
   void onRemoved() {
-    stroke?.removeStrokeEffect(this);
+    stroke.removeStrokeEffect(this);
     super.onRemoved();
   }
 }

@@ -11,17 +11,18 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   final _redraw = Event();
   ChangeNotifier get redraw => _redraw;
 
-  final List<Core> _objects = [];
+  /// Note that objects must be nullable as some may not resolve during load due
+  /// to format differences.
+  final List<Core?> _objects = [];
 
-  Iterable<Core> get objects => _objects;
+  Iterable<Core?> get objects => _objects;
   final Set<Component> _needDependenciesBuilt = {};
 
   @override
   T addObject<T extends Core>(T object) {
-    if (object != null) {
-      object.context = this;
-      object.id = _objects.length;
-    }
+    object.context = this;
+    object.id = _objects.length;
+
     _objects.add(object);
     return object;
   }
@@ -32,9 +33,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   }
 
   @override
-  void markDependencyOrderDirty() {
-    // TODO: implement markDependencyOrderDirty
-  }
+  void markDependencyOrderDirty() {}
 
   @override
   bool markDependenciesDirty(covariant Core object) {
@@ -70,7 +69,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   }
 
   @override
-  T resolve<T>(int id) {
+  T? resolve<T>(int id) {
     if (id >= _objects.length) {
       return null;
     }
@@ -82,7 +81,19 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   }
 
   @override
-  Core<CoreContext> makeCoreInstance(int typeKey) {
+  T resolveWithDefault<T>(int id, T defaultValue) {
+    if (id >= _objects.length) {
+      return defaultValue;
+    }
+    var object = _objects[id];
+    if (object is T) {
+      return object as T;
+    }
+    return defaultValue;
+  }
+
+  @override
+  Core<CoreContext>? makeCoreInstance(int typeKey) {
     return null;
   }
 

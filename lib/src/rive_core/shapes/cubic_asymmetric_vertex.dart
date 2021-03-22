@@ -5,8 +5,8 @@ import 'package:rive/src/generated/shapes/cubic_asymmetric_vertex_base.dart';
 export 'package:rive/src/generated/shapes/cubic_asymmetric_vertex_base.dart';
 
 class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
-  Vec2D _inPoint;
-  Vec2D _outPoint;
+  Vec2D? _inPoint;
+  Vec2D? _outPoint;
   @override
   Vec2D get outPoint {
     return _outPoint ??= Vec2D.add(
@@ -57,20 +57,20 @@ class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
   void inDistanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = _outPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
   void outDistanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = _outPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
   void rotationChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = _outPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 }

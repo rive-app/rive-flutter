@@ -5,8 +5,8 @@ import 'package:rive/src/generated/shapes/cubic_mirrored_vertex_base.dart';
 export 'package:rive/src/generated/shapes/cubic_mirrored_vertex_base.dart';
 
 class CubicMirroredVertex extends CubicMirroredVertexBase {
-  Vec2D _inPoint;
-  Vec2D _outPoint;
+  Vec2D? _inPoint;
+  Vec2D? _outPoint;
   @override
   Vec2D get outPoint {
     return _outPoint ??= Vec2D.add(Vec2D(), translation,
@@ -52,13 +52,13 @@ class CubicMirroredVertex extends CubicMirroredVertexBase {
   void distanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = _outPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 
   @override
   void rotationChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = _outPoint = null;
-    path?.markPathDirty();
+    path.markPathDirty();
   }
 }

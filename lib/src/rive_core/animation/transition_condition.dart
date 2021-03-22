@@ -15,26 +15,26 @@ enum TransitionConditionOp {
 }
 
 abstract class TransitionCondition extends TransitionConditionBase {
-  StateMachineInput _input;
+  StateMachineInput _input = StateMachineInput.unknown;
   StateMachineInput get input => _input;
   set input(StateMachineInput value) {
     if (_input == value) {
       return;
     }
     _input = value;
-    inputId = _input?.id;
+    inputId = _input.id;
   }
 
   @override
   void inputIdChanged(int from, int to) {
-    input = to == null ? null : context?.resolve(to);
+    input = context.resolveWithDefault(to, StateMachineInput.unknown);
   }
 
   @override
   void onAdded() {}
   @override
   void onAddedDirty() {
-    input = inputId == null ? null : context.resolve(inputId);
+    input = context.resolveWithDefault(inputId, StateMachineInput.unknown);
   }
 
   bool evaluate(HashMap<int, dynamic> values);

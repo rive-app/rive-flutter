@@ -31,16 +31,11 @@ class Rive extends LeafRenderObjectWidget {
   final Alignment alignment;
 
   const Rive({
-    @required
-        this.artboard,
-    @Deprecated("Replaced by [useArtboardSize] in order to avoid confusion "
-        "with Flutter's intrinsics contract.")
-        bool useIntrinsicSize,
-    bool useArtboardSize = false,
+    required this.artboard,
+    this.useArtboardSize = false,
     this.fit = BoxFit.contain,
     this.alignment = Alignment.center,
-  })  : assert(useArtboardSize != null),
-        useArtboardSize = useIntrinsicSize ?? useArtboardSize;
+  });
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -48,8 +43,7 @@ class Rive extends LeafRenderObjectWidget {
       ..artboard = artboard
       ..fit = fit
       ..alignment = alignment
-      ..artboardSize =
-          artboard == null ? Size.zero : Size(artboard.width, artboard.height)
+      ..artboardSize = Size(artboard.width, artboard.height)
       ..useArtboardSize = useArtboardSize;
   }
 
@@ -60,8 +54,7 @@ class Rive extends LeafRenderObjectWidget {
       ..artboard = artboard
       ..fit = fit
       ..alignment = alignment
-      ..artboardSize =
-          artboard == null ? Size.zero : Size(artboard.width, artboard.height)
+      ..artboardSize = Size(artboard.width, artboard.height)
       ..useArtboardSize = useArtboardSize;
   }
 
@@ -72,7 +65,7 @@ class Rive extends LeafRenderObjectWidget {
 }
 
 class RiveRenderObject extends RiveRenderBox {
-  RuntimeArtboard _artboard;
+  late RuntimeArtboard _artboard;
 
   RuntimeArtboard get artboard => _artboard;
 
@@ -80,15 +73,13 @@ class RiveRenderObject extends RiveRenderBox {
     if (_artboard == value) {
       return;
     }
-    _artboard?.redraw?.removeListener(scheduleRepaint);
+    _artboard.redraw.removeListener(scheduleRepaint);
     _artboard = value as RuntimeArtboard;
-    _artboard?.redraw?.addListener(scheduleRepaint);
+    _artboard.redraw.addListener(scheduleRepaint);
     markNeedsLayout();
   }
 
-  void dispose() {
-    _artboard?.redraw?.removeListener(scheduleRepaint);
-  }
+  void dispose() => _artboard.redraw.removeListener(scheduleRepaint);
 
   @override
   AABB get aabb {

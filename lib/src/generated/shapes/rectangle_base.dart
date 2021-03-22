@@ -26,7 +26,8 @@ abstract class RectangleBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// CornerRadius field with key 31.
-  double _cornerRadius = 0;
+  static const double cornerRadiusInitialValue = 0;
+  double _cornerRadius = cornerRadiusInitialValue;
   static const int cornerRadiusPropertyKey = 31;
 
   /// Radius of the corners of this rectangle

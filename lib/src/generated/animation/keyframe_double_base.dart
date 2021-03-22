@@ -14,7 +14,8 @@ abstract class KeyFrameDoubleBase extends KeyFrame {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 70.
-  double _value;
+  static const double valueInitialValue = 0;
+  double _value = valueInitialValue;
   static const int valuePropertyKey = 70;
   double get value => _value;
 

@@ -15,7 +15,8 @@ abstract class CubicWeightBase extends Weight {
 
   /// --------------------------------------------------------------------------
   /// InValues field with key 110.
-  int _inValues = 255;
+  static const int inValuesInitialValue = 255;
+  int _inValues = inValuesInitialValue;
   static const int inValuesPropertyKey = 110;
   int get inValues => _inValues;
 
@@ -34,7 +35,8 @@ abstract class CubicWeightBase extends Weight {
 
   /// --------------------------------------------------------------------------
   /// InIndices field with key 111.
-  int _inIndices = 1;
+  static const int inIndicesInitialValue = 1;
+  int _inIndices = inIndicesInitialValue;
   static const int inIndicesPropertyKey = 111;
   int get inIndices => _inIndices;
 
@@ -53,7 +55,8 @@ abstract class CubicWeightBase extends Weight {
 
   /// --------------------------------------------------------------------------
   /// OutValues field with key 112.
-  int _outValues = 255;
+  static const int outValuesInitialValue = 255;
+  int _outValues = outValuesInitialValue;
   static const int outValuesPropertyKey = 112;
   int get outValues => _outValues;
 
@@ -72,7 +75,8 @@ abstract class CubicWeightBase extends Weight {
 
   /// --------------------------------------------------------------------------
   /// OutIndices field with key 113.
-  int _outIndices = 1;
+  static const int outIndicesInitialValue = 1;
+  int _outIndices = outIndicesInitialValue;
   static const int outIndicesPropertyKey = 113;
   int get outIndices => _outIndices;
 

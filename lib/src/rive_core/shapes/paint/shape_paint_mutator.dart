@@ -2,9 +2,18 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 
+class _UnknownMutator extends ShapePaintMutator {
+  @override
+  void syncColor() {
+    throw UnsupportedError(
+        'Not expected to call sync color on an UnknownMutator.');
+  }
+}
+
 abstract class ShapePaintMutator {
-  ShapePaintContainer _shapePaintContainer;
-  Paint _paint;
+  ShapePaintContainer _shapePaintContainer = ShapePaintContainer.unknown;
+  late Paint _paint;
+  static final ShapePaintMutator unknown = _UnknownMutator();
   ShapePaintContainer get shapePaintContainer => _shapePaintContainer;
   Paint get paint => _paint;
   double _renderOpacity = 1;
@@ -22,7 +31,7 @@ abstract class ShapePaintMutator {
   void initializePaintMutator(ShapePaintContainer container, Paint paint) {
     _shapePaintContainer = container;
     _paint = paint;
-    _shapePaintContainer?.onPaintMutatorChanged(this);
+    _shapePaintContainer.onPaintMutatorChanged(this);
     syncColor();
   }
 }

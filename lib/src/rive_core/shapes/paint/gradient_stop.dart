@@ -5,7 +5,7 @@ import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart';
 export 'package:rive/src/generated/shapes/paint/gradient_stop_base.dart';
 
 class GradientStop extends GradientStopBase {
-  LinearGradient _gradient;
+  LinearGradient _gradient = LinearGradient.unknown;
   LinearGradient get gradient => _gradient;
   ui.Color get color => ui.Color(colorValue);
   set color(ui.Color c) {
@@ -14,12 +14,12 @@ class GradientStop extends GradientStopBase {
 
   @override
   void positionChanged(double from, double to) {
-    _gradient?.markStopsDirty();
+    _gradient.markStopsDirty();
   }
 
   @override
   void colorValueChanged(int from, int to) {
-    _gradient?.markGradientDirty();
+    _gradient.markGradientDirty();
   }
 
   @override
@@ -30,7 +30,7 @@ class GradientStop extends GradientStopBase {
     if (parent is LinearGradient) {
       _gradient = parent as LinearGradient;
     } else {
-      _gradient = null;
+      _gradient = LinearGradient.unknown;
     }
   }
 }

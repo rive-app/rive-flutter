@@ -36,7 +36,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   }
 
   void apply(double time, double mix, CoreContext coreContext) {
-    Core object = coreContext.resolve(objectId);
+    Core? object = coreContext.resolve(objectId);
     if (object == null) {
       return;
     }

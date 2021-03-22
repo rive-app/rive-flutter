@@ -11,10 +11,6 @@ class ExampleStateMachine extends StatefulWidget {
 }
 
 class _ExampleStateMachineState extends State<ExampleStateMachine> {
-  void _togglePlay() {
-    setState(() => _controller.isActive = !_controller.isActive);
-  }
-
   /// Tracks if the animation is playing by whether controller is running.
   bool get isPlaying => _controller?.isActive ?? false;
 
@@ -31,22 +27,20 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
     // download this. The RiveFile just expects a list of bytes.
     rootBundle.load('assets/rocket.riv').then(
       (data) async {
-        final file = RiveFile();
-
         // Load the RiveFile from the binary data.
-        if (file.import(data)) {
-          // The artboard is the root of the animation and gets drawn in the
-          // Rive widget.
-          final artboard = file.mainArtboard;
-          var controller =
-              StateMachineController.fromArtboard(artboard, 'Button');
-          if (controller != null) {
-            artboard.addController(controller);
-            _hoverInput = controller.findInput('Hover');
-            _pressInput = controller.findInput('Press');
-          }
-          setState(() => _riveArtboard = artboard);
+        final file = RiveFile.import(data);
+
+        // The artboard is the root of the animation and gets drawn in the
+        // Rive widget.
+        final artboard = file.mainArtboard;
+        var controller =
+            StateMachineController.fromArtboard(artboard, 'Button');
+        if (controller != null) {
+          artboard.addController(controller);
+          _hoverInput = controller.findInput('Hover');
+          _pressInput = controller.findInput('Press');
         }
+        setState(() => _riveArtboard = artboard);
       },
     );
   }

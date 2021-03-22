@@ -23,18 +23,15 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
   @override
   void apply(Core<CoreContext> object, int propertyKey, double mix) =>
       _apply(object, propertyKey, mix, value);
-  @override
-  void onAdded() {
-    super.onAdded();
-    interpolation ??= KeyFrameInterpolation.linear;
+  KeyFrameDouble() {
+    interpolation = KeyFrameInterpolation.linear;
   }
-
   @override
   void applyInterpolation(Core<CoreContext> object, int propertyKey,
       double currentTime, KeyFrameDouble nextFrame, double mix) {
     var f = (currentTime - seconds) / (nextFrame.seconds - seconds);
     if (interpolator != null) {
-      f = interpolator.transform(f);
+      f = interpolator!.transform(f);
     }
     _apply(object, propertyKey, mix, value + (nextFrame.value - value) * f);
   }

@@ -23,7 +23,8 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
 
   /// --------------------------------------------------------------------------
   /// InRotation field with key 84.
-  double _inRotation = 0;
+  static const double inRotationInitialValue = 0;
+  double _inRotation = inRotationInitialValue;
   static const int inRotationPropertyKey = 84;
 
   /// The in point's angle.
@@ -44,7 +45,8 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
 
   /// --------------------------------------------------------------------------
   /// InDistance field with key 85.
-  double _inDistance = 0;
+  static const double inDistanceInitialValue = 0;
+  double _inDistance = inDistanceInitialValue;
   static const int inDistancePropertyKey = 85;
 
   /// The in point's distance from the translation of the point.
@@ -65,7 +67,8 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
 
   /// --------------------------------------------------------------------------
   /// OutRotation field with key 86.
-  double _outRotation = 0;
+  static const double outRotationInitialValue = 0;
+  double _outRotation = outRotationInitialValue;
   static const int outRotationPropertyKey = 86;
 
   /// The out point's angle.
@@ -87,7 +90,8 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
 
   /// --------------------------------------------------------------------------
   /// OutDistance field with key 87.
-  double _outDistance = 0;
+  static const double outDistanceInitialValue = 0;
+  double _outDistance = outDistanceInitialValue;
   static const int outDistancePropertyKey = 87;
 
   /// The out point's distance from the translation of the point.

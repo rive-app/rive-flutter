@@ -15,7 +15,8 @@ abstract class TransitionValueConditionBase extends TransitionCondition {
 
   /// --------------------------------------------------------------------------
   /// OpValue field with key 156.
-  int _opValue = 0;
+  static const int opValueInitialValue = 0;
+  int _opValue = opValueInitialValue;
   static const int opValuePropertyKey = 156;
 
   /// Integer representation of the StateMachineOp enum.

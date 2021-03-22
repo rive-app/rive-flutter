@@ -10,40 +10,36 @@ class ClippingShape extends ClippingShapeBase {
   final List<Shape> _shapes = [];
   PathFillType get fillType => PathFillType.values[fillRule];
   set fillType(PathFillType type) => fillRule = type.index;
-  Node _source;
+  Node _source = Node.unknown;
   Node get source => _source;
   set source(Node value) {
     if (_source == value) {
       return;
     }
     _source = value;
-    sourceId = value?.id;
+    sourceId = value.id;
   }
 
   @override
   void fillRuleChanged(int from, int to) {
-    parent?.addDirt(ComponentDirt.clip, recurse: true);
+    parent.addDirt(ComponentDirt.clip, recurse: true);
     addDirt(ComponentDirt.path);
   }
 
   @override
-  void sourceIdChanged(int from, int to) {
-    source = context?.resolve(to);
-  }
-
+  void sourceIdChanged(int from, int to) =>
+      source = context.resolveWithDefault(to, Node.unknown);
   @override
   void onAddedDirty() {
     super.onAddedDirty();
-    if (sourceId != null) {
-      source = context?.resolve(sourceId);
-    }
+    source = context.resolveWithDefault(sourceId, Node.unknown);
   }
 
   @override
   void buildDependencies() {
     super.buildDependencies();
     _shapes.clear();
-    _source?.forAll((component) {
+    _source.forAll((component) {
       if (component is Shape) {
         _shapes.add(component);
         component.pathComposer.addDependent(this);
@@ -61,8 +57,7 @@ class ClippingShape extends ClippingShapeBase {
 
   @override
   void update(int dirt) {
-    if (dirt & (ComponentDirt.worldTransform | ComponentDirt.path) != 0 &&
-        source != null) {
+    if (dirt & (ComponentDirt.worldTransform | ComponentDirt.path) != 0) {
       clippingPath.reset();
       clippingPath.fillType = fillType;
       for (final shape in _shapes) {
@@ -78,6 +73,6 @@ class ClippingShape extends ClippingShapeBase {
 
   @override
   void isVisibleChanged(bool from, bool to) {
-    _source?.addDirt(ComponentDirt.paint);
+    _source.addDirt(ComponentDirt.paint);
   }
 }

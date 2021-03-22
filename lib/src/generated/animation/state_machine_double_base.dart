@@ -19,7 +19,8 @@ abstract class StateMachineDoubleBase extends StateMachineInput {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 140.
-  double _value = 0;
+  static const double valueInitialValue = 0;
+  double _value = valueInitialValue;
   static const int valuePropertyKey = 140;
   double get value => _value;
 

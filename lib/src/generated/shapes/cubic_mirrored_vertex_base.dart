@@ -23,7 +23,8 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 82.
-  double _rotation = 0;
+  static const double rotationInitialValue = 0;
+  double _rotation = rotationInitialValue;
   static const int rotationPropertyKey = 82;
 
   /// The control points' angle.
@@ -44,7 +45,8 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
 
   /// --------------------------------------------------------------------------
   /// Distance field with key 83.
-  double _distance = 0;
+  static const double distanceInitialValue = 0;
+  double _distance = distanceInitialValue;
   static const int distancePropertyKey = 83;
 
   /// The control points' distance from the translation of the point.

@@ -8,9 +8,9 @@ class _FirstExtractedPath {
   _FirstExtractedPath(this.path, this.metric, this.length);
 }
 
-_FirstExtractedPath _appendPathSegmentSequential(
+_FirstExtractedPath? _appendPathSegmentSequential(
     Iterable<PathMetric> metrics, Path result, double start, double stop,
-    {_FirstExtractedPath first}) {
+    {_FirstExtractedPath? first}) {
   double nextOffset = 0;
   double offset = 0;
   for (final metric in metrics) {
@@ -20,23 +20,21 @@ _FirstExtractedPath _appendPathSegmentSequential(
       var et = min(metric.length, stop - offset);
       var extractLength = et - st;
       Path extracted = metric.extractPath(st, et);
-      if (extracted != null) {
-        if (first == null) {
-          // ignore: parameter_assignments
-          first = _FirstExtractedPath(extracted, metric, extractLength);
-        } else if (first.metric == metric) {
-          first.length += extractLength;
-          if (metric.isClosed) {
-            first.path.extendWithPath(extracted, Offset.zero);
-          } else {
-            result.addPath(extracted, Offset.zero);
-          }
+      if (first == null) {
+        // ignore: parameter_assignments
+        first = _FirstExtractedPath(extracted, metric, extractLength);
+      } else if (first.metric == metric) {
+        first.length += extractLength;
+        if (metric.isClosed) {
+          first.path.extendWithPath(extracted, Offset.zero);
         } else {
-          if (metric.isClosed && extractLength == metric.length) {
-            extracted.close();
-          }
           result.addPath(extracted, Offset.zero);
         }
+      } else {
+        if (metric.isClosed && extractLength == metric.length) {
+          extracted.close();
+        }
+        result.addPath(extracted, Offset.zero);
       }
       if (stop < nextOffset) {
         break;
@@ -53,12 +51,10 @@ void _appendPathSegmentSync(
   double nextOffset = metric.length;
   if (start < nextOffset) {
     Path extracted = metric.extractPath(start, stop);
-    if (extracted != null) {
-      if (startWithMoveTo) {
-        to.addPath(extracted, Offset.zero);
-      } else {
-        to.extendWithPath(extracted, Offset.zero);
-      }
+    if (startWithMoveTo) {
+      to.addPath(extracted, Offset.zero);
+    } else {
+      to.extendWithPath(extracted, Offset.zero);
     }
   }
 }
@@ -72,7 +68,7 @@ void _trimPathSequential(
   }
   double trimStart = totalLength * startT;
   double trimStop = totalLength * stopT;
-  _FirstExtractedPath first;
+  _FirstExtractedPath? first;
   if (complement) {
     if (trimStop < totalLength) {
       first =

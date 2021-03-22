@@ -16,31 +16,31 @@ abstract class ParametricPath extends ParametricPathBase {
   @override
   void xChanged(double from, double to) {
     super.xChanged(from, to);
-    shape?.pathChanged(this);
+    shape.pathChanged(this);
   }
 
   @override
   void yChanged(double from, double to) {
     super.yChanged(from, to);
-    shape?.pathChanged(this);
+    shape.pathChanged(this);
   }
 
   @override
   void rotationChanged(double from, double to) {
     super.rotationChanged(from, to);
-    shape?.pathChanged(this);
+    shape.pathChanged(this);
   }
 
   @override
   void scaleXChanged(double from, double to) {
     super.scaleXChanged(from, to);
-    shape?.pathChanged(this);
+    shape.pathChanged(this);
   }
 
   @override
   void scaleYChanged(double from, double to) {
     super.scaleYChanged(from, to);
-    shape?.pathChanged(this);
+    shape.pathChanged(this);
   }
 
   @override

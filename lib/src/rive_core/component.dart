@@ -9,7 +9,7 @@ export 'package:rive/src/generated/component_base.dart';
 
 abstract class Component extends ComponentBase<RuntimeArtboard>
     implements DependencyGraphNode<Component>, Parentable<Component> {
-  Artboard _artboard;
+  Artboard _artboard = Artboard.unknown;
   dynamic _userData;
   bool get canBeOrphaned => false;
   int graphOrder = 0;
@@ -21,7 +21,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     }
     dirt |= value;
     onDirty(dirt);
-    artboard?.onComponentDirty(this);
+    artboard.onComponentDirty(this);
     if (!recurse) {
       return true;
     }
@@ -38,9 +38,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     if (_artboard == value) {
       return;
     }
-    _artboard?.removeComponent(this);
+    _artboard.removeComponent(this);
     _artboard = value;
-    _artboard?.addComponent(this);
+    _artboard.addComponent(this);
   }
 
   @mustCallSuper
@@ -48,7 +48,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   bool resolveArtboard() {
     int sanity = maxTreeDepth;
     for (Component curr = this;
-        curr != null && sanity > 0;
+        curr != ContainerComponent.unknown && sanity > 0;
         curr = curr.parent, sanity--) {
       visitAncestor(curr);
       if (curr is Artboard) {
@@ -56,7 +56,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
         return true;
       }
     }
-    _changeArtboard(null);
+    _changeArtboard(Artboard.unknown);
     return false;
   }
 
@@ -72,8 +72,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   void userDataChanged(dynamic from, dynamic to) {}
   @override
-  void parentIdChanged(int from, int to) => parent = context?.resolve(to);
-  ContainerComponent _parent;
+  void parentIdChanged(int from, int to) =>
+      parent = context.resolveWithDefault(to, ContainerComponent.unknown);
+  ContainerComponent _parent = ContainerComponent.unknown;
   @override
   ContainerComponent get parent => _parent;
   set parent(ContainerComponent value) {
@@ -82,20 +83,16 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     }
     var old = _parent;
     _parent = value;
-    parentId = value?.id;
+    parentId = value.id;
     parentChanged(old, value);
   }
 
   @protected
   void parentChanged(ContainerComponent from, ContainerComponent to) {
-    if (from != null) {
-      from.children.remove(this);
-      from.childRemoved(this);
-    }
-    if (to != null) {
-      to.children.add(this);
-      to.childAdded(this);
-    }
+    from.children.remove(this);
+    from.childRemoved(this);
+    to.children.add(this);
+    to.childAdded(this);
     markRebuildDependencies();
   }
 
@@ -104,7 +101,6 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @override
   Set<Component> get dependents => _dependents;
   bool addDependent(Component dependent) {
-    assert(dependent != null, 'Dependent cannot be null.');
     assert(artboard == dependent.artboard,
         'Components must be in the same artboard.');
     if (!_dependents.add(dependent)) {
@@ -116,7 +112,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   bool isValidParent(Component parent) => parent is ContainerComponent;
   void markRebuildDependencies() {
-    if (context == null || !context.markDependenciesDirty(this)) {
+    if (!context.markDependenciesDirty(this)) {
       return;
     }
     for (final dependent in _dependents) {
@@ -137,9 +133,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void onAdded() {}
   @override
   void onAddedDirty() {
-    if (parentId != null) {
-      parent = context?.resolve(parentId);
-    }
+    parent = context.resolveWithDefault(parentId, ContainerComponent.unknown);
   }
 
   @override
@@ -154,14 +148,12 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
       dependent.onDependencyRemoved(this);
     }
     _dependents.clear();
-    if (parent != null) {
+    if (parent != ContainerComponent.unknown) {
       parent.children.remove(this);
       parent.childRemoved(this);
     }
-    if (artboard != null) {
-      context?.markDependencyOrderDirty();
-      _changeArtboard(null);
-    }
+    context.markDependencyOrderDirty();
+    _changeArtboard(Artboard.unknown);
   }
 
   @override
