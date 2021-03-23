@@ -48,13 +48,13 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
     return _renderPath = _trimmedPath;
   }
 
-  Stroke get stroke => parent as Stroke;
+  Stroke? get stroke => parent as Stroke?;
   TrimPathMode get mode => TrimPathMode.values[modeValue];
   set mode(TrimPathMode value) => modeValue = value.index;
   @override
   void invalidateEffect() {
     _renderPath = null;
-    stroke.shapePaintContainer.addDirt(ComponentDirt.paint);
+    stroke?.shapePaintContainer?.addDirt(ComponentDirt.paint);
   }
 
   @override
@@ -70,13 +70,13 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
   @override
   void onAdded() {
     super.onAdded();
-    stroke.addStrokeEffect(this);
+    stroke?.addStrokeEffect(this);
     _renderPath = null;
   }
 
   @override
   void onRemoved() {
-    stroke.removeStrokeEffect(this);
+    stroke?.removeStrokeEffect(this);
     super.onRemoved();
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 
 class ExampleStateMachine extends StatefulWidget {
-  const ExampleStateMachine({Key key}) : super(key: key);
+  const ExampleStateMachine({Key? key}) : super(key: key);
 
   @override
   _ExampleStateMachineState createState() => _ExampleStateMachineState();
@@ -14,10 +14,10 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
   /// Tracks if the animation is playing by whether controller is running.
   bool get isPlaying => _controller?.isActive ?? false;
 
-  Artboard _riveArtboard;
-  StateMachineController _controller;
-  StateMachineInput<bool> _hoverInput;
-  StateMachineInput<bool> _pressInput;
+  Artboard? _riveArtboard;
+  StateMachineController? _controller;
+  StateMachineInput<bool>? _hoverInput;
+  StateMachineInput<bool>? _pressInput;
 
   @override
   void initState() {
@@ -56,17 +56,17 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
         child: _riveArtboard == null
             ? const SizedBox()
             : MouseRegion(
-                onEnter: (_) => _hoverInput.value = true,
-                onExit: (_) => _hoverInput.value = false,
+                onEnter: (_) => _hoverInput?.value = true,
+                onExit: (_) => _hoverInput?.value = false,
                 child: GestureDetector(
-                  onTapDown: (_) => _pressInput.value = true,
-                  onTapCancel: () => _pressInput.value = false,
-                  onTapUp: (_) => _pressInput.value = false,
+                  onTapDown: (_) => _pressInput?.value = true,
+                  onTapCancel: () => _pressInput?.value = false,
+                  onTapUp: (_) => _pressInput?.value = false,
                   child: SizedBox(
                     width: 250,
                     height: 250,
                     child: Rive(
-                      artboard: _riveArtboard,
+                      artboard: _riveArtboard!,
                     ),
                   ),
                 ),

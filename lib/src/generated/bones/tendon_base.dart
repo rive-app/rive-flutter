@@ -28,7 +28,9 @@ abstract class TendonBase extends Component {
     }
     int from = _boneId;
     _boneId = value;
-    boneIdChanged(from, value);
+    if (hasValidated) {
+      boneIdChanged(from, value);
+    }
   }
 
   void boneIdChanged(int from, int to);
@@ -50,7 +52,9 @@ abstract class TendonBase extends Component {
     }
     double from = _xx;
     _xx = value;
-    xxChanged(from, value);
+    if (hasValidated) {
+      xxChanged(from, value);
+    }
   }
 
   void xxChanged(double from, double to);
@@ -72,7 +76,9 @@ abstract class TendonBase extends Component {
     }
     double from = _yx;
     _yx = value;
-    yxChanged(from, value);
+    if (hasValidated) {
+      yxChanged(from, value);
+    }
   }
 
   void yxChanged(double from, double to);
@@ -94,7 +100,9 @@ abstract class TendonBase extends Component {
     }
     double from = _xy;
     _xy = value;
-    xyChanged(from, value);
+    if (hasValidated) {
+      xyChanged(from, value);
+    }
   }
 
   void xyChanged(double from, double to);
@@ -116,7 +124,9 @@ abstract class TendonBase extends Component {
     }
     double from = _yy;
     _yy = value;
-    yyChanged(from, value);
+    if (hasValidated) {
+      yyChanged(from, value);
+    }
   }
 
   void yyChanged(double from, double to);
@@ -138,7 +148,9 @@ abstract class TendonBase extends Component {
     }
     double from = _tx;
     _tx = value;
-    txChanged(from, value);
+    if (hasValidated) {
+      txChanged(from, value);
+    }
   }
 
   void txChanged(double from, double to);
@@ -160,7 +172,9 @@ abstract class TendonBase extends Component {
     }
     double from = _ty;
     _ty = value;
-    tyChanged(from, value);
+    if (hasValidated) {
+      tyChanged(from, value);
+    }
   }
 
   void tyChanged(double from, double to);

@@ -30,7 +30,9 @@ abstract class TransitionValueConditionBase extends TransitionCondition {
     }
     int from = _opValue;
     _opValue = value;
-    opValueChanged(from, value);
+    if (hasValidated) {
+      opValueChanged(from, value);
+    }
   }
 
   void opValueChanged(int from, int to);

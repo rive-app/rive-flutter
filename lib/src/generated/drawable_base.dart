@@ -36,7 +36,9 @@ abstract class DrawableBase extends Node {
     }
     int from = _blendModeValue;
     _blendModeValue = value;
-    blendModeValueChanged(from, value);
+    if (hasValidated) {
+      blendModeValueChanged(from, value);
+    }
   }
 
   void blendModeValueChanged(int from, int to);
@@ -57,7 +59,9 @@ abstract class DrawableBase extends Node {
     }
     int from = _drawableFlags;
     _drawableFlags = value;
-    drawableFlagsChanged(from, value);
+    if (hasValidated) {
+      drawableFlagsChanged(from, value);
+    }
   }
 
   void drawableFlagsChanged(int from, int to);

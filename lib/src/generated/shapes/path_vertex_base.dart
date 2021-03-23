@@ -33,7 +33,9 @@ abstract class PathVertexBase extends ContainerComponent {
     }
     double from = _x;
     _x = value;
-    xChanged(from, value);
+    if (hasValidated) {
+      xChanged(from, value);
+    }
   }
 
   void xChanged(double from, double to);
@@ -55,7 +57,9 @@ abstract class PathVertexBase extends ContainerComponent {
     }
     double from = _y;
     _y = value;
-    yChanged(from, value);
+    if (hasValidated) {
+      yChanged(from, value);
+    }
   }
 
   void yChanged(double from, double to);

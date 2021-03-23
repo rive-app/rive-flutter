@@ -195,7 +195,8 @@ class RiveFile {
         if (object != null && object.validate()) {
           InternalCoreHelper.markValid(object);
         } else {
-          throw const RiveFormatErrorException('Rive file is corrupt.');
+          throw RiveFormatErrorException(
+              'Rive file is corrupt. Invalid $object.');
         }
       }
     }

@@ -26,7 +26,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
     }
     double from = _x1;
     _x1 = value;
-    x1Changed(from, value);
+    if (hasValidated) {
+      x1Changed(from, value);
+    }
   }
 
   void x1Changed(double from, double to);
@@ -46,7 +48,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
     }
     double from = _y1;
     _y1 = value;
-    y1Changed(from, value);
+    if (hasValidated) {
+      y1Changed(from, value);
+    }
   }
 
   void y1Changed(double from, double to);
@@ -66,7 +70,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
     }
     double from = _x2;
     _x2 = value;
-    x2Changed(from, value);
+    if (hasValidated) {
+      x2Changed(from, value);
+    }
   }
 
   void x2Changed(double from, double to);
@@ -86,7 +92,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
     }
     double from = _y2;
     _y2 = value;
-    y2Changed(from, value);
+    if (hasValidated) {
+      y2Changed(from, value);
+    }
   }
 
   void y2Changed(double from, double to);

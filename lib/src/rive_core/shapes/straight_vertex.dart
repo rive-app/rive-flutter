@@ -10,7 +10,7 @@ class StraightVertex extends StraightVertexBase {
   String toString() => 'x[$x], y[$y], r[$radius]';
   @override
   void radiusChanged(double from, double to) {
-    path.markPathDirty();
+    path?.markPathDirty();
   }
 
   @override

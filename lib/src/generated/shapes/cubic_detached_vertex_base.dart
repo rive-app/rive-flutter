@@ -38,7 +38,9 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
     }
     double from = _inRotation;
     _inRotation = value;
-    inRotationChanged(from, value);
+    if (hasValidated) {
+      inRotationChanged(from, value);
+    }
   }
 
   void inRotationChanged(double from, double to);
@@ -60,7 +62,9 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
     }
     double from = _inDistance;
     _inDistance = value;
-    inDistanceChanged(from, value);
+    if (hasValidated) {
+      inDistanceChanged(from, value);
+    }
   }
 
   void inDistanceChanged(double from, double to);
@@ -83,7 +87,9 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
     }
     double from = _outRotation;
     _outRotation = value;
-    outRotationChanged(from, value);
+    if (hasValidated) {
+      outRotationChanged(from, value);
+    }
   }
 
   void outRotationChanged(double from, double to);
@@ -106,7 +112,9 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
     }
     double from = _outDistance;
     _outDistance = value;
-    outDistanceChanged(from, value);
+    if (hasValidated) {
+      outDistanceChanged(from, value);
+    }
   }
 
   void outDistanceChanged(double from, double to);

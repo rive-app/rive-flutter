@@ -8,11 +8,8 @@ import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 export 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 
-class _UnknownGradient extends LinearGradient {}
-
 class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   final List<GradientStop> gradientStops = [];
-  static final LinearGradient unknown = _UnknownGradient();
   bool _paintsInWorldSpace = true;
   bool get paintsInWorldSpace => _paintsInWorldSpace;
   set paintsInWorldSpace(bool value) {
@@ -30,7 +27,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   @override
   void buildDependencies() {
     super.buildDependencies();
-    shapePaintContainer.addDependent(this);
+    shapePaintContainer?.addDependent(this);
   }
 
   @override
@@ -72,7 +69,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
         colorPositions.add(stop.position);
       }
       if (paintsInWorldSpace) {
-        var world = shapePaintContainer.worldTransform;
+        var world = shapePaintContainer!.worldTransform;
         var worldStart = Vec2D.transformMat2D(Vec2D(), start, world);
         var worldEnd = Vec2D.transformMat2D(Vec2D(), end, world);
         paint.shader = makeGradient(ui.Offset(worldStart[0], worldStart[1]),
@@ -111,7 +108,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   @override
   void opacityChanged(double from, double to) {
     syncColor();
-    shapePaintContainer.addDirt(ComponentDirt.paint);
+    shapePaintContainer!.addDirt(ComponentDirt.paint);
   }
 
   @override
@@ -119,4 +116,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
     paint.color = const ui.Color(0xFFFFFFFF)
         .withOpacity((opacity * renderOpacity).clamp(0, 1).toDouble());
   }
+
+  @override
+  bool validate() => super.validate() && shapePaintContainer != null;
 }

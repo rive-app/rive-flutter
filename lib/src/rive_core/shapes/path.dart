@@ -25,44 +25,44 @@ abstract class Path extends PathBase {
 
   bool _isValid = false;
   bool get isClosed;
-  Shape _shape = Shape.unknown;
-  Shape get shape => _shape;
+  Shape? _shape;
+  Shape? get shape => _shape;
   Mat2D get pathTransform;
   Mat2D get inversePathTransform;
   Mat2D get inverseWorldTransform => _inverseWorldTransform;
   @override
   bool resolveArtboard() {
-    _changeShape(Shape.unknown);
+    _changeShape(null);
     return super.resolveArtboard();
   }
 
   @override
   void visitAncestor(Component ancestor) {
     super.visitAncestor(ancestor);
-    if (_shape != Shape.unknown && ancestor is Shape) {
+    if (_shape != null && ancestor is Shape) {
       _changeShape(ancestor);
     }
   }
 
-  void _changeShape(Shape value) {
+  void _changeShape(Shape? value) {
     if (_shape == value) {
       return;
     }
-    _shape.removePath(this);
-    value.addPath(this);
+    _shape?.removePath(this);
+    value?.addPath(this);
     _shape = value;
   }
 
   @override
   void onRemoved() {
-    _changeShape(Shape.unknown);
+    _changeShape(null);
     super.onRemoved();
   }
 
   @override
   void updateWorldTransform() {
     super.updateWorldTransform();
-    _shape.pathChanged(this);
+    _shape?.pathChanged(this);
     if (!Mat2D.invert(_inverseWorldTransform, pathTransform)) {
       Mat2D.setIdentity(_inverseWorldTransform);
     }
@@ -79,7 +79,7 @@ abstract class Path extends PathBase {
   void markPathDirty() {
     addDirt(ComponentDirt.path);
     _isValid = false;
-    _shape.pathChanged(this);
+    _shape?.pathChanged(this);
   }
 
   List<PathVertex> get vertices;

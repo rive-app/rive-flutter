@@ -206,6 +206,7 @@ abstract class RiveRenderBox extends RenderBox {
     if (contentWidth == 0 || contentHeight == 0) {
       return;
     }
+
     double x = -1 * bounds[0] -
         contentWidth / 2.0 -
         (_alignment.x * contentWidth / 2.0);

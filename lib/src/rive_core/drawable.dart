@@ -8,17 +8,10 @@ import 'package:rive/src/generated/drawable_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 export 'package:rive/src/generated/drawable_base.dart';
 
-class _UnknownDrawable extends Drawable {
-  @override
-  void draw(Canvas canvas) =>
-      throw UnsupportedError('Cannot draw an unknown drawable.');
-}
-
 abstract class Drawable extends DrawableBase {
-  static final Drawable unknown = _UnknownDrawable();
   DrawRules? flattenedDrawRules;
-  Drawable prev = Drawable.unknown;
-  Drawable next = Drawable.unknown;
+  Drawable? prev;
+  Drawable? next;
   @override
   void buildDrawOrder(
       List<Drawable> drawables, DrawRules? rules, List<DrawRules> allRules) {
@@ -48,7 +41,7 @@ abstract class Drawable extends DrawableBase {
   }
 
   @override
-  void parentChanged(ContainerComponent from, ContainerComponent to) {
+  void parentChanged(ContainerComponent? from, ContainerComponent? to) {
     super.parentChanged(from, to);
     addDirt(ComponentDirt.clip);
   }
@@ -58,9 +51,7 @@ abstract class Drawable extends DrawableBase {
     super.update(dirt);
     if (dirt & ComponentDirt.clip != 0) {
       List<ClippingShape> clippingShapes = [];
-      for (ContainerComponent p = this;
-          p != ContainerComponent.unknown;
-          p = p.parent) {
+      for (ContainerComponent? p = this; p != null; p = p.parent) {
         if (p is TransformComponent) {
           if (p.clippingShapes.isNotEmpty) {
             clippingShapes.addAll(p.clippingShapes);

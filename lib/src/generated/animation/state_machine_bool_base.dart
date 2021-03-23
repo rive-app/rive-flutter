@@ -32,7 +32,9 @@ abstract class StateMachineBoolBase extends StateMachineInput {
     }
     bool from = _value;
     _value = value;
-    valueChanged(from, value);
+    if (hasValidated) {
+      valueChanged(from, value);
+    }
   }
 
   void valueChanged(bool from, bool to);

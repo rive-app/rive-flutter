@@ -54,7 +54,7 @@ class Skin extends SkinBase {
     super.onAddedDirty();
     if (parent is Skinnable) {
       (parent as Skinnable).addSkin(this);
-      parent.markRebuildDependencies();
+      parent!.markRebuildDependencies();
     }
   }
 
@@ -62,7 +62,7 @@ class Skin extends SkinBase {
   void onRemoved() {
     if (parent is Skinnable) {
       (parent as Skinnable).removeSkin(this);
-      parent.markRebuildDependencies();
+      parent!.markRebuildDependencies();
     }
     super.onRemoved();
   }
@@ -82,7 +82,7 @@ class Skin extends SkinBase {
       case TendonBase.typeKey:
         _tendons.add(child as Tendon);
         markRebuildDependencies();
-        parent.markRebuildDependencies();
+        parent!.markRebuildDependencies();
         break;
     }
   }
@@ -98,7 +98,7 @@ class Skin extends SkinBase {
         } else {
           markRebuildDependencies();
         }
-        parent.markRebuildDependencies();
+        parent!.markRebuildDependencies();
         break;
     }
   }

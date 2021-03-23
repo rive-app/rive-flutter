@@ -28,7 +28,9 @@ abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
     }
     int from = _objectId;
     _objectId = value;
-    objectIdChanged(from, value);
+    if (hasValidated) {
+      objectIdChanged(from, value);
+    }
   }
 
   void objectIdChanged(int from, int to);

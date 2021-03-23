@@ -38,7 +38,9 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
     }
     double from = _rotation;
     _rotation = value;
-    rotationChanged(from, value);
+    if (hasValidated) {
+      rotationChanged(from, value);
+    }
   }
 
   void rotationChanged(double from, double to);
@@ -60,7 +62,9 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
     }
     double from = _inDistance;
     _inDistance = value;
-    inDistanceChanged(from, value);
+    if (hasValidated) {
+      inDistanceChanged(from, value);
+    }
   }
 
   void inDistanceChanged(double from, double to);
@@ -83,7 +87,9 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
     }
     double from = _outDistance;
     _outDistance = value;
-    outDistanceChanged(from, value);
+    if (hasValidated) {
+      outDistanceChanged(from, value);
+    }
   }
 
   void outDistanceChanged(double from, double to);

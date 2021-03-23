@@ -32,7 +32,9 @@ abstract class StateMachineDoubleBase extends StateMachineInput {
     }
     double from = _value;
     _value = value;
-    valueChanged(from, value);
+    if (hasValidated) {
+      valueChanged(from, value);
+    }
   }
 
   void valueChanged(double from, double to);

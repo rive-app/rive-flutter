@@ -38,7 +38,9 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
     }
     double from = _rotation;
     _rotation = value;
-    rotationChanged(from, value);
+    if (hasValidated) {
+      rotationChanged(from, value);
+    }
   }
 
   void rotationChanged(double from, double to);
@@ -60,7 +62,9 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
     }
     double from = _distance;
     _distance = value;
-    distanceChanged(from, value);
+    if (hasValidated) {
+      distanceChanged(from, value);
+    }
   }
 
   void distanceChanged(double from, double to);

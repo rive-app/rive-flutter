@@ -28,7 +28,9 @@ abstract class CubicWeightBase extends Weight {
     }
     int from = _inValues;
     _inValues = value;
-    inValuesChanged(from, value);
+    if (hasValidated) {
+      inValuesChanged(from, value);
+    }
   }
 
   void inValuesChanged(int from, int to);
@@ -48,7 +50,9 @@ abstract class CubicWeightBase extends Weight {
     }
     int from = _inIndices;
     _inIndices = value;
-    inIndicesChanged(from, value);
+    if (hasValidated) {
+      inIndicesChanged(from, value);
+    }
   }
 
   void inIndicesChanged(int from, int to);
@@ -68,7 +72,9 @@ abstract class CubicWeightBase extends Weight {
     }
     int from = _outValues;
     _outValues = value;
-    outValuesChanged(from, value);
+    if (hasValidated) {
+      outValuesChanged(from, value);
+    }
   }
 
   void outValuesChanged(int from, int to);
@@ -88,7 +94,9 @@ abstract class CubicWeightBase extends Weight {
     }
     int from = _outIndices;
     _outIndices = value;
-    outIndicesChanged(from, value);
+    if (hasValidated) {
+      outIndicesChanged(from, value);
+    }
   }
 
   void outIndicesChanged(int from, int to);

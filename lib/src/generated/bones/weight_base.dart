@@ -26,7 +26,9 @@ abstract class WeightBase extends Component {
     }
     int from = _values;
     _values = value;
-    valuesChanged(from, value);
+    if (hasValidated) {
+      valuesChanged(from, value);
+    }
   }
 
   void valuesChanged(int from, int to);
@@ -46,7 +48,9 @@ abstract class WeightBase extends Component {
     }
     int from = _indices;
     _indices = value;
-    indicesChanged(from, value);
+    if (hasValidated) {
+      indicesChanged(from, value);
+    }
   }
 
   void indicesChanged(int from, int to);

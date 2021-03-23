@@ -52,13 +52,13 @@ class CubicMirroredVertex extends CubicMirroredVertexBase {
   void distanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = _outPoint = null;
-    path.markPathDirty();
+    path?.markPathDirty();
   }
 
   @override
   void rotationChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = _outPoint = null;
-    path.markPathDirty();
+    path?.markPathDirty();
   }
 }

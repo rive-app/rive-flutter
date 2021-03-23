@@ -37,7 +37,9 @@ abstract class StraightVertexBase extends PathVertex<Weight> {
     }
     double from = _radius;
     _radius = value;
-    radiusChanged(from, value);
+    if (hasValidated) {
+      radiusChanged(from, value);
+    }
   }
 
   void radiusChanged(double from, double to);

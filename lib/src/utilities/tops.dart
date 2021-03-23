@@ -1,5 +1,5 @@
 abstract class Parentable<T> {
-  T get parent;
+  T? get parent;
 }
 
 /// Get the top most components (any child that has an ancestor in the set

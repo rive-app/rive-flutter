@@ -27,7 +27,9 @@ abstract class KeyFrameIdBase extends KeyFrame {
     }
     int from = _value;
     _value = value;
-    valueChanged(from, value);
+    if (hasValidated) {
+      valueChanged(from, value);
+    }
   }
 
   void valueChanged(int from, int to);

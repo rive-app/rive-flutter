@@ -28,7 +28,9 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
     }
     int from = _frame;
     _frame = value;
-    frameChanged(from, value);
+    if (hasValidated) {
+      frameChanged(from, value);
+    }
   }
 
   void frameChanged(int from, int to);
@@ -52,7 +54,9 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
     }
     int from = _interpolationType;
     _interpolationType = value;
-    interpolationTypeChanged(from, value);
+    if (hasValidated) {
+      interpolationTypeChanged(from, value);
+    }
   }
 
   void interpolationTypeChanged(int from, int to);
@@ -75,7 +79,9 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
     }
     int from = _interpolatorId;
     _interpolatorId = value;
-    interpolatorIdChanged(from, value);
+    if (hasValidated) {
+      interpolatorIdChanged(from, value);
+    }
   }
 
   void interpolatorIdChanged(int from, int to);

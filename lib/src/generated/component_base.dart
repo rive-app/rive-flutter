@@ -28,7 +28,9 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
     }
     String from = _name;
     _name = value;
-    nameChanged(from, value);
+    if (hasValidated) {
+      nameChanged(from, value);
+    }
   }
 
   void nameChanged(String from, String to);
@@ -50,7 +52,9 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
     }
     int from = _parentId;
     _parentId = value;
-    parentIdChanged(from, value);
+    if (hasValidated) {
+      parentIdChanged(from, value);
+    }
   }
 
   void parentIdChanged(int from, int to);

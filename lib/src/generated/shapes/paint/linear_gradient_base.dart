@@ -32,7 +32,9 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _startX;
     _startX = value;
-    startXChanged(from, value);
+    if (hasValidated) {
+      startXChanged(from, value);
+    }
   }
 
   void startXChanged(double from, double to);
@@ -52,7 +54,9 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _startY;
     _startY = value;
-    startYChanged(from, value);
+    if (hasValidated) {
+      startYChanged(from, value);
+    }
   }
 
   void startYChanged(double from, double to);
@@ -72,7 +76,9 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _endX;
     _endX = value;
-    endXChanged(from, value);
+    if (hasValidated) {
+      endXChanged(from, value);
+    }
   }
 
   void endXChanged(double from, double to);
@@ -92,7 +98,9 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _endY;
     _endY = value;
-    endYChanged(from, value);
+    if (hasValidated) {
+      endYChanged(from, value);
+    }
   }
 
   void endYChanged(double from, double to);
@@ -112,7 +120,9 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _opacity;
     _opacity = value;
-    opacityChanged(from, value);
+    if (hasValidated) {
+      opacityChanged(from, value);
+    }
   }
 
   void opacityChanged(double from, double to);

@@ -33,7 +33,9 @@ abstract class FillBase extends ShapePaint {
     }
     int from = _fillRule;
     _fillRule = value;
-    fillRuleChanged(from, value);
+    if (hasValidated) {
+      fillRuleChanged(from, value);
+    }
   }
 
   void fillRuleChanged(int from, int to);

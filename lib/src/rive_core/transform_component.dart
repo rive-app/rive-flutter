@@ -70,7 +70,7 @@ abstract class TransformComponent extends TransformComponentBase {
   void calculateWorldTransform() {
     var parent = this.parent;
     final chain = <TransformComponent>[this];
-    while (parent != ContainerComponent.unknown) {
+    while (parent != null) {
       if (parent is TransformComponent) {
         chain.insert(0, parent);
       }
@@ -85,7 +85,7 @@ abstract class TransformComponent extends TransformComponentBase {
   @override
   void buildDependencies() {
     super.buildDependencies();
-    parent.addDependent(this);
+    parent?.addDependent(this);
   }
 
   void markTransformDirty() {
@@ -120,7 +120,7 @@ abstract class TransformComponent extends TransformComponentBase {
   }
 
   @override
-  void parentChanged(ContainerComponent from, ContainerComponent to) {
+  void parentChanged(ContainerComponent? from, ContainerComponent? to) {
     super.parentChanged(from, to);
     markWorldTransformDirty();
   }

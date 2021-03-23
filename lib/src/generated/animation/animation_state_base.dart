@@ -35,7 +35,9 @@ abstract class AnimationStateBase extends LayerState {
     }
     int from = _animationId;
     _animationId = value;
-    animationIdChanged(from, value);
+    if (hasValidated) {
+      animationIdChanged(from, value);
+    }
   }
 
   void animationIdChanged(int from, int to);

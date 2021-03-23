@@ -27,7 +27,9 @@ abstract class TrimPathBase extends Component {
     }
     double from = _start;
     _start = value;
-    startChanged(from, value);
+    if (hasValidated) {
+      startChanged(from, value);
+    }
   }
 
   void startChanged(double from, double to);
@@ -47,7 +49,9 @@ abstract class TrimPathBase extends Component {
     }
     double from = _end;
     _end = value;
-    endChanged(from, value);
+    if (hasValidated) {
+      endChanged(from, value);
+    }
   }
 
   void endChanged(double from, double to);
@@ -67,7 +71,9 @@ abstract class TrimPathBase extends Component {
     }
     double from = _offset;
     _offset = value;
-    offsetChanged(from, value);
+    if (hasValidated) {
+      offsetChanged(from, value);
+    }
   }
 
   void offsetChanged(double from, double to);
@@ -87,7 +93,9 @@ abstract class TrimPathBase extends Component {
     }
     int from = _modeValue;
     _modeValue = value;
-    modeValueChanged(from, value);
+    if (hasValidated) {
+      modeValueChanged(from, value);
+    }
   }
 
   void modeValueChanged(int from, int to);

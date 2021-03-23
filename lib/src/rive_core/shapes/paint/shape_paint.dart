@@ -10,17 +10,18 @@ export 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 abstract class ShapePaint extends ShapePaintBase {
   late Paint _paint;
   Paint get paint => _paint;
-  ShapePaintMutator _paintMutator = ShapePaintMutator.unknown;
-  ShapePaintContainer get shapePaintContainer => parent as ShapePaintContainer;
+  ShapePaintMutator? _paintMutator;
+  ShapePaintContainer? get shapePaintContainer =>
+      parent as ShapePaintContainer?;
   ShapePaint() {
     _paint = makePaint();
   }
   BlendMode get blendMode => _paint.blendMode;
   set blendMode(BlendMode value) => _paint.blendMode = value;
-  double get renderOpacity => _paintMutator.renderOpacity;
-  set renderOpacity(double value) => _paintMutator.renderOpacity = value;
-  ShapePaintMutator get paintMutator => _paintMutator;
-  void _changeMutator(ShapePaintMutator mutator) {
+  double get renderOpacity => _paintMutator!.renderOpacity;
+  set renderOpacity(double value) => _paintMutator!.renderOpacity = value;
+  ShapePaintMutator? get paintMutator => _paintMutator;
+  void _changeMutator(ShapePaintMutator? mutator) {
     _paint = makePaint();
     _paintMutator = mutator;
   }
@@ -40,12 +41,10 @@ abstract class ShapePaint extends ShapePaintBase {
   bool validate() =>
       super.validate() &&
       parent is ShapePaintContainer &&
-      _paintMutator != ShapePaintMutator.unknown;
+      _paintMutator != null;
   @override
   void isVisibleChanged(bool from, bool to) {
-    if (hasValidated) {
-      shapePaintContainer.addDirt(ComponentDirt.paint);
-    }
+    shapePaintContainer?.addDirt(ComponentDirt.paint);
   }
 
   @override
@@ -53,15 +52,11 @@ abstract class ShapePaint extends ShapePaintBase {
     super.childRemoved(child);
     if (child is ShapePaintMutator &&
         _paintMutator == child as ShapePaintMutator) {
-      _changeMutator(ShapePaintMutator.unknown);
+      _changeMutator(null);
     }
   }
 
-  void _initMutator() {
-    if (hasValidated) {
-      _paintMutator.initializePaintMutator(shapePaintContainer, paint);
-    }
-  }
-
+  void _initMutator() =>
+      _paintMutator?.initializePaintMutator(shapePaintContainer!, paint);
   void draw(Canvas canvas, Path path);
 }

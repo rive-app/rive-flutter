@@ -34,7 +34,9 @@ abstract class DrawRulesBase extends ContainerComponent {
     }
     int from = _drawTargetId;
     _drawTargetId = value;
-    drawTargetIdChanged(from, value);
+    if (hasValidated) {
+      drawTargetIdChanged(from, value);
+    }
   }
 
   void drawTargetIdChanged(int from, int to);

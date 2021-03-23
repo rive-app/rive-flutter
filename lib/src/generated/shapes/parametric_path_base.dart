@@ -40,7 +40,9 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _width;
     _width = value;
-    widthChanged(from, value);
+    if (hasValidated) {
+      widthChanged(from, value);
+    }
   }
 
   void widthChanged(double from, double to);
@@ -62,7 +64,9 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _height;
     _height = value;
-    heightChanged(from, value);
+    if (hasValidated) {
+      heightChanged(from, value);
+    }
   }
 
   void heightChanged(double from, double to);
@@ -84,7 +88,9 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _originX;
     _originX = value;
-    originXChanged(from, value);
+    if (hasValidated) {
+      originXChanged(from, value);
+    }
   }
 
   void originXChanged(double from, double to);
@@ -106,7 +112,9 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _originY;
     _originY = value;
-    originYChanged(from, value);
+    if (hasValidated) {
+      originYChanged(from, value);
+    }
   }
 
   void originYChanged(double from, double to);

@@ -22,13 +22,15 @@ class ClippingShape extends ClippingShapeBase {
 
   @override
   void fillRuleChanged(int from, int to) {
-    parent.addDirt(ComponentDirt.clip, recurse: true);
+    parent?.addDirt(ComponentDirt.clip, recurse: true);
     addDirt(ComponentDirt.path);
   }
 
   @override
-  void sourceIdChanged(int from, int to) =>
-      source = context.resolveWithDefault(to, Node.unknown);
+  void sourceIdChanged(int from, int to) {
+    source = context.resolveWithDefault(to, Node.unknown);
+  }
+
   @override
   void onAddedDirty() {
     super.onAddedDirty();

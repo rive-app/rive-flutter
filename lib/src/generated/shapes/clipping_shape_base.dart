@@ -29,7 +29,9 @@ abstract class ClippingShapeBase extends Component {
     }
     int from = _sourceId;
     _sourceId = value;
-    sourceIdChanged(from, value);
+    if (hasValidated) {
+      sourceIdChanged(from, value);
+    }
   }
 
   void sourceIdChanged(int from, int to);
@@ -51,7 +53,9 @@ abstract class ClippingShapeBase extends Component {
     }
     int from = _fillRule;
     _fillRule = value;
-    fillRuleChanged(from, value);
+    if (hasValidated) {
+      fillRuleChanged(from, value);
+    }
   }
 
   void fillRuleChanged(int from, int to);
@@ -71,7 +75,9 @@ abstract class ClippingShapeBase extends Component {
     }
     bool from = _isVisible;
     _isVisible = value;
-    isVisibleChanged(from, value);
+    if (hasValidated) {
+      isVisibleChanged(from, value);
+    }
   }
 
   void isVisibleChanged(bool from, bool to);

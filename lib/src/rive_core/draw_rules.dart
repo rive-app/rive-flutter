@@ -14,7 +14,7 @@ class DrawRules extends DrawRulesBase {
   @override
   void drawTargetIdChanged(int from, int to) {
     _activeTarget = context.resolve(to);
-    artboard.markDrawOrderDirty();
+    artboard?.markDrawOrderDirty();
   }
 
   @override

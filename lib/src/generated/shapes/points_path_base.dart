@@ -40,7 +40,9 @@ abstract class PointsPathBase extends Path {
     }
     bool from = _isClosed;
     _isClosed = value;
-    isClosedChanged(from, value);
+    if (hasValidated) {
+      isClosedChanged(from, value);
+    }
   }
 
   void isClosedChanged(bool from, bool to);

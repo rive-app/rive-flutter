@@ -41,7 +41,9 @@ abstract class PolygonBase extends ParametricPath {
     }
     int from = _points;
     _points = value;
-    pointsChanged(from, value);
+    if (hasValidated) {
+      pointsChanged(from, value);
+    }
   }
 
   void pointsChanged(int from, int to);
@@ -64,7 +66,9 @@ abstract class PolygonBase extends ParametricPath {
     }
     double from = _cornerRadius;
     _cornerRadius = value;
-    cornerRadiusChanged(from, value);
+    if (hasValidated) {
+      cornerRadiusChanged(from, value);
+    }
   }
 
   void cornerRadiusChanged(double from, double to);

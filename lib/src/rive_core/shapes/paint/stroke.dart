@@ -33,19 +33,19 @@ class Stroke extends StrokeBase {
   @override
   void capChanged(int from, int to) {
     paint.strokeCap = StrokeCap.values[to];
-    parent.addDirt(ComponentDirt.paint);
+    parent?.addDirt(ComponentDirt.paint);
   }
 
   @override
   void joinChanged(int from, int to) {
     paint.strokeJoin = StrokeJoin.values[to];
-    parent.addDirt(ComponentDirt.paint);
+    parent?.addDirt(ComponentDirt.paint);
   }
 
   @override
   void thicknessChanged(double from, double to) {
     paint.strokeWidth = to;
-    parent.addDirt(ComponentDirt.paint);
+    parent?.addDirt(ComponentDirt.paint);
   }
 
   @override

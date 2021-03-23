@@ -29,7 +29,9 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
     }
     int from = _propertyKey;
     _propertyKey = value;
-    propertyKeyChanged(from, value);
+    if (hasValidated) {
+      propertyKeyChanged(from, value);
+    }
   }
 
   void propertyKeyChanged(int from, int to);

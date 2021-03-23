@@ -33,7 +33,9 @@ abstract class ArtboardBase extends ContainerComponent {
     }
     double from = _width;
     _width = value;
-    widthChanged(from, value);
+    if (hasValidated) {
+      widthChanged(from, value);
+    }
   }
 
   void widthChanged(double from, double to);
@@ -55,7 +57,9 @@ abstract class ArtboardBase extends ContainerComponent {
     }
     double from = _height;
     _height = value;
-    heightChanged(from, value);
+    if (hasValidated) {
+      heightChanged(from, value);
+    }
   }
 
   void heightChanged(double from, double to);
@@ -77,7 +81,9 @@ abstract class ArtboardBase extends ContainerComponent {
     }
     double from = _x;
     _x = value;
-    xChanged(from, value);
+    if (hasValidated) {
+      xChanged(from, value);
+    }
   }
 
   void xChanged(double from, double to);
@@ -99,7 +105,9 @@ abstract class ArtboardBase extends ContainerComponent {
     }
     double from = _y;
     _y = value;
-    yChanged(from, value);
+    if (hasValidated) {
+      yChanged(from, value);
+    }
   }
 
   void yChanged(double from, double to);
@@ -121,7 +129,9 @@ abstract class ArtboardBase extends ContainerComponent {
     }
     double from = _originX;
     _originX = value;
-    originXChanged(from, value);
+    if (hasValidated) {
+      originXChanged(from, value);
+    }
   }
 
   void originXChanged(double from, double to);
@@ -143,7 +153,9 @@ abstract class ArtboardBase extends ContainerComponent {
     }
     double from = _originY;
     _originY = value;
-    originYChanged(from, value);
+    if (hasValidated) {
+      originYChanged(from, value);
+    }
   }
 
   void originYChanged(double from, double to);

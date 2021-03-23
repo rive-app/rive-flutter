@@ -28,7 +28,9 @@ abstract class TransitionConditionBase<T extends CoreContext> extends Core<T> {
     }
     int from = _inputId;
     _inputId = value;
-    inputIdChanged(from, value);
+    if (hasValidated) {
+      inputIdChanged(from, value);
+    }
   }
 
   void inputIdChanged(int from, int to);

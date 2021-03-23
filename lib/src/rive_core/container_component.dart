@@ -7,15 +7,8 @@ import 'package:rive/src/generated/container_component_base.dart';
 
 typedef bool DescentCallback(Component component);
 
-class _UnknownParent extends ContainerComponent {
-  @override
-  void update(int dirt) => throw UnsupportedError(
-      'Something is incorrectly referencing an unknown parent');
-}
-
 abstract class ContainerComponent extends ContainerComponentBase {
   final ContainerChildren children = ContainerChildren();
-  static final unknown = _UnknownParent();
   void appendChild(Component child) {
     child.parent = this;
   }

@@ -44,7 +44,9 @@ abstract class StarBase extends Polygon {
     }
     double from = _innerRadius;
     _innerRadius = value;
-    innerRadiusChanged(from, value);
+    if (hasValidated) {
+      innerRadiusChanged(from, value);
+    }
   }
 
   void innerRadiusChanged(double from, double to);

@@ -30,7 +30,9 @@ abstract class StateMachineComponentBase<T extends CoreContext>
     }
     String from = _name;
     _name = value;
-    nameChanged(from, value);
+    if (hasValidated) {
+      nameChanged(from, value);
+    }
   }
 
   void nameChanged(String from, String to);

@@ -67,27 +67,27 @@ class CubicDetachedVertex extends CubicDetachedVertexBase {
   void inDistanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = null;
-    path.markPathDirty();
+    path?.markPathDirty();
   }
 
   @override
   void inRotationChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _inPoint = null;
-    path.markPathDirty();
+    path?.markPathDirty();
   }
 
   @override
   void outDistanceChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _outPoint = null;
-    path.markPathDirty();
+    path?.markPathDirty();
   }
 
   @override
   void outRotationChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     _outPoint = null;
-    path.markPathDirty();
+    path?.markPathDirty();
   }
 }

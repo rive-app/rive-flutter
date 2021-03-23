@@ -35,7 +35,9 @@ abstract class BoneBase extends SkeletalComponent {
     }
     double from = _length;
     _length = value;
-    lengthChanged(from, value);
+    if (hasValidated) {
+      lengthChanged(from, value);
+    }
   }
 
   void lengthChanged(double from, double to);

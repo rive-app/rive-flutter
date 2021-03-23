@@ -34,7 +34,9 @@ abstract class StrokeBase extends ShapePaint {
     }
     double from = _thickness;
     _thickness = value;
-    thicknessChanged(from, value);
+    if (hasValidated) {
+      thicknessChanged(from, value);
+    }
   }
 
   void thicknessChanged(double from, double to);
@@ -54,7 +56,9 @@ abstract class StrokeBase extends ShapePaint {
     }
     int from = _cap;
     _cap = value;
-    capChanged(from, value);
+    if (hasValidated) {
+      capChanged(from, value);
+    }
   }
 
   void capChanged(int from, int to);
@@ -74,7 +78,9 @@ abstract class StrokeBase extends ShapePaint {
     }
     int from = _join;
     _join = value;
-    joinChanged(from, value);
+    if (hasValidated) {
+      joinChanged(from, value);
+    }
   }
 
   void joinChanged(int from, int to);
@@ -95,7 +101,9 @@ abstract class StrokeBase extends ShapePaint {
     }
     bool from = _transformAffectsStroke;
     _transformAffectsStroke = value;
-    transformAffectsStrokeChanged(from, value);
+    if (hasValidated) {
+      transformAffectsStrokeChanged(from, value);
+    }
   }
 
   void transformAffectsStrokeChanged(bool from, bool to);

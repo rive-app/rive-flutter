@@ -28,7 +28,9 @@ abstract class DrawTargetBase extends Component {
     }
     int from = _drawableId;
     _drawableId = value;
-    drawableIdChanged(from, value);
+    if (hasValidated) {
+      drawableIdChanged(from, value);
+    }
   }
 
   void drawableIdChanged(int from, int to);
@@ -51,7 +53,9 @@ abstract class DrawTargetBase extends Component {
     }
     int from = _placementValue;
     _placementValue = value;
-    placementValueChanged(from, value);
+    if (hasValidated) {
+      placementValueChanged(from, value);
+    }
   }
 
   void placementValueChanged(int from, int to);

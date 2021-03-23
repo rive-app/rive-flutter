@@ -35,7 +35,9 @@ abstract class PathBase extends Node {
     }
     int from = _pathFlags;
     _pathFlags = value;
-    pathFlagsChanged(from, value);
+    if (hasValidated) {
+      pathFlagsChanged(from, value);
+    }
   }
 
   void pathFlagsChanged(int from, int to);

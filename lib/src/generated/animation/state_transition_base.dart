@@ -30,7 +30,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
     }
     int from = _stateToId;
     _stateToId = value;
-    stateToIdChanged(from, value);
+    if (hasValidated) {
+      stateToIdChanged(from, value);
+    }
   }
 
   void stateToIdChanged(int from, int to);
@@ -50,7 +52,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
     }
     int from = _flags;
     _flags = value;
-    flagsChanged(from, value);
+    if (hasValidated) {
+      flagsChanged(from, value);
+    }
   }
 
   void flagsChanged(int from, int to);
@@ -72,7 +76,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
     }
     int from = _duration;
     _duration = value;
-    durationChanged(from, value);
+    if (hasValidated) {
+      durationChanged(from, value);
+    }
   }
 
   void durationChanged(int from, int to);

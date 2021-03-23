@@ -32,7 +32,9 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _rotation;
     _rotation = value;
-    rotationChanged(from, value);
+    if (hasValidated) {
+      rotationChanged(from, value);
+    }
   }
 
   void rotationChanged(double from, double to);
@@ -52,7 +54,9 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _scaleX;
     _scaleX = value;
-    scaleXChanged(from, value);
+    if (hasValidated) {
+      scaleXChanged(from, value);
+    }
   }
 
   void scaleXChanged(double from, double to);
@@ -72,7 +76,9 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _scaleY;
     _scaleY = value;
-    scaleYChanged(from, value);
+    if (hasValidated) {
+      scaleYChanged(from, value);
+    }
   }
 
   void scaleYChanged(double from, double to);
@@ -92,7 +98,9 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _opacity;
     _opacity = value;
-    opacityChanged(from, value);
+    if (hasValidated) {
+      opacityChanged(from, value);
+    }
   }
 
   void opacityChanged(double from, double to);

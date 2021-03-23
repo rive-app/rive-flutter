@@ -15,10 +15,7 @@ import 'package:rive/src/utilities/dependency_sorter.dart';
 import 'package:rive/src/generated/artboard_base.dart';
 export 'package:rive/src/generated/artboard_base.dart';
 
-class _UnknownArtboard extends Artboard {}
-
 class Artboard extends ArtboardBase with ShapePaintContainer {
-  static final Artboard unknown = _UnknownArtboard();
   @override
   bool get canBeOrphaned => true;
   final Path path = Path();
@@ -173,7 +170,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       fill.draw(canvas, path);
     }
     for (var drawable = _firstDrawable;
-        drawable != Drawable.unknown;
+        drawable != null;
         drawable = drawable.prev) {
       if (drawable.isHidden) {
         continue;
@@ -240,7 +237,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void onStrokesChanged() {}
   @override
   Vec2D get worldTranslation => Vec2D();
-  Drawable _firstDrawable = Drawable.unknown;
+  Drawable? _firstDrawable;
   void computeDrawOrder() {
     _drawables.clear();
     _rules.clear();
@@ -254,7 +251,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     for (final nodeRules in _rules) {
       for (final target in nodeRules.targets) {
         root.dependents.add(target);
-        var dependentRules = target.drawable.flattenedDrawRules;
+        var dependentRules = target.drawable?.flattenedDrawRules;
         if (dependentRules != null) {
           for (final dependentRule in dependentRules.targets) {
             dependentRule.dependents.add(target);
@@ -269,27 +266,27 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   void sortDrawOrder() {
     for (final rule in _sortedDrawRules) {
-      rule.first = rule.last = Drawable.unknown;
+      rule.first = rule.last = null;
     }
-    _firstDrawable = Drawable.unknown;
-    Drawable lastDrawable = Drawable.unknown;
+    _firstDrawable = null;
+    Drawable? lastDrawable;
     for (final drawable in _drawables) {
       var rules = drawable.flattenedDrawRules;
       var target = rules?.activeTarget;
       if (target != null) {
-        if (target.first == Drawable.unknown) {
+        if (target.first == null) {
           target.first = target.last = drawable;
-          drawable.prev = drawable.next = Drawable.unknown;
+          drawable.prev = drawable.next = null;
         } else {
-          target.last.next = drawable;
+          target.last?.next = drawable;
           drawable.prev = target.last;
           target.last = drawable;
-          drawable.next = Drawable.unknown;
+          drawable.next = null;
         }
       } else {
         drawable.prev = lastDrawable;
-        drawable.next = Drawable.unknown;
-        if (lastDrawable == Drawable.unknown) {
+        drawable.next = null;
+        if (lastDrawable == null) {
           lastDrawable = _firstDrawable = drawable;
         } else {
           lastDrawable.next = drawable;
@@ -298,31 +295,31 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
     for (final rule in _sortedDrawRules) {
-      if (rule.first == Drawable.unknown) {
+      if (rule.first == null) {
         continue;
       }
       switch (rule.placement) {
         case DrawTargetPlacement.before:
-          if (rule.drawable.prev != Drawable.unknown) {
-            rule.drawable.prev.next = rule.first;
-            rule.first.prev = rule.drawable.prev;
+          if (rule.drawable?.prev != null) {
+            rule.drawable!.prev?.next = rule.first;
+            rule.first?.prev = rule.drawable!.prev;
           }
           if (rule.drawable == _firstDrawable) {
             _firstDrawable = rule.first;
           }
-          rule.drawable.prev = rule.last;
-          rule.last.next = rule.drawable;
+          rule.drawable?.prev = rule.last;
+          rule.last?.next = rule.drawable;
           break;
         case DrawTargetPlacement.after:
-          if (rule.drawable.next != Drawable.unknown) {
-            rule.drawable.next.prev = rule.last;
-            rule.last.next = rule.drawable.next;
+          if (rule.drawable?.next != null) {
+            rule.drawable!.next!.prev = rule.last;
+            rule.last?.next = rule.drawable?.next;
           }
           if (rule.drawable == lastDrawable) {
             lastDrawable = rule.last;
           }
-          rule.drawable.next = rule.first;
-          rule.first.prev = rule.drawable;
+          rule.drawable?.next = rule.first;
+          rule.first?.prev = rule.drawable;
           break;
       }
     }

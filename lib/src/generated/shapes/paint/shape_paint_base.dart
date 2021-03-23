@@ -32,7 +32,9 @@ abstract class ShapePaintBase extends ContainerComponent {
     }
     bool from = _isVisible;
     _isVisible = value;
-    isVisibleChanged(from, value);
+    if (hasValidated) {
+      isVisibleChanged(from, value);
+    }
   }
 
   void isVisibleChanged(bool from, bool to);

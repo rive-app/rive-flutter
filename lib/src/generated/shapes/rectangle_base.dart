@@ -42,7 +42,9 @@ abstract class RectangleBase extends ParametricPath {
     }
     double from = _cornerRadius;
     _cornerRadius = value;
-    cornerRadiusChanged(from, value);
+    if (hasValidated) {
+      cornerRadiusChanged(from, value);
+    }
   }
 
   void cornerRadiusChanged(double from, double to);

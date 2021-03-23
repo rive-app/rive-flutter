@@ -27,7 +27,9 @@ abstract class GradientStopBase extends Component {
     }
     int from = _colorValue;
     _colorValue = value;
-    colorValueChanged(from, value);
+    if (hasValidated) {
+      colorValueChanged(from, value);
+    }
   }
 
   void colorValueChanged(int from, int to);
@@ -47,7 +49,9 @@ abstract class GradientStopBase extends Component {
     }
     double from = _position;
     _position = value;
-    positionChanged(from, value);
+    if (hasValidated) {
+      positionChanged(from, value);
+    }
   }
 
   void positionChanged(double from, double to);

@@ -27,7 +27,9 @@ abstract class SolidColorBase extends Component {
     }
     int from = _colorValue;
     _colorValue = value;
-    colorValueChanged(from, value);
+    if (hasValidated) {
+      colorValueChanged(from, value);
+    }
   }
 
   void colorValueChanged(int from, int to);

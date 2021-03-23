@@ -10,11 +10,8 @@ import 'package:rive/src/generated/shapes/shape_base.dart';
 import 'package:collection/collection.dart';
 export 'package:rive/src/generated/shapes/shape_base.dart';
 
-class _UnknownShape extends Shape {}
-
 class Shape extends ShapeBase with ShapePaintContainer {
   final Set<Path> paths = {};
-  static final Shape unknown = _UnknownShape();
   bool _wantWorldPath = false;
   bool _wantLocalPath = false;
   bool get wantWorldPath => _wantWorldPath;

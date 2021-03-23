@@ -39,8 +39,7 @@ class Rive extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RiveRenderObject()
-      ..artboard = artboard
+    return RiveRenderObject(artboard as RuntimeArtboard)
       ..fit = fit
       ..alignment = alignment
       ..artboardSize = Size(artboard.width, artboard.height)
@@ -65,7 +64,10 @@ class Rive extends LeafRenderObjectWidget {
 }
 
 class RiveRenderObject extends RiveRenderBox {
-  late RuntimeArtboard _artboard;
+  RuntimeArtboard _artboard;
+  RiveRenderObject(this._artboard) {
+    _artboard.redraw.addListener(scheduleRepaint);
+  }
 
   RuntimeArtboard get artboard => _artboard;
 

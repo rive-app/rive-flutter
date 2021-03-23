@@ -31,7 +31,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _fps;
     _fps = value;
-    fpsChanged(from, value);
+    if (hasValidated) {
+      fpsChanged(from, value);
+    }
   }
 
   void fpsChanged(int from, int to);
@@ -53,7 +55,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _duration;
     _duration = value;
-    durationChanged(from, value);
+    if (hasValidated) {
+      durationChanged(from, value);
+    }
   }
 
   void durationChanged(int from, int to);
@@ -75,7 +79,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     double from = _speed;
     _speed = value;
-    speedChanged(from, value);
+    if (hasValidated) {
+      speedChanged(from, value);
+    }
   }
 
   void speedChanged(double from, double to);
@@ -97,7 +103,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _loopValue;
     _loopValue = value;
-    loopValueChanged(from, value);
+    if (hasValidated) {
+      loopValueChanged(from, value);
+    }
   }
 
   void loopValueChanged(int from, int to);
@@ -119,7 +127,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _workStart;
     _workStart = value;
-    workStartChanged(from, value);
+    if (hasValidated) {
+      workStartChanged(from, value);
+    }
   }
 
   void workStartChanged(int from, int to);
@@ -141,7 +151,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _workEnd;
     _workEnd = value;
-    workEndChanged(from, value);
+    if (hasValidated) {
+      workEndChanged(from, value);
+    }
   }
 
   void workEndChanged(int from, int to);
@@ -164,7 +176,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     bool from = _enableWorkArea;
     _enableWorkArea = value;
-    enableWorkAreaChanged(from, value);
+    if (hasValidated) {
+      enableWorkAreaChanged(from, value);
+    }
   }
 
   void enableWorkAreaChanged(bool from, bool to);
