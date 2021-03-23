@@ -18,7 +18,7 @@ class Polygon extends PolygonBase {
     var angle = -pi / 2;
     var inc = 2 * pi / points;
     for (int i = 0; i < points; i++) {
-      vertexList.add(StraightVertex()
+      vertexList.add(StraightVertex.procedural()
         ..x = cos(angle) * halfWidth
         ..y = sin(angle) * halfHeight
         ..radius = cornerRadius);

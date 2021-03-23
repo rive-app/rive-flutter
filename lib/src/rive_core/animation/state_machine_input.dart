@@ -8,7 +8,7 @@ abstract class StateMachineInput extends StateMachineInputBase {
   static final StateMachineInput unknown = _StateMachineUnknownInput();
   @override
   ListBase<StateMachineComponent> machineComponentList(StateMachine machine) =>
-      stateMachine.inputs;
+      machine.inputs;
   bool isValidType<T>() => false;
   dynamic get controllerValue => null;
 }

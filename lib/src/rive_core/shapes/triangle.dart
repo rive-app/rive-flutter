@@ -9,13 +9,13 @@ class Triangle extends TriangleBase {
     double ox = -originX * width;
     double oy = -originY * height;
     return [
-      StraightVertex()
+      StraightVertex.procedural()
         ..x = ox + width / 2
         ..y = oy,
-      StraightVertex()
+      StraightVertex.procedural()
         ..x = ox + width
         ..y = oy + height,
-      StraightVertex()
+      StraightVertex.procedural()
         ..x = ox
         ..y = oy + height
     ];

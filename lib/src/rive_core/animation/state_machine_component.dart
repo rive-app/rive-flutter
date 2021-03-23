@@ -5,7 +5,21 @@ import 'package:rive/src/generated/animation/state_machine_component_base.dart';
 export 'package:rive/src/generated/animation/state_machine_component_base.dart';
 
 abstract class StateMachineComponent extends StateMachineComponentBase {
-  late StateMachine stateMachine;
+  StateMachine? _stateMachine;
+  StateMachine? get stateMachine => _stateMachine;
+  set stateMachine(StateMachine? machine) {
+    if (_stateMachine == machine) {
+      return;
+    }
+    if (_stateMachine != null) {
+      machineComponentList(_stateMachine!).remove(this);
+    }
+    _stateMachine = machine;
+    if (_stateMachine != null) {
+      machineComponentList(_stateMachine!).add(this);
+    }
+  }
+
   ListBase<StateMachineComponent> machineComponentList(StateMachine machine);
   @override
   void nameChanged(String from, String to) {}
@@ -14,7 +28,7 @@ abstract class StateMachineComponent extends StateMachineComponentBase {
   @override
   void onRemoved() {
     super.onRemoved();
-    machineComponentList(stateMachine).remove(this);
+    stateMachine = null;
   }
 
   @override

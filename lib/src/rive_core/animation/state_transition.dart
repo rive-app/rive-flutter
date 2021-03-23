@@ -17,10 +17,7 @@ class StateTransition extends StateTransitionBase {
   @override
   void onAdded() {}
   @override
-  void onAddedDirty() {
-    stateTo = context.resolveWithDefault(stateToId, LayerState.unknown);
-  }
-
+  void onAddedDirty() {}
   @override
   void onRemoved() {
     super.onRemoved();

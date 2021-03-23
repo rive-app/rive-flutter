@@ -18,7 +18,7 @@ class StateMachineLayer extends StateMachineLayerBase {
   LayerState get exitState => _exitState;
   @override
   ListBase<StateMachineComponent> machineComponentList(StateMachine machine) =>
-      stateMachine.layers;
+      machine.layers;
   bool internalAddState(LayerState state) {
     switch (state.coreType) {
       case AnyStateBase.typeKey:

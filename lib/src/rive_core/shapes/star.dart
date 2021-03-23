@@ -19,12 +19,12 @@ class Star extends StarBase {
     var angle = -pi / 2;
     var inc = 2 * pi / actualPoints;
     while (vertexList.length < actualPoints) {
-      vertexList.add(StraightVertex()
+      vertexList.add(StraightVertex.procedural()
         ..x = cos(angle) * halfWidth
         ..y = sin(angle) * halfHeight
         ..radius = cornerRadius);
       angle += inc;
-      vertexList.add(StraightVertex()
+      vertexList.add(StraightVertex.procedural()
         ..x = cos(angle) * innerHalfWidth
         ..y = sin(angle) * innerHalfHeight
         ..radius = cornerRadius);

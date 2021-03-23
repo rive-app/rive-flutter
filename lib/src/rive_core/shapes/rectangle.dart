@@ -9,19 +9,19 @@ class Rectangle extends RectangleBase {
     double ox = -originX * width;
     double oy = -originY * height;
     return [
-      StraightVertex()
+      StraightVertex.procedural()
         ..x = ox
         ..y = oy
         ..radius = cornerRadius,
-      StraightVertex()
+      StraightVertex.procedural()
         ..x = ox + width
         ..y = oy
         ..radius = cornerRadius,
-      StraightVertex()
+      StraightVertex.procedural()
         ..x = ox + width
         ..y = oy + height
         ..radius = cornerRadius,
-      StraightVertex()
+      StraightVertex.procedural()
         ..x = ox
         ..y = oy + height
         ..radius = cornerRadius

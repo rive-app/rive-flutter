@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/generated/shapes/cubic_detached_vertex_base.dart';
@@ -17,6 +18,7 @@ class CubicDetachedVertex extends CubicDetachedVertexBase {
       double? outY,
       Vec2D? inPoint,
       Vec2D? outPoint}) {
+    InternalCoreHelper.markValid(this);
     this.x = x;
     this.y = y;
     this.inPoint = Vec2D.fromValues(inX ?? inPoint![0], inY ?? inPoint![1]);

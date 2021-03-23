@@ -37,13 +37,8 @@ class StateMachineLayerImporter extends ImportStackObject {
         // entire artboard imports.
         assert(transition.stateToId >= 0 &&
             transition.stateToId < importedStates.length);
-        transition.stateToId = importedStates[transition.stateToId].id;
-
-        // As an alternative way to do this, in the future we could consider
-        // just short-circuiting the reference here. We're avoiding this for now
-        // to keep shared code between the editor and runtime more consistent.
-
-        // transition.stateTo = importedStates[transition.stateToId];
+        // transition.stateToId = importedStates[transition.stateToId].id;
+        transition.stateTo = importedStates[transition.stateToId];
       }
     }
     return true;
