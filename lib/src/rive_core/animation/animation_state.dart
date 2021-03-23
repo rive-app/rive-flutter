@@ -23,12 +23,4 @@ class AnimationState extends AnimationStateBase {
   void animationIdChanged(int from, int to) {
     animation = id == Core.missingId ? null : context.resolve(to);
   }
-
-  @override
-  void onAddedDirty() {
-    super.onAddedDirty();
-    if (animationId != Core.missingId) {
-      animation = context.resolve(animationId);
-    }
-  }
 }

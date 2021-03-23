@@ -56,6 +56,12 @@ class Skin extends SkinBase {
       (parent as Skinnable).addSkin(this);
       parent!.markRebuildDependencies();
     }
+    _worldTransform[0] = xx;
+    _worldTransform[1] = xy;
+    _worldTransform[2] = yx;
+    _worldTransform[3] = yy;
+    _worldTransform[4] = tx;
+    _worldTransform[5] = ty;
   }
 
   @override

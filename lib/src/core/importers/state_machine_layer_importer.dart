@@ -27,8 +27,7 @@ class StateMachineLayerImporter extends ImportStackObject {
         int artboardAnimationIndex = state.animationId;
         assert(artboardAnimationIndex >= 0 &&
             artboardAnimationIndex < artboardImporter.animations.length);
-        state.animationId =
-            artboardImporter.animations[artboardAnimationIndex].id;
+        state.animation = artboardImporter.animations[artboardAnimationIndex];
       }
       for (final transition in state.transitions) {
         // At import time the stateToId is an index relative to the entire layer
