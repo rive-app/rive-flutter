@@ -10,7 +10,7 @@ import 'package:rive/src/rive_core/rive_animation_controller.dart';
 
 class LayerController {
   final StateMachineLayer layer;
-  LayerState _currentState = LayerState.unknown;
+  LayerState? _currentState;
   LinearAnimationInstance? _animationInstanceFrom;
   StateTransition? _transition;
   double _mix = 1.0;
@@ -18,7 +18,7 @@ class LayerController {
   LayerController(this.layer) {
     _changeState(layer.entryState);
   }
-  bool _changeState(LayerState state) {
+  bool _changeState(LayerState? state) {
     if (state == _currentState) {
       return false;
     }
@@ -27,7 +27,7 @@ class LayerController {
   }
 
   void dispose() {
-    _changeState(LayerState.unknown);
+    _changeState(null);
   }
 
   bool apply(CoreContext core, double elapsedSeconds,
@@ -71,7 +71,11 @@ class LayerController {
     return tryChangeState(_currentState, inputValues);
   }
 
-  bool tryChangeState(LayerState stateFrom, HashMap<int, dynamic> inputValues) {
+  bool tryChangeState(
+      LayerState? stateFrom, HashMap<int, dynamic> inputValues) {
+    if (stateFrom == null) {
+      return false;
+    }
     for (final transition in stateFrom.transitions) {
       bool valid = true;
       for (final condition in transition.conditions) {

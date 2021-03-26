@@ -18,24 +18,18 @@ class Shape extends ShapeBase with ShapePaintContainer {
   bool get wantLocalPath => _wantLocalPath;
   bool _fillInWorld = false;
   bool get fillInWorld => _fillInWorld;
-  PathComposer _pathComposer = PathComposer.unknown;
-  PathComposer get pathComposer => _pathComposer;
-  set pathComposer(PathComposer value) {
-    if (_pathComposer == value) {
-      return;
-    }
-    _pathComposer = value;
-    paintChanged();
+  late PathComposer pathComposer;
+  Shape() {
+    pathComposer = PathComposer(this);
   }
-
-  ui.Path get fillPath => _pathComposer.fillPath;
+  ui.Path get fillPath => pathComposer.fillPath;
   bool addPath(Path path) {
     paintChanged();
     return paths.add(path);
   }
 
   void _markComposerDirty() {
-    _pathComposer.addDirt(ComponentDirt.path, recurse: true);
+    pathComposer.addDirt(ComponentDirt.path, recurse: true);
     invalidateStrokeEffects();
   }
 
@@ -123,9 +117,8 @@ class Shape extends ShapeBase with ShapePaintContainer {
   void blendModeValueChanged(int from, int to) => _markBlendModeDirty();
   @override
   void draw(ui.Canvas canvas) {
-    assert(_pathComposer != PathComposer.unknown);
     bool clipped = clip(canvas);
-    var path = _pathComposer.fillPath;
+    var path = pathComposer.fillPath;
     if (!_fillInWorld) {
       canvas.save();
       canvas.transform(worldTransform.mat4);
@@ -139,8 +132,8 @@ class Shape extends ShapeBase with ShapePaintContainer {
     for (final stroke in strokes) {
       var transformAffectsStroke = stroke.transformAffectsStroke;
       var path = transformAffectsStroke
-          ? _pathComposer.localPath
-          : _pathComposer.worldPath;
+          ? pathComposer.localPath
+          : pathComposer.worldPath;
       if (transformAffectsStroke) {
         canvas.save();
         canvas.transform(worldTransform.mat4);
@@ -166,4 +159,9 @@ class Shape extends ShapeBase with ShapePaintContainer {
   void onStrokesChanged() => paintChanged();
   @override
   void onFillsChanged() => paintChanged();
+  @override
+  void buildDependencies() {
+    super.buildDependencies();
+    pathComposer.buildDependencies();
+  }
 }

@@ -19,9 +19,9 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   final Set<Component> _needDependenciesBuilt = {};
 
   @override
-  T addObject<T extends Core>(T object) {
-    object.context = this;
-    object.id = _objects.length;
+  T? addObject<T extends Core>(T? object) {
+    object?.context = this;
+    object?.id = _objects.length;
 
     _objects.add(object);
     return object;

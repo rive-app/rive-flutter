@@ -53,7 +53,7 @@ abstract class CoreContext {
   void markDependencyOrderDirty();
   bool markDependenciesDirty(covariant Core rootObject);
   void removeObject<T extends Core>(T object);
-  T addObject<T extends Core>(T object);
+  T? addObject<T extends Core>(T? object);
   void markNeedsAdvance();
   void dirty(void Function() dirt);
 }

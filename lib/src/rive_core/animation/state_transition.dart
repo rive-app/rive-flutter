@@ -7,11 +7,11 @@ export 'package:rive/src/generated/animation/state_transition_base.dart';
 
 class StateTransition extends StateTransitionBase {
   final StateTransitionConditions conditions = StateTransitionConditions();
-  LayerState stateTo = LayerState.unknown;
+  LayerState? stateTo;
   static final StateTransition unknown = StateTransition();
   @override
   bool validate() {
-    return super.validate() && stateTo != LayerState.unknown;
+    return super.validate() && stateTo != null;
   }
 
   @override

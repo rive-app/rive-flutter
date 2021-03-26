@@ -58,7 +58,6 @@ import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 import 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
-import 'package:rive/src/generated/shapes/path_composer_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
 import 'package:rive/src/generated/shapes/points_path_base.dart';
 import 'package:rive/src/generated/shapes/polygon_base.dart';
@@ -112,7 +111,6 @@ import 'package:rive/src/rive_core/shapes/paint/radial_gradient.dart';
 import 'package:rive/src/rive_core/shapes/paint/solid_color.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive/src/rive_core/shapes/paint/trim_path.dart';
-import 'package:rive/src/rive_core/shapes/path_composer.dart';
 import 'package:rive/src/rive_core/shapes/points_path.dart';
 import 'package:rive/src/rive_core/shapes/polygon.dart';
 import 'package:rive/src/rive_core/shapes/rectangle.dart';
@@ -211,8 +209,6 @@ class RiveCoreContext {
         return Polygon();
       case StarBase.typeKey:
         return Star();
-      case PathComposerBase.typeKey:
-        return PathComposer();
       case CubicDetachedVertexBase.typeKey:
         return CubicDetachedVertex();
       case DrawRulesBase.typeKey:

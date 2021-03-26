@@ -102,6 +102,13 @@ class RiveFile {
     while (!reader.isEOF) {
       final object = _readRuntimeObject(reader, propertyToField);
       if (object == null) {
+        // See if there's an artboard on the stack, need to track the null
+        // object as it'll still hold an id.
+        var artboardImporter =
+            importStack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+        if (artboardImporter != null) {
+          artboardImporter.addComponent(null);
+        }
         continue;
       }
 
@@ -191,8 +198,8 @@ class RiveFile {
 
     for (final artboard in _artboards) {
       var runtimeArtboard = artboard as RuntimeArtboard;
-      for (final object in runtimeArtboard.objects) {
-        if (object != null && object.validate()) {
+      for (final object in runtimeArtboard.objects.whereNotNull()) {
+        if (object.validate()) {
           InternalCoreHelper.markValid(object);
         } else {
           throw RiveFormatErrorException(

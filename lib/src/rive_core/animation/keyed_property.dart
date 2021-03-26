@@ -84,7 +84,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   }
 
   void _sortAndValidateKeyFrames() {
-    assert(hasValidated);
     sort();
     for (int i = 0; i < _keyframes.length - 1; i++) {
       var a = _keyframes[i];

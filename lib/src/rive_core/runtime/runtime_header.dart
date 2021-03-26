@@ -36,6 +36,9 @@ class RuntimeHeader {
       throw RiveUnsupportedVersionException(riveVersion.major,
           riveVersion.minor, readMajorVersion, readMinorVersion);
     }
+    if (readMajorVersion == 6) {
+      reader.readVarUint();
+    }
     int fileId = reader.readVarUint();
     var propertyFields = HashMap<int, int>();
     var propertyKeys = <int>[];

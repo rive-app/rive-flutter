@@ -10,11 +10,18 @@ class LinearAnimation extends LinearAnimationBase {
   final _keyedObjects = HashMap<int, KeyedObject>();
   Iterable<KeyedObject> get keyedObjects => _keyedObjects.values;
   bool internalAddKeyedObject(KeyedObject object) {
+    if (internalCheckAddKeyedObject(object)) {
+      _keyedObjects[object.objectId] = object;
+      return true;
+    }
+    return false;
+  }
+
+  bool internalCheckAddKeyedObject(KeyedObject object) {
     var value = _keyedObjects[object.objectId];
     if (value != null && value != object) {
       return false;
     }
-    _keyedObjects[object.objectId] = object;
     return true;
   }
 

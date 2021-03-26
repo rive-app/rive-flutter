@@ -135,7 +135,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void onAdded() {}
   @override
   void onAddedDirty() {
-    parent = context.resolve(parentId);
+    if (parentId != Core.missingId) {
+      parent = context.resolve(parentId);
+    }
   }
 
   @override

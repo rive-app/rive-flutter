@@ -9,7 +9,7 @@ class ArtboardImporter extends ImportStackObject {
   ArtboardImporter(this.artboard);
   final List<LinearAnimation> animations = [];
 
-  void addComponent(Core<CoreContext> object) => artboard.addObject(object);
+  void addComponent(Core<CoreContext>? object) => artboard.addObject(object);
 
   void addAnimation(Animation animation) {
     if (animation is LinearAnimation) {

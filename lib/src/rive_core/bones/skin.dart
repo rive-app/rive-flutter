@@ -32,7 +32,10 @@ class Skin extends SkinBase {
     var temp = Mat2D();
     var bidx = 6;
     for (final tendon in _tendons) {
-      var boneWorld = tendon.bone.worldTransform;
+      if (tendon.bone == null) {
+        continue;
+      }
+      var boneWorld = tendon.bone!.worldTransform;
       var wt = Mat2D.multiply(temp, boneWorld, tendon.inverseBind);
       _boneTransforms[bidx++] = wt[0];
       _boneTransforms[bidx++] = wt[1];
@@ -77,7 +80,7 @@ class Skin extends SkinBase {
   void buildDependencies() {
     super.buildDependencies();
     for (final tendon in _tendons) {
-      tendon.bone.addDependent(this);
+      tendon.bone?.addDependent(this);
     }
   }
 
@@ -88,7 +91,9 @@ class Skin extends SkinBase {
       case TendonBase.typeKey:
         _tendons.add(child as Tendon);
         markRebuildDependencies();
-        parent!.markRebuildDependencies();
+        if (parent is Skinnable) {
+          parent!.markRebuildDependencies();
+        }
         break;
     }
   }
@@ -104,7 +109,7 @@ class Skin extends SkinBase {
         } else {
           markRebuildDependencies();
         }
-        parent!.markRebuildDependencies();
+        parent?.markRebuildDependencies();
         break;
     }
   }

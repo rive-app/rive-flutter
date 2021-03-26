@@ -106,6 +106,12 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   }
 
   @override
+  void onAdded() {
+    super.onAdded();
+    syncColor();
+  }
+
+  @override
   void opacityChanged(double from, double to) {
     syncColor();
     shapePaintContainer!.addDirt(ComponentDirt.paint);
@@ -118,5 +124,8 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   }
 
   @override
-  bool validate() => super.validate() && shapePaintContainer != null;
+  bool validate() {
+    print("${super.validate()} $shapePaintContainer");
+    return super.validate() && shapePaintContainer != null;
+  }
 }
