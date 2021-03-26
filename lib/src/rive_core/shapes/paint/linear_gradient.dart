@@ -124,8 +124,5 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   }
 
   @override
-  bool validate() {
-    print("${super.validate()} $shapePaintContainer");
-    return super.validate() && shapePaintContainer != null;
-  }
+  bool validate() => super.validate() && shapePaintContainer != null;
 }
