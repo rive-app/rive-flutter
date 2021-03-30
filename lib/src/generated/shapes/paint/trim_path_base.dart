@@ -14,7 +14,8 @@ abstract class TrimPathBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Start field with key 114.
-  double _start = 0;
+  static const double startInitialValue = 0;
+  double _start = startInitialValue;
   static const int startPropertyKey = 114;
   double get start => _start;
 
@@ -26,14 +27,17 @@ abstract class TrimPathBase extends Component {
     }
     double from = _start;
     _start = value;
-    startChanged(from, value);
+    if (hasValidated) {
+      startChanged(from, value);
+    }
   }
 
   void startChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// End field with key 115.
-  double _end = 0;
+  static const double endInitialValue = 0;
+  double _end = endInitialValue;
   static const int endPropertyKey = 115;
   double get end => _end;
 
@@ -45,14 +49,17 @@ abstract class TrimPathBase extends Component {
     }
     double from = _end;
     _end = value;
-    endChanged(from, value);
+    if (hasValidated) {
+      endChanged(from, value);
+    }
   }
 
   void endChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Offset field with key 116.
-  double _offset = 0;
+  static const double offsetInitialValue = 0;
+  double _offset = offsetInitialValue;
   static const int offsetPropertyKey = 116;
   double get offset => _offset;
 
@@ -64,14 +71,17 @@ abstract class TrimPathBase extends Component {
     }
     double from = _offset;
     _offset = value;
-    offsetChanged(from, value);
+    if (hasValidated) {
+      offsetChanged(from, value);
+    }
   }
 
   void offsetChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// ModeValue field with key 117.
-  int _modeValue = 0;
+  static const int modeValueInitialValue = 0;
+  int _modeValue = modeValueInitialValue;
   static const int modeValuePropertyKey = 117;
   int get modeValue => _modeValue;
 
@@ -83,7 +93,9 @@ abstract class TrimPathBase extends Component {
     }
     int from = _modeValue;
     _modeValue = value;
-    modeValueChanged(from, value);
+    if (hasValidated) {
+      modeValueChanged(from, value);
+    }
   }
 
   void modeValueChanged(int from, int to);

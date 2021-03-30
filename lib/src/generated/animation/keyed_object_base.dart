@@ -13,7 +13,8 @@ abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// ObjectId field with key 51.
-  int _objectId;
+  static const int objectIdInitialValue = 0;
+  int _objectId = objectIdInitialValue;
   static const int objectIdPropertyKey = 51;
 
   /// Identifier used to track the object that is keyed.
@@ -27,7 +28,9 @@ abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
     }
     int from = _objectId;
     _objectId = value;
-    objectIdChanged(from, value);
+    if (hasValidated) {
+      objectIdChanged(from, value);
+    }
   }
 
   void objectIdChanged(int from, int to);

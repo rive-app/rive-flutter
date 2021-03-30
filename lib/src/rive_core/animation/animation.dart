@@ -4,9 +4,9 @@ import 'package:rive/src/generated/animation/animation_base.dart';
 export 'package:rive/src/generated/animation/animation_base.dart';
 
 class Animation extends AnimationBase<RuntimeArtboard> {
-  Artboard _artboard;
-  Artboard get artboard => _artboard;
-  set artboard(Artboard value) {
+  Artboard? _artboard;
+  Artboard? get artboard => _artboard;
+  set artboard(Artboard? value) {
     if (_artboard == value) {
       return;
     }
@@ -16,14 +16,11 @@ class Animation extends AnimationBase<RuntimeArtboard> {
   }
 
   @override
-  void onAdded() {}
-  @override
   void onAddedDirty() {}
   @override
-  void onRemoved() {
-    artboard = null;
-  }
-
+  void onAdded() {}
+  @override
+  bool validate() => super.validate() && _artboard != null;
   @override
   void nameChanged(String from, String to) {}
 }

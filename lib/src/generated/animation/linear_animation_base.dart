@@ -15,7 +15,8 @@ abstract class LinearAnimationBase extends Animation {
 
   /// --------------------------------------------------------------------------
   /// Fps field with key 56.
-  int _fps = 60;
+  static const int fpsInitialValue = 60;
+  int _fps = fpsInitialValue;
   static const int fpsPropertyKey = 56;
 
   /// Frames per second used to quantize keyframe times to discrete values that
@@ -30,14 +31,17 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _fps;
     _fps = value;
-    fpsChanged(from, value);
+    if (hasValidated) {
+      fpsChanged(from, value);
+    }
   }
 
   void fpsChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// Duration field with key 57.
-  int _duration = 60;
+  static const int durationInitialValue = 60;
+  int _duration = durationInitialValue;
   static const int durationPropertyKey = 57;
 
   /// Duration expressed in number of frames.
@@ -51,14 +55,17 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _duration;
     _duration = value;
-    durationChanged(from, value);
+    if (hasValidated) {
+      durationChanged(from, value);
+    }
   }
 
   void durationChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// Speed field with key 58.
-  double _speed = 1;
+  static const double speedInitialValue = 1;
+  double _speed = speedInitialValue;
   static const int speedPropertyKey = 58;
 
   /// Playback speed multiplier.
@@ -72,14 +79,17 @@ abstract class LinearAnimationBase extends Animation {
     }
     double from = _speed;
     _speed = value;
-    speedChanged(from, value);
+    if (hasValidated) {
+      speedChanged(from, value);
+    }
   }
 
   void speedChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// LoopValue field with key 59.
-  int _loopValue = 0;
+  static const int loopValueInitialValue = 0;
+  int _loopValue = loopValueInitialValue;
   static const int loopValuePropertyKey = 59;
 
   /// Loop value option matches Loop enumeration.
@@ -93,14 +103,17 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _loopValue;
     _loopValue = value;
-    loopValueChanged(from, value);
+    if (hasValidated) {
+      loopValueChanged(from, value);
+    }
   }
 
   void loopValueChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// WorkStart field with key 60.
-  int _workStart;
+  static const int workStartInitialValue = -1;
+  int _workStart = workStartInitialValue;
   static const int workStartPropertyKey = 60;
 
   /// Start of the work area in frames.
@@ -114,14 +127,17 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _workStart;
     _workStart = value;
-    workStartChanged(from, value);
+    if (hasValidated) {
+      workStartChanged(from, value);
+    }
   }
 
   void workStartChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// WorkEnd field with key 61.
-  int _workEnd;
+  static const int workEndInitialValue = -1;
+  int _workEnd = workEndInitialValue;
   static const int workEndPropertyKey = 61;
 
   /// End of the work area in frames.
@@ -135,14 +151,17 @@ abstract class LinearAnimationBase extends Animation {
     }
     int from = _workEnd;
     _workEnd = value;
-    workEndChanged(from, value);
+    if (hasValidated) {
+      workEndChanged(from, value);
+    }
   }
 
   void workEndChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// EnableWorkArea field with key 62.
-  bool _enableWorkArea = false;
+  static const bool enableWorkAreaInitialValue = false;
+  bool _enableWorkArea = enableWorkAreaInitialValue;
   static const int enableWorkAreaPropertyKey = 62;
 
   /// Whether or not the work area is enabled.
@@ -157,7 +176,9 @@ abstract class LinearAnimationBase extends Animation {
     }
     bool from = _enableWorkArea;
     _enableWorkArea = value;
-    enableWorkAreaChanged(from, value);
+    if (hasValidated) {
+      enableWorkAreaChanged(from, value);
+    }
   }
 
   void enableWorkAreaChanged(bool from, bool to);

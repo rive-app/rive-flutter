@@ -1,4 +1,5 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
 export 'package:rive/src/generated/animation/keyed_property_base.dart';
@@ -11,7 +12,7 @@ class KeyFrameList<T extends KeyFrameInterface> {
   List<T> _keyframes = [];
   Iterable<T> get keyframes => _keyframes;
   set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
-  T after(T keyframe) {
+  T? after(T keyframe) {
     var index = _keyframes.indexOf(keyframe);
     if (index != -1 && index + 1 < _keyframes.length) {
       return _keyframes[index + 1];
@@ -51,7 +52,10 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   @override
   void onAddedDirty() {}
   @override
-  void onRemoved() {}
+  void onRemoved() {
+    super.onRemoved();
+  }
+
   bool internalAddKeyFrame(KeyFrame frame) {
     if (_keyframes.contains(frame)) {
       return false;
@@ -64,19 +68,19 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   bool internalRemoveKeyFrame(KeyFrame frame) {
     var removed = _keyframes.remove(frame);
     if (_keyframes.isEmpty) {
-      context?.dirty(_checkShouldRemove);
+      context.dirty(_checkShouldRemove);
     }
     return removed;
   }
 
   void _checkShouldRemove() {
     if (_keyframes.isEmpty) {
-      context?.removeObject(this);
+      context.removeObject(this);
     }
   }
 
   void markKeyFrameOrderDirty() {
-    context?.dirty(_sortAndValidateKeyFrames);
+    context.dirty(_sortAndValidateKeyFrames);
   }
 
   void _sortAndValidateKeyFrames() {
@@ -146,4 +150,13 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   @override
   void propertyKeyChanged(int from, int to) {}
+  @override
+  bool import(ImportStack stack) {
+    var importer = stack.latest<KeyedObjectImporter>(KeyedObjectBase.typeKey);
+    if (importer == null) {
+      return false;
+    }
+    importer.addKeyedProperty(this);
+    return super.import(stack);
+  }
 }

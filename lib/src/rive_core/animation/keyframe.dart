@@ -8,12 +8,11 @@ export 'package:rive/src/generated/animation/keyframe_base.dart';
 
 abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
     implements KeyFrameInterface {
-  double _timeInSeconds;
+  double _timeInSeconds = 0;
   double get seconds => _timeInSeconds;
   bool get canInterpolate => true;
-  KeyFrameInterpolation get interpolation => interpolationType == null
-      ? null
-      : KeyFrameInterpolation.values[interpolationType];
+  KeyFrameInterpolation get interpolation =>
+      KeyFrameInterpolation.values[interpolationType];
   set interpolation(KeyFrameInterpolation value) {
     interpolationType = value.index;
   }
@@ -22,7 +21,7 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
   void interpolationTypeChanged(int from, int to) {}
   @override
   void interpolatorIdChanged(int from, int to) {
-    interpolator = context?.resolve(to);
+    interpolator = context.resolve(to);
   }
 
   @override
@@ -33,25 +32,39 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
 
   @override
   void onAddedDirty() {
-    if (interpolatorId != null) {
-      interpolator = context?.resolve(interpolatorId);
+    if (interpolatorId != Core.missingId) {
+      interpolator = context.resolve(interpolatorId);
     }
   }
 
   @override
-  void onRemoved() {}
+  void onRemoved() {
+    super.onRemoved();
+  }
+
   @override
   void frameChanged(int from, int to) {}
   void apply(Core object, int propertyKey, double mix);
   void applyInterpolation(Core object, int propertyKey, double seconds,
       covariant KeyFrame nextFrame, double mix);
-  Interpolator _interpolator;
-  Interpolator get interpolator => _interpolator;
-  set interpolator(Interpolator value) {
+  Interpolator? _interpolator;
+  Interpolator? get interpolator => _interpolator;
+  set interpolator(Interpolator? value) {
     if (_interpolator == value) {
       return;
     }
     _interpolator = value;
-    interpolatorId = value?.id;
+    interpolatorId = value?.id ?? Core.missingId;
+  }
+
+  @override
+  bool import(ImportStack importStack) {
+    var keyedPropertyHelper =
+        importStack.latest<KeyedPropertyImporter>(KeyedPropertyBase.typeKey);
+    if (keyedPropertyHelper == null) {
+      return false;
+    }
+    keyedPropertyHelper.addKeyFrame(this);
+    return super.import(importStack);
   }
 }

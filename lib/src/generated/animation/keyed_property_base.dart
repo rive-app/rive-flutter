@@ -13,7 +13,8 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// PropertyKey field with key 53.
-  int _propertyKey;
+  static const int propertyKeyInitialValue = CoreContext.invalidPropertyKey;
+  int _propertyKey = propertyKeyInitialValue;
   static const int propertyKeyPropertyKey = 53;
 
   /// The property type that is keyed.
@@ -28,7 +29,9 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
     }
     int from = _propertyKey;
     _propertyKey = value;
-    propertyKeyChanged(from, value);
+    if (hasValidated) {
+      propertyKeyChanged(from, value);
+    }
   }
 
   void propertyKeyChanged(int from, int to);

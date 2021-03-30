@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 
 abstract class ShapePaintMutator {
-  ShapePaintContainer _shapePaintContainer;
-  Paint _paint;
-  ShapePaintContainer get shapePaintContainer => _shapePaintContainer;
+  ShapePaintContainer? _shapePaintContainer;
+  late Paint _paint;
+  ShapePaintContainer? get shapePaintContainer => _shapePaintContainer;
   Paint get paint => _paint;
   double _renderOpacity = 1;
   double get renderOpacity => _renderOpacity;

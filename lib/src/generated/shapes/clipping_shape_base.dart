@@ -14,7 +14,8 @@ abstract class ClippingShapeBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// SourceId field with key 92.
-  int _sourceId;
+  static const int sourceIdInitialValue = -1;
+  int _sourceId = sourceIdInitialValue;
   static const int sourceIdPropertyKey = 92;
 
   /// Identifier used to track the node to use as a clipping source.
@@ -28,14 +29,17 @@ abstract class ClippingShapeBase extends Component {
     }
     int from = _sourceId;
     _sourceId = value;
-    sourceIdChanged(from, value);
+    if (hasValidated) {
+      sourceIdChanged(from, value);
+    }
   }
 
   void sourceIdChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// FillRule field with key 93.
-  int _fillRule = 0;
+  static const int fillRuleInitialValue = 0;
+  int _fillRule = fillRuleInitialValue;
   static const int fillRulePropertyKey = 93;
 
   /// Backing enum value for the clipping fill rule (nonZero or evenOdd).
@@ -49,14 +53,17 @@ abstract class ClippingShapeBase extends Component {
     }
     int from = _fillRule;
     _fillRule = value;
-    fillRuleChanged(from, value);
+    if (hasValidated) {
+      fillRuleChanged(from, value);
+    }
   }
 
   void fillRuleChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// IsVisible field with key 94.
-  bool _isVisible = true;
+  static const bool isVisibleInitialValue = true;
+  bool _isVisible = isVisibleInitialValue;
   static const int isVisiblePropertyKey = 94;
   bool get isVisible => _isVisible;
 
@@ -68,7 +75,9 @@ abstract class ClippingShapeBase extends Component {
     }
     bool from = _isVisible;
     _isVisible = value;
-    isVisibleChanged(from, value);
+    if (hasValidated) {
+      isVisibleChanged(from, value);
+    }
   }
 
   void isVisibleChanged(bool from, bool to);

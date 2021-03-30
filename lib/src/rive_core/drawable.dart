@@ -9,12 +9,12 @@ import 'package:rive/src/rive_core/transform_component.dart';
 export 'package:rive/src/generated/drawable_base.dart';
 
 abstract class Drawable extends DrawableBase {
-  DrawRules flattenedDrawRules;
-  Drawable prev;
-  Drawable next;
+  DrawRules? flattenedDrawRules;
+  Drawable? prev;
+  Drawable? next;
   @override
   void buildDrawOrder(
-      List<Drawable> drawables, DrawRules rules, List<DrawRules> allRules) {
+      List<Drawable> drawables, DrawRules? rules, List<DrawRules> allRules) {
     flattenedDrawRules = drawRules ?? rules;
     drawables.add(this);
     super.buildDrawOrder(drawables, rules, allRules);
@@ -25,9 +25,9 @@ abstract class Drawable extends DrawableBase {
   set blendMode(BlendMode value) => blendModeValue = value.index;
   @override
   void blendModeValueChanged(int from, int to) {}
-  List<ClippingShape> _clippingShapes;
+  List<ClippingShape> _clippingShapes = [];
   bool clip(Canvas canvas) {
-    if (_clippingShapes == null) {
+    if (_clippingShapes.isEmpty) {
       return false;
     }
     canvas.save();
@@ -41,7 +41,7 @@ abstract class Drawable extends DrawableBase {
   }
 
   @override
-  void parentChanged(ContainerComponent from, ContainerComponent to) {
+  void parentChanged(ContainerComponent? from, ContainerComponent? to) {
     super.parentChanged(from, to);
     addDirt(ComponentDirt.clip);
   }
@@ -51,14 +51,14 @@ abstract class Drawable extends DrawableBase {
     super.update(dirt);
     if (dirt & ComponentDirt.clip != 0) {
       List<ClippingShape> clippingShapes = [];
-      for (ContainerComponent p = this; p != null; p = p.parent) {
+      for (ContainerComponent? p = this; p != null; p = p.parent) {
         if (p is TransformComponent) {
-          if (p.clippingShapes != null) {
+          if (p.clippingShapes.isNotEmpty) {
             clippingShapes.addAll(p.clippingShapes);
           }
         }
       }
-      _clippingShapes = clippingShapes.isEmpty ? null : clippingShapes;
+      _clippingShapes = clippingShapes;
     }
   }
 

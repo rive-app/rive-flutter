@@ -25,8 +25,8 @@ abstract class Path extends PathBase {
 
   bool _isValid = false;
   bool get isClosed;
-  Shape _shape;
-  Shape get shape => _shape;
+  Shape? _shape;
+  Shape? get shape => _shape;
   Mat2D get pathTransform;
   Mat2D get inversePathTransform;
   Mat2D get inverseWorldTransform => _inverseWorldTransform;
@@ -44,7 +44,7 @@ abstract class Path extends PathBase {
     }
   }
 
-  void _changeShape(Shape value) {
+  void _changeShape(Shape? value) {
     if (_shape == value) {
       return;
     }
@@ -64,7 +64,7 @@ abstract class Path extends PathBase {
     super.updateWorldTransform();
     _shape?.pathChanged(this);
     if (!Mat2D.invert(_inverseWorldTransform, pathTransform)) {
-      Mat2D.identity(_inverseWorldTransform);
+      Mat2D.setIdentity(_inverseWorldTransform);
     }
   }
 
@@ -88,7 +88,7 @@ abstract class Path extends PathBase {
     _renderPath.reset();
     List<PathVertex> vertices = this.vertices;
     var length = vertices.length;
-    if (vertices == null || length < 2) {
+    if (length < 2) {
       return false;
     }
     var firstPoint = vertices.first;

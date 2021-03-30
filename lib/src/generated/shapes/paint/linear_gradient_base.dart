@@ -19,7 +19,8 @@ abstract class LinearGradientBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// StartX field with key 42.
-  double _startX = 0;
+  static const double startXInitialValue = 0;
+  double _startX = startXInitialValue;
   static const int startXPropertyKey = 42;
   double get startX => _startX;
 
@@ -31,14 +32,17 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _startX;
     _startX = value;
-    startXChanged(from, value);
+    if (hasValidated) {
+      startXChanged(from, value);
+    }
   }
 
   void startXChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// StartY field with key 33.
-  double _startY = 0;
+  static const double startYInitialValue = 0;
+  double _startY = startYInitialValue;
   static const int startYPropertyKey = 33;
   double get startY => _startY;
 
@@ -50,14 +54,17 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _startY;
     _startY = value;
-    startYChanged(from, value);
+    if (hasValidated) {
+      startYChanged(from, value);
+    }
   }
 
   void startYChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// EndX field with key 34.
-  double _endX = 0;
+  static const double endXInitialValue = 0;
+  double _endX = endXInitialValue;
   static const int endXPropertyKey = 34;
   double get endX => _endX;
 
@@ -69,14 +76,17 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _endX;
     _endX = value;
-    endXChanged(from, value);
+    if (hasValidated) {
+      endXChanged(from, value);
+    }
   }
 
   void endXChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// EndY field with key 35.
-  double _endY = 0;
+  static const double endYInitialValue = 0;
+  double _endY = endYInitialValue;
   static const int endYPropertyKey = 35;
   double get endY => _endY;
 
@@ -88,14 +98,17 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _endY;
     _endY = value;
-    endYChanged(from, value);
+    if (hasValidated) {
+      endYChanged(from, value);
+    }
   }
 
   void endYChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Opacity field with key 46.
-  double _opacity = 1;
+  static const double opacityInitialValue = 1;
+  double _opacity = opacityInitialValue;
   static const int opacityPropertyKey = 46;
   double get opacity => _opacity;
 
@@ -107,7 +120,9 @@ abstract class LinearGradientBase extends ContainerComponent {
     }
     double from = _opacity;
     _opacity = value;
-    opacityChanged(from, value);
+    if (hasValidated) {
+      opacityChanged(from, value);
+    }
   }
 
   void opacityChanged(double from, double to);

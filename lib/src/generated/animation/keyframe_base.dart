@@ -12,7 +12,8 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Frame field with key 67.
-  int _frame;
+  static const int frameInitialValue = 0;
+  int _frame = frameInitialValue;
   static const int framePropertyKey = 67;
 
   /// Timecode as frame number can be converted to time by dividing by animation
@@ -27,14 +28,17 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
     }
     int from = _frame;
     _frame = value;
-    frameChanged(from, value);
+    if (hasValidated) {
+      frameChanged(from, value);
+    }
   }
 
   void frameChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// InterpolationType field with key 68.
-  int _interpolationType;
+  static const int interpolationTypeInitialValue = 0;
+  int _interpolationType = interpolationTypeInitialValue;
   static const int interpolationTypePropertyKey = 68;
 
   /// The type of interpolation index in KeyframeInterpolation applied to this
@@ -50,14 +54,17 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
     }
     int from = _interpolationType;
     _interpolationType = value;
-    interpolationTypeChanged(from, value);
+    if (hasValidated) {
+      interpolationTypeChanged(from, value);
+    }
   }
 
   void interpolationTypeChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// InterpolatorId field with key 69.
-  int _interpolatorId;
+  static const int interpolatorIdInitialValue = -1;
+  int _interpolatorId = interpolatorIdInitialValue;
   static const int interpolatorIdPropertyKey = 69;
 
   /// The id of the custom interpolator used when interpolation is Cubic.
@@ -72,7 +79,9 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
     }
     int from = _interpolatorId;
     _interpolatorId = value;
-    interpolatorIdChanged(from, value);
+    if (hasValidated) {
+      interpolatorIdChanged(from, value);
+    }
   }
 
   void interpolatorIdChanged(int from, int to);

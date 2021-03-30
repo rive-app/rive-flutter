@@ -19,7 +19,8 @@ abstract class TransformComponentBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 15.
-  double _rotation = 0;
+  static const double rotationInitialValue = 0;
+  double _rotation = rotationInitialValue;
   static const int rotationPropertyKey = 15;
   double get rotation => _rotation;
 
@@ -31,14 +32,17 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _rotation;
     _rotation = value;
-    rotationChanged(from, value);
+    if (hasValidated) {
+      rotationChanged(from, value);
+    }
   }
 
   void rotationChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// ScaleX field with key 16.
-  double _scaleX = 1;
+  static const double scaleXInitialValue = 1;
+  double _scaleX = scaleXInitialValue;
   static const int scaleXPropertyKey = 16;
   double get scaleX => _scaleX;
 
@@ -50,14 +54,17 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _scaleX;
     _scaleX = value;
-    scaleXChanged(from, value);
+    if (hasValidated) {
+      scaleXChanged(from, value);
+    }
   }
 
   void scaleXChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// ScaleY field with key 17.
-  double _scaleY = 1;
+  static const double scaleYInitialValue = 1;
+  double _scaleY = scaleYInitialValue;
   static const int scaleYPropertyKey = 17;
   double get scaleY => _scaleY;
 
@@ -69,14 +76,17 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _scaleY;
     _scaleY = value;
-    scaleYChanged(from, value);
+    if (hasValidated) {
+      scaleYChanged(from, value);
+    }
   }
 
   void scaleYChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Opacity field with key 18.
-  double _opacity = 1;
+  static const double opacityInitialValue = 1;
+  double _opacity = opacityInitialValue;
   static const int opacityPropertyKey = 18;
   double get opacity => _opacity;
 
@@ -88,7 +98,9 @@ abstract class TransformComponentBase extends ContainerComponent {
     }
     double from = _opacity;
     _opacity = value;
-    opacityChanged(from, value);
+    if (hasValidated) {
+      opacityChanged(from, value);
+    }
   }
 
   void opacityChanged(double from, double to);

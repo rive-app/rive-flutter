@@ -12,9 +12,9 @@ import 'package:rive/src/generated/transform_component_base.dart';
 export 'package:rive/src/generated/transform_component_base.dart';
 
 abstract class TransformComponent extends TransformComponentBase {
-  DrawRules _drawRules;
-  DrawRules get drawRules => _drawRules;
-  List<ClippingShape> _clippingShapes;
+  DrawRules? _drawRules;
+  DrawRules? get drawRules => _drawRules;
+  final List<ClippingShape> _clippingShapes = [];
   Iterable<ClippingShape> get clippingShapes => _clippingShapes;
   double _renderOpacity = 0;
   double get renderOpacity => _renderOpacity;
@@ -41,7 +41,7 @@ abstract class TransformComponent extends TransformComponentBase {
     if (rotation != 0) {
       Mat2D.fromRotation(transform, rotation);
     } else {
-      Mat2D.identity(transform);
+      Mat2D.setIdentity(transform);
     }
     transform[4] = x;
     transform[5] = y;
@@ -120,7 +120,7 @@ abstract class TransformComponent extends TransformComponentBase {
   }
 
   @override
-  void parentChanged(ContainerComponent from, ContainerComponent to) {
+  void parentChanged(ContainerComponent? from, ContainerComponent? to) {
     super.parentChanged(from, to);
     markWorldTransformDirty();
   }
@@ -133,7 +133,6 @@ abstract class TransformComponent extends TransformComponentBase {
         _drawRules = child as DrawRules;
         break;
       case ClippingShapeBase.typeKey:
-        _clippingShapes ??= <ClippingShape>[];
         _clippingShapes.add(child as ClippingShape);
         addDirt(ComponentDirt.clip, recurse: true);
         break;
@@ -150,11 +149,8 @@ abstract class TransformComponent extends TransformComponentBase {
         }
         break;
       case ClippingShapeBase.typeKey:
-        if (_clippingShapes != null) {
+        if (_clippingShapes.isNotEmpty) {
           _clippingShapes.remove(child as ClippingShape);
-          if (_clippingShapes.isEmpty) {
-            _clippingShapes = null;
-          }
           addDirt(ComponentDirt.clip, recurse: true);
         }
         break;
@@ -163,10 +159,10 @@ abstract class TransformComponent extends TransformComponentBase {
 
   @override
   void buildDrawOrder(
-      List<Drawable> drawables, DrawRules rules, List<DrawRules> allRules) {
+      List<Drawable> drawables, DrawRules? rules, List<DrawRules> allRules) {
     if (drawRules != null) {
       // ignore: parameter_assignments
-      rules = drawRules;
+      rules = drawRules!;
       allRules.add(rules);
     }
     super.buildDrawOrder(drawables, rules, allRules);

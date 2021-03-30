@@ -1,12 +1,17 @@
 import 'dart:math';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/generated/shapes/cubic_asymmetric_vertex_base.dart';
 export 'package:rive/src/generated/shapes/cubic_asymmetric_vertex_base.dart';
 
 class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
-  Vec2D _inPoint;
-  Vec2D _outPoint;
+  CubicAsymmetricVertex();
+  CubicAsymmetricVertex.procedural() {
+    InternalCoreHelper.markValid(this);
+  }
+  Vec2D? _inPoint;
+  Vec2D? _outPoint;
   @override
   Vec2D get outPoint {
     return _outPoint ??= Vec2D.add(

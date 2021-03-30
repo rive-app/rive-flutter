@@ -26,7 +26,8 @@ abstract class PolygonBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// Points field with key 125.
-  int _points = 5;
+  static const int pointsInitialValue = 5;
+  int _points = pointsInitialValue;
   static const int pointsPropertyKey = 125;
 
   /// The number of points for the polygon.
@@ -40,14 +41,17 @@ abstract class PolygonBase extends ParametricPath {
     }
     int from = _points;
     _points = value;
-    pointsChanged(from, value);
+    if (hasValidated) {
+      pointsChanged(from, value);
+    }
   }
 
   void pointsChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// CornerRadius field with key 126.
-  double _cornerRadius = 0;
+  static const double cornerRadiusInitialValue = 0;
+  double _cornerRadius = cornerRadiusInitialValue;
   static const int cornerRadiusPropertyKey = 126;
 
   /// The corner radius.
@@ -62,7 +66,9 @@ abstract class PolygonBase extends ParametricPath {
     }
     double from = _cornerRadius;
     _cornerRadius = value;
-    cornerRadiusChanged(from, value);
+    if (hasValidated) {
+      cornerRadiusChanged(from, value);
+    }
   }
 
   void cornerRadiusChanged(double from, double to);

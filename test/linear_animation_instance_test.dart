@@ -5,14 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
 
 void main() {
-  Artboard artboard;
+  late Artboard artboard;
 
   void loadTestAssets() {
     final riveData = ByteData.sublistView(
       File('assets/one_shot_0_6_5.riv').readAsBytesSync(),
     );
-    final riveFile = RiveFile();
-    expect(riveFile.import(riveData), true);
+    final riveFile = RiveFile.import(riveData);
     artboard = riveFile.mainArtboard;
   }
 

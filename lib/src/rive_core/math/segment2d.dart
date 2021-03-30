@@ -9,13 +9,13 @@ class ProjectionResult {
 class Segment2D {
   final Vec2D start;
   final Vec2D end;
-  Vec2D diff;
-  double lengthSquared;
+  Vec2D? diff;
+  double lengthSquared = 0;
   Segment2D(this.start, this.end);
   ProjectionResult projectPoint(Vec2D point, {bool clamp = true}) {
     if (diff == null) {
       diff = Vec2D.subtract(Vec2D(), start, end);
-      lengthSquared = Vec2D.squaredLength(diff);
+      lengthSquared = Vec2D.squaredLength(diff!);
     }
     if (lengthSquared == 0) {
       return ProjectionResult(0, start);

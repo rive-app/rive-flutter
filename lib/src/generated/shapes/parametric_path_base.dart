@@ -25,7 +25,8 @@ abstract class ParametricPathBase extends Path {
 
   /// --------------------------------------------------------------------------
   /// Width field with key 20.
-  double _width = 0;
+  static const double widthInitialValue = 0;
+  double _width = widthInitialValue;
   static const int widthPropertyKey = 20;
 
   /// Width of the parametric path.
@@ -39,14 +40,17 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _width;
     _width = value;
-    widthChanged(from, value);
+    if (hasValidated) {
+      widthChanged(from, value);
+    }
   }
 
   void widthChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Height field with key 21.
-  double _height = 0;
+  static const double heightInitialValue = 0;
+  double _height = heightInitialValue;
   static const int heightPropertyKey = 21;
 
   /// Height of the parametric path.
@@ -60,14 +64,17 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _height;
     _height = value;
-    heightChanged(from, value);
+    if (hasValidated) {
+      heightChanged(from, value);
+    }
   }
 
   void heightChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// OriginX field with key 123.
-  double _originX = 0.5;
+  static const double originXInitialValue = 0.5;
+  double _originX = originXInitialValue;
   static const int originXPropertyKey = 123;
 
   /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
@@ -81,14 +88,17 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _originX;
     _originX = value;
-    originXChanged(from, value);
+    if (hasValidated) {
+      originXChanged(from, value);
+    }
   }
 
   void originXChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// OriginY field with key 124.
-  double _originY = 0.5;
+  static const double originYInitialValue = 0.5;
+  double _originY = originYInitialValue;
   static const int originYPropertyKey = 124;
 
   /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
@@ -102,7 +112,9 @@ abstract class ParametricPathBase extends Path {
     }
     double from = _originY;
     _originY = value;
-    originYChanged(from, value);
+    if (hasValidated) {
+      originYChanged(from, value);
+    }
   }
 
   void originYChanged(double from, double to);

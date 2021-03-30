@@ -10,7 +10,7 @@ export 'package:rive/src/generated/bones/skin_base.dart';
 class Skin extends SkinBase {
   final List<Tendon> _tendons = [];
   List<Tendon> get tendons => _tendons;
-  Float32List _boneTransforms;
+  Float32List _boneTransforms = Float32List(0);
   final Mat2D _worldTransform = Mat2D();
   @override
   void onDirty(int mask) {
@@ -20,7 +20,7 @@ class Skin extends SkinBase {
   @override
   void update(int dirt) {
     var size = (_tendons.length + 1) * 6;
-    if (_boneTransforms == null || _boneTransforms.length != size) {
+    if (_boneTransforms.length != size) {
       _boneTransforms = Float32List(size);
       _boneTransforms[0] = 1;
       _boneTransforms[1] = 0;
@@ -32,7 +32,10 @@ class Skin extends SkinBase {
     var temp = Mat2D();
     var bidx = 6;
     for (final tendon in _tendons) {
-      var boneWorld = tendon.bone.worldTransform;
+      if (tendon.bone == null) {
+        continue;
+      }
+      var boneWorld = tendon.bone!.worldTransform;
       var wt = Mat2D.multiply(temp, boneWorld, tendon.inverseBind);
       _boneTransforms[bidx++] = wt[0];
       _boneTransforms[bidx++] = wt[1];
@@ -54,15 +57,21 @@ class Skin extends SkinBase {
     super.onAddedDirty();
     if (parent is Skinnable) {
       (parent as Skinnable).addSkin(this);
-      parent.markRebuildDependencies();
+      parent!.markRebuildDependencies();
     }
+    _worldTransform[0] = xx;
+    _worldTransform[1] = xy;
+    _worldTransform[2] = yx;
+    _worldTransform[3] = yy;
+    _worldTransform[4] = tx;
+    _worldTransform[5] = ty;
   }
 
   @override
   void onRemoved() {
     if (parent is Skinnable) {
       (parent as Skinnable).removeSkin(this);
-      parent.markRebuildDependencies();
+      parent!.markRebuildDependencies();
     }
     super.onRemoved();
   }
@@ -82,7 +91,9 @@ class Skin extends SkinBase {
       case TendonBase.typeKey:
         _tendons.add(child as Tendon);
         markRebuildDependencies();
-        parent?.markRebuildDependencies();
+        if (parent is Skinnable) {
+          parent!.markRebuildDependencies();
+        }
         break;
     }
   }

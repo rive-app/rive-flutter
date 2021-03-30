@@ -17,9 +17,9 @@ abstract class CubicVertex extends CubicVertexBase {
   @override
   void deform(Mat2D world, Float32List boneTransforms) {
     super.deform(world, boneTransforms);
-    Weight.deform(outPoint[0], outPoint[1], weight.outIndices, weight.outValues,
-        world, boneTransforms, weight.outTranslation);
-    Weight.deform(inPoint[0], inPoint[1], weight.inIndices, weight.inValues,
-        world, boneTransforms, weight.inTranslation);
+    Weight.deform(outPoint[0], outPoint[1], weight!.outIndices,
+        weight!.outValues, world, boneTransforms, weight!.outTranslation);
+    Weight.deform(inPoint[0], inPoint[1], weight!.inIndices, weight!.inValues,
+        world, boneTransforms, weight!.inTranslation);
   }
 }

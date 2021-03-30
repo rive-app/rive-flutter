@@ -21,7 +21,8 @@ abstract class StrokeBase extends ShapePaint {
 
   /// --------------------------------------------------------------------------
   /// Thickness field with key 47.
-  double _thickness = 1;
+  static const double thicknessInitialValue = 1;
+  double _thickness = thicknessInitialValue;
   static const int thicknessPropertyKey = 47;
   double get thickness => _thickness;
 
@@ -33,14 +34,17 @@ abstract class StrokeBase extends ShapePaint {
     }
     double from = _thickness;
     _thickness = value;
-    thicknessChanged(from, value);
+    if (hasValidated) {
+      thicknessChanged(from, value);
+    }
   }
 
   void thicknessChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Cap field with key 48.
-  int _cap = 0;
+  static const int capInitialValue = 0;
+  int _cap = capInitialValue;
   static const int capPropertyKey = 48;
   int get cap => _cap;
 
@@ -52,14 +56,17 @@ abstract class StrokeBase extends ShapePaint {
     }
     int from = _cap;
     _cap = value;
-    capChanged(from, value);
+    if (hasValidated) {
+      capChanged(from, value);
+    }
   }
 
   void capChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// Join field with key 49.
-  int _join = 0;
+  static const int joinInitialValue = 0;
+  int _join = joinInitialValue;
   static const int joinPropertyKey = 49;
   int get join => _join;
 
@@ -71,14 +78,17 @@ abstract class StrokeBase extends ShapePaint {
     }
     int from = _join;
     _join = value;
-    joinChanged(from, value);
+    if (hasValidated) {
+      joinChanged(from, value);
+    }
   }
 
   void joinChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// TransformAffectsStroke field with key 50.
-  bool _transformAffectsStroke = true;
+  static const bool transformAffectsStrokeInitialValue = true;
+  bool _transformAffectsStroke = transformAffectsStrokeInitialValue;
   static const int transformAffectsStrokePropertyKey = 50;
   bool get transformAffectsStroke => _transformAffectsStroke;
 
@@ -91,7 +101,9 @@ abstract class StrokeBase extends ShapePaint {
     }
     bool from = _transformAffectsStroke;
     _transformAffectsStroke = value;
-    transformAffectsStrokeChanged(from, value);
+    if (hasValidated) {
+      transformAffectsStrokeChanged(from, value);
+    }
   }
 
   void transformAffectsStrokeChanged(bool from, bool to);

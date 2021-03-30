@@ -13,7 +13,8 @@ abstract class WeightBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Values field with key 102.
-  int _values = 255;
+  static const int valuesInitialValue = 255;
+  int _values = valuesInitialValue;
   static const int valuesPropertyKey = 102;
   int get values => _values;
 
@@ -25,14 +26,17 @@ abstract class WeightBase extends Component {
     }
     int from = _values;
     _values = value;
-    valuesChanged(from, value);
+    if (hasValidated) {
+      valuesChanged(from, value);
+    }
   }
 
   void valuesChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// Indices field with key 103.
-  int _indices = 1;
+  static const int indicesInitialValue = 1;
+  int _indices = indicesInitialValue;
   static const int indicesPropertyKey = 103;
   int get indices => _indices;
 
@@ -44,7 +48,9 @@ abstract class WeightBase extends Component {
     }
     int from = _indices;
     _indices = value;
-    indicesChanged(from, value);
+    if (hasValidated) {
+      indicesChanged(from, value);
+    }
   }
 
   void indicesChanged(int from, int to);

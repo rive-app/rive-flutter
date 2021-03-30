@@ -23,7 +23,8 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 79.
-  double _rotation = 0;
+  static const double rotationInitialValue = 0;
+  double _rotation = rotationInitialValue;
   static const int rotationPropertyKey = 79;
 
   /// The control points' angle.
@@ -37,14 +38,17 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
     }
     double from = _rotation;
     _rotation = value;
-    rotationChanged(from, value);
+    if (hasValidated) {
+      rotationChanged(from, value);
+    }
   }
 
   void rotationChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// InDistance field with key 80.
-  double _inDistance = 0;
+  static const double inDistanceInitialValue = 0;
+  double _inDistance = inDistanceInitialValue;
   static const int inDistancePropertyKey = 80;
 
   /// The in point's distance from the translation of the point.
@@ -58,14 +62,17 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
     }
     double from = _inDistance;
     _inDistance = value;
-    inDistanceChanged(from, value);
+    if (hasValidated) {
+      inDistanceChanged(from, value);
+    }
   }
 
   void inDistanceChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// OutDistance field with key 81.
-  double _outDistance = 0;
+  static const double outDistanceInitialValue = 0;
+  double _outDistance = outDistanceInitialValue;
   static const int outDistancePropertyKey = 81;
 
   /// The out point's distance from the translation of the point.
@@ -80,7 +87,9 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
     }
     double from = _outDistance;
     _outDistance = value;
-    outDistanceChanged(from, value);
+    if (hasValidated) {
+      outDistanceChanged(from, value);
+    }
   }
 
   void outDistanceChanged(double from, double to);

@@ -1,43 +1,37 @@
-import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/extensions.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/runtime_artboard.dart';
 
 /// A simple [RiveAnimationController] that plays back a LinearAnimation defined
 /// by an artist. All playback parameters (looping, speed, keyframes) are artist
-/// defined in the Rive editor.
+/// defined in the Rive editor. This takes a declaritive approach of using an
+/// [animationName] as the only requirement for resolving the animation. When
+/// the controller is added to an artboard (note that due to widget lifecycles
+/// it could get re-initialized on another artboard later) it'll look for the
+/// animation. Not finding the animation is a condition this example deals with
+/// by simply nulling the [AnimationInstance] _instance which means it won't be
+/// applied during advance cycles. Another approach would be let this throw, but
+/// this one is a little more forgiving which can be desireable with files
+/// dynamically loaded (downloaded even) at runtime.
 class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
-  SimpleAnimation(this.animationName, {double mix})
-      : _mix = mix?.clamp(0, 1)?.toDouble() ?? 1.0;
+  LinearAnimationInstance? _instance;
 
-  LinearAnimationInstance _instance;
   final String animationName;
   bool _stopOnNextApply = false;
+  double _mix;
 
   // Controls the level of mix for the animation, clamped between 0 and 1
-  double _mix;
+  SimpleAnimation(this.animationName, {double mix = 1})
+      : _mix = mix.clamp(0, 1).toDouble();
+  LinearAnimationInstance? get instance => _instance;
   double get mix => _mix;
-  set mix(double value) => _mix = value?.clamp(0, 1)?.toDouble() ?? 1;
 
-  LinearAnimationInstance get instance => _instance;
-
-  @override
-  bool init(RuntimeArtboard artboard) {
-    var animation = artboard.animations.firstWhere(
-      (animation) =>
-          animation is LinearAnimation && animation.name == animationName,
-      orElse: () => null,
-    );
-    if (animation != null) {
-      _instance = LinearAnimationInstance(animation as LinearAnimation);
-    }
-    isActive = true;
-    return _instance != null;
-  }
+  set mix(double value) => _mix = value.clamp(0, 1).toDouble();
 
   @override
   void apply(RuntimeArtboard artboard, double elapsedSeconds) {
-    if (_stopOnNextApply) {
+    if (_stopOnNextApply || _instance == null) {
       isActive = false;
     }
 
@@ -47,10 +41,18 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
     // stopping playback. We do this by tracking _stopOnNextApply making sure to
     // reset it when the controller is re-activated. Fixes #28 and should help
     // with issues #51 and #56.
-    _instance.animation.apply(_instance.time, coreContext: artboard, mix: mix);
-    if (!_instance.advance(elapsedSeconds)) {
+    _instance!.animation
+        .apply(_instance!.time, coreContext: artboard, mix: mix);
+    if (!_instance!.advance(elapsedSeconds)) {
       _stopOnNextApply = true;
     }
+  }
+
+  @override
+  bool init(RuntimeArtboard artboard) {
+    _instance = artboard.animationByName(animationName);
+    isActive = true;
+    return _instance != null;
   }
 
   @override

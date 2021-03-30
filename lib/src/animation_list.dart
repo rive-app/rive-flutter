@@ -1,10 +1,10 @@
 import 'dart:collection';
 import 'package:rive/src/rive_core/animation/animation.dart';
 
-// TODO: figure out how to make this cleaner.
 class AnimationList extends ListBase<Animation> {
-  final List<Animation> _values = [];
-  List<Animation> get values => _values;
+  // Lame way to do this due to how ListBase needs to expand a nullable list.
+  final List<Animation?> _values = [];
+  List<Animation> get values => _values.cast<Animation>();
 
   @override
   int get length => _values.length;
@@ -13,7 +13,7 @@ class AnimationList extends ListBase<Animation> {
   set length(int value) => _values.length = value;
 
   @override
-  Animation operator [](int index) => _values[index];
+  Animation operator [](int index) => _values[index]!;
 
   @override
   void operator []=(int index, Animation value) => _values[index] = value;

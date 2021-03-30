@@ -1,5 +1,4 @@
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/animation/keyframe_interpolation.dart';
 import 'package:rive/src/generated/animation/keyframe_id_base.dart';
 import 'package:rive/src/generated/rive_core_context.dart';
 export 'package:rive/src/generated/animation/keyframe_id_base.dart';
@@ -10,12 +9,6 @@ class KeyFrameId extends KeyFrameIdBase {
   @override
   void apply(Core<CoreContext> object, int propertyKey, double mix) {
     RiveCoreContext.setUint(object, propertyKey, value);
-  }
-
-  @override
-  void onAdded() {
-    super.onAdded();
-    interpolation ??= KeyFrameInterpolation.hold;
   }
 
   @override

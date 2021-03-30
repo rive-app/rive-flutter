@@ -1,5 +1,7 @@
 import 'dart:typed_data';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
+import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 
 const int newtonIterations = 4;
@@ -21,7 +23,7 @@ double _getSlope(double aT, double aA1, double aA2) {
 }
 
 class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
-  _CubicEase _ease;
+  _CubicEase _ease = _CubicEase.make(0.42, 0, 0.58, 1);
   @override
   bool equalParameters(Interpolator other) {
     if (other is CubicInterpolator) {
@@ -34,14 +36,9 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
   }
 
   @override
-  void onAdded() {
-    _updateStoredCubic();
-  }
-
+  void onAdded() => _updateStoredCubic();
   @override
   void onAddedDirty() {}
-  @override
-  void onRemoved() {}
   @override
   double transform(double value) => _ease.transform(value);
   @override
@@ -55,13 +52,22 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
   void _updateStoredCubic() {
     _ease = _CubicEase.make(x1, y1, x2, y2);
   }
+
+  @override
+  bool import(ImportStack stack) {
+    var artboardHelper = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+    if (artboardHelper == null) {
+      return false;
+    }
+    artboardHelper.addComponent(this);
+    return super.import(stack);
+  }
 }
 
 class _Cubic extends _CubicEase {
-  Float64List _values;
+  final Float64List _values = Float64List(splineTableSize);
   final double x1, y1, x2, y2;
   _Cubic(this.x1, this.y1, this.x2, this.y2) {
-    _values = Float64List(splineTableSize);
     for (int i = 0; i < splineTableSize; ++i) {
       _values[i] = _calcBezier(i * sampleStepSize, x1, x2);
     }

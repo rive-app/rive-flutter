@@ -1,5 +1,5 @@
 abstract class Parentable<T> {
-  T get parent;
+  T? get parent;
 }
 
 /// Get the top most components (any child that has an ancestor in the set
@@ -8,7 +8,7 @@ Set<T> tops<T extends Parentable<T>>(Iterable<T> parentables) {
   var tips = <T>{};
   outerLoop:
   for (final item in parentables) {
-    for (var parent = item.parent; parent != null; parent = parent.parent) {
+    for (T? parent = item.parent; parent != null; parent = parent.parent) {
       if (parentables.contains(parent)) {
         continue outerLoop;
       }
@@ -19,7 +19,7 @@ Set<T> tops<T extends Parentable<T>>(Iterable<T> parentables) {
 }
 
 bool isChildOf<T extends Parentable<T>>(T child, Iterable<T> parents) {
-  for (var parent = child; parent != null; parent = parent.parent) {
+  for (T? parent = child; parent != null; parent = parent.parent) {
     if (parents.contains(parent)) {
       return true;
     }

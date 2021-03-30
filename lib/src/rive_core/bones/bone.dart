@@ -13,7 +13,7 @@ class Bone extends BoneBase {
     }
   }
 
-  Bone get firstChildBone {
+  Bone? get firstChildBone {
     for (final child in children) {
       if (child.coreType == BoneBase.typeKey) {
         return child as Bone;

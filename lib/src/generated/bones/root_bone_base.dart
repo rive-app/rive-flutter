@@ -24,7 +24,8 @@ abstract class RootBoneBase extends Bone {
 
   /// --------------------------------------------------------------------------
   /// X field with key 90.
-  double _x = 0;
+  static const double xInitialValue = 0;
+  double _x = xInitialValue;
   static const int xPropertyKey = 90;
   @override
   double get x => _x;
@@ -38,14 +39,17 @@ abstract class RootBoneBase extends Bone {
     }
     double from = _x;
     _x = value;
-    xChanged(from, value);
+    if (hasValidated) {
+      xChanged(from, value);
+    }
   }
 
   void xChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Y field with key 91.
-  double _y = 0;
+  static const double yInitialValue = 0;
+  double _y = yInitialValue;
   static const int yPropertyKey = 91;
   @override
   double get y => _y;
@@ -59,7 +63,9 @@ abstract class RootBoneBase extends Bone {
     }
     double from = _y;
     _y = value;
-    yChanged(from, value);
+    if (hasValidated) {
+      yChanged(from, value);
+    }
   }
 
   void yChanged(double from, double to);

@@ -6,15 +6,13 @@ import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/generated/shapes/points_path_base.dart';
 export 'package:rive/src/generated/shapes/points_path_base.dart';
 
-enum PointsPathEditMode { off, creating, editing }
-
 class PointsPath extends PointsPathBase with Skinnable {
   final List<PathVertex> _vertices = [];
   PointsPath() {
     isClosed = false;
   }
   @override
-  Mat2D get pathTransform => skin != null ? Mat2D() : worldTransform;
+  Mat2D get pathTransform => skin != null ? Mat2D.identity : worldTransform;
   @override
   Mat2D get inversePathTransform =>
       skin != null ? Mat2D() : inverseWorldTransform;

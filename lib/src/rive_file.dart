@@ -1,188 +1,40 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
-import 'package:rive/src/core/field_types/core_field_type.dart';
-import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/runtime/runtime_header.dart';
-import 'package:rive/src/rive_core/backboard.dart';
+import 'package:collection/collection.dart';
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
-import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
-import 'package:rive/src/rive_core/animation/animation.dart';
+import 'package:rive/src/core/field_types/core_field_type.dart';
+import 'package:rive/src/generated/animation/animation_state_base.dart';
+import 'package:rive/src/generated/animation/any_state_base.dart';
+import 'package:rive/src/generated/animation/entry_state_base.dart';
+import 'package:rive/src/generated/animation/exit_state_base.dart';
+import 'package:rive/src/generated/animation/keyed_property_base.dart';
+import 'package:rive/src/generated/animation/state_machine_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
-import 'package:rive/src/rive_core/animation/keyframe.dart';
+import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/rive_core/animation/state_machine.dart';
+import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/backboard.dart';
+import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
+import 'package:rive/src/rive_core/runtime/runtime_header.dart';
+import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 
-class RiveFile {
-  RuntimeHeader _header;
-  RuntimeHeader get header => _header;
-  Backboard _backboard;
-  Backboard get backboard => _backboard;
+import 'rive_core/animation/state_transition.dart';
 
-  final _artboards = <Artboard>[];
-
-  /// Returns all artboards in the file
-  List<Artboard> get artboards => _artboards;
-
-  /// Returns the first (main) artboard
-  Artboard get mainArtboard => _artboards.first;
-
-  /// Returns an artboard from the specified name, or null if no artboard with
-  /// that name exists in the file
-  Artboard artboardByName(String name) =>
-      _artboards.firstWhere((a) => a.name == name, orElse: () => null);
-
-  /// Imports a Rive file from an array of bytes. Returns true if successfully
-  /// imported, false otherwise.
-  bool import(ByteData bytes) {
-    assert(_header == null, 'can only import once');
-    var reader = BinaryReader(bytes);
-    _header = RuntimeHeader.read(reader);
-
-    /// Property fields table of contents
-    final propertyToField = HashMap<int, CoreFieldType>();
-
-    // List of core file types
-    final indexToField = <CoreFieldType>[
-      RiveCoreContext.uintType,
-      RiveCoreContext.stringType,
-      RiveCoreContext.doubleType,
-      RiveCoreContext.colorType
-    ];
-
-    _header.propertyToFieldIndex.forEach((key, fieldIndex) {
-      if (fieldIndex < 0 || fieldIndex >= indexToField.length) {
-        throw RiveFormatErrorException('unexpected field index $fieldIndex');
-      }
-
-      propertyToField[key] = indexToField[fieldIndex];
-    });
-
-    _backboard = _readRuntimeObject<Backboard>(reader, propertyToField);
-    if (_backboard == null) {
-      throw const RiveFormatErrorException(
-          'expected first object to be a Backboard');
-    }
-
-    int numArtboards = reader.readVarUint();
-    for (int i = 0; i < numArtboards; i++) {
-      var numObjects = reader.readVarUint();
-      if (numObjects == 0) {
-        throw const RiveFormatErrorException(
-            'artboards must contain at least one object (themselves)');
-      }
-      var artboard =
-          _readRuntimeObject(reader, propertyToField, RuntimeArtboard());
-      // Kind of weird, but the artboard is the core context at runtime, so we
-      // want other objects to be able to resolve it. It's always at the 0
-      // index.
-      artboard?.addObject(artboard);
-      _artboards.add(artboard);
-      // var objects = List<Core<RiveCoreContext>>(numObjects);
-      for (int i = 1; i < numObjects; i++) {
-        Core<CoreContext> object = _readRuntimeObject(reader, propertyToField);
-        // N.B. we add objects that don't load (null) too as we need to look
-        // them up by index.
-        artboard.addObject(object);
-      }
-
-      // Animations also need to reference objects, so make sure they get read
-      // in before the hierarchy resolves (batch add completes).
-      var numAnimations = reader.readVarUint();
-      for (int i = 0; i < numAnimations; i++) {
-        var animation = _readRuntimeObject<Animation>(reader, propertyToField);
-        if (animation == null) {
-          continue;
-        }
-        artboard.addObject(animation);
-        animation.artboard = artboard;
-        if (animation is LinearAnimation) {
-          var numKeyedObjects = reader.readVarUint();
-          var keyedObjects = List<KeyedObject>.filled(numKeyedObjects, null);
-          for (int j = 0; j < numKeyedObjects; j++) {
-            var keyedObject =
-                _readRuntimeObject<KeyedObject>(reader, propertyToField);
-            if (keyedObject == null) {
-              continue;
-            }
-            keyedObjects[j] = keyedObject;
-            artboard.addObject(keyedObject);
-
-            animation.internalAddKeyedObject(keyedObject);
-
-            var numKeyedProperties = reader.readVarUint();
-            for (int k = 0; k < numKeyedProperties; k++) {
-              var keyedProperty =
-                  _readRuntimeObject<KeyedProperty>(reader, propertyToField);
-              if (keyedProperty == null) {
-                continue;
-              }
-              artboard.addObject(keyedProperty);
-              keyedObject.internalAddKeyedProperty(keyedProperty);
-
-              var numKeyframes = reader.readVarUint();
-              for (int l = 0; l < numKeyframes; l++) {
-                var keyframe =
-                    _readRuntimeObject<KeyFrame>(reader, propertyToField);
-                if (keyframe == null) {
-                  continue;
-                }
-                artboard.addObject(keyframe);
-                keyedProperty.internalAddKeyFrame(keyframe);
-                keyframe.computeSeconds(animation);
-              }
-            }
-          }
-
-          for (final keyedObject in keyedObjects) {
-            keyedObject?.objectId ??= artboard.id;
-          }
-        }
-      }
-
-      // Any component objects with no id map to the artboard. Skip first item
-      // as it's the artboard itself.
-      for (final object in artboard.objects.skip(1)) {
-        if (object is Component && object.parentId == null) {
-          object.parent = artboard;
-        }
-        object?.onAddedDirty();
-      }
-
-      assert(!artboard.children.contains(artboard),
-          'artboard should never contain itself as a child');
-      for (final object in artboard.objects.toList(growable: false)) {
-        if (object == null) {
-          continue;
-        }
-        object.onAdded();
-      }
-      artboard.clean();
-    }
-
-    return true;
-  }
-}
-
-void _skipProperty(BinaryReader reader, int propertyKey,
-    HashMap<int, CoreFieldType> propertyToField) {
-  var field =
-      RiveCoreContext.coreType(propertyKey) ?? propertyToField[propertyKey];
-  if (field == null) {
-    throw UnsupportedError('Unsupported property key $propertyKey. '
-        'A new runtime is likely necessary to play this file.');
-  }
-  // Desrialize but don't do anything with the contents...
-  field.deserialize(reader);
-}
-
-T _readRuntimeObject<T extends Core<CoreContext>>(
-    BinaryReader reader, HashMap<int, CoreFieldType> propertyToField,
-    [T instance]) {
+Core<CoreContext>? _readRuntimeObject(
+    BinaryReader reader, HashMap<int, CoreFieldType> propertyToField) {
   int coreObjectKey = reader.readVarUint();
 
+  Core<CoreContext>? instance;
+  switch (coreObjectKey) {
+    case ArtboardBase.typeKey:
+      instance = RuntimeArtboard();
+      break;
+  }
   var object = instance ?? RiveCoreContext.makeCoreInstance(coreObjectKey);
 
   while (true) {
@@ -200,5 +52,179 @@ T _readRuntimeObject<T extends Core<CoreContext>>(
           object, propertyKey, fieldType.deserialize(reader));
     }
   }
-  return object as T;
+  return object;
+}
+
+void _skipProperty(BinaryReader reader, int propertyKey,
+    HashMap<int, CoreFieldType> propertyToField) {
+  var field =
+      RiveCoreContext.coreType(propertyKey) ?? propertyToField[propertyKey];
+  if (field == null) {
+    throw UnsupportedError('Unsupported property key $propertyKey. '
+        'A new runtime is likely necessary to play this file.');
+  }
+  // Desrialize but don't do anything with the contents...
+  field.deserialize(reader);
+}
+
+/// Encapsulates a [RiveFile] and provides access to the list of [Artboard]
+/// objects it contains.
+class RiveFile {
+  /// Contains the [RiveFile]'s version information.
+  final RuntimeHeader header;
+
+  Backboard _backboard = Backboard.unknown;
+  final _artboards = <Artboard>[];
+
+  RiveFile._(
+    BinaryReader reader,
+    this.header,
+  ) {
+    /// Property fields table of contents
+    final propertyToField = HashMap<int, CoreFieldType>();
+
+    // List of core file types
+    final indexToField = <CoreFieldType>[
+      RiveCoreContext.uintType,
+      RiveCoreContext.stringType,
+      RiveCoreContext.doubleType,
+      RiveCoreContext.colorType
+    ];
+
+    header.propertyToFieldIndex.forEach((key, fieldIndex) {
+      if (fieldIndex < 0 || fieldIndex >= indexToField.length) {
+        throw RiveFormatErrorException('unexpected field index $fieldIndex');
+      }
+
+      propertyToField[key] = indexToField[fieldIndex];
+    });
+    var importStack = ImportStack();
+    while (!reader.isEOF) {
+      final object = _readRuntimeObject(reader, propertyToField);
+      if (object == null) {
+        // See if there's an artboard on the stack, need to track the null
+        // object as it'll still hold an id.
+        var artboardImporter =
+            importStack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+        if (artboardImporter != null) {
+          artboardImporter.addComponent(null);
+        }
+        continue;
+      }
+
+      ImportStackObject? stackObject;
+      var stackType = object.coreType;
+      switch (object.coreType) {
+        case ArtboardBase.typeKey:
+          stackObject = ArtboardImporter(object as RuntimeArtboard);
+          break;
+        case LinearAnimationBase.typeKey:
+          stackObject = LinearAnimationImporter(object as LinearAnimation);
+          // helper = _AnimationImportHelper();
+          break;
+        case KeyedObjectBase.typeKey:
+          stackObject = KeyedObjectImporter(object as KeyedObject);
+          break;
+        case KeyedPropertyBase.typeKey:
+          {
+            // KeyedProperty importer requires a linear animation importer, so
+            // make sure there's one on the stack.
+            var linearAnimationImporter =
+                importStack.requireLatest<LinearAnimationImporter>(
+                    LinearAnimationBase.typeKey);
+            stackObject = KeyedPropertyImporter(object as KeyedProperty,
+                linearAnimationImporter.linearAnimation);
+            break;
+          }
+        case StateMachineBase.typeKey:
+          stackObject = StateMachineImporter(object as StateMachine);
+          break;
+        case StateMachineLayerBase.typeKey:
+          {
+            // Needs artboard importer to resolve linear animations.
+            var artboardImporter = importStack
+                .requireLatest<ArtboardImporter>(ArtboardBase.typeKey);
+            stackObject = StateMachineLayerImporter(
+                object as StateMachineLayer, artboardImporter);
+            break;
+          }
+        case EntryStateBase.typeKey:
+        case AnyStateBase.typeKey:
+        case ExitStateBase.typeKey:
+        case AnimationStateBase.typeKey:
+          stackObject = LayerStateImporter(object as LayerState);
+          stackType = LayerStateBase.typeKey;
+          break;
+        case StateTransitionBase.typeKey:
+          {
+            var stateMachineImporter = importStack
+                .requireLatest<StateMachineImporter>(StateMachineBase.typeKey);
+            stackObject = StateTransitionImporter(
+                object as StateTransition, stateMachineImporter);
+            break;
+          }
+        default:
+          if (object is Component) {
+            // helper = _ArtboardObjectImportHelper();
+          }
+          break;
+      }
+
+      if (!importStack.makeLatest(stackType, stackObject)) {
+        throw const RiveFormatErrorException('Rive file is corrupt.');
+      }
+
+      if (object.import(importStack)) {
+        switch (object.coreType) {
+          case ArtboardBase.typeKey:
+            _artboards.add(object as Artboard);
+            break;
+          case BackboardBase.typeKey:
+            if (_backboard != Backboard.unknown) {
+              throw const RiveFormatErrorException(
+                  'Rive file expects only one backboard.');
+            }
+            _backboard = object as Backboard;
+            break;
+        }
+      }
+    }
+    if (!importStack.resolve()) {
+      throw const RiveFormatErrorException('Rive file is corrupt.');
+    }
+    if (_backboard == Backboard.unknown) {
+      throw const RiveFormatErrorException('Rive file is missing a backboard.');
+    }
+
+    for (final artboard in _artboards) {
+      var runtimeArtboard = artboard as RuntimeArtboard;
+      for (final object in runtimeArtboard.objects.whereNotNull()) {
+        if (object.validate()) {
+          InternalCoreHelper.markValid(object);
+        } else {
+          throw RiveFormatErrorException(
+              'Rive file is corrupt. Invalid $object.');
+        }
+      }
+    }
+  }
+
+  /// Imports a Rive file from an array of bytes. Will throw
+  /// [RiveFormatErrorException] if data is malformed. Will throw
+  /// [RiveUnsupportedVersionException] if the version is not supported.
+  factory RiveFile.import(ByteData bytes) {
+    var reader = BinaryReader(bytes);
+    return RiveFile._(reader, RuntimeHeader.read(reader));
+  }
+
+  /// Returns all artboards in the file
+  List<Artboard> get artboards => _artboards;
+
+  /// Returns the first (main) artboard
+  Artboard get mainArtboard => _artboards.first;
+
+  /// Returns an artboard from the specified name, or null if no artboard with
+  /// that name exists in the file
+  Artboard? artboardByName(String name) =>
+      _artboards.firstWhereOrNull((a) => a.name == name);
 }

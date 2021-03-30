@@ -22,7 +22,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   List<Component> _dependencyOrder = [];
   final List<Drawable> _drawables = [];
   final List<DrawRules> _rules = [];
-  List<DrawTarget> _sortedDrawRules;
+  List<DrawTarget> _sortedDrawRules = [];
   final Set<Component> _components = {};
   List<Drawable> get drawables => _drawables;
   final AnimationList _animations = AnimationList();
@@ -35,8 +35,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   Artboard get artboard => this;
   Vec2D get originWorld {
-    return Vec2D.fromValues(
-        x + width * (originX ?? 0), y + height * (originY ?? 0));
+    return Vec2D.fromValues(x + width * originX, y + height * originY);
   }
 
   bool updateComponents() {
@@ -91,7 +90,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   void onComponentDirty(Component component) {
     if ((dirt & ComponentDirt.components) == 0) {
-      context?.markNeedsAdvance();
+      context.markNeedsAdvance();
       _dirt |= ComponentDirt.components;
     }
     if (component.graphOrder < _dirtDepth) {
@@ -104,7 +103,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void sortDependencies() {
     var optimistic = DependencySorter<Component>();
     var order = optimistic.sort(this);
-    if (order == null) {
+    if (order.isEmpty) {
       var robust = TarjansDependencySorter<Component>();
       order = robust.sort(this);
     }
@@ -118,8 +117,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   void update(int dirt) {
     if (dirt & ComponentDirt.worldTransform != 0) {
-      var rect = Rect.fromLTWH(
-          width * -(originX ?? 0), height * -(originY ?? 0), width, height);
+      var rect =
+          Rect.fromLTWH(width * -originX, height * -originY, width, height);
       path.reset();
       path.addRect(rect);
     }
@@ -158,7 +157,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   void markDrawOrderDirty() {
     if ((dirt & ComponentDirt.drawOrder) == 0) {
-      context?.markNeedsAdvance();
+      context.markNeedsAdvance();
       _dirt |= ComponentDirt.drawOrder;
     }
   }
@@ -166,7 +165,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void draw(Canvas canvas) {
     canvas.save();
     canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
-    canvas.translate(width * (originX ?? 0), height * (originY ?? 0));
+    canvas.translate(width * originX, height * originY);
     for (final fill in fills) {
       fill.draw(canvas, path);
     }
@@ -208,7 +207,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   final Set<RiveAnimationController> _animationControllers = {};
   bool addController(RiveAnimationController controller) {
-    assert(controller != null);
     if (_animationControllers.contains(controller) ||
         !controller.init(context)) {
       return false;
@@ -216,13 +214,12 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     controller.isActiveChanged.addListener(_onControllerPlayingChanged);
     _animationControllers.add(controller);
     if (controller.isActive) {
-      context?.markNeedsAdvance();
+      context.markNeedsAdvance();
     }
     return true;
   }
 
   bool removeController(RiveAnimationController controller) {
-    assert(controller != null);
     if (_animationControllers.remove(controller)) {
       controller.isActiveChanged.removeListener(_onControllerPlayingChanged);
       controller.dispose();
@@ -231,7 +228,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return false;
   }
 
-  void _onControllerPlayingChanged() => context?.markNeedsAdvance();
+  void _onControllerPlayingChanged() => context.markNeedsAdvance();
   @override
   void onFillsChanged() {}
   @override
@@ -240,7 +237,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void onStrokesChanged() {}
   @override
   Vec2D get worldTranslation => Vec2D();
-  Drawable _firstDrawable;
+  Drawable? _firstDrawable;
   void computeDrawOrder() {
     _drawables.clear();
     _rules.clear();
@@ -272,7 +269,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       rule.first = rule.last = null;
     }
     _firstDrawable = null;
-    Drawable lastDrawable;
+    Drawable? lastDrawable;
     for (final drawable in _drawables) {
       var rules = drawable.flattenedDrawRules;
       var target = rules?.activeTarget;
@@ -281,7 +278,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           target.first = target.last = drawable;
           drawable.prev = drawable.next = null;
         } else {
-          target.last.next = drawable;
+          target.last?.next = drawable;
           drawable.prev = target.last;
           target.last = drawable;
           drawable.next = null;
@@ -303,26 +300,26 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
       switch (rule.placement) {
         case DrawTargetPlacement.before:
-          if (rule.drawable.prev != null) {
-            rule.drawable.prev.next = rule.first;
-            rule.first.prev = rule.drawable.prev;
+          if (rule.drawable?.prev != null) {
+            rule.drawable!.prev?.next = rule.first;
+            rule.first?.prev = rule.drawable!.prev;
           }
           if (rule.drawable == _firstDrawable) {
             _firstDrawable = rule.first;
           }
-          rule.drawable.prev = rule.last;
-          rule.last.next = rule.drawable;
+          rule.drawable?.prev = rule.last;
+          rule.last?.next = rule.drawable;
           break;
         case DrawTargetPlacement.after:
-          if (rule.drawable.next != null) {
-            rule.drawable.next.prev = rule.last;
-            rule.last.next = rule.drawable.next;
+          if (rule.drawable?.next != null) {
+            rule.drawable!.next!.prev = rule.last;
+            rule.last?.next = rule.drawable?.next;
           }
           if (rule.drawable == lastDrawable) {
             lastDrawable = rule.last;
           }
-          rule.drawable.next = rule.first;
-          rule.first.prev = rule.drawable;
+          rule.drawable?.next = rule.first;
+          rule.first?.prev = rule.drawable;
           break;
       }
     }

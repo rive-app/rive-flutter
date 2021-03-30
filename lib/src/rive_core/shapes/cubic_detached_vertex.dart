@@ -1,26 +1,29 @@
 import 'dart:math';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/generated/shapes/cubic_detached_vertex_base.dart';
 export 'package:rive/src/generated/shapes/cubic_detached_vertex_base.dart';
 
 class CubicDetachedVertex extends CubicDetachedVertexBase {
-  Vec2D _inPoint;
-  Vec2D _outPoint;
+  Vec2D? _inPoint;
+  Vec2D? _outPoint;
   CubicDetachedVertex();
   CubicDetachedVertex.fromValues(
-      {double x,
-      double y,
-      double inX,
-      double inY,
-      double outX,
-      double outY,
-      Vec2D inPoint,
-      Vec2D outPoint}) {
+      {required double x,
+      required double y,
+      double? inX,
+      double? inY,
+      double? outX,
+      double? outY,
+      Vec2D? inPoint,
+      Vec2D? outPoint}) {
+    InternalCoreHelper.markValid(this);
     this.x = x;
     this.y = y;
-    this.inPoint = Vec2D.fromValues(inX ?? inPoint[0], inY ?? inPoint[1]);
-    this.outPoint = Vec2D.fromValues(outX ?? outPoint[0], outY ?? outPoint[1]);
+    this.inPoint = Vec2D.fromValues(inX ?? inPoint![0], inY ?? inPoint![1]);
+    this.outPoint =
+        Vec2D.fromValues(outX ?? outPoint![0], outY ?? outPoint![1]);
   }
   @override
   Vec2D get outPoint => _outPoint ??= Vec2D.add(

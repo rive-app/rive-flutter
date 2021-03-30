@@ -13,7 +13,8 @@ abstract class TendonBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// BoneId field with key 95.
-  int _boneId;
+  static const int boneIdInitialValue = -1;
+  int _boneId = boneIdInitialValue;
   static const int boneIdPropertyKey = 95;
 
   /// Identifier used to track the bone this tendon connects to.
@@ -27,14 +28,17 @@ abstract class TendonBase extends Component {
     }
     int from = _boneId;
     _boneId = value;
-    boneIdChanged(from, value);
+    if (hasValidated) {
+      boneIdChanged(from, value);
+    }
   }
 
   void boneIdChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// Xx field with key 96.
-  double _xx = 1;
+  static const double xxInitialValue = 1;
+  double _xx = xxInitialValue;
   static const int xxPropertyKey = 96;
 
   /// x component of x unit vector in the bind transform
@@ -48,14 +52,17 @@ abstract class TendonBase extends Component {
     }
     double from = _xx;
     _xx = value;
-    xxChanged(from, value);
+    if (hasValidated) {
+      xxChanged(from, value);
+    }
   }
 
   void xxChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Yx field with key 97.
-  double _yx = 0;
+  static const double yxInitialValue = 0;
+  double _yx = yxInitialValue;
   static const int yxPropertyKey = 97;
 
   /// y component of x unit vector in the bind transform
@@ -69,14 +76,17 @@ abstract class TendonBase extends Component {
     }
     double from = _yx;
     _yx = value;
-    yxChanged(from, value);
+    if (hasValidated) {
+      yxChanged(from, value);
+    }
   }
 
   void yxChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Xy field with key 98.
-  double _xy = 0;
+  static const double xyInitialValue = 0;
+  double _xy = xyInitialValue;
   static const int xyPropertyKey = 98;
 
   /// x component of y unit vector in the bind transform
@@ -90,14 +100,17 @@ abstract class TendonBase extends Component {
     }
     double from = _xy;
     _xy = value;
-    xyChanged(from, value);
+    if (hasValidated) {
+      xyChanged(from, value);
+    }
   }
 
   void xyChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Yy field with key 99.
-  double _yy = 1;
+  static const double yyInitialValue = 1;
+  double _yy = yyInitialValue;
   static const int yyPropertyKey = 99;
 
   /// y component of y unit vector in the bind transform
@@ -111,14 +124,17 @@ abstract class TendonBase extends Component {
     }
     double from = _yy;
     _yy = value;
-    yyChanged(from, value);
+    if (hasValidated) {
+      yyChanged(from, value);
+    }
   }
 
   void yyChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Tx field with key 100.
-  double _tx = 0;
+  static const double txInitialValue = 0;
+  double _tx = txInitialValue;
   static const int txPropertyKey = 100;
 
   /// x position component of the bind transform
@@ -132,14 +148,17 @@ abstract class TendonBase extends Component {
     }
     double from = _tx;
     _tx = value;
-    txChanged(from, value);
+    if (hasValidated) {
+      txChanged(from, value);
+    }
   }
 
   void txChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Ty field with key 101.
-  double _ty = 0;
+  static const double tyInitialValue = 0;
+  double _ty = tyInitialValue;
   static const int tyPropertyKey = 101;
 
   /// y position component of the bind transform
@@ -153,7 +172,9 @@ abstract class TendonBase extends Component {
     }
     double from = _ty;
     _ty = value;
-    tyChanged(from, value);
+    if (hasValidated) {
+      tyChanged(from, value);
+    }
   }
 
   void tyChanged(double from, double to);

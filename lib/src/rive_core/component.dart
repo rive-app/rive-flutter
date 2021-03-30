@@ -9,7 +9,7 @@ export 'package:rive/src/generated/component_base.dart';
 
 abstract class Component extends ComponentBase<RuntimeArtboard>
     implements DependencyGraphNode<Component>, Parentable<Component> {
-  Artboard _artboard;
+  Artboard? _artboard;
   dynamic _userData;
   bool get canBeOrphaned => false;
   int graphOrder = 0;
@@ -33,8 +33,8 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   void onDirty(int mask) {}
   void update(int dirt);
-  Artboard get artboard => _artboard;
-  void _changeArtboard(Artboard value) {
+  Artboard? get artboard => _artboard;
+  void _changeArtboard(Artboard? value) {
     if (_artboard == value) {
       return;
     }
@@ -47,7 +47,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void visitAncestor(Component ancestor) {}
   bool resolveArtboard() {
     int sanity = maxTreeDepth;
-    for (Component curr = this;
+    for (Component? curr = this;
         curr != null && sanity > 0;
         curr = curr.parent, sanity--) {
       visitAncestor(curr);
@@ -73,32 +73,28 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void userDataChanged(dynamic from, dynamic to) {}
   @override
   void parentIdChanged(int from, int to) {
-    parent = context?.resolve(to);
+    parent = context.resolve(to);
   }
 
-  ContainerComponent _parent;
+  ContainerComponent? _parent;
   @override
-  ContainerComponent get parent => _parent;
-  set parent(ContainerComponent value) {
+  ContainerComponent? get parent => _parent;
+  set parent(ContainerComponent? value) {
     if (_parent == value) {
       return;
     }
     var old = _parent;
     _parent = value;
-    parentId = value?.id;
+    parentId = value?.id ?? Core.missingId;
     parentChanged(old, value);
   }
 
   @protected
-  void parentChanged(ContainerComponent from, ContainerComponent to) {
-    if (from != null) {
-      from.children.remove(this);
-      from.childRemoved(this);
-    }
-    if (to != null) {
-      to.children.add(this);
-      to.childAdded(this);
-    }
+  void parentChanged(ContainerComponent? from, ContainerComponent? to) {
+    from?.children.remove(this);
+    from?.childRemoved(this);
+    to?.children.add(this);
+    to?.childAdded(this);
     markRebuildDependencies();
   }
 
@@ -107,7 +103,6 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @override
   Set<Component> get dependents => _dependents;
   bool addDependent(Component dependent) {
-    assert(dependent != null, 'Dependent cannot be null.');
     assert(artboard == dependent.artboard,
         'Components must be in the same artboard.');
     if (!_dependents.add(dependent)) {
@@ -119,7 +114,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   bool isValidParent(Component parent) => parent is ContainerComponent;
   void markRebuildDependencies() {
-    if (context == null || !context.markDependenciesDirty(this)) {
+    if (!context.markDependenciesDirty(this)) {
       return;
     }
     for (final dependent in _dependents) {
@@ -140,14 +135,15 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void onAdded() {}
   @override
   void onAddedDirty() {
-    if (parentId != null) {
-      parent = context?.resolve(parentId);
+    if (parentId != Core.missingId) {
+      parent = context.resolve(parentId);
     }
   }
 
   @override
   @mustCallSuper
   void onRemoved() {
+    super.onRemoved();
     for (final parentDep in _dependsOn) {
       parentDep._dependents.remove(this);
     }
@@ -157,21 +153,29 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     }
     _dependents.clear();
     if (parent != null) {
-      parent.children.remove(this);
-      parent.childRemoved(this);
+      parent!.children.remove(this);
+      parent!.childRemoved(this);
     }
     if (artboard != null) {
-      context?.markDependencyOrderDirty();
+      context.markDependencyOrderDirty();
       _changeArtboard(null);
     }
   }
 
   @override
   String toString() {
-    return '${super.toString()} ($id)';
+    return '${super.toString()} ($id) -> $name';
   }
 
-  void remove() => context?.removeObject(this);
   @override
   void nameChanged(String from, String to) {}
+  @override
+  bool import(ImportStack stack) {
+    var artboardImporter = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+    if (artboardImporter == null) {
+      return false;
+    }
+    artboardImporter.addComponent(this);
+    return super.import(stack);
+  }
 }

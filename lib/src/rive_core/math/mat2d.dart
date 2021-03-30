@@ -1,10 +1,17 @@
-import "dart:math";
-import "dart:typed_data";
-import "transform_components.dart";
-import "vec2d.dart";
+import 'dart:math';
+import 'dart:typed_data';
+import 'package:rive/src/rive_core/math/transform_components.dart';
+import 'package:rive/src/rive_core/math/vec2d.dart';
+
+class _Identity extends Mat2D {
+  @override
+  void operator []=(int index, double value) => throw UnsupportedError(
+      'Cannot change components of the identity matrix.');
+}
 
 class Mat2D {
-  Float32List _buffer;
+  static final Mat2D identity = _Identity();
+  final Float32List _buffer;
   Float32List get values {
     return _buffer;
   }
@@ -38,23 +45,16 @@ class Mat2D {
     _buffer[index] = value;
   }
 
-  Mat2D() {
-    _buffer = Float32List.fromList([1.0, 0.0, 0.0, 1.0, 0.0, 0.0]);
-  }
-  Mat2D.fromTranslation(Vec2D translation) {
-    _buffer = Float32List.fromList(
-        [1.0, 0.0, 0.0, 1.0, translation[0], translation[1]]);
-  }
-  Mat2D.fromScaling(Vec2D scaling) {
-    _buffer = Float32List.fromList([scaling[0], 0, 0, scaling[1], 0, 0]);
-  }
-  Mat2D.fromMat4(Float64List mat4) {
-    _buffer = Float32List.fromList(
-        [mat4[0], mat4[1], mat4[4], mat4[5], mat4[12], mat4[13]]);
-  }
-  Mat2D.clone(Mat2D copy) {
-    _buffer = Float32List.fromList(copy.values);
-  }
+  Mat2D() : _buffer = Float32List.fromList([1.0, 0.0, 0.0, 1.0, 0.0, 0.0]);
+  Mat2D.fromTranslation(Vec2D translation)
+      : _buffer = Float32List.fromList(
+            [1.0, 0.0, 0.0, 1.0, translation[0], translation[1]]);
+  Mat2D.fromScaling(Vec2D scaling)
+      : _buffer = Float32List.fromList([scaling[0], 0, 0, scaling[1], 0, 0]);
+  Mat2D.fromMat4(Float64List mat4)
+      : _buffer = Float32List.fromList(
+            [mat4[0], mat4[1], mat4[4], mat4[5], mat4[12], mat4[13]]);
+  Mat2D.clone(Mat2D copy) : _buffer = Float32List.fromList(copy.values);
   static Mat2D fromRotation(Mat2D o, double rad) {
     double s = sin(rad);
     double c = cos(rad);
@@ -107,6 +107,17 @@ class Mat2D {
     o[1] *= x;
     o[2] *= y;
     o[3] *= y;
+  }
+
+  // ignore: prefer_constructors_over_static_methods
+  static Mat2D multiplySkipIdentity(Mat2D a, Mat2D b) {
+    if (a == Mat2D.identity) {
+      return b;
+    } else if (b == Mat2D.identity) {
+      return a;
+    } else {
+      return multiply(Mat2D(), a, b);
+    }
   }
 
   static Mat2D multiply(Mat2D o, Mat2D a, Mat2D b) {
@@ -181,7 +192,7 @@ class Mat2D {
     return t;
   }
 
-  static void identity(Mat2D mat) {
+  static void setIdentity(Mat2D mat) {
     mat[0] = 1.0;
     mat[1] = 0.0;
     mat[2] = 0.0;
@@ -210,7 +221,7 @@ class Mat2D {
     if (r != 0.0) {
       Mat2D.fromRotation(m, r);
     } else {
-      Mat2D.identity(m);
+      Mat2D.setIdentity(m);
     }
     m[4] = result[0];
     m[5] = result[1];

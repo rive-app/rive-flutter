@@ -19,7 +19,8 @@ abstract class ShapePaintBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// IsVisible field with key 41.
-  bool _isVisible = true;
+  static const bool isVisibleInitialValue = true;
+  bool _isVisible = isVisibleInitialValue;
   static const int isVisiblePropertyKey = 41;
   bool get isVisible => _isVisible;
 
@@ -31,7 +32,9 @@ abstract class ShapePaintBase extends ContainerComponent {
     }
     bool from = _isVisible;
     _isVisible = value;
-    isVisibleChanged(from, value);
+    if (hasValidated) {
+      isVisibleChanged(from, value);
+    }
   }
 
   void isVisibleChanged(bool from, bool to);

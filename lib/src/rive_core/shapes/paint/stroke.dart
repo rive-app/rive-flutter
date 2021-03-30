@@ -7,8 +7,8 @@ import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 export 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 
 class Stroke extends StrokeBase {
-  StrokeEffect _effect;
-  StrokeEffect get effect => _effect;
+  StrokeEffect? _effect;
+  StrokeEffect? get effect => _effect;
   // ignore: use_setters_to_change_properties
   void addStrokeEffect(StrokeEffect effect) {
     _effect = effect;
@@ -66,10 +66,7 @@ class Stroke extends StrokeBase {
     }
   }
 
-  void invalidateEffects() {
-    _effect?.invalidateEffect();
-  }
-
+  void invalidateEffects() => _effect?.invalidateEffect();
   @override
   void draw(Canvas canvas, Path path) {
     if (!isVisible) {

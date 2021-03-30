@@ -13,7 +13,8 @@ abstract class AnimationBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Name field with key 55.
-  String _name;
+  static const String nameInitialValue = '';
+  String _name = nameInitialValue;
   static const int namePropertyKey = 55;
 
   /// Name of the animation.
@@ -27,7 +28,9 @@ abstract class AnimationBase<T extends CoreContext> extends Core<T> {
     }
     String from = _name;
     _name = value;
-    nameChanged(from, value);
+    if (hasValidated) {
+      nameChanged(from, value);
+    }
   }
 
   void nameChanged(String from, String to);

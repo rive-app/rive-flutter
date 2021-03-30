@@ -18,7 +18,8 @@ abstract class PathVertexBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// X field with key 24.
-  double _x;
+  static const double xInitialValue = 0;
+  double _x = xInitialValue;
   static const int xPropertyKey = 24;
 
   /// X value for the translation of the vertex.
@@ -32,14 +33,17 @@ abstract class PathVertexBase extends ContainerComponent {
     }
     double from = _x;
     _x = value;
-    xChanged(from, value);
+    if (hasValidated) {
+      xChanged(from, value);
+    }
   }
 
   void xChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Y field with key 25.
-  double _y;
+  static const double yInitialValue = 0;
+  double _y = yInitialValue;
   static const int yPropertyKey = 25;
 
   /// Y value for the translation of the vertex.
@@ -53,7 +57,9 @@ abstract class PathVertexBase extends ContainerComponent {
     }
     double from = _y;
     _y = value;
-    yChanged(from, value);
+    if (hasValidated) {
+      yChanged(from, value);
+    }
   }
 
   void yChanged(double from, double to);

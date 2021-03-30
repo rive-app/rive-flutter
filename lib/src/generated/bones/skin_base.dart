@@ -15,7 +15,8 @@ abstract class SkinBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Xx field with key 104.
-  double _xx = 1;
+  static const double xxInitialValue = 1;
+  double _xx = xxInitialValue;
   static const int xxPropertyKey = 104;
 
   /// x component of x unit vector in the bind transform
@@ -29,14 +30,17 @@ abstract class SkinBase extends ContainerComponent {
     }
     double from = _xx;
     _xx = value;
-    xxChanged(from, value);
+    if (hasValidated) {
+      xxChanged(from, value);
+    }
   }
 
   void xxChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Yx field with key 105.
-  double _yx = 0;
+  static const double yxInitialValue = 0;
+  double _yx = yxInitialValue;
   static const int yxPropertyKey = 105;
 
   /// y component of x unit vector in the bind transform
@@ -50,14 +54,17 @@ abstract class SkinBase extends ContainerComponent {
     }
     double from = _yx;
     _yx = value;
-    yxChanged(from, value);
+    if (hasValidated) {
+      yxChanged(from, value);
+    }
   }
 
   void yxChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Xy field with key 106.
-  double _xy = 0;
+  static const double xyInitialValue = 0;
+  double _xy = xyInitialValue;
   static const int xyPropertyKey = 106;
 
   /// x component of y unit vector in the bind transform
@@ -71,14 +78,17 @@ abstract class SkinBase extends ContainerComponent {
     }
     double from = _xy;
     _xy = value;
-    xyChanged(from, value);
+    if (hasValidated) {
+      xyChanged(from, value);
+    }
   }
 
   void xyChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Yy field with key 107.
-  double _yy = 1;
+  static const double yyInitialValue = 1;
+  double _yy = yyInitialValue;
   static const int yyPropertyKey = 107;
 
   /// y component of y unit vector in the bind transform
@@ -92,14 +102,17 @@ abstract class SkinBase extends ContainerComponent {
     }
     double from = _yy;
     _yy = value;
-    yyChanged(from, value);
+    if (hasValidated) {
+      yyChanged(from, value);
+    }
   }
 
   void yyChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Tx field with key 108.
-  double _tx = 0;
+  static const double txInitialValue = 0;
+  double _tx = txInitialValue;
   static const int txPropertyKey = 108;
 
   /// x position component of the bind transform
@@ -113,14 +126,17 @@ abstract class SkinBase extends ContainerComponent {
     }
     double from = _tx;
     _tx = value;
-    txChanged(from, value);
+    if (hasValidated) {
+      txChanged(from, value);
+    }
   }
 
   void txChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
   /// Ty field with key 109.
-  double _ty = 0;
+  static const double tyInitialValue = 0;
+  double _ty = tyInitialValue;
   static const int tyPropertyKey = 109;
 
   /// y position component of the bind transform
@@ -134,7 +150,9 @@ abstract class SkinBase extends ContainerComponent {
     }
     double from = _ty;
     _ty = value;
-    tyChanged(from, value);
+    if (hasValidated) {
+      tyChanged(from, value);
+    }
   }
 
   void tyChanged(double from, double to);
