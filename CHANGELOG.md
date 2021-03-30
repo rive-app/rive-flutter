@@ -1,3 +1,9 @@
+## [0.7.0-nullsafety.0] - 2021-03-29 16:58:23
+
+- NNBD support.
+- State Machine runtime support.
+- New binary format 7.0 with improved flexibility which is not compatible with 6.0 files. The Rive editor will be able to export both format 6.0 and 7.0, but please note that 6.0 is now deprecated and all new improvements and bug fixes to the format will be done on 7.0.
+
 ## [0.6.8] - 2021-02-12 11:11:11
 
 - Adds support for Flutter's `getMinIntrinsicWidth` (max, height, etc.), e.g. for `IntrinsicWidth`
