@@ -10,7 +10,7 @@
 
 ```yaml
 dependencies:
-  rive: ^0.6.8
+  rive: ^0.7.0
 ```
 
 ## Examples
@@ -65,18 +65,15 @@ class _MyHomePageState extends State<MyHomePage> {
     // download this. The RiveFile just expects a list of bytes.
     rootBundle.load('assets/off_road_car.riv').then(
       (data) async {
-        final file = RiveFile();
-
         // Load the RiveFile from the binary data.
-        if (file.import(data)) {
-          // The artboard is the root of the animation and gets drawn in the
-          // Rive widget.
-          final artboard = file.mainArtboard;
-          // Add a controller to play back a known animation on the main/default
-          // artboard.We store a reference to it so we can toggle playback.
-          artboard.addController(_controller = SimpleAnimation('idle'));
-          setState(() => _riveArtboard = artboard);
-        }
+        final file = RiveFile.import(data);
+        // The artboard is the root of the animation and gets drawn in the
+        // Rive widget.
+        final artboard = file.mainArtboard;
+        // Add a controller to play back a known animation on the main/default
+        // artboard.We store a reference to it so we can toggle playback.
+        artboard.addController(_controller = SimpleAnimation('idle'));
+        setState(() => _riveArtboard = artboard);
       },
     );
   }

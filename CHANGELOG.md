@@ -1,3 +1,6 @@
+## [0.7.0] - 2021-03-31 16:16:39
+- Added support for exit time in the State Machine.
+- Loading of Rive files has changed to better support NNBD. This is a breaking change. Rive file's must now be imported from binary data as follows: `final file = RiveFile.import(data);` Please see the examples for sample implementations.
 ## [0.7.0-nullsafety.0] - 2021-03-29 16:58:23
 
 - NNBD support.
