@@ -5,6 +5,8 @@ export 'package:rive/src/generated/animation/transition_trigger_condition_base.d
 
 class TransitionTriggerCondition extends TransitionTriggerConditionBase {
   @override
+  bool validate() => super.validate() && (input is StateMachineTrigger);
+  @override
   bool evaluate(HashMap<int, dynamic> values) {
     dynamic providedValue = values[input.id];
     if (providedValue is bool && providedValue) {

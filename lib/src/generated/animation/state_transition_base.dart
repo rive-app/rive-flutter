@@ -65,7 +65,8 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
   int _duration = durationInitialValue;
   static const int durationPropertyKey = 158;
 
-  /// Duration of the trasition (mix time) in milliseconds.
+  /// Duration of the trasition (mix time) in milliseconds or percentage (0-100)
+  /// based on flags.
   int get duration => _duration;
 
   /// Change the [_duration] field value.
@@ -82,4 +83,30 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
   }
 
   void durationChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// ExitTime field with key 160.
+  static const int exitTimeInitialValue = 0;
+  int _exitTime = exitTimeInitialValue;
+  static const int exitTimePropertyKey = 160;
+
+  /// Duration in milliseconds that must elapse before allowing the state to
+  /// change. If the flags mark this property as being percentage based, the
+  /// value is in 0-100% of the outgoing animation's duration
+  int get exitTime => _exitTime;
+
+  /// Change the [_exitTime] field value.
+  /// [exitTimeChanged] will be invoked only if the field's value has changed.
+  set exitTime(int value) {
+    if (_exitTime == value) {
+      return;
+    }
+    int from = _exitTime;
+    _exitTime = value;
+    if (hasValidated) {
+      exitTimeChanged(from, value);
+    }
+  }
+
+  void exitTimeChanged(int from, int to);
 }

@@ -25,6 +25,10 @@ class LinearAnimation extends LinearAnimationBase {
     return true;
   }
 
+  double get startSeconds => (enableWorkArea ? workStart : 0).toDouble() / fps;
+  double get endSeconds =>
+      (enableWorkArea ? workEnd : duration).toDouble() / fps;
+  double get durationSeconds => endSeconds - startSeconds;
   void apply(double time, {required CoreContext coreContext, double mix = 1}) {
     for (final keyedObject in _keyedObjects.values) {
       keyedObject.apply(time, mix, coreContext);

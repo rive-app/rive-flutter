@@ -11,6 +11,8 @@ import 'package:rive/src/rive_core/rive_animation_controller.dart';
 class LayerController {
   final StateMachineLayer layer;
   LayerState? _currentState;
+  LayerState? _stateFrom;
+  bool _holdAnimationFrom = false;
   LinearAnimationInstance? _animationInstanceFrom;
   StateTransition? _transition;
   double _mix = 1.0;
@@ -41,8 +43,10 @@ class LayerController {
         return false;
       }
     }
-    if (_transition != null && _transition!.duration != 0) {
-      _mix = (_mix + elapsedSeconds / (_transition!.duration / 1000))
+    if (_transition != null &&
+        _stateFrom != null &&
+        _transition!.duration != 0) {
+      _mix = (_mix + elapsedSeconds / _transition!.mixTime(_stateFrom!))
           .clamp(0, 1)
           .toDouble();
     } else {
@@ -50,7 +54,9 @@ class LayerController {
     }
     var keepGoing = _mix != 1;
     if (_animationInstanceFrom != null && _mix < 1) {
-      _animationInstanceFrom!.advance(elapsedSeconds);
+      if (!_holdAnimationFrom) {
+        _animationInstanceFrom!.advance(elapsedSeconds);
+      }
       _animationInstanceFrom!.animation.apply(_animationInstanceFrom!.time,
           mix: 1 - _mix, coreContext: core);
     }
@@ -77,6 +83,9 @@ class LayerController {
       return false;
     }
     for (final transition in stateFrom.transitions) {
+      if (transition.isDisabled) {
+        continue;
+      }
       bool valid = true;
       for (final condition in transition.conditions) {
         if (!condition.evaluate(inputValues)) {
@@ -84,9 +93,32 @@ class LayerController {
           break;
         }
       }
+      if (valid && stateFrom is AnimationState && transition.enableExitTime) {
+        var fromAnimation = stateFrom.animation!;
+        if (_animationInstance != null &&
+            fromAnimation == _animationInstance!.animation) {
+          var lastTime = _animationInstance!.lastTotalTime;
+          var time = _animationInstance!.totalTime;
+          var exitTime = transition.exitTimeSeconds(stateFrom);
+          if (exitTime < fromAnimation.durationSeconds) {
+            exitTime += (lastTime / fromAnimation.durationSeconds).floor() *
+                fromAnimation.durationSeconds;
+          }
+          if (time < exitTime) {
+            valid = false;
+          }
+        }
+      }
       if (valid && _changeState(transition.stateTo)) {
         _transition = transition;
+        _stateFrom = stateFrom;
+        if (transition.pauseOnExit &&
+            transition.enableExitTime &&
+            _animationInstance != null) {
+          _animationInstance!.time = transition.exitTimeSeconds(stateFrom);
+        }
         if (_mix != 0) {
+          _holdAnimationFrom = transition.pauseOnExit;
           _animationInstanceFrom = _animationInstance;
         }
         if (_currentState is AnimationState) {

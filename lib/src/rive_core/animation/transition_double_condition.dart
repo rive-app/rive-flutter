@@ -8,6 +8,8 @@ class TransitionDoubleCondition extends TransitionDoubleConditionBase {
   @override
   void valueChanged(double from, double to) {}
   @override
+  bool validate() => super.validate() && (input is StateMachineDouble);
+  @override
   bool evaluate(HashMap<int, dynamic> values) {
     var doubleInput = input as StateMachineDouble;
     dynamic providedValue = values[input.id];

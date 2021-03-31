@@ -352,6 +352,11 @@ class RiveCoreContext {
           object.duration = value;
         }
         break;
+      case StateTransitionBase.exitTimePropertyKey:
+        if (object is StateTransitionBase && value is int) {
+          object.exitTime = value;
+        }
+        break;
       case KeyFrameDoubleBase.valuePropertyKey:
         if (object is KeyFrameDoubleBase && value is double) {
           object.value = value;
@@ -831,6 +836,7 @@ class RiveCoreContext {
       case StateTransitionBase.stateToIdPropertyKey:
       case StateTransitionBase.flagsPropertyKey:
       case StateTransitionBase.durationPropertyKey:
+      case StateTransitionBase.exitTimePropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
       case LinearAnimationBase.loopValuePropertyKey:
@@ -980,6 +986,8 @@ class RiveCoreContext {
         return (object as StateTransitionBase).flags;
       case StateTransitionBase.durationPropertyKey:
         return (object as StateTransitionBase).duration;
+      case StateTransitionBase.exitTimePropertyKey:
+        return (object as StateTransitionBase).exitTime;
       case LinearAnimationBase.fpsPropertyKey:
         return (object as LinearAnimationBase).fps;
       case LinearAnimationBase.durationPropertyKey:
@@ -1254,6 +1262,9 @@ class RiveCoreContext {
         break;
       case StateTransitionBase.durationPropertyKey:
         (object as StateTransitionBase).duration = value;
+        break;
+      case StateTransitionBase.exitTimePropertyKey:
+        (object as StateTransitionBase).exitTime = value;
         break;
       case LinearAnimationBase.fpsPropertyKey:
         (object as LinearAnimationBase).fps = value;
