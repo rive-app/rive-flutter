@@ -11,6 +11,9 @@ class TransitionDoubleCondition extends TransitionDoubleConditionBase {
   bool validate() => super.validate() && (input is StateMachineDouble);
   @override
   bool evaluate(HashMap<int, dynamic> values) {
+    if (input is! StateMachineDouble) {
+      return true;
+    }
     var doubleInput = input as StateMachineDouble;
     dynamic providedValue = values[input.id];
     double inputValue =

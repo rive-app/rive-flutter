@@ -1,5 +1,4 @@
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/animation/keyframe_interpolation.dart';
 import 'package:rive/src/generated/animation/keyframe_double_base.dart';
 import 'package:rive/src/generated/rive_core_context.dart';
 export 'package:rive/src/generated/animation/keyframe_double_base.dart';
@@ -23,9 +22,6 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
   @override
   void apply(Core<CoreContext> object, int propertyKey, double mix) =>
       _apply(object, propertyKey, mix, value);
-  KeyFrameDouble() {
-    interpolation = KeyFrameInterpolation.linear;
-  }
   @override
   void applyInterpolation(Core<CoreContext> object, int propertyKey,
       double currentTime, KeyFrameDouble nextFrame, double mix) {

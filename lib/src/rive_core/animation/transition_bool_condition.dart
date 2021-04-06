@@ -9,6 +9,9 @@ class TransitionBoolCondition extends TransitionBoolConditionBase {
   bool validate() => super.validate() && (input is StateMachineBool);
   @override
   bool evaluate(HashMap<int, dynamic> values) {
+    if (input is! StateMachineBool) {
+      return true;
+    }
     var boolInput = input as StateMachineBool;
     dynamic providedValue = values[input.id];
     bool value = providedValue is bool ? providedValue : boolInput.value;
