@@ -29,7 +29,7 @@ class _ExampleAnimationState extends State<ExampleAnimation> {
 
     // Load the animation file from the bundle, note that you could also
     // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/dino.riv').then(
+    rootBundle.load('assets/off_road_car.riv').then(
       (data) async {
         // Load the RiveFile from the binary data.
         final file = RiveFile.import(data);
@@ -39,7 +39,7 @@ class _ExampleAnimationState extends State<ExampleAnimation> {
         final artboard = file.mainArtboard;
         // Add a controller to play back a known animation on the main/default
         // artboard. We store a reference to it so we can toggle playback.
-        artboard.addController(_controller = SimpleAnimation('Run'));
+        artboard.addController(_controller = SimpleAnimation('idle'));
         setState(() => _riveArtboard = artboard);
       },
     );
