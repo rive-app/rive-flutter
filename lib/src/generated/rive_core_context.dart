@@ -21,13 +21,13 @@ import 'package:rive/src/generated/animation/linear_animation_base.dart';
 import 'package:rive/src/generated/animation/state_machine_base.dart';
 import 'package:rive/src/generated/animation/state_machine_bool_base.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
-import 'package:rive/src/generated/animation/state_machine_double_base.dart';
 import 'package:rive/src/generated/animation/state_machine_layer_base.dart';
+import 'package:rive/src/generated/animation/state_machine_number_base.dart';
 import 'package:rive/src/generated/animation/state_machine_trigger_base.dart';
 import 'package:rive/src/generated/animation/state_transition_base.dart';
 import 'package:rive/src/generated/animation/transition_bool_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_condition_base.dart';
-import 'package:rive/src/generated/animation/transition_double_condition_base.dart';
+import 'package:rive/src/generated/animation/transition_number_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_trigger_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/artboard_base.dart';
@@ -81,12 +81,12 @@ import 'package:rive/src/rive_core/animation/keyframe_id.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
-import 'package:rive/src/rive_core/animation/state_machine_double.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
+import 'package:rive/src/rive_core/animation/state_machine_number.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/animation/transition_bool_condition.dart';
-import 'package:rive/src/rive_core/animation/transition_double_condition.dart';
+import 'package:rive/src/rive_core/animation/transition_number_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/backboard.dart';
@@ -129,14 +129,16 @@ class RiveCoreContext {
         return AnimationState();
       case KeyedObjectBase.typeKey:
         return KeyedObject();
+      case StateMachineNumberBase.typeKey:
+        return StateMachineNumber();
       case TransitionTriggerConditionBase.typeKey:
         return TransitionTriggerCondition();
       case KeyedPropertyBase.typeKey:
         return KeyedProperty();
-      case StateMachineDoubleBase.typeKey:
-        return StateMachineDouble();
       case KeyFrameIdBase.typeKey:
         return KeyFrameId();
+      case TransitionNumberConditionBase.typeKey:
+        return TransitionNumberCondition();
       case AnyStateBase.typeKey:
         return AnyState();
       case StateMachineLayerBase.typeKey:
@@ -145,8 +147,6 @@ class RiveCoreContext {
         return Animation();
       case CubicInterpolatorBase.typeKey:
         return CubicInterpolator();
-      case TransitionDoubleConditionBase.typeKey:
-        return TransitionDoubleCondition();
       case StateTransitionBase.typeKey:
         return StateTransition();
       case KeyFrameDoubleBase.typeKey:
@@ -262,24 +262,24 @@ class RiveCoreContext {
           object.objectId = value;
         }
         break;
-      case TransitionConditionBase.inputIdPropertyKey:
-        if (object is TransitionConditionBase && value is int) {
-          object.inputId = value;
-        }
-        break;
       case StateMachineComponentBase.namePropertyKey:
         if (object is StateMachineComponentBase && value is String) {
           object.name = value;
         }
         break;
+      case StateMachineNumberBase.valuePropertyKey:
+        if (object is StateMachineNumberBase && value is double) {
+          object.value = value;
+        }
+        break;
+      case TransitionConditionBase.inputIdPropertyKey:
+        if (object is TransitionConditionBase && value is int) {
+          object.inputId = value;
+        }
+        break;
       case KeyedPropertyBase.propertyKeyPropertyKey:
         if (object is KeyedPropertyBase && value is int) {
           object.propertyKey = value;
-        }
-        break;
-      case StateMachineDoubleBase.valuePropertyKey:
-        if (object is StateMachineDoubleBase && value is double) {
-          object.value = value;
         }
         break;
       case KeyFrameBase.framePropertyKey:
@@ -299,6 +299,16 @@ class RiveCoreContext {
         break;
       case KeyFrameIdBase.valuePropertyKey:
         if (object is KeyFrameIdBase && value is int) {
+          object.value = value;
+        }
+        break;
+      case TransitionValueConditionBase.opValuePropertyKey:
+        if (object is TransitionValueConditionBase && value is int) {
+          object.opValue = value;
+        }
+        break;
+      case TransitionNumberConditionBase.valuePropertyKey:
+        if (object is TransitionNumberConditionBase && value is double) {
           object.value = value;
         }
         break;
@@ -325,16 +335,6 @@ class RiveCoreContext {
       case CubicInterpolatorBase.y2PropertyKey:
         if (object is CubicInterpolatorBase && value is double) {
           object.y2 = value;
-        }
-        break;
-      case TransitionValueConditionBase.opValuePropertyKey:
-        if (object is TransitionValueConditionBase && value is int) {
-          object.opValue = value;
-        }
-        break;
-      case TransitionDoubleConditionBase.valuePropertyKey:
-        if (object is TransitionDoubleConditionBase && value is double) {
-          object.value = value;
         }
         break;
       case StateTransitionBase.stateToIdPropertyKey:
@@ -861,12 +861,12 @@ class RiveCoreContext {
       case DrawRulesBase.drawTargetIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
         return uintType;
-      case StateMachineDoubleBase.valuePropertyKey:
+      case StateMachineNumberBase.valuePropertyKey:
+      case TransitionNumberConditionBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
       case CubicInterpolatorBase.y1PropertyKey:
       case CubicInterpolatorBase.x2PropertyKey:
       case CubicInterpolatorBase.y2PropertyKey:
-      case TransitionDoubleConditionBase.valuePropertyKey:
       case KeyFrameDoubleBase.valuePropertyKey:
       case LinearAnimationBase.speedPropertyKey:
       case LinearGradientBase.startXPropertyKey:
@@ -1040,8 +1040,10 @@ class RiveCoreContext {
 
   static double getDouble(Core object, int propertyKey) {
     switch (propertyKey) {
-      case StateMachineDoubleBase.valuePropertyKey:
-        return (object as StateMachineDoubleBase).value;
+      case StateMachineNumberBase.valuePropertyKey:
+        return (object as StateMachineNumberBase).value;
+      case TransitionNumberConditionBase.valuePropertyKey:
+        return (object as TransitionNumberConditionBase).value;
       case CubicInterpolatorBase.x1PropertyKey:
         return (object as CubicInterpolatorBase).x1;
       case CubicInterpolatorBase.y1PropertyKey:
@@ -1050,8 +1052,6 @@ class RiveCoreContext {
         return (object as CubicInterpolatorBase).x2;
       case CubicInterpolatorBase.y2PropertyKey:
         return (object as CubicInterpolatorBase).y2;
-      case TransitionDoubleConditionBase.valuePropertyKey:
-        return (object as TransitionDoubleConditionBase).value;
       case KeyFrameDoubleBase.valuePropertyKey:
         return (object as KeyFrameDoubleBase).value;
       case LinearAnimationBase.speedPropertyKey:
@@ -1340,8 +1340,11 @@ class RiveCoreContext {
 
   static void setDouble(Core object, int propertyKey, double value) {
     switch (propertyKey) {
-      case StateMachineDoubleBase.valuePropertyKey:
-        (object as StateMachineDoubleBase).value = value;
+      case StateMachineNumberBase.valuePropertyKey:
+        (object as StateMachineNumberBase).value = value;
+        break;
+      case TransitionNumberConditionBase.valuePropertyKey:
+        (object as TransitionNumberConditionBase).value = value;
         break;
       case CubicInterpolatorBase.x1PropertyKey:
         (object as CubicInterpolatorBase).x1 = value;
@@ -1354,9 +1357,6 @@ class RiveCoreContext {
         break;
       case CubicInterpolatorBase.y2PropertyKey:
         (object as CubicInterpolatorBase).y2 = value;
-        break;
-      case TransitionDoubleConditionBase.valuePropertyKey:
-        (object as TransitionDoubleConditionBase).value = value;
         break;
       case KeyFrameDoubleBase.valuePropertyKey:
         (object as KeyFrameDoubleBase).value = value;

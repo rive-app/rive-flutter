@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rive_example/example_animation.dart';
 import 'package:rive_example/example_state_machine.dart';
+import 'package:rive_example/little_machine.dart';
+import 'package:rive_example/state_machine_skills.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Navigation Basics',
@@ -33,12 +35,40 @@ class Home extends StatelessWidget {
               height: 10,
             ),
             ElevatedButton(
-              child: const Text('State Machine'),
+              child: const Text('Button State Machine'),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
                     builder: (context) => const ExampleStateMachine(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('Skills Machine'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const StateMachineSkills(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('Little Machine'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const LittleMachine(),
                   ),
                 );
               },

@@ -3,22 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 
-/// An example showing how to drive two boolean state machine inputs.
-class ExampleStateMachine extends StatefulWidget {
-  const ExampleStateMachine({Key? key}) : super(key: key);
+/// An example showing how to drive a StateMachine via a trigger input.
+class LittleMachine extends StatefulWidget {
+  const LittleMachine({Key? key}) : super(key: key);
 
   @override
-  _ExampleStateMachineState createState() => _ExampleStateMachineState();
+  _LittleMachineState createState() => _LittleMachineState();
 }
 
-class _ExampleStateMachineState extends State<ExampleStateMachine> {
+class _LittleMachineState extends State<LittleMachine> {
   /// Tracks if the animation is playing by whether controller is running.
   bool get isPlaying => _controller?.isActive ?? false;
 
   Artboard? _riveArtboard;
   StateMachineController? _controller;
-  SMIInput<bool>? _hoverInput;
-  SMIInput<bool>? _pressInput;
+  SMIInput<bool>? _trigger;
 
   @override
   void initState() {
@@ -26,7 +25,7 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
 
     // Load the animation file from the bundle, note that you could also
     // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/rocket.riv').then(
+    rootBundle.load('assets/little_machine.riv').then(
       (data) async {
         // Load the RiveFile from the binary data.
         final file = RiveFile.import(data);
@@ -35,11 +34,10 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
         // Rive widget.
         final artboard = file.mainArtboard;
         var controller =
-            StateMachineController.fromArtboard(artboard, 'Button');
+            StateMachineController.fromArtboard(artboard, 'State Machine 1');
         if (controller != null) {
           artboard.addController(controller);
-          _hoverInput = controller.findInput('Hover');
-          _pressInput = controller.findInput('Press');
+          _trigger = controller.findInput('Trigger 1');
         }
         setState(() => _riveArtboard = artboard);
       },
@@ -51,25 +49,29 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        title: const Text('Button State Machine'),
+        title: const Text('Little Machine'),
       ),
       body: Center(
         child: _riveArtboard == null
             ? const SizedBox()
-            : MouseRegion(
-                onEnter: (_) => _hoverInput?.value = true,
-                onExit: (_) => _hoverInput?.value = false,
-                child: GestureDetector(
-                  onTapDown: (_) => _pressInput?.value = true,
-                  onTapCancel: () => _pressInput?.value = false,
-                  onTapUp: (_) => _pressInput?.value = false,
-                  child: SizedBox(
-                    width: 250,
-                    height: 250,
-                    child: Rive(
-                      artboard: _riveArtboard!,
+            : GestureDetector(
+                onTapDown: (_) => _trigger?.value = true,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Press to activate!',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: Rive(
+                        artboard: _riveArtboard!,
+                      ),
+                    ),
+                  ],
                 ),
               ),
       ),

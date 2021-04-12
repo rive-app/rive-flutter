@@ -4,7 +4,7 @@ import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 
 abstract class ShapePaintMutator {
   ShapePaintContainer? _shapePaintContainer;
-  late Paint _paint;
+  Paint _paint = Paint();
   ShapePaintContainer? get shapePaintContainer => _shapePaintContainer;
   Paint get paint => _paint;
   double _renderOpacity = 1;

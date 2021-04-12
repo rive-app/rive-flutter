@@ -37,12 +37,6 @@ class LayerController {
     if (_animationInstance != null) {
       _animationInstance!.advance(elapsedSeconds);
     }
-    for (int i = 0; updateState(inputValues); i++) {
-      if (i == 100) {
-        print('StateMachineController.apply exceeded max iterations.');
-        return false;
-      }
-    }
     if (_transition != null &&
         _stateFrom != null &&
         _transition!.duration != 0) {
@@ -52,22 +46,26 @@ class LayerController {
     } else {
       _mix = 1;
     }
-    var keepGoing = _mix != 1;
     if (_animationInstanceFrom != null && _mix < 1) {
       if (!_holdAnimationFrom) {
         _animationInstanceFrom!.advance(elapsedSeconds);
       }
+    }
+    for (int i = 0; updateState(inputValues); i++) {
+      if (i == 100) {
+        print('StateMachineController.apply exceeded max iterations.');
+        return false;
+      }
+    }
+    if (_animationInstanceFrom != null && _mix < 1) {
       _animationInstanceFrom!.animation.apply(_animationInstanceFrom!.time,
           mix: 1 - _mix, coreContext: core);
     }
     if (_animationInstance != null) {
       _animationInstance!.animation
           .apply(_animationInstance!.time, mix: _mix, coreContext: core);
-      if (_animationInstance!.keepGoing) {
-        keepGoing = true;
-      }
     }
-    return keepGoing;
+    return _mix != 1 || (_animationInstance?.keepGoing ?? false);
   }
 
   bool updateState(HashMap<int, dynamic> inputValues) {

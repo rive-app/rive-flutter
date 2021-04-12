@@ -1,20 +1,20 @@
 import 'dart:collection';
-import 'package:rive/src/rive_core/animation/state_machine_double.dart';
+import 'package:rive/src/rive_core/animation/state_machine_number.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
-import 'package:rive/src/generated/animation/transition_double_condition_base.dart';
-export 'package:rive/src/generated/animation/transition_double_condition_base.dart';
+import 'package:rive/src/generated/animation/transition_number_condition_base.dart';
+export 'package:rive/src/generated/animation/transition_number_condition_base.dart';
 
-class TransitionDoubleCondition extends TransitionDoubleConditionBase {
+class TransitionNumberCondition extends TransitionNumberConditionBase {
   @override
   void valueChanged(double from, double to) {}
   @override
-  bool validate() => super.validate() && (input is StateMachineDouble);
+  bool validate() => super.validate() && (input is StateMachineNumber);
   @override
   bool evaluate(HashMap<int, dynamic> values) {
-    if (input is! StateMachineDouble) {
+    if (input is! StateMachineNumber) {
       return true;
     }
-    var doubleInput = input as StateMachineDouble;
+    var doubleInput = input as StateMachineNumber;
     dynamic providedValue = values[input.id];
     double inputValue =
         providedValue is double ? providedValue : doubleInput.value;
