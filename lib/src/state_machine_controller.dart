@@ -19,14 +19,16 @@ import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 /// enum is exposed for convenience.
 enum SMIType { number, boolean, trigger }
 
-/// StateMachine Instance Input. This is the abstraction of an instanced input
+/// SMI = StateMachineInstance
+///
+/// This is the abstraction of an instanced input
 /// from the [StateMachine]. Whenever a [StateMachineController] is created, the
 /// list of inputs in the corresponding [StateMachine] is wrapped into a set of
 /// [SMIInput] objects that ensure inputs are initialized to design-time values.
 /// The implementation can now change these values freely as they are decoupled
 /// from the backing [StateMachine] and can safely be re-instanced by another
 /// controller later.
-class SMIInput<T> {
+abstract class SMIInput<T> {
   final core.StateMachineInput _input;
   final StateMachineController controller;
   final SMIType type;
@@ -43,9 +45,10 @@ class SMIInput<T> {
   /// The name given to this input at design time in Rive.
   String get name => _input.name;
 
-  /// Convenience method for changing the backing value of the input. Usually
-  /// it's easier to use the various value getter/setters on the derived
-  /// version of [SMIInput] like [SMIBool], [SMINumber], and [SMITrigger].
+  /// Convenience method for changing the backing [SMIInput.value] of the input.
+  /// For [SMITrigger] it's usually preferable to use the [SMITrigger.fire]
+  /// method to change the input value, but calling change(true) is totally
+  /// valid.
   bool change(T value) {
     if (controller.inputValues[id] == value) {
       return false;
