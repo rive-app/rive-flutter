@@ -12,22 +12,32 @@ class Rectangle extends RectangleBase {
       StraightVertex.procedural()
         ..x = ox
         ..y = oy
-        ..radius = cornerRadius,
+        ..radius = cornerRadiusTL,
       StraightVertex.procedural()
         ..x = ox + width
         ..y = oy
-        ..radius = cornerRadius,
+        ..radius = linkCornerRadius ? cornerRadiusTL : cornerRadiusTR,
       StraightVertex.procedural()
         ..x = ox + width
         ..y = oy + height
-        ..radius = cornerRadius,
+        ..radius = linkCornerRadius ? cornerRadiusTL : cornerRadiusBR,
       StraightVertex.procedural()
         ..x = ox
         ..y = oy + height
-        ..radius = cornerRadius
+        ..radius = linkCornerRadius ? cornerRadiusTL : cornerRadiusBL
     ];
   }
 
   @override
-  void cornerRadiusChanged(double from, double to) => markPathDirty();
+  void cornerRadiusTLChanged(double from, double to) => markPathDirty();
+  @override
+  void cornerRadiusTRChanged(double from, double to) => markPathDirty();
+  @override
+  void cornerRadiusBLChanged(double from, double to) => markPathDirty();
+  @override
+  void cornerRadiusBRChanged(double from, double to) => markPathDirty();
+  @override
+  void linkCornerRadiusChanged(bool from, bool to) {
+    markPathDirty();
+  }
 }

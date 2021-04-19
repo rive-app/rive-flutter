@@ -1,3 +1,5 @@
+## [0.7.3] - 2021-04-19 16:53:18
+- Adding support for Rectangle corner radius properties and animation.
 
 ## [0.7.2] - 2021-04-12 16:57:54
 - Breaking change! StateMachineInput has been renamed to SMIInput to follow conventions in other runtimes and clearly disambiguate between core.StateMachineInput (the backing type in Rive's core system, which is not explicitly exposed to this runtime) and the input instances which should be used by controllers in the Flutter ecosystem.
