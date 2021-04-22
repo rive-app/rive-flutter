@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:rive/src/core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
@@ -32,8 +33,8 @@ class LayerController {
     _changeState(null);
   }
 
-  bool apply(CoreContext core, double elapsedSeconds,
-      HashMap<int, dynamic> inputValues) {
+  bool apply(StateMachineController machineController, CoreContext core,
+      double elapsedSeconds, HashMap<int, dynamic> inputValues) {
     if (_animationInstance != null) {
       _animationInstance!.advance(elapsedSeconds);
     }
@@ -53,6 +54,7 @@ class LayerController {
     }
     for (int i = 0; updateState(inputValues); i++) {
       if (i == 100) {
+        machineController.advanceInputs();
         print('StateMachineController.apply exceeded max iterations.');
         return false;
       }
@@ -167,11 +169,13 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     super.dispose();
   }
 
+  @protected
+  void advanceInputs() {}
   @override
   void apply(CoreContext core, double elapsedSeconds) {
     bool keepGoing = false;
     for (final layerController in layerControllers) {
-      if (layerController.apply(core, elapsedSeconds, inputValues)) {
+      if (layerController.apply(this, core, elapsedSeconds, inputValues)) {
         keepGoing = true;
       }
     }

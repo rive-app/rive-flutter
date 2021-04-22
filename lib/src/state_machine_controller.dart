@@ -167,4 +167,11 @@ class StateMachineController extends core.StateMachineController {
       input.advance();
     }
   }
+
+  @override
+  void advanceInputs() {
+    for (final input in _inputs) {
+      input.advance();
+    }
+  }
 }

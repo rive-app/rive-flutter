@@ -5,8 +5,8 @@ import 'package:rive/src/generated/animation/layer_state_base.dart';
 export 'package:rive/src/generated/animation/layer_state_base.dart';
 
 abstract class LayerState extends LayerStateBase {
-  final Set<StateTransition> _transitions = {};
-  Iterable<StateTransition> get transitions => _transitions;
+  final StateTransitions _transitions = StateTransitions();
+  StateTransitions get transitions => _transitions;
   @override
   void onAdded() {}
   @override

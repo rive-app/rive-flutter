@@ -18,7 +18,6 @@ class TransitionTriggerCondition extends TransitionTriggerConditionBase {
     }
     var triggerInput = input as StateMachineTrigger;
     if (triggerInput.triggered) {
-      triggerInput.reset();
       return true;
     }
     return false;
