@@ -1,25 +1,13 @@
 import 'package:rive/rive.dart';
-import 'package:rive/src/core/core.dart';
+import 'package:rive/src/core/importers/artboard_import_stack_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 
-class LinearAnimationImporter extends ImportStackObject {
+class LinearAnimationImporter extends ArtboardImportStackObject {
   final LinearAnimation linearAnimation;
-  // final keyedObjects = <KeyedObject>[];
-
   LinearAnimationImporter(this.linearAnimation);
 
   void addKeyedObject(KeyedObject object) {
     linearAnimation.context.addObject(object);
-
-    // keyedObjects.add(object);
     linearAnimation.internalAddKeyedObject(object);
-  }
-
-  @override
-  bool resolve() {
-    // for (final keyedObject in keyedObjects) {
-    //   keyedObject.objectId ??= linearAnimation.artboard.id;
-    // }
-    return true;
   }
 }

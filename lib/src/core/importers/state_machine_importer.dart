@@ -1,8 +1,8 @@
-import 'package:rive/src/core/core.dart';
+import 'package:rive/src/core/importers/artboard_import_stack_object.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_component.dart';
 
-class StateMachineImporter extends ImportStackObject {
+class StateMachineImporter extends ArtboardImportStackObject {
   final StateMachine machine;
   StateMachineImporter(this.machine);
 
@@ -10,7 +10,4 @@ class StateMachineImporter extends ImportStackObject {
     machine.context.addObject(object);
     object.stateMachine = machine;
   }
-
-  @override
-  bool resolve() => true;
 }

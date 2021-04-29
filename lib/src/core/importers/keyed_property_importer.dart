@@ -1,9 +1,9 @@
-import 'package:rive/src/core/core.dart';
+import 'package:rive/src/core/importers/artboard_import_stack_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 
-class KeyedPropertyImporter extends ImportStackObject {
+class KeyedPropertyImporter extends ArtboardImportStackObject {
   final KeyedProperty keyedProperty;
   final LinearAnimation animation;
 
@@ -14,7 +14,4 @@ class KeyedPropertyImporter extends ImportStackObject {
     keyedProperty.internalAddKeyFrame(keyFrame);
     keyFrame.computeSeconds(animation);
   }
-
-  @override
-  bool resolve() => true;
 }

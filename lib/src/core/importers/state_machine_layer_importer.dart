@@ -1,3 +1,4 @@
+import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
@@ -16,6 +17,9 @@ class StateMachineLayerImporter extends ImportStackObject {
     layer.context.addObject(state);
     layer.internalAddState(state);
   }
+
+  @override
+  int get resolvesBefore => StateMachineBase.typeKey;
 
   bool _resolved = false;
   @override
@@ -36,7 +40,6 @@ class StateMachineLayerImporter extends ImportStackObject {
         // entire artboard imports.
         assert(transition.stateToId >= 0 &&
             transition.stateToId < importedStates.length);
-        // transition.stateToId = importedStates[transition.stateToId].id;
         transition.stateTo = importedStates[transition.stateToId];
       }
     }

@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
-
 export 'package:rive/src/animation_list.dart';
 export 'package:rive/src/state_machine_components.dart';
 export 'package:rive/src/state_transition_conditions.dart';
@@ -61,7 +60,40 @@ abstract class CoreContext {
 
 // ignore: one_member_abstracts
 abstract class ImportStackObject {
-  bool resolve();
+  final _resolveBefore = <ImportStackObject>{};
+  bool _resolved = false;
+
+  bool initStack(ImportStack stack) {
+    var type = resolvesBefore;
+    if (type == -1) {
+      return true;
+    }
+    var importer = stack.latest<ImportStackObject>(type);
+    if (importer == null) {
+      return false;
+    }
+    importer._resolveBefore.add(this);
+    return true;
+  }
+
+  int get resolvesBefore => -1;
+
+  bool _internalResolve() {
+    if (_resolved) {
+      return true;
+    }
+    _resolved = true;
+    if (_resolveBefore.isNotEmpty) {
+      for (final before in _resolveBefore) {
+        if (!before._internalResolve()) {
+          return false;
+        }
+      }
+    }
+    return resolve();
+  }
+
+  bool resolve() => true;
 }
 
 /// Stack to help the RiveFile locate latest ImportStackObject created of a
@@ -89,11 +121,11 @@ class ImportStack {
   bool makeLatest(int coreType, ImportStackObject? importObject) {
     var latest = _latests[coreType];
     if (latest != null) {
-      if (!latest.resolve()) {
+      if (!latest._internalResolve()) {
         return false;
       }
     }
-    if (importObject != null) {
+    if (importObject != null && importObject.initStack(this)) {
       _latests[coreType] = importObject;
     } else {
       _latests.remove(coreType);
@@ -103,7 +135,7 @@ class ImportStack {
 
   bool resolve() {
     for (final object in _latests.values) {
-      if (!object.resolve()) {
+      if (!object._internalResolve()) {
         return false;
       }
     }

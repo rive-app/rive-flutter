@@ -1,8 +1,9 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/core/importers/artboard_import_stack_object.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
 
-class StateTransitionImporter extends ImportStackObject {
+class StateTransitionImporter extends ArtboardImportStackObject {
   final StateMachineImporter stateMachineImporter;
   final StateTransition transition;
   StateTransitionImporter(this.transition, this.stateMachineImporter);

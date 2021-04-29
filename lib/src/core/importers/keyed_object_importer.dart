@@ -1,8 +1,8 @@
-import 'package:rive/src/core/core.dart';
+import 'package:rive/src/core/importers/artboard_import_stack_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 
-class KeyedObjectImporter extends ImportStackObject {
+class KeyedObjectImporter extends ArtboardImportStackObject {
   final KeyedObject keyedObject;
 
   KeyedObjectImporter(this.keyedObject);
@@ -11,7 +11,4 @@ class KeyedObjectImporter extends ImportStackObject {
     keyedObject.context.addObject(property);
     keyedObject.internalAddKeyedProperty(property);
   }
-
-  @override
-  bool resolve() => true;
 }
