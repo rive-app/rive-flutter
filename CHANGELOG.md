@@ -1,3 +1,6 @@
+## [0.7.4] - 2021-04-29 15:50:07
+- Fixing race condition that could occur when importing StateMachineInputs.
+
 ## [0.7.3] - 2021-04-19 16:53:18
 - Adding support for Rectangle corner radius properties and animation.
 - Trigger inputs reset between state changes to avoid multi-firing state changes when a trigger is fired.
