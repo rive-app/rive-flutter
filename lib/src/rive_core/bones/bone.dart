@@ -46,4 +46,9 @@ class Bone extends BoneBase {
   set y(double value) {
     throw UnsupportedError('not expected to set y on a bone.');
   }
+
+  @override
+  bool validate() {
+    return super.validate() && (coreType != BoneBase.typeKey || parent is Bone);
+  }
 }

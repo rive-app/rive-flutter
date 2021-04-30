@@ -42,16 +42,15 @@ class StateTransition extends StateTransitionBase {
     }
   }
 
-  double exitTimeSeconds(LayerState stateFrom) {
-    if (exitTime == 0) {
-      return 0;
-    }
+  double exitTimeSeconds(LayerState stateFrom, {bool absolute = false}) {
     if ((flags & StateTransitionFlags.exitTimeIsPercentage) != 0) {
       var animationDuration = 0.0;
+      var start = 0.0;
       if (stateFrom is AnimationState) {
+        start = absolute ? stateFrom.animation?.startSeconds ?? 0 : 0;
         animationDuration = stateFrom.animation?.durationSeconds ?? 0;
       }
-      return exitTime / 100 * animationDuration;
+      return start + exitTime / 100 * animationDuration;
     } else {
       return exitTime / 1000;
     }

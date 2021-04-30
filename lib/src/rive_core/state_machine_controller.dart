@@ -21,7 +21,7 @@ class LayerController {
   LayerController(this.layer) {
     _changeState(layer.entryState);
   }
-  bool _changeState(LayerState? state) {
+  bool _changeState(LayerState? state, {StateTransition? transition}) {
     if (state == _currentState) {
       return false;
     }
@@ -53,8 +53,8 @@ class LayerController {
       }
     }
     for (int i = 0; updateState(inputValues); i++) {
+      machineController.advanceInputs();
       if (i == 100) {
-        machineController.advanceInputs();
         print('StateMachineController.apply exceeded max iterations.');
         return false;
       }
@@ -109,13 +109,14 @@ class LayerController {
           }
         }
       }
-      if (valid && _changeState(transition.stateTo)) {
+      if (valid && _changeState(transition.stateTo, transition: transition)) {
         _transition = transition;
         _stateFrom = stateFrom;
         if (transition.pauseOnExit &&
             transition.enableExitTime &&
             _animationInstance != null) {
-          _animationInstance!.time = transition.exitTimeSeconds(stateFrom);
+          _animationInstance!.time =
+              transition.exitTimeSeconds(stateFrom, absolute: true);
         }
         if (_mix != 0) {
           _holdAnimationFrom = transition.pauseOnExit;
@@ -160,6 +161,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     for (final layer in stateMachine.layers) {
       layerControllers.add(LayerController(layer));
     }
+    advanceInputs();
     return super.init(core);
   }
 
