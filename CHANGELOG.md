@@ -1,3 +1,6 @@
+## [0.7.5] - 2021-04-30 14:43:29
+- Fixing an issue with StateMachine exitTime from states with animations that have a work area enabled.
+
 ## [0.7.4] - 2021-04-29 15:50:07
 - Fixing race condition that could occur when importing StateMachineInputs.
 
