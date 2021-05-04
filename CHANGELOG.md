@@ -1,3 +1,6 @@
+## [0.7.7] - 2021-05-04 16:00:00
+- Updates dependency versions
+
 ## [0.7.6] - 2021-05-04 13:50:16
 - Fixing an issue with StateMachine changes not being applied on the first frame after playing.
 
