@@ -33,11 +33,7 @@ class LayerController {
     _changeState(null);
   }
 
-  bool apply(StateMachineController machineController, CoreContext core,
-      double elapsedSeconds, HashMap<int, dynamic> inputValues) {
-    if (_animationInstance != null) {
-      _animationInstance!.advance(elapsedSeconds);
-    }
+  void _updateMix(double elapsedSeconds) {
     if (_transition != null &&
         _stateFrom != null &&
         _transition!.duration != 0) {
@@ -47,6 +43,14 @@ class LayerController {
     } else {
       _mix = 1;
     }
+  }
+
+  bool apply(StateMachineController machineController, CoreContext core,
+      double elapsedSeconds, HashMap<int, dynamic> inputValues) {
+    if (_animationInstance != null) {
+      _animationInstance!.advance(elapsedSeconds);
+    }
+    _updateMix(elapsedSeconds);
     if (_animationInstanceFrom != null && _mix < 1) {
       if (!_holdAnimationFrom) {
         _animationInstanceFrom!.advance(elapsedSeconds);
@@ -133,6 +137,7 @@ class LayerController {
             _animationInstance = null;
           }
           _mix = 0;
+          _updateMix(0.0);
         } else {
           _animationInstance = null;
         }

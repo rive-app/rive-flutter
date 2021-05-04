@@ -1237,13 +1237,13 @@ class RiveCoreContext {
   static void setString(Core object, int propertyKey, String value) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
-        (object as ComponentBase).name = value;
+        if (object is ComponentBase) object.name = value;
         break;
       case StateMachineComponentBase.namePropertyKey:
-        (object as StateMachineComponentBase).name = value;
+        if (object is StateMachineComponentBase) object.name = value;
         break;
       case AnimationBase.namePropertyKey:
-        (object as AnimationBase).name = value;
+        if (object is AnimationBase) object.name = value;
         break;
     }
   }
@@ -1251,121 +1251,121 @@ class RiveCoreContext {
   static void setUint(Core object, int propertyKey, int value) {
     switch (propertyKey) {
       case ComponentBase.parentIdPropertyKey:
-        (object as ComponentBase).parentId = value;
+        if (object is ComponentBase) object.parentId = value;
         break;
       case DrawTargetBase.drawableIdPropertyKey:
-        (object as DrawTargetBase).drawableId = value;
+        if (object is DrawTargetBase) object.drawableId = value;
         break;
       case DrawTargetBase.placementValuePropertyKey:
-        (object as DrawTargetBase).placementValue = value;
+        if (object is DrawTargetBase) object.placementValue = value;
         break;
       case AnimationStateBase.animationIdPropertyKey:
-        (object as AnimationStateBase).animationId = value;
+        if (object is AnimationStateBase) object.animationId = value;
         break;
       case KeyedObjectBase.objectIdPropertyKey:
-        (object as KeyedObjectBase).objectId = value;
+        if (object is KeyedObjectBase) object.objectId = value;
         break;
       case TransitionConditionBase.inputIdPropertyKey:
-        (object as TransitionConditionBase).inputId = value;
+        if (object is TransitionConditionBase) object.inputId = value;
         break;
       case KeyedPropertyBase.propertyKeyPropertyKey:
-        (object as KeyedPropertyBase).propertyKey = value;
+        if (object is KeyedPropertyBase) object.propertyKey = value;
         break;
       case KeyFrameBase.framePropertyKey:
-        (object as KeyFrameBase).frame = value;
+        if (object is KeyFrameBase) object.frame = value;
         break;
       case KeyFrameBase.interpolationTypePropertyKey:
-        (object as KeyFrameBase).interpolationType = value;
+        if (object is KeyFrameBase) object.interpolationType = value;
         break;
       case KeyFrameBase.interpolatorIdPropertyKey:
-        (object as KeyFrameBase).interpolatorId = value;
+        if (object is KeyFrameBase) object.interpolatorId = value;
         break;
       case KeyFrameIdBase.valuePropertyKey:
-        (object as KeyFrameIdBase).value = value;
+        if (object is KeyFrameIdBase) object.value = value;
         break;
       case TransitionValueConditionBase.opValuePropertyKey:
-        (object as TransitionValueConditionBase).opValue = value;
+        if (object is TransitionValueConditionBase) object.opValue = value;
         break;
       case StateTransitionBase.stateToIdPropertyKey:
-        (object as StateTransitionBase).stateToId = value;
+        if (object is StateTransitionBase) object.stateToId = value;
         break;
       case StateTransitionBase.flagsPropertyKey:
-        (object as StateTransitionBase).flags = value;
+        if (object is StateTransitionBase) object.flags = value;
         break;
       case StateTransitionBase.durationPropertyKey:
-        (object as StateTransitionBase).duration = value;
+        if (object is StateTransitionBase) object.duration = value;
         break;
       case StateTransitionBase.exitTimePropertyKey:
-        (object as StateTransitionBase).exitTime = value;
+        if (object is StateTransitionBase) object.exitTime = value;
         break;
       case LinearAnimationBase.fpsPropertyKey:
-        (object as LinearAnimationBase).fps = value;
+        if (object is LinearAnimationBase) object.fps = value;
         break;
       case LinearAnimationBase.durationPropertyKey:
-        (object as LinearAnimationBase).duration = value;
+        if (object is LinearAnimationBase) object.duration = value;
         break;
       case LinearAnimationBase.loopValuePropertyKey:
-        (object as LinearAnimationBase).loopValue = value;
+        if (object is LinearAnimationBase) object.loopValue = value;
         break;
       case LinearAnimationBase.workStartPropertyKey:
-        (object as LinearAnimationBase).workStart = value;
+        if (object is LinearAnimationBase) object.workStart = value;
         break;
       case LinearAnimationBase.workEndPropertyKey:
-        (object as LinearAnimationBase).workEnd = value;
+        if (object is LinearAnimationBase) object.workEnd = value;
         break;
       case StrokeBase.capPropertyKey:
-        (object as StrokeBase).cap = value;
+        if (object is StrokeBase) object.cap = value;
         break;
       case StrokeBase.joinPropertyKey:
-        (object as StrokeBase).join = value;
+        if (object is StrokeBase) object.join = value;
         break;
       case TrimPathBase.modeValuePropertyKey:
-        (object as TrimPathBase).modeValue = value;
+        if (object is TrimPathBase) object.modeValue = value;
         break;
       case FillBase.fillRulePropertyKey:
-        (object as FillBase).fillRule = value;
+        if (object is FillBase) object.fillRule = value;
         break;
       case PathBase.pathFlagsPropertyKey:
-        (object as PathBase).pathFlags = value;
+        if (object is PathBase) object.pathFlags = value;
         break;
       case DrawableBase.blendModeValuePropertyKey:
-        (object as DrawableBase).blendModeValue = value;
+        if (object is DrawableBase) object.blendModeValue = value;
         break;
       case DrawableBase.drawableFlagsPropertyKey:
-        (object as DrawableBase).drawableFlags = value;
+        if (object is DrawableBase) object.drawableFlags = value;
         break;
       case WeightBase.valuesPropertyKey:
-        (object as WeightBase).values = value;
+        if (object is WeightBase) object.values = value;
         break;
       case WeightBase.indicesPropertyKey:
-        (object as WeightBase).indices = value;
+        if (object is WeightBase) object.indices = value;
         break;
       case CubicWeightBase.inValuesPropertyKey:
-        (object as CubicWeightBase).inValues = value;
+        if (object is CubicWeightBase) object.inValues = value;
         break;
       case CubicWeightBase.inIndicesPropertyKey:
-        (object as CubicWeightBase).inIndices = value;
+        if (object is CubicWeightBase) object.inIndices = value;
         break;
       case CubicWeightBase.outValuesPropertyKey:
-        (object as CubicWeightBase).outValues = value;
+        if (object is CubicWeightBase) object.outValues = value;
         break;
       case CubicWeightBase.outIndicesPropertyKey:
-        (object as CubicWeightBase).outIndices = value;
+        if (object is CubicWeightBase) object.outIndices = value;
         break;
       case ClippingShapeBase.sourceIdPropertyKey:
-        (object as ClippingShapeBase).sourceId = value;
+        if (object is ClippingShapeBase) object.sourceId = value;
         break;
       case ClippingShapeBase.fillRulePropertyKey:
-        (object as ClippingShapeBase).fillRule = value;
+        if (object is ClippingShapeBase) object.fillRule = value;
         break;
       case PolygonBase.pointsPropertyKey:
-        (object as PolygonBase).points = value;
+        if (object is PolygonBase) object.points = value;
         break;
       case DrawRulesBase.drawTargetIdPropertyKey:
-        (object as DrawRulesBase).drawTargetId = value;
+        if (object is DrawRulesBase) object.drawTargetId = value;
         break;
       case TendonBase.boneIdPropertyKey:
-        (object as TendonBase).boneId = value;
+        if (object is TendonBase) object.boneId = value;
         break;
     }
   }
@@ -1373,205 +1373,205 @@ class RiveCoreContext {
   static void setDouble(Core object, int propertyKey, double value) {
     switch (propertyKey) {
       case StateMachineNumberBase.valuePropertyKey:
-        (object as StateMachineNumberBase).value = value;
+        if (object is StateMachineNumberBase) object.value = value;
         break;
       case TransitionNumberConditionBase.valuePropertyKey:
-        (object as TransitionNumberConditionBase).value = value;
+        if (object is TransitionNumberConditionBase) object.value = value;
         break;
       case CubicInterpolatorBase.x1PropertyKey:
-        (object as CubicInterpolatorBase).x1 = value;
+        if (object is CubicInterpolatorBase) object.x1 = value;
         break;
       case CubicInterpolatorBase.y1PropertyKey:
-        (object as CubicInterpolatorBase).y1 = value;
+        if (object is CubicInterpolatorBase) object.y1 = value;
         break;
       case CubicInterpolatorBase.x2PropertyKey:
-        (object as CubicInterpolatorBase).x2 = value;
+        if (object is CubicInterpolatorBase) object.x2 = value;
         break;
       case CubicInterpolatorBase.y2PropertyKey:
-        (object as CubicInterpolatorBase).y2 = value;
+        if (object is CubicInterpolatorBase) object.y2 = value;
         break;
       case KeyFrameDoubleBase.valuePropertyKey:
-        (object as KeyFrameDoubleBase).value = value;
+        if (object is KeyFrameDoubleBase) object.value = value;
         break;
       case LinearAnimationBase.speedPropertyKey:
-        (object as LinearAnimationBase).speed = value;
+        if (object is LinearAnimationBase) object.speed = value;
         break;
       case LinearGradientBase.startXPropertyKey:
-        (object as LinearGradientBase).startX = value;
+        if (object is LinearGradientBase) object.startX = value;
         break;
       case LinearGradientBase.startYPropertyKey:
-        (object as LinearGradientBase).startY = value;
+        if (object is LinearGradientBase) object.startY = value;
         break;
       case LinearGradientBase.endXPropertyKey:
-        (object as LinearGradientBase).endX = value;
+        if (object is LinearGradientBase) object.endX = value;
         break;
       case LinearGradientBase.endYPropertyKey:
-        (object as LinearGradientBase).endY = value;
+        if (object is LinearGradientBase) object.endY = value;
         break;
       case LinearGradientBase.opacityPropertyKey:
-        (object as LinearGradientBase).opacity = value;
+        if (object is LinearGradientBase) object.opacity = value;
         break;
       case StrokeBase.thicknessPropertyKey:
-        (object as StrokeBase).thickness = value;
+        if (object is StrokeBase) object.thickness = value;
         break;
       case GradientStopBase.positionPropertyKey:
-        (object as GradientStopBase).position = value;
+        if (object is GradientStopBase) object.position = value;
         break;
       case TrimPathBase.startPropertyKey:
-        (object as TrimPathBase).start = value;
+        if (object is TrimPathBase) object.start = value;
         break;
       case TrimPathBase.endPropertyKey:
-        (object as TrimPathBase).end = value;
+        if (object is TrimPathBase) object.end = value;
         break;
       case TrimPathBase.offsetPropertyKey:
-        (object as TrimPathBase).offset = value;
+        if (object is TrimPathBase) object.offset = value;
         break;
       case TransformComponentBase.rotationPropertyKey:
-        (object as TransformComponentBase).rotation = value;
+        if (object is TransformComponentBase) object.rotation = value;
         break;
       case TransformComponentBase.scaleXPropertyKey:
-        (object as TransformComponentBase).scaleX = value;
+        if (object is TransformComponentBase) object.scaleX = value;
         break;
       case TransformComponentBase.scaleYPropertyKey:
-        (object as TransformComponentBase).scaleY = value;
+        if (object is TransformComponentBase) object.scaleY = value;
         break;
       case TransformComponentBase.opacityPropertyKey:
-        (object as TransformComponentBase).opacity = value;
+        if (object is TransformComponentBase) object.opacity = value;
         break;
       case NodeBase.xPropertyKey:
-        (object as NodeBase).x = value;
+        if (object is NodeBase) object.x = value;
         break;
       case NodeBase.yPropertyKey:
-        (object as NodeBase).y = value;
+        if (object is NodeBase) object.y = value;
         break;
       case PathVertexBase.xPropertyKey:
-        (object as PathVertexBase).x = value;
+        if (object is PathVertexBase) object.x = value;
         break;
       case PathVertexBase.yPropertyKey:
-        (object as PathVertexBase).y = value;
+        if (object is PathVertexBase) object.y = value;
         break;
       case StraightVertexBase.radiusPropertyKey:
-        (object as StraightVertexBase).radius = value;
+        if (object is StraightVertexBase) object.radius = value;
         break;
       case CubicAsymmetricVertexBase.rotationPropertyKey:
-        (object as CubicAsymmetricVertexBase).rotation = value;
+        if (object is CubicAsymmetricVertexBase) object.rotation = value;
         break;
       case CubicAsymmetricVertexBase.inDistancePropertyKey:
-        (object as CubicAsymmetricVertexBase).inDistance = value;
+        if (object is CubicAsymmetricVertexBase) object.inDistance = value;
         break;
       case CubicAsymmetricVertexBase.outDistancePropertyKey:
-        (object as CubicAsymmetricVertexBase).outDistance = value;
+        if (object is CubicAsymmetricVertexBase) object.outDistance = value;
         break;
       case ParametricPathBase.widthPropertyKey:
-        (object as ParametricPathBase).width = value;
+        if (object is ParametricPathBase) object.width = value;
         break;
       case ParametricPathBase.heightPropertyKey:
-        (object as ParametricPathBase).height = value;
+        if (object is ParametricPathBase) object.height = value;
         break;
       case ParametricPathBase.originXPropertyKey:
-        (object as ParametricPathBase).originX = value;
+        if (object is ParametricPathBase) object.originX = value;
         break;
       case ParametricPathBase.originYPropertyKey:
-        (object as ParametricPathBase).originY = value;
+        if (object is ParametricPathBase) object.originY = value;
         break;
       case RectangleBase.cornerRadiusTLPropertyKey:
-        (object as RectangleBase).cornerRadiusTL = value;
+        if (object is RectangleBase) object.cornerRadiusTL = value;
         break;
       case RectangleBase.cornerRadiusTRPropertyKey:
-        (object as RectangleBase).cornerRadiusTR = value;
+        if (object is RectangleBase) object.cornerRadiusTR = value;
         break;
       case RectangleBase.cornerRadiusBLPropertyKey:
-        (object as RectangleBase).cornerRadiusBL = value;
+        if (object is RectangleBase) object.cornerRadiusBL = value;
         break;
       case RectangleBase.cornerRadiusBRPropertyKey:
-        (object as RectangleBase).cornerRadiusBR = value;
+        if (object is RectangleBase) object.cornerRadiusBR = value;
         break;
       case CubicMirroredVertexBase.rotationPropertyKey:
-        (object as CubicMirroredVertexBase).rotation = value;
+        if (object is CubicMirroredVertexBase) object.rotation = value;
         break;
       case CubicMirroredVertexBase.distancePropertyKey:
-        (object as CubicMirroredVertexBase).distance = value;
+        if (object is CubicMirroredVertexBase) object.distance = value;
         break;
       case PolygonBase.cornerRadiusPropertyKey:
-        (object as PolygonBase).cornerRadius = value;
+        if (object is PolygonBase) object.cornerRadius = value;
         break;
       case StarBase.innerRadiusPropertyKey:
-        (object as StarBase).innerRadius = value;
+        if (object is StarBase) object.innerRadius = value;
         break;
       case CubicDetachedVertexBase.inRotationPropertyKey:
-        (object as CubicDetachedVertexBase).inRotation = value;
+        if (object is CubicDetachedVertexBase) object.inRotation = value;
         break;
       case CubicDetachedVertexBase.inDistancePropertyKey:
-        (object as CubicDetachedVertexBase).inDistance = value;
+        if (object is CubicDetachedVertexBase) object.inDistance = value;
         break;
       case CubicDetachedVertexBase.outRotationPropertyKey:
-        (object as CubicDetachedVertexBase).outRotation = value;
+        if (object is CubicDetachedVertexBase) object.outRotation = value;
         break;
       case CubicDetachedVertexBase.outDistancePropertyKey:
-        (object as CubicDetachedVertexBase).outDistance = value;
+        if (object is CubicDetachedVertexBase) object.outDistance = value;
         break;
       case ArtboardBase.widthPropertyKey:
-        (object as ArtboardBase).width = value;
+        if (object is ArtboardBase) object.width = value;
         break;
       case ArtboardBase.heightPropertyKey:
-        (object as ArtboardBase).height = value;
+        if (object is ArtboardBase) object.height = value;
         break;
       case ArtboardBase.xPropertyKey:
-        (object as ArtboardBase).x = value;
+        if (object is ArtboardBase) object.x = value;
         break;
       case ArtboardBase.yPropertyKey:
-        (object as ArtboardBase).y = value;
+        if (object is ArtboardBase) object.y = value;
         break;
       case ArtboardBase.originXPropertyKey:
-        (object as ArtboardBase).originX = value;
+        if (object is ArtboardBase) object.originX = value;
         break;
       case ArtboardBase.originYPropertyKey:
-        (object as ArtboardBase).originY = value;
+        if (object is ArtboardBase) object.originY = value;
         break;
       case BoneBase.lengthPropertyKey:
-        (object as BoneBase).length = value;
+        if (object is BoneBase) object.length = value;
         break;
       case RootBoneBase.xPropertyKey:
-        (object as RootBoneBase).x = value;
+        if (object is RootBoneBase) object.x = value;
         break;
       case RootBoneBase.yPropertyKey:
-        (object as RootBoneBase).y = value;
+        if (object is RootBoneBase) object.y = value;
         break;
       case SkinBase.xxPropertyKey:
-        (object as SkinBase).xx = value;
+        if (object is SkinBase) object.xx = value;
         break;
       case SkinBase.yxPropertyKey:
-        (object as SkinBase).yx = value;
+        if (object is SkinBase) object.yx = value;
         break;
       case SkinBase.xyPropertyKey:
-        (object as SkinBase).xy = value;
+        if (object is SkinBase) object.xy = value;
         break;
       case SkinBase.yyPropertyKey:
-        (object as SkinBase).yy = value;
+        if (object is SkinBase) object.yy = value;
         break;
       case SkinBase.txPropertyKey:
-        (object as SkinBase).tx = value;
+        if (object is SkinBase) object.tx = value;
         break;
       case SkinBase.tyPropertyKey:
-        (object as SkinBase).ty = value;
+        if (object is SkinBase) object.ty = value;
         break;
       case TendonBase.xxPropertyKey:
-        (object as TendonBase).xx = value;
+        if (object is TendonBase) object.xx = value;
         break;
       case TendonBase.yxPropertyKey:
-        (object as TendonBase).yx = value;
+        if (object is TendonBase) object.yx = value;
         break;
       case TendonBase.xyPropertyKey:
-        (object as TendonBase).xy = value;
+        if (object is TendonBase) object.xy = value;
         break;
       case TendonBase.yyPropertyKey:
-        (object as TendonBase).yy = value;
+        if (object is TendonBase) object.yy = value;
         break;
       case TendonBase.txPropertyKey:
-        (object as TendonBase).tx = value;
+        if (object is TendonBase) object.tx = value;
         break;
       case TendonBase.tyPropertyKey:
-        (object as TendonBase).ty = value;
+        if (object is TendonBase) object.ty = value;
         break;
     }
   }
@@ -1579,13 +1579,13 @@ class RiveCoreContext {
   static void setColor(Core object, int propertyKey, int value) {
     switch (propertyKey) {
       case KeyFrameColorBase.valuePropertyKey:
-        (object as KeyFrameColorBase).value = value;
+        if (object is KeyFrameColorBase) object.value = value;
         break;
       case SolidColorBase.colorValuePropertyKey:
-        (object as SolidColorBase).colorValue = value;
+        if (object is SolidColorBase) object.colorValue = value;
         break;
       case GradientStopBase.colorValuePropertyKey:
-        (object as GradientStopBase).colorValue = value;
+        if (object is GradientStopBase) object.colorValue = value;
         break;
     }
   }
@@ -1593,25 +1593,25 @@ class RiveCoreContext {
   static void setBool(Core object, int propertyKey, bool value) {
     switch (propertyKey) {
       case LinearAnimationBase.enableWorkAreaPropertyKey:
-        (object as LinearAnimationBase).enableWorkArea = value;
+        if (object is LinearAnimationBase) object.enableWorkArea = value;
         break;
       case StateMachineBoolBase.valuePropertyKey:
-        (object as StateMachineBoolBase).value = value;
+        if (object is StateMachineBoolBase) object.value = value;
         break;
       case ShapePaintBase.isVisiblePropertyKey:
-        (object as ShapePaintBase).isVisible = value;
+        if (object is ShapePaintBase) object.isVisible = value;
         break;
       case StrokeBase.transformAffectsStrokePropertyKey:
-        (object as StrokeBase).transformAffectsStroke = value;
+        if (object is StrokeBase) object.transformAffectsStroke = value;
         break;
       case PointsPathBase.isClosedPropertyKey:
-        (object as PointsPathBase).isClosed = value;
+        if (object is PointsPathBase) object.isClosed = value;
         break;
       case RectangleBase.linkCornerRadiusPropertyKey:
-        (object as RectangleBase).linkCornerRadius = value;
+        if (object is RectangleBase) object.linkCornerRadius = value;
         break;
       case ClippingShapeBase.isVisiblePropertyKey:
-        (object as ClippingShapeBase).isVisible = value;
+        if (object is ClippingShapeBase) object.isVisible = value;
         break;
     }
   }

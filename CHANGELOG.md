@@ -1,3 +1,6 @@
+## [0.7.6] - 2021-05-04 13:50:16
+- Fixing an issue with StateMachine changes not being applied on the first frame after playing.
+
 ## [0.7.5] - 2021-04-30 14:43:29
 - Fixing an issue with StateMachine exitTime from states with animations that have a work area enabled.
 
