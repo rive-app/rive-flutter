@@ -18,7 +18,7 @@ class BlendStateDirectInstance
               ? inputValue
               : animation.blendAnimation.input?.value) ??
           0;
-      animation.mix = value / 100;
+      animation.mix = (value / 100).clamp(0, 1);
     }
   }
 }

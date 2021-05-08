@@ -10,7 +10,7 @@ abstract class BlendState<T extends BlendAnimation> extends BlendStateBase {
 
   void internalAddAnimation(T animation) {
     assert(!_animations.contains(animation),
-        'shouln\'t already contain the animation');
+        'shouldn\'t already contain the animation');
     _animations.add(animation);
   }
 

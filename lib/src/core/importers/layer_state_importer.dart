@@ -1,7 +1,6 @@
 import 'package:rive/src/core/importers/artboard_import_stack_object.dart';
 import 'package:rive/src/rive_core/animation/blend_animation.dart';
 import 'package:rive/src/rive_core/animation/blend_state.dart';
-import 'package:rive/src/rive_core/animation/blend_state_direct.dart';
 import 'package:rive/src/rive_core/animation/blend_state_transition.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
@@ -16,8 +15,10 @@ class LayerStateImporter extends ArtboardImportStackObject {
   }
 
   bool addBlendAnimation(BlendAnimation blendAnimation) {
-    if (state is BlendStateDirect) {
-      var blendState = state as BlendStateDirect;
+    // This works because we explicitly export our transitions before our
+    // animations.
+    if (state is BlendState) {
+      var blendState = state as BlendState;
       for (final transition
           in state.transitions.whereType<BlendStateTransition>()) {
         if (transition.exitBlendAnimationId >= 0 &&
