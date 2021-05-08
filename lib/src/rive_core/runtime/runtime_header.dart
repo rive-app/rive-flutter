@@ -32,7 +32,14 @@ class RuntimeHeader {
     required this.propertyToFieldIndex,
   });
 
-  factory RuntimeHeader.read(BinaryReader reader) {
+  /// Read the header from a binary [reader]. Specify [version] to check
+  /// compatibility while loading the header. You can also opt to provide null
+  /// to skip version checking. Note that in this case the header can only be
+  /// read if it's of a known major version (<= [riveVersion.major]).
+  factory RuntimeHeader.read(
+    BinaryReader reader, {
+    RuntimeVersion? version = riveVersion,
+  }) {
     var fingerprint = RuntimeHeader.fingerprint.codeUnits;
 
     for (int i = 0; i < fingerprint.length; i++) {
@@ -43,9 +50,13 @@ class RuntimeHeader {
 
     int readMajorVersion = reader.readVarUint();
     int readMinorVersion = reader.readVarUint();
-    if (readMajorVersion > riveVersion.major) {
+
+    if (version == null && readMajorVersion > riveVersion.major) {
       throw RiveUnsupportedVersionException(riveVersion.major,
           riveVersion.minor, readMajorVersion, readMinorVersion);
+    } else if (version != null && readMajorVersion != version.major) {
+      throw RiveUnsupportedVersionException(
+          version.major, version.minor, readMajorVersion, readMinorVersion);
     }
     if (readMajorVersion == 6) {
       reader.readVarUint();

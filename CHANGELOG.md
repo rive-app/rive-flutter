@@ -1,3 +1,8 @@
+
+## [0.7.9] - 2021-05-08 12:48:50
+- Better error reporting when loading files. Based on feedback from https://github.com/rive-app/rive-flutter/issues/96.
+- Clamp between 0% and 100% when using an additive blend state.
+
 ## [0.7.8] - 2021-05-07 19:42:34
 - Blend states! Support for 1D and Additive blend states.
 ## [0.7.7] - 2021-05-04 16:00:00
