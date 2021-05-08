@@ -1,3 +1,5 @@
+## [0.7.8] - 2021-05-07 19:42:34
+- Blend states! Support for 1D and Additive blend states.
 ## [0.7.7] - 2021-05-04 16:00:00
 - Updates dependency versions
 
