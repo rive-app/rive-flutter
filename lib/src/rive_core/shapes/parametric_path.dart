@@ -5,14 +5,19 @@ export 'package:rive/src/generated/shapes/parametric_path_base.dart';
 abstract class ParametricPath extends ParametricPathBase {
   @override
   bool get isClosed => true;
+
   @override
   Mat2D get pathTransform => worldTransform;
+
   @override
   Mat2D get inversePathTransform => inverseWorldTransform;
+
   @override
   void widthChanged(double from, double to) => markPathDirty();
+
   @override
   void heightChanged(double from, double to) => markPathDirty();
+
   @override
   void xChanged(double from, double to) {
     super.xChanged(from, to);
@@ -45,6 +50,7 @@ abstract class ParametricPath extends ParametricPathBase {
 
   @override
   void originXChanged(double from, double to) => markPathDirty();
+
   @override
   void originYChanged(double from, double to) => markPathDirty();
 }

@@ -6,13 +6,20 @@ import 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 export 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 
 class StraightVertex extends StraightVertexBase {
+  /// Nullable because not all vertices have weight, they only have it when the
+  /// shape they are in is bound to bones.
   Weight? _weight;
+
   StraightVertex();
+
+  /// Makes a vertex that is disconnected from core.
   StraightVertex.procedural() {
     InternalCoreHelper.markValid(this);
   }
+
   @override
   String toString() => 'x[$x], y[$y], r[$radius]';
+
   @override
   void radiusChanged(double from, double to) {
     path?.markPathDirty();

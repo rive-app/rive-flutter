@@ -1,5 +1,6 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+
 import 'package:rive/src/generated/animation/animation_base.dart';
 export 'package:rive/src/generated/animation/animation_base.dart';
 
@@ -17,10 +18,13 @@ class Animation extends AnimationBase<RuntimeArtboard> {
 
   @override
   void onAddedDirty() {}
+
   @override
   void onAdded() {}
+
   @override
   bool validate() => super.validate() && _artboard != null;
+
   @override
   void nameChanged(String from, String to) {}
 }

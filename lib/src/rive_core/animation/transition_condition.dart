@@ -1,4 +1,5 @@
 import 'dart:collection';
+
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
@@ -11,7 +12,7 @@ enum TransitionConditionOp {
   lessThanOrEqual,
   greaterThanOrEqual,
   lessThan,
-  greaterThan
+  greaterThan,
 }
 
 abstract class TransitionCondition extends TransitionConditionBase {
@@ -21,7 +22,9 @@ abstract class TransitionCondition extends TransitionConditionBase {
     if (_input == value) {
       return;
     }
+
     _input = value;
+
     inputId = _input.id;
   }
 
@@ -32,12 +35,14 @@ abstract class TransitionCondition extends TransitionConditionBase {
 
   @override
   void onAdded() {}
+
   @override
   void onAddedDirty() {
     input = context.resolveWithDefault(inputId, StateMachineInput.unknown);
   }
 
   bool evaluate(HashMap<int, dynamic> values);
+
   @override
   bool import(ImportStack importStack) {
     var importer = importStack
@@ -46,6 +51,7 @@ abstract class TransitionCondition extends TransitionConditionBase {
       return false;
     }
     importer.addCondition(this);
+
     return super.import(importStack);
   }
 }

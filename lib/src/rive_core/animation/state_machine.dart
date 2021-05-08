@@ -10,6 +10,7 @@ class StateMachine extends StateMachineBase {
       StateMachineComponents<StateMachineInput>();
   final StateMachineComponents<StateMachineLayer> layers =
       StateMachineComponents<StateMachineLayer>();
+
   @override
   bool import(ImportStack stack) {
     var artboardImporter = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
@@ -17,6 +18,7 @@ class StateMachine extends StateMachineBase {
       return false;
     }
     artboardImporter.addStateMachine(this);
+
     return super.import(stack);
   }
 }

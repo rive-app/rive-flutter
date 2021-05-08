@@ -1,12 +1,18 @@
 import 'dart:ui';
+
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke_effect.dart';
 import 'package:rive/src/rive_core/shapes/paint/trim_path_drawing.dart';
+
 import 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 export 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 
-enum TrimPathMode { none, sequential, synchronized }
+enum TrimPathMode {
+  none,
+  sequential,
+  synchronized,
+}
 
 class TrimPath extends TrimPathBase implements StrokeEffect {
   final Path _trimmedPath = Path();
@@ -20,10 +26,12 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
     var isSequential = mode == TrimPathMode.sequential;
     double renderStart = start.clamp(0, 1).toDouble();
     double renderEnd = end.clamp(0, 1).toDouble();
+
     bool inverted = renderStart > renderEnd;
     if ((renderStart - renderEnd).abs() != 1.0) {
       renderStart = (renderStart + offset) % 1.0;
       renderEnd = (renderEnd + offset) % 1.0;
+
       if (renderStart < 0) {
         renderStart += 1.0;
       }
@@ -49,8 +57,10 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
   }
 
   Stroke? get stroke => parent as Stroke?;
+
   TrimPathMode get mode => TrimPathMode.values[modeValue];
   set mode(TrimPathMode value) => modeValue = value.index;
+
   @override
   void invalidateEffect() {
     _renderPath = null;
@@ -59,14 +69,19 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
 
   @override
   void endChanged(double from, double to) => invalidateEffect();
+
   @override
   void modeValueChanged(int from, int to) => invalidateEffect();
+
   @override
   void offsetChanged(double from, double to) => invalidateEffect();
+
   @override
   void startChanged(double from, double to) => invalidateEffect();
+
   @override
   void update(int dirt) {}
+
   @override
   void onAdded() {
     super.onAdded();
@@ -77,6 +92,7 @@ class TrimPath extends TrimPathBase implements StrokeEffect {
   @override
   void onRemoved() {
     stroke?.removeStrokeEffect(this);
+
     super.onRemoved();
   }
 }

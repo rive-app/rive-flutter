@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui' as ui;
+
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/component_flags.dart';
@@ -13,8 +14,11 @@ import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
 export 'package:rive/src/generated/shapes/path_base.dart';
 
+/// An abstract low level path that gets implemented by parametric and point
+/// based paths.
 abstract class Path extends PathBase {
   final Mat2D _inverseWorldTransform = Mat2D();
+
   final RenderPath _renderPath = RenderPath();
   ui.Path get uiPath {
     if (!_isValid) {
@@ -24,12 +28,17 @@ abstract class Path extends PathBase {
   }
 
   bool _isValid = false;
+
   bool get isClosed;
+
   Shape? _shape;
+
   Shape? get shape => _shape;
+
   Mat2D get pathTransform;
   Mat2D get inversePathTransform;
   Mat2D get inverseWorldTransform => _inverseWorldTransform;
+
   @override
   bool resolveArtboard() {
     _changeShape(null);
@@ -55,7 +64,10 @@ abstract class Path extends PathBase {
 
   @override
   void onRemoved() {
+    // We're no longer a child of the shape we may have been under, make sure to
+    // let it know we're gone.
     _changeShape(null);
+
     super.onRemoved();
   }
 
@@ -63,7 +75,12 @@ abstract class Path extends PathBase {
   void updateWorldTransform() {
     super.updateWorldTransform();
     _shape?.pathChanged(this);
+
+    // Paths store their inverse world so that it's available for skinning and
+    // other operations that occur at runtime.
     if (!Mat2D.invert(_inverseWorldTransform, pathTransform)) {
+      // If for some reason the inversion fails (like we have a 0 scale) just
+      // store the identity.
       Mat2D.setIdentity(_inverseWorldTransform);
     }
   }
@@ -71,11 +88,16 @@ abstract class Path extends PathBase {
   @override
   void update(int dirt) {
     super.update(dirt);
+
     if (dirt & ComponentDirt.path != 0) {
       _buildPath();
     }
   }
 
+  /// Subclasses should call this whenever a parameter that affects the topology
+  /// of the path changes in order to allow the system to rebuild the parametric
+  /// path.
+  /// should @internal when supported
   void markPathDirty() {
     addDirt(ComponentDirt.path);
     _isValid = false;
@@ -83,6 +105,7 @@ abstract class Path extends PathBase {
   }
 
   List<PathVertex> get vertices;
+
   bool _buildPath() {
     _isValid = true;
     _renderPath.reset();
@@ -91,12 +114,15 @@ abstract class Path extends PathBase {
     if (length < 2) {
       return false;
     }
+
     var firstPoint = vertices.first;
     double outX, outY;
     bool prevIsCubic;
+
     double startX, startY;
     double startInX, startInY;
     bool startIsCubic;
+
     if (firstPoint is CubicVertex) {
       startIsCubic = prevIsCubic = true;
       var inPoint = firstPoint.renderIn;
@@ -112,29 +138,39 @@ abstract class Path extends PathBase {
     } else {
       startIsCubic = prevIsCubic = false;
       var point = firstPoint as StraightVertex;
+
       var radius = point.radius;
       if (radius > 0) {
         var prev = vertices[length - 1];
+
         var pos = point.renderTranslation;
+
         var toPrev = Vec2D.subtract(Vec2D(),
             prev is CubicVertex ? prev.renderOut : prev.renderTranslation, pos);
         var toPrevLength = Vec2D.length(toPrev);
         toPrev[0] /= toPrevLength;
         toPrev[1] /= toPrevLength;
+
         var next = vertices[1];
+
         var toNext = Vec2D.subtract(Vec2D(),
             next is CubicVertex ? next.renderIn : next.renderTranslation, pos);
         var toNextLength = Vec2D.length(toNext);
         toNext[0] /= toNextLength;
         toNext[1] /= toNextLength;
+
         var renderRadius = min(toPrevLength, min(toNextLength, radius));
+
         var translation = Vec2D.scaleAndAdd(Vec2D(), pos, toPrev, renderRadius);
         _renderPath.moveTo(startInX = startX = translation[0],
             startInY = startY = translation[1]);
+
         var outPoint = Vec2D.scaleAndAdd(
             Vec2D(), pos, toPrev, icircleConstant * renderRadius);
+
         var inPoint = Vec2D.scaleAndAdd(
             Vec2D(), pos, toNext, icircleConstant * renderRadius);
+
         var posNext = Vec2D.scaleAndAdd(Vec2D(), pos, toNext, renderRadius);
         _renderPath.cubicTo(outPoint[0], outPoint[1], inPoint[0], inPoint[1],
             outX = posNext[0], outY = posNext[1]);
@@ -146,28 +182,35 @@ abstract class Path extends PathBase {
         _renderPath.moveTo(startInX = startX = outX, startInY = startY = outY);
       }
     }
+
     for (int i = 1; i < length; i++) {
       var vertex = vertices[i];
+
       if (vertex is CubicVertex) {
         var inPoint = vertex.renderIn;
         var translation = vertex.renderTranslation;
         _renderPath.cubicTo(
             outX, outY, inPoint[0], inPoint[1], translation[0], translation[1]);
+
         prevIsCubic = true;
         var outPoint = vertex.renderOut;
         outX = outPoint[0];
         outY = outPoint[1];
       } else {
         var point = vertex as StraightVertex;
+
         var radius = point.radius;
         if (radius > 0) {
           var pos = point.renderTranslation;
+
           var toPrev =
               Vec2D.subtract(Vec2D(), Vec2D.fromValues(outX, outY), pos);
           var toPrevLength = Vec2D.length(toPrev);
           toPrev[0] /= toPrevLength;
           toPrev[1] /= toPrevLength;
+
           var next = vertices[(i + 1) % length];
+
           var toNext = Vec2D.subtract(
               Vec2D(),
               next is CubicVertex ? next.renderIn : next.renderTranslation,
@@ -175,7 +218,9 @@ abstract class Path extends PathBase {
           var toNextLength = Vec2D.length(toNext);
           toNext[0] /= toNextLength;
           toNext[1] /= toNextLength;
+
           var renderRadius = min(toPrevLength, min(toNextLength, radius));
+
           var translation =
               Vec2D.scaleAndAdd(Vec2D(), pos, toPrev, renderRadius);
           if (prevIsCubic) {
@@ -184,10 +229,13 @@ abstract class Path extends PathBase {
           } else {
             _renderPath.lineTo(translation[0], translation[1]);
           }
+
           var outPoint = Vec2D.scaleAndAdd(
               Vec2D(), pos, toPrev, icircleConstant * renderRadius);
+
           var inPoint = Vec2D.scaleAndAdd(
               Vec2D(), pos, toNext, icircleConstant * renderRadius);
+
           var posNext = Vec2D.scaleAndAdd(Vec2D(), pos, toNext, renderRadius);
           _renderPath.cubicTo(outPoint[0], outPoint[1], inPoint[0], inPoint[1],
               outX = posNext[0], outY = posNext[1]);
@@ -197,6 +245,7 @@ abstract class Path extends PathBase {
           var x = translation[0];
           var y = translation[1];
           _renderPath.cubicTo(outX, outY, x, y, x, y);
+
           prevIsCubic = false;
           outX = x;
           outY = y;
@@ -219,12 +268,14 @@ abstract class Path extends PathBase {
 
   @override
   void pathFlagsChanged(int from, int to) => markPathDirty();
+
   bool get isHidden => (pathFlags & ComponentFlags.hidden) != 0;
 }
 
 class RenderPath {
   final ui.Path _uiPath = ui.Path();
   ui.Path get uiPath => _uiPath;
+
   void reset() {
     _uiPath.reset();
   }

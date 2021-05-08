@@ -6,9 +6,12 @@ import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 export 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 
+/// A stroke Shape painter.
 class Stroke extends StrokeBase {
   StrokeEffect? _effect;
   StrokeEffect? get effect => _effect;
+
+  // Should be @internal when supported.
   // ignore: use_setters_to_change_properties
   void addStrokeEffect(StrokeEffect effect) {
     _effect = effect;
@@ -26,10 +29,13 @@ class Stroke extends StrokeBase {
     ..strokeCap = strokeCap
     ..strokeJoin = strokeJoin
     ..strokeWidth = thickness;
+
   StrokeCap get strokeCap => StrokeCap.values[cap];
   set strokeCap(StrokeCap value) => cap = value.index;
+
   StrokeJoin get strokeJoin => StrokeJoin.values[join];
   set strokeJoin(StrokeJoin value) => join = value.index;
+
   @override
   void capChanged(int from, int to) {
     paint.strokeCap = StrokeCap.values[to];
@@ -57,7 +63,11 @@ class Stroke extends StrokeBase {
   }
 
   @override
-  void update(int dirt) {}
+  void update(int dirt) {
+    // Intentionally empty, fill doesn't update.
+    // Because Fill never adds dependencies, it'll also never get called.
+  }
+
   @override
   void onAdded() {
     super.onAdded();
@@ -67,11 +77,13 @@ class Stroke extends StrokeBase {
   }
 
   void invalidateEffects() => _effect?.invalidateEffect();
+
   @override
   void draw(Canvas canvas, Path path) {
     if (!isVisible) {
       return;
     }
+
     canvas.drawPath(_effect?.effectPath(path) ?? path, paint);
   }
 }

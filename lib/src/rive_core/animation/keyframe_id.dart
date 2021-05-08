@@ -6,6 +6,7 @@ export 'package:rive/src/generated/animation/keyframe_id_base.dart';
 class KeyFrameId extends KeyFrameIdBase {
   @override
   bool get canInterpolate => false;
+
   @override
   void apply(Core<CoreContext> object, int propertyKey, double mix) {
     RiveCoreContext.setUint(object, propertyKey, value);

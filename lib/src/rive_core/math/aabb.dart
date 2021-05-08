@@ -5,16 +5,19 @@ import 'package:rive/src/rive_core/math/vec2d.dart';
 
 class AABB {
   Float32List _buffer;
+
   Float32List get values {
     return _buffer;
   }
 
   Vec2D get topLeft => minimum;
+
   Vec2D get topRight {
     return Vec2D.fromValues(_buffer[2], _buffer[1]);
   }
 
   Vec2D get bottomRight => maximum;
+
   Vec2D get bottomLeft {
     return Vec2D.fromValues(_buffer[0], _buffer[3]);
   }
@@ -31,10 +34,14 @@ class AABB {
   double get maxX => _buffer[2];
   double get minY => _buffer[1];
   double get maxY => _buffer[3];
+
   AABB() : _buffer = Float32List.fromList([0.0, 0.0, 0.0, 0.0]);
+
   AABB.clone(AABB a) : _buffer = Float32List.fromList(a.values);
+
   AABB.fromValues(double a, double b, double c, double d)
       : _buffer = Float32List.fromList([a, b, c, d]);
+
   AABB.empty()
       : _buffer = Float32List.fromList([
           double.maxFinite,
@@ -42,6 +49,7 @@ class AABB {
           -double.maxFinite,
           -double.maxFinite
         ]);
+
   factory AABB.expand(AABB from, double amount) {
     var aabb = AABB.clone(from);
     if (aabb.width < amount) {
@@ -54,6 +62,7 @@ class AABB {
     }
     return aabb;
   }
+
   factory AABB.pad(AABB from, double amount) {
     var aabb = AABB.clone(from);
     aabb[0] -= amount;
@@ -62,7 +71,9 @@ class AABB {
     aabb[3] += amount;
     return aabb;
   }
+
   bool get isEmpty => !AABB.isValid(this);
+
   Vec2D includePoint(Vec2D point, Mat2D? transform) {
     var transformedPoint = transform == null
         ? point
@@ -90,12 +101,15 @@ class AABB {
 
   AABB.fromMinMax(Vec2D min, Vec2D max)
       : _buffer = Float32List.fromList([min[0], min[1], max[0], max[1]]);
+
   static bool areEqual(AABB a, AABB b) {
     return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3];
   }
 
   double get width => _buffer[2] - _buffer[0];
+
   double get height => _buffer[3] - _buffer[1];
+
   double operator [](int idx) {
     return _buffer[idx];
   }
@@ -162,14 +176,18 @@ class AABB {
   static bool testOverlap(AABB a, AABB b) {
     double d1x = b[0] - a[2];
     double d1y = b[1] - a[3];
+
     double d2x = a[0] - b[2];
     double d2y = a[1] - b[3];
+
     if (d1x > 0.0 || d1y > 0.0) {
       return false;
     }
+
     if (d2x > 0.0 || d2y > 0.0) {
       return false;
     }
+
     return true;
   }
 
@@ -181,6 +199,7 @@ class AABB {
 
   AABB translate(Vec2D vec) => AABB.fromValues(_buffer[0] + vec[0],
       _buffer[1] + vec[1], _buffer[2] + vec[0], _buffer[3] + vec[1]);
+
   @override
   String toString() {
     return _buffer.toString();
@@ -195,16 +214,23 @@ class AABB {
     ], transform: matrix);
   }
 
-  factory AABB.fromPoints(Iterable<Vec2D> points,
-      {Mat2D? transform, double expand = 0}) {
+  /// Compute an AABB from a set of points with an optional [transform] to apply
+  /// before computing.
+  factory AABB.fromPoints(
+    Iterable<Vec2D> points, {
+    Mat2D? transform,
+    double expand = 0,
+  }) {
     double minX = double.maxFinite;
     double minY = double.maxFinite;
     double maxX = -double.maxFinite;
     double maxY = -double.maxFinite;
+
     for (final point in points) {
       var p = transform == null
           ? point
           : Vec2D.transformMat2D(Vec2D(), point, transform);
+
       double x = p[0];
       double y = p[1];
       if (x < minX) {
@@ -213,6 +239,7 @@ class AABB {
       if (y < minY) {
         minY = y;
       }
+
       if (x > maxX) {
         maxX = x;
       }
@@ -220,6 +247,8 @@ class AABB {
         maxY = y;
       }
     }
+
+    // Make sure the box is at least this wide/high
     if (expand != 0) {
       double width = maxX - minX;
       double diff = expand - width;
@@ -230,6 +259,7 @@ class AABB {
       }
       double height = maxY - minY;
       diff = expand - height;
+
       if (diff > 0) {
         diff /= 2;
         minY -= diff;

@@ -4,10 +4,12 @@ import 'package:rive/src/generated/shapes/rectangle_base.dart';
 export 'package:rive/src/generated/shapes/rectangle_base.dart';
 
 class Rectangle extends RectangleBase {
+  //
   @override
   List<PathVertex> get vertices {
     double ox = -originX * width;
     double oy = -originY * height;
+
     return [
       StraightVertex.procedural()
         ..x = ox
@@ -24,18 +26,22 @@ class Rectangle extends RectangleBase {
       StraightVertex.procedural()
         ..x = ox
         ..y = oy + height
-        ..radius = linkCornerRadius ? cornerRadiusTL : cornerRadiusBL
+        ..radius = linkCornerRadius ? cornerRadiusTL : cornerRadiusBL,
     ];
   }
 
   @override
   void cornerRadiusTLChanged(double from, double to) => markPathDirty();
+
   @override
   void cornerRadiusTRChanged(double from, double to) => markPathDirty();
+
   @override
   void cornerRadiusBLChanged(double from, double to) => markPathDirty();
+
   @override
   void cornerRadiusBRChanged(double from, double to) => markPathDirty();
+
   @override
   void linkCornerRadiusChanged(bool from, bool to) {
     markPathDirty();

@@ -1,4 +1,5 @@
 import 'dart:collection';
+
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/generated/animation/transition_trigger_condition_base.dart';
 export 'package:rive/src/generated/animation/transition_trigger_condition_base.dart';
@@ -6,6 +7,7 @@ export 'package:rive/src/generated/animation/transition_trigger_condition_base.d
 class TransitionTriggerCondition extends TransitionTriggerConditionBase {
   @override
   bool validate() => super.validate() && (input is StateMachineTrigger);
+
   @override
   bool evaluate(HashMap<int, dynamic> values) {
     if (input is! StateMachineTrigger) {
@@ -16,6 +18,7 @@ class TransitionTriggerCondition extends TransitionTriggerConditionBase {
       values[input.id] = false;
       return true;
     }
+
     var triggerInput = input as StateMachineTrigger;
     if (triggerInput.triggered) {
       return true;

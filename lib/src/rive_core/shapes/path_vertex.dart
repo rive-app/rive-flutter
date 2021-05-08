@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
@@ -10,12 +11,16 @@ export 'package:rive/src/generated/shapes/path_vertex_base.dart';
 abstract class PathVertex<T extends Weight> extends PathVertexBase {
   T? _weight;
   T? get weight => _weight;
+
   Path? get path => parent as Path?;
+
   @override
   void update(int dirt) {}
+
   final Vec2D _renderTranslation = Vec2D();
   Vec2D get translation => Vec2D.fromValues(x, y);
   Vec2D get renderTranslation => _renderTranslation;
+
   set translation(Vec2D value) {
     x = value[0];
     y = value[1];
@@ -31,12 +36,14 @@ abstract class PathVertex<T extends Weight> extends PathVertexBase {
   @override
   void xChanged(double from, double to) {
     _renderTranslation[0] = to;
+
     path?.markPathDirty();
   }
 
   @override
   void yChanged(double from, double to) {
     _renderTranslation[1] = to;
+
     path?.markPathDirty();
   }
 
@@ -61,6 +68,7 @@ abstract class PathVertex<T extends Weight> extends PathVertexBase {
     }
   }
 
+  /// Deform only gets called when we are weighted.
   void deform(Mat2D world, Float32List boneTransforms) {
     Weight.deform(x, y, weight!.indices, weight!.values, world, boneTransforms,
         _weight!.translation);

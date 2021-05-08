@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rive_example/example_animation.dart';
 import 'package:rive_example/example_state_machine.dart';
+import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
 import 'package:rive_example/state_machine_skills.dart';
 
@@ -69,6 +70,20 @@ class Home extends StatelessWidget {
                   context,
                   MaterialPageRoute<void>(
                     builder: (context) => const LittleMachine(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('Liquid Download'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const LiquidDownload(),
                   ),
                 );
               },

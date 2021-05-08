@@ -7,10 +7,12 @@ export 'package:rive/src/generated/draw_rules_base.dart';
 class DrawRules extends DrawRulesBase {
   final Set<DrawTarget> _targets = {};
   Set<DrawTarget> get targets => _targets;
+
   DrawTarget? _activeTarget;
   DrawTarget? get activeTarget => _activeTarget;
   set activeTarget(DrawTarget? value) =>
       drawTargetId = value?.id ?? Core.missingId;
+
   @override
   void drawTargetIdChanged(int from, int to) {
     _activeTarget = context.resolve(to);
@@ -25,12 +27,14 @@ class DrawRules extends DrawRulesBase {
 
   @override
   void update(int dirt) {}
+
   @override
   void childAdded(Component child) {
     super.childAdded(child);
     switch (child.coreType) {
       case DrawTargetBase.typeKey:
         _targets.add(child as DrawTarget);
+
         break;
     }
   }
@@ -44,6 +48,7 @@ class DrawRules extends DrawRulesBase {
         if (_targets.isEmpty) {
           remove();
         }
+
         break;
     }
   }

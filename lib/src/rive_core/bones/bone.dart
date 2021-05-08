@@ -22,6 +22,9 @@ class Bone extends BoneBase {
     return null;
   }
 
+  /// Iterate through the child bones. [BoneCallback] returns false if iteration
+  /// can stop. Returns false if iteration stopped, true if it made it through
+  /// the whole list.
   bool forEachBone(BoneCallback callback) {
     for (final child in children) {
       if (child.coreType == BoneBase.typeKey) {
@@ -35,6 +38,7 @@ class Bone extends BoneBase {
 
   @override
   double get x => (parent as Bone).length;
+
   @override
   set x(double value) {
     throw UnsupportedError('not expected to set x on a bone.');
@@ -42,6 +46,7 @@ class Bone extends BoneBase {
 
   @override
   double get y => 0;
+
   @override
   set y(double value) {
     throw UnsupportedError('not expected to set y on a bone.');
@@ -49,6 +54,9 @@ class Bone extends BoneBase {
 
   @override
   bool validate() {
+    // Bones are only valid if they're parented to other bones. RootBones are a
+    // special case, but they inherit from bone so we check the concrete type
+    // here to make sure we evalute this check only for non-root bones.
     return super.validate() && (coreType != BoneBase.typeKey || parent is Bone);
   }
 }

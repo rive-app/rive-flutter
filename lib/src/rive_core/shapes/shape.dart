@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart' as core;
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
@@ -12,17 +13,21 @@ export 'package:rive/src/generated/shapes/shape_base.dart';
 
 class Shape extends ShapeBase with ShapePaintContainer {
   final Set<Path> paths = {};
+
   bool _wantWorldPath = false;
   bool _wantLocalPath = false;
   bool get wantWorldPath => _wantWorldPath;
   bool get wantLocalPath => _wantLocalPath;
   bool _fillInWorld = false;
   bool get fillInWorld => _fillInWorld;
+
   late PathComposer pathComposer;
   Shape() {
     pathComposer = PathComposer(this);
   }
+
   ui.Path get fillPath => pathComposer.fillPath;
+
   bool addPath(Path path) {
     paintChanged();
     return paths.add(path);
@@ -30,17 +35,29 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   void _markComposerDirty() {
     pathComposer.addDirt(ComponentDirt.path, recurse: true);
+    // Stroke effects need to be rebuilt whenever the path composer rebuilds the
+    // compound path.
     invalidateStrokeEffects();
   }
 
   void pathChanged(Path path) => _markComposerDirty();
+
   void paintChanged() {
     addDirt(ComponentDirt.path);
     _markBlendModeDirty();
     _markRenderOpacityDirty();
+
+    // Add world transform dirt to the direct dependents (don't recurse) as
+    // things like ClippingShape directly depend on their referenced Shape. This
+    // allows them to recompute any stored values which can change when the
+    // transformAffectsStroke property changes (whether the path is in world
+    // space or not). Consider using a different dirt type if this pattern is
+    // repeated.
     for (final d in dependents) {
       d.addDirt(ComponentDirt.worldTransform);
     }
+
+    // Path composer needs to update if we update the types of paths we want.
     _markComposerDirty();
   }
 
@@ -59,6 +76,9 @@ class Shape extends ShapeBase with ShapePaintContainer {
   @override
   void update(int dirt) {
     super.update(dirt);
+
+    // When the paint gets marked dirty, we need to sync the blend mode with the
+    // paints.
     if (dirt & ComponentDirt.blendMode != 0) {
       for (final fill in fills) {
         fill.blendMode = blendMode;
@@ -67,6 +87,10 @@ class Shape extends ShapeBase with ShapePaintContainer {
         stroke.blendMode = blendMode;
       }
     }
+
+    // RenderOpacity gets updated with the worldTransform (accumulates through
+    // hierarchy), so if we see worldTransform is dirty, update our internal
+    // render opacities.
     if (dirt & ComponentDirt.worldTransform != 0) {
       for (final fill in fills) {
         fill.renderOpacity = renderOpacity;
@@ -75,7 +99,11 @@ class Shape extends ShapeBase with ShapePaintContainer {
         stroke.renderOpacity = renderOpacity;
       }
     }
+    // We update before the path composer so let's get our ducks in a row, what
+    // do we want? PathComposer depends on us so we're safe to update our
+    // desires here.
     if (dirt & ComponentDirt.path != 0) {
+      // Recompute which paths we want.
       _wantWorldPath = false;
       _wantLocalPath = false;
       for (final stroke in strokes) {
@@ -85,20 +113,33 @@ class Shape extends ShapeBase with ShapePaintContainer {
           _wantWorldPath = true;
         }
       }
+
+      // Update the gradients' paintsInWorldSpace properties based on whether
+      // the path we'll be feeding that at draw time is in world or local space.
+      // This is a good opportunity to do it as gradients depend on us so
+      // they'll update after us.
+
+      // We optmistically first fill in the space we know the stroke will be in.
       _fillInWorld = _wantWorldPath || !_wantLocalPath;
+
+      // Gradients almost always fill in local space, unless they are bound to
+      // bones.
       var mustFillLocal = fills.firstWhereOrNull(
-              (fill) => fill.paintMutator is core.LinearGradient) !=
+            (fill) => fill.paintMutator is core.LinearGradient,
+          ) !=
           null;
       if (mustFillLocal) {
         _fillInWorld = false;
         _wantLocalPath = true;
       }
+
       for (final fill in fills) {
         var mutator = fill.paintMutator;
         if (mutator is core.LinearGradient) {
           mutator.paintsInWorldSpace = _fillInWorld;
         }
       }
+
       for (final stroke in strokes) {
         var mutator = stroke.paintMutator;
         if (mutator is core.LinearGradient) {
@@ -115,6 +156,7 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   @override
   void blendModeValueChanged(int from, int to) => _markBlendModeDirty();
+
   @override
   void draw(ui.Canvas canvas) {
     bool clipped = clip(canvas);
@@ -129,12 +171,20 @@ class Shape extends ShapeBase with ShapePaintContainer {
     if (!_fillInWorld) {
       canvas.restore();
     }
+
+    // Strokes are slightly more complicated, they may want a local path. Note
+    // that we've already built this up during our update and processed any
+    // gradients to have their offsets in the correct transform space (see our
+    // update method).
     for (final stroke in strokes) {
+      // stroke.draw(canvas, _pathComposer);
       var transformAffectsStroke = stroke.transformAffectsStroke;
       var path = transformAffectsStroke
           ? pathComposer.localPath
           : pathComposer.worldPath;
+
       if (transformAffectsStroke) {
+        // Get into world space.
         canvas.save();
         canvas.transform(worldTransform.mat4);
         stroke.draw(canvas, path);
@@ -143,6 +193,7 @@ class Shape extends ShapeBase with ShapePaintContainer {
         stroke.draw(canvas, path);
       }
     }
+
     if (clipped) {
       canvas.restore();
     }
@@ -150,15 +201,22 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   void _markBlendModeDirty() => addDirt(ComponentDirt.blendMode);
   void _markRenderOpacityDirty() => addDirt(ComponentDirt.worldTransform);
+
   @override
   void onPaintMutatorChanged(ShapePaintMutator mutator) {
+    // The transform affects stroke property may have changed as we have a new
+    // mutator.
     paintChanged();
   }
 
   @override
   void onStrokesChanged() => paintChanged();
+
   @override
   void onFillsChanged() => paintChanged();
+
+  /// Since the PathComposer isn't in core, we need to let it know when to proxy
+  /// build dependencies.
   @override
   void buildDependencies() {
     super.buildDependencies();

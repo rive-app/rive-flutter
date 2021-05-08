@@ -8,6 +8,7 @@ class Tendon extends TendonBase {
   Mat2D? _inverseBind;
   SkeletalComponent? _bone;
   SkeletalComponent? get bone => _bone;
+
   Mat2D get inverseBind {
     if (_inverseBind == null) {
       _inverseBind = Mat2D();
@@ -17,11 +18,16 @@ class Tendon extends TendonBase {
   }
 
   @override
-  void boneIdChanged(int from, int to) {}
+  void boneIdChanged(int from, int to) {
+    // This never happens, or at least it should only happen prior to an
+    // onAddedDirty call.
+  }
+
   @override
   void onAddedDirty() {
     super.onAddedDirty();
     _bone = context.resolve(boneId);
+
     _bind[0] = xx;
     _bind[1] = xy;
     _bind[2] = yx;
@@ -32,6 +38,7 @@ class Tendon extends TendonBase {
 
   @override
   void update(int dirt) {}
+
   @override
   void txChanged(double from, double to) {
     _bind[4] = to;

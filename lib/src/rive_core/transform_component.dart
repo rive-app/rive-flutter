@@ -12,21 +12,29 @@ import 'package:rive/src/generated/transform_component_base.dart';
 export 'package:rive/src/generated/transform_component_base.dart';
 
 abstract class TransformComponent extends TransformComponentBase {
+  /// Draw rules saved against this transform component, inherited by children.
   DrawRules? _drawRules;
+
   DrawRules? get drawRules => _drawRules;
+
   final List<ClippingShape> _clippingShapes = [];
   Iterable<ClippingShape> get clippingShapes => _clippingShapes;
+
   double _renderOpacity = 0;
   double get renderOpacity => _renderOpacity;
+
   final Mat2D worldTransform = Mat2D();
   final Mat2D transform = Mat2D();
+
   Vec2D get translation => Vec2D.fromValues(x, y);
   Vec2D get worldTranslation =>
       Vec2D.fromValues(worldTransform[4], worldTransform[5]);
+
   double get x;
   double get y;
   set x(double value);
   set y(double value);
+
   @override
   void update(int dirt) {
     if (dirt & ComponentDirt.transform != 0) {
@@ -45,10 +53,14 @@ abstract class TransformComponent extends TransformComponentBase {
     }
     transform[4] = x;
     transform[5] = y;
+
     Mat2D.scaleByValues(transform, scaleX, scaleY);
   }
 
+  // TODO: when we have layer effect renderers, this will need to render 1 for
+  // layer effects.
   double get childOpacity => _renderOpacity;
+
   Vec2D get scale => Vec2D.fromValues(scaleX, scaleY);
   set scale(Vec2D value) {
     scaleX = value[0];
@@ -70,6 +82,7 @@ abstract class TransformComponent extends TransformComponentBase {
   void calculateWorldTransform() {
     var parent = this.parent;
     final chain = <TransformComponent>[this];
+
     while (parent != null) {
       if (parent is TransformComponent) {
         chain.insert(0, parent);
@@ -131,10 +144,12 @@ abstract class TransformComponent extends TransformComponentBase {
     switch (child.coreType) {
       case DrawRulesBase.typeKey:
         _drawRules = child as DrawRules;
+
         break;
       case ClippingShapeBase.typeKey:
         _clippingShapes.add(child as ClippingShape);
         addDirt(ComponentDirt.clip, recurse: true);
+
         break;
     }
   }

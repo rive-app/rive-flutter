@@ -7,6 +7,8 @@ class _UnknownNode extends Node {}
 
 class Node extends NodeBase {
   static final Node unknown = _UnknownNode();
+
+  /// Sets the position of the Node
   set translation(Vec2D pos) {
     x = pos[0];
     y = pos[1];

@@ -7,6 +7,7 @@ export 'package:rive/src/generated/animation/transition_bool_condition_base.dart
 class TransitionBoolCondition extends TransitionBoolConditionBase {
   @override
   bool validate() => super.validate() && (input is StateMachineBool);
+
   @override
   bool evaluate(HashMap<int, dynamic> values) {
     if (input is! StateMachineBool) {

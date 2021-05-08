@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
@@ -8,6 +9,7 @@ export 'package:rive/src/generated/shapes/star_base.dart';
 class Star extends StarBase {
   @override
   void innerRadiusChanged(double from, double to) => markPathDirty();
+
   @override
   List<PathVertex<Weight>> get vertices {
     var actualPoints = points * 2;

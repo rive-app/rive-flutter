@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/generated/bones/weight_base.dart';
@@ -6,12 +7,18 @@ export 'package:rive/src/generated/bones/weight_base.dart';
 
 class Weight extends WeightBase {
   final Vec2D translation = Vec2D();
+
   @override
   void indicesChanged(int from, int to) {}
+
   @override
-  void update(int dirt) {}
+  void update(int dirt) {
+    // Intentionally empty. Weights don't update.
+  }
+
   @override
   void valuesChanged(int from, int to) {}
+
   static void deform(double x, double y, int indices, int weights, Mat2D world,
       Float32List boneTransforms, Vec2D result) {
     double xx = 0, xy = 0, yx = 0, yy = 0, tx = 0, ty = 0;
@@ -22,6 +29,7 @@ class Weight extends WeightBase {
       if (weight == 0) {
         continue;
       }
+
       double normalizedWeight = weight / 255;
       var index = encodedWeightValue(i, indices);
       var startBoneTransformIndex = index * 6;

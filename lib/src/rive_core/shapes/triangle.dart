@@ -1,6 +1,8 @@
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/generated/shapes/triangle_base.dart';
+
+/// Export the Base class for external use (e.g. rive.dart)
 export 'package:rive/src/generated/shapes/triangle_base.dart';
 
 class Triangle extends TriangleBase {
@@ -8,6 +10,7 @@ class Triangle extends TriangleBase {
   List<PathVertex> get vertices {
     double ox = -originX * width;
     double oy = -originY * height;
+
     return [
       StraightVertex.procedural()
         ..x = ox + width / 2

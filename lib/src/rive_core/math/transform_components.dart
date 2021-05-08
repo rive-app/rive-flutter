@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'dart:typed_data';
+
 import 'package:rive/src/rive_core/math/vec2d.dart';
 
 class TransformComponents {
   final Float32List _buffer;
+
   Float32List get values {
     return _buffer;
   }
@@ -18,8 +20,10 @@ class TransformComponents {
 
   TransformComponents()
       : _buffer = Float32List.fromList([1.0, 0.0, 0.0, 1.0, 0.0, 0.0]);
+
   TransformComponents.clone(TransformComponents copy)
       : _buffer = Float32List.fromList(copy.values);
+
   double get x {
     return _buffer[0];
   }

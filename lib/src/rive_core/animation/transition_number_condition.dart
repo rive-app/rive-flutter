@@ -1,4 +1,5 @@
 import 'dart:collection';
+
 import 'package:rive/src/rive_core/animation/state_machine_number.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
 import 'package:rive/src/generated/animation/transition_number_condition_base.dart';
@@ -7,8 +8,10 @@ export 'package:rive/src/generated/animation/transition_number_condition_base.da
 class TransitionNumberCondition extends TransitionNumberConditionBase {
   @override
   void valueChanged(double from, double to) {}
+
   @override
   bool validate() => super.validate() && (input is StateMachineNumber);
+
   @override
   bool evaluate(HashMap<int, dynamic> values) {
     if (input is! StateMachineNumber) {

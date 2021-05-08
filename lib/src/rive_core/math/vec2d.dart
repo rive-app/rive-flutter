@@ -5,6 +5,7 @@ import 'package:rive/src/utilities/utilities.dart';
 
 class Vec2D {
   final Float32List _buffer;
+
   Float32List get values {
     return _buffer;
   }
@@ -18,8 +19,11 @@ class Vec2D {
   }
 
   Vec2D() : _buffer = Float32List.fromList([0.0, 0.0]);
+
   Vec2D.clone(Vec2D copy) : _buffer = Float32List.fromList(copy._buffer);
+
   Vec2D.fromValues(double x, double y) : _buffer = Float32List.fromList([x, y]);
+
   static void copy(Vec2D o, Vec2D a) {
     o[0] = a[0];
     o[1] = a[1];
@@ -99,6 +103,7 @@ class Vec2D {
   static Vec2D negate(Vec2D result, Vec2D a) {
     result[0] = -1 * a[0];
     result[1] = -1 * a[1];
+
     return result;
   }
 
@@ -143,9 +148,12 @@ class Vec2D {
     if (t >= 1) {
       return Vec2D.squaredDistance(segmentPoint2, pt);
     }
+
     Vec2D ptOnSeg = Vec2D.fromValues(
-        segmentPoint1[0] + t * (segmentPoint2[0] - segmentPoint1[0]),
-        segmentPoint1[1] + t * (segmentPoint2[1] - segmentPoint1[1]));
+      segmentPoint1[0] + t * (segmentPoint2[0] - segmentPoint1[0]),
+      segmentPoint1[1] + t * (segmentPoint2[1] - segmentPoint1[1]),
+    );
+
     return Vec2D.squaredDistance(ptOnSeg, pt);
   }
 
@@ -165,6 +173,7 @@ class Vec2D {
   @override
   bool operator ==(Object o) =>
       o is Vec2D && _buffer[0] == o[0] && _buffer[1] == o[1];
+
   @override
   int get hashCode => szudzik(_buffer[0].hashCode, _buffer[1].hashCode);
 }

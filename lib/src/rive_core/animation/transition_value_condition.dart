@@ -4,6 +4,9 @@ export 'package:rive/src/generated/animation/transition_value_condition_base.dar
 
 abstract class TransitionValueCondition extends TransitionValueConditionBase {
   TransitionConditionOp get op => TransitionConditionOp.values[opValue];
+
   @override
-  void opValueChanged(int from, int to) {}
+  void opValueChanged(int from, int to) {
+    // TODO: implement opValueChanged
+  }
 }

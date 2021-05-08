@@ -8,18 +8,27 @@ class _FirstExtractedPath {
   _FirstExtractedPath(this.path, this.metric, this.length);
 }
 
+// Returns the path it last extracted from (actually the metrics for that path).
 _FirstExtractedPath? _appendPathSegmentSequential(
-    Iterable<PathMetric> metrics, Path result, double start, double stop,
-    {_FirstExtractedPath? first}) {
+  Iterable<PathMetric> metrics,
+  Path result,
+  double start,
+  double stop, {
+  _FirstExtractedPath? first,
+}) {
   double nextOffset = 0;
   double offset = 0;
   for (final metric in metrics) {
     nextOffset += metric.length;
     if (start < nextOffset) {
+      // Store the last metric extracted from so next ops can use it.
       var st = max(0.0, start - offset);
       var et = min(metric.length, stop - offset);
       var extractLength = et - st;
       Path extracted = metric.extractPath(st, et);
+
+      // If we're re-extracting from the first path, make it look
+      // contiguous.
       if (first == null) {
         // ignore: parameter_assignments
         first = _FirstExtractedPath(extracted, metric, extractLength);
@@ -31,11 +40,13 @@ _FirstExtractedPath? _appendPathSegmentSequential(
           result.addPath(extracted, Offset.zero);
         }
       } else {
+        // If we extracted this whole sub-path, close it.
         if (metric.isClosed && extractLength == metric.length) {
           extracted.close();
         }
         result.addPath(extracted, Offset.zero);
       }
+
       if (stop < nextOffset) {
         break;
       }
@@ -46,11 +57,16 @@ _FirstExtractedPath? _appendPathSegmentSequential(
 }
 
 void _appendPathSegmentSync(
-    PathMetric metric, Path to, double start, double stop,
-    {bool startWithMoveTo = true}) {
+  PathMetric metric,
+  Path to,
+  double start,
+  double stop, {
+  bool startWithMoveTo = true,
+}) {
   double nextOffset = metric.length;
   if (start < nextOffset) {
     Path extracted = metric.extractPath(start, stop);
+
     if (startWithMoveTo) {
       to.addPath(extracted, Offset.zero);
     } else {
@@ -61,11 +77,13 @@ void _appendPathSegmentSync(
 
 void _trimPathSequential(
     Path path, Path result, double startT, double stopT, bool complement) {
+  // Measure length of all the contours.
   var metrics = path.computeMetrics().toList(growable: false);
   double totalLength = 0.0;
   for (final metric in metrics) {
     totalLength += metric.length;
   }
+
   double trimStart = totalLength * startT;
   double trimStop = totalLength * stopT;
   _FirstExtractedPath? first;
@@ -79,7 +97,12 @@ void _trimPathSequential(
           first: first);
     }
   } else if (trimStart < trimStop) {
-    first = _appendPathSegmentSequential(metrics, result, trimStart, trimStop);
+    first = _appendPathSegmentSequential(
+      metrics,
+      result,
+      trimStart,
+      trimStop,
+    );
   }
   if (first != null) {
     if (first.length == first.metric.length) {
@@ -102,6 +125,8 @@ void _trimPathSync(
         _appendPathSegmentSync(metric, result, trimStop, length);
       }
       if (trimStart > 0.0) {
+        // Make sure to connect the two paths (startWithMoveTo false) if we
+        // extracted the start. Force start with a move if the path is open.
         _appendPathSegmentSync(metric, result, 0.0, trimStart,
             startWithMoveTo: !extractStart || !metric.isClosed);
       }

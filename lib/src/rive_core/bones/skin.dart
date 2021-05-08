@@ -1,24 +1,37 @@
 import 'dart:typed_data';
+
 import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
+
 import 'package:rive/src/generated/bones/skin_base.dart';
 export 'package:rive/src/generated/bones/skin_base.dart';
 
+/// Represents a skin deformation of either a Path or an Image Mesh connected to
+/// a set of bones.
 class Skin extends SkinBase {
   final List<Tendon> _tendons = [];
   List<Tendon> get tendons => _tendons;
   Float32List _boneTransforms = Float32List(0);
   final Mat2D _worldTransform = Mat2D();
+
   @override
   void onDirty(int mask) {
+    // When the skin is dirty the deformed skinnable will need to regenerate its
+    // drawing commands.
+
+    // TODO: rename path to topology/surface something common between path &
+    // mesh.
     (parent as Skinnable).markSkinDirty();
   }
 
   @override
   void update(int dirt) {
+    // Any dirt here indicates that the transforms needs to be rebuilt. This
+    // should only be worldTransform from the bones (recursively passed down) or
+    // ComponentDirt.path from the PointsPath (set explicitly).
     var size = (_tendons.length + 1) * 6;
     if (_boneTransforms.length != size) {
       _boneTransforms = Float32List(size);
@@ -29,6 +42,7 @@ class Skin extends SkinBase {
       _boneTransforms[4] = 0;
       _boneTransforms[5] = 0;
     }
+
     var temp = Mat2D();
     var bidx = 6;
     for (final tendon in _tendons) {
@@ -79,6 +93,8 @@ class Skin extends SkinBase {
   @override
   void buildDependencies() {
     super.buildDependencies();
+    // A skin depends on all its bones. N.B. that we don't depend on the parent
+    // skinnable. The skinnable depends on us.
     for (final tendon in _tendons) {
       tendon.bone?.addDependent(this);
     }
@@ -110,6 +126,7 @@ class Skin extends SkinBase {
           markRebuildDependencies();
         }
         parent?.markRebuildDependencies();
+
         break;
     }
   }

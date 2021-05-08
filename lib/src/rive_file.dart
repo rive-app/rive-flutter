@@ -6,6 +6,7 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
 import 'package:rive/src/generated/animation/animation_state_base.dart';
 import 'package:rive/src/generated/animation/any_state_base.dart';
+import 'package:rive/src/generated/animation/blend_state_transition_base.dart';
 import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
@@ -23,6 +24,8 @@ import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exceptio
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 
+import 'generated/animation/blend_state_1d_base.dart';
+import 'generated/animation/blend_state_direct_base.dart';
 import 'rive_core/animation/state_transition.dart';
 
 Core<CoreContext>? _readRuntimeObject(
@@ -140,27 +143,26 @@ class RiveFile {
           stackObject = StateMachineImporter(object as StateMachine);
           break;
         case StateMachineLayerBase.typeKey:
-          {
-            // Needs artboard importer to resolve linear animations.
-            var artboardImporter = importStack
-                .requireLatest<ArtboardImporter>(ArtboardBase.typeKey);
-            stackObject = StateMachineLayerImporter(
-                object as StateMachineLayer, artboardImporter);
-            break;
-          }
+          stackObject = StateMachineLayerImporter(object as StateMachineLayer);
+          break;
+
         case EntryStateBase.typeKey:
         case AnyStateBase.typeKey:
         case ExitStateBase.typeKey:
         case AnimationStateBase.typeKey:
+        case BlendStateDirectBase.typeKey:
+        case BlendState1DBase.typeKey:
           stackObject = LayerStateImporter(object as LayerState);
           stackType = LayerStateBase.typeKey;
           break;
         case StateTransitionBase.typeKey:
+        case BlendStateTransitionBase.typeKey:
           {
             var stateMachineImporter = importStack
                 .requireLatest<StateMachineImporter>(StateMachineBase.typeKey);
             stackObject = StateTransitionImporter(
                 object as StateTransition, stateMachineImporter);
+            stackType = StateTransitionBase.typeKey;
             break;
           }
         default:

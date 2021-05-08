@@ -19,7 +19,11 @@ abstract class ContainerComponent extends ContainerComponentBase {
 
   @mustCallSuper
   void childAdded(Component child) {}
+
   void childRemoved(Component child) {}
+
+  // Make sure that the current function can be applied to the current
+  // [Component], before descending onto all the children.
   bool forAll(DescentCallback cb) {
     if (cb(this) == false) {
       return false;
@@ -28,17 +32,27 @@ abstract class ContainerComponent extends ContainerComponentBase {
     return true;
   }
 
+  // Recursively descend onto all the children in the hierarchy tree.
+  // If the callback returns false, it won't recurse down a particular branch.
   void forEachChild(DescentCallback cb) {
     for (final child in children) {
       if (cb(child) == false) {
         continue;
       }
+
+      // TODO: replace with a more robust check.
       if (child is ContainerComponent) {
         child.forEachChild(cb);
       }
     }
   }
 
+  /// Recursive version of [Component.remove]. This should only be called when
+  /// you know this is the only part of the branch you are removing in your
+  /// operation. If your operation could remove items from the same branch
+  /// multiple times, you should consider building up a list of the individual
+  /// items to remove and then remove them individually to avoid calling remove
+  /// multiple times on children.
   void removeRecursive() {
     Set<Component> deathRow = {this};
     forEachChild((child) => deathRow.add(child));

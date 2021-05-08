@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/state_machine_bool_base.dart';
 import 'package:rive/src/generated/animation/state_machine_number_base.dart';
 import 'package:rive/src/generated/animation/state_machine_trigger_base.dart';
@@ -158,14 +157,6 @@ class StateMachineController extends core.StateMachineController {
       }
     }
     return null;
-  }
-
-  @override
-  void apply(CoreContext core, double elapsedSeconds) {
-    super.apply(core, elapsedSeconds);
-    for (final input in _inputs) {
-      input.advance();
-    }
   }
 
   @override

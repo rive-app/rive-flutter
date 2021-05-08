@@ -1,22 +1,36 @@
 import 'dart:ui' as ui;
+
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 
+/// The PathComposer builds the desired world and local paths for the shapes and
+/// their fills/strokes. It guarantees that one of local or world path is always
+/// available. If the Shape only wants a local path, we'll only build a local
+/// one. If the Shape only wants a world path, we'll build only that world path.
+/// If it wants both, we build both. If it wants none, we still build a world
+/// path.
 class PathComposer extends Component {
   final Shape shape;
   PathComposer(this.shape);
+
   @override
   Artboard? get artboard => shape.artboard;
+
   final ui.Path worldPath = ui.Path();
   final ui.Path localPath = ui.Path();
   ui.Path _fillPath = ui.Path();
   ui.Path get fillPath => _fillPath;
+
   void _recomputePath() {
+    // No matter what we'll need some form of a world path to get our bounds.
+    // Let's optimize how we build it.
     var buildLocalPath = shape.wantLocalPath;
     var buildWorldPath = shape.wantWorldPath || !buildLocalPath;
+
+    // The fill path will be whichever one of these two is available.
     if (buildLocalPath) {
       localPath.reset();
       var world = shape.worldTransform;
@@ -49,6 +63,9 @@ class PathComposer extends Component {
   @override
   void buildDependencies() {
     super.buildDependencies();
+
+    // We depend on the shape and all of its paths so that we can update after
+    // all of them.
     shape.addDependent(this);
     for (final path in shape.paths) {
       path.addDependent(this);

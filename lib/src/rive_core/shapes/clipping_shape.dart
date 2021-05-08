@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
@@ -10,19 +11,25 @@ class ClippingShape extends ClippingShapeBase {
   final List<Shape> _shapes = [];
   PathFillType get fillType => PathFillType.values[fillRule];
   set fillType(PathFillType type) => fillRule = type.index;
+
   Node _source = Node.unknown;
   Node get source => _source;
   set source(Node value) {
     if (_source == value) {
       return;
     }
+
     _source = value;
     sourceId = value.id;
   }
 
   @override
   void fillRuleChanged(int from, int to) {
+    // In the future, if clipOp can change at runtime (animation), we may want
+    // the shapes that use this as a clipping source to make them depend on this
+    // clipping shape so we can add dirt to them directly.
     parent?.addDirt(ComponentDirt.clip, recurse: true);
+
     addDirt(ComponentDirt.path);
   }
 
@@ -44,10 +51,13 @@ class ClippingShape extends ClippingShapeBase {
     _source.forAll((component) {
       if (component is Shape) {
         _shapes.add(component);
+        //component.addDependent(this);
         component.pathComposer.addDependent(this);
       }
       return true;
     });
+
+    // make sure we rebuild the clipping path.
     addDirt(ComponentDirt.path);
   }
 
@@ -60,6 +70,8 @@ class ClippingShape extends ClippingShapeBase {
   @override
   void update(int dirt) {
     if (dirt & (ComponentDirt.worldTransform | ComponentDirt.path) != 0) {
+      // Build the clipping path as one of our dependent shapes changes or we
+      // added a shape.
       clippingPath.reset();
       clippingPath.fillType = fillType;
       for (final shape in _shapes) {
@@ -75,6 +87,7 @@ class ClippingShape extends ClippingShapeBase {
 
   @override
   void isVisibleChanged(bool from, bool to) {
+    // Redraw
     _source.addDirt(ComponentDirt.paint);
   }
 }

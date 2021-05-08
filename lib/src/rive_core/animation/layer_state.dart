@@ -1,4 +1,5 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/generated/animation/layer_state_base.dart';
@@ -7,11 +8,16 @@ export 'package:rive/src/generated/animation/layer_state_base.dart';
 abstract class LayerState extends LayerStateBase {
   final StateTransitions _transitions = StateTransitions();
   StateTransitions get transitions => _transitions;
+
   @override
   void onAdded() {}
+
   @override
   void onAddedDirty() {}
+
   void internalAddTransition(StateTransition transition) {
+    assert(!_transitions.contains(transition),
+        'shouldn\'t already contain the transition');
     _transitions.add(transition);
   }
 
@@ -24,6 +30,8 @@ abstract class LayerState extends LayerStateBase {
     super.onRemoved();
   }
 
+  StateInstance makeInstance();
+
   @override
   bool import(ImportStack stack) {
     var importer =
@@ -32,6 +40,7 @@ abstract class LayerState extends LayerStateBase {
       return false;
     }
     importer.addState(this);
+
     return super.import(stack);
   }
 }

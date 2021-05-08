@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 export 'package:rive/src/animation_list.dart';
 export 'package:rive/src/state_machine_components.dart';
+export 'package:rive/src/blend_animations.dart';
 export 'package:rive/src/state_transition_conditions.dart';
 export 'package:rive/src/state_transitions.dart';
 export 'package:rive/src/container_children.dart';

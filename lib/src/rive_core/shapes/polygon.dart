@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
@@ -8,8 +9,10 @@ export 'package:rive/src/generated/shapes/polygon_base.dart';
 class Polygon extends PolygonBase {
   @override
   void cornerRadiusChanged(double from, double to) => markPathDirty();
+
   @override
   void pointsChanged(int from, int to) => markPathDirty();
+
   @override
   List<PathVertex<Weight>> get vertices {
     var vertexList = <PathVertex<Weight>>[];
