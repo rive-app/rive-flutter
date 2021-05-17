@@ -40,6 +40,8 @@ class _ExampleAnimationState extends State<ExampleAnimation> {
         // Add a controller to play back a known animation on the main/default
         // artboard. We store a reference to it so we can toggle playback.
         artboard.addController(_controller = SimpleAnimation('idle'));
+        // starts animation in paused state rateher than looping to match example  intention
+        _controller!.isActive = false;
         setState(() => _riveArtboard = artboard);
       },
     );
