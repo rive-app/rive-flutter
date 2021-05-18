@@ -16,6 +16,8 @@ abstract class StateInstance {
   void apply(CoreContext core, double mix);
 
   bool get keepGoing;
+
+  void dispose() {}
 }
 
 /// A single one of these is created per Layer which just represents/wraps the

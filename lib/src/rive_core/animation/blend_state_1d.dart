@@ -8,15 +8,23 @@ class BlendState1D extends BlendState1DBase {
   StateMachineNumber? _input;
   StateMachineNumber? get input => _input;
 
+  void _changeInput(StateMachineNumber? value) {
+    if (value == _input) {
+      return;
+    }
+
+    _input = value;
+  }
+
   @override
   void inputIdChanged(int from, int to) {
-    _input = context.resolve<StateMachineNumber>(to);
+    _changeInput(context.resolve<StateMachineNumber>(to));
   }
 
   @override
   void onAddedDirty() {
     super.onAddedDirty();
-    _input = context.resolve<StateMachineNumber>(inputId);
+    _changeInput(context.resolve<StateMachineNumber>(inputId));
   }
 
   @override

@@ -1,3 +1,5 @@
+## [0.7.10] - 2021-05-18 11:36:34
+- Transitions from Any state will correctly mix from the last active state to the incoming one.
 
 ## [0.7.9] - 2021-05-08 12:48:50
 - Better error reporting when loading files. Based on feedback from https://github.com/rive-app/rive-flutter/issues/96.

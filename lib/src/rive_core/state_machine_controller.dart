@@ -21,6 +21,7 @@ class LayerController {
   bool _holdAnimationFrom = false;
   StateTransition? _transition;
   double _mix = 1.0;
+  double _mixFrom = 1.0;
 
   LayerController(this.layer)
       : assert(layer.anyState != null),
@@ -34,6 +35,7 @@ class LayerController {
     if (state == _currentState?.state) {
       return false;
     }
+    _currentState?.dispose();
 
     _currentState = state?.makeInstance();
     return true;
@@ -41,6 +43,7 @@ class LayerController {
 
   void dispose() {
     _changeState(null);
+    anyStateInstance.dispose();
   }
 
   bool get isTransitioning =>
@@ -63,12 +66,11 @@ class LayerController {
 
   void _apply(CoreContext core) {
     if (_holdAnimation != null) {
-      _holdAnimation!.apply(_holdTime, coreContext: core, mix: _holdMix);
+      _holdAnimation!.apply(_holdTime, coreContext: core, mix: _mixFrom);
       _holdAnimation = null;
     }
-
     if (_stateFrom != null && _mix < 1) {
-      _stateFrom!.apply(core, 1 - _mix);
+      _stateFrom!.apply(core, _mixFrom);
     }
     if (_currentState != null) {
       _currentState!.apply(core, _mix);
@@ -111,7 +113,6 @@ class LayerController {
   bool _waitingForExit = false;
   LinearAnimation? _holdAnimation;
   double _holdTime = 0;
-  double _holdMix = 0;
 
   bool updateState(HashMap<int, dynamic> inputValues, bool ignoreTriggers) {
     if (isTransitioning) {
@@ -131,31 +132,33 @@ class LayerController {
       return false;
     }
 
+    var outState = _currentState;
     for (final transition in stateFrom.state.transitions) {
       var allowed = transition.allowed(stateFrom, inputValues, ignoreTriggers);
       if (allowed == AllowTransition.yes &&
           _changeState(transition.stateTo, transition: transition)) {
         // Take transition
         _transition = transition;
-        _stateFrom = stateFrom;
+
+        _stateFrom = outState;
 
         // If we had an exit time and wanted to pause on exit, make sure to hold
         // the exit time. Delegate this to the transition by telling it that it
         // was completed.
-        if (transition.applyExitCondition(stateFrom)) {
+        if (outState != null && transition.applyExitCondition(outState)) {
           // Make sure we apply this state.
-          var inst = (stateFrom as AnimationStateInstance).animationInstance;
+          var inst = (outState as AnimationStateInstance).animationInstance;
           _holdAnimation = inst.animation;
           _holdTime = inst.time;
-          _holdMix = _mix;
         }
+        _mixFrom = _mix;
 
         // Keep mixing last animation that was mixed in.
         if (_mix != 0) {
           _holdAnimationFrom = transition.pauseOnExit;
         }
-        if (stateFrom is AnimationStateInstance) {
-          var spilledTime = stateFrom.animationInstance.spilledTime;
+        if (outState is AnimationStateInstance) {
+          var spilledTime = outState.animationInstance.spilledTime;
           _currentState?.advance(spilledTime, inputValues);
         }
 
