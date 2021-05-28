@@ -3,6 +3,7 @@ import 'package:rive_example/example_animation.dart';
 import 'package:rive_example/example_state_machine.dart';
 import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
+import 'package:rive_example/simple_animation.dart';
 import 'package:rive_example/state_machine_skills.dart';
 
 void main() => runApp(MaterialApp(
@@ -22,7 +23,21 @@ class Home extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton(
-              child: const Text('Animation'),
+              child: const Text('Simple Animation'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const SimpleAnimation(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('Play/Pause Animation'),
               onPressed: () {
                 Navigator.push(
                   context,

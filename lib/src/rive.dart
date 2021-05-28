@@ -33,9 +33,10 @@ class Rive extends LeafRenderObjectWidget {
   const Rive({
     required this.artboard,
     this.useArtboardSize = false,
-    this.fit = BoxFit.contain,
-    this.alignment = Alignment.center,
-  });
+    BoxFit? fit,
+    Alignment? alignment,
+  })  : fit = fit ?? BoxFit.contain,
+        alignment = alignment ?? Alignment.center;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
