@@ -1,0 +1,28 @@
+name: Tests
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Checkout and install Flutter
+        run: git clone https://github.com/flutter/flutter.git
+
+      - name: Add the Flutter path
+        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+
+      - name: Set Flutter root
+        run: echo "FLUTTER_ROOT=$GITHUB_WORKSPACE/flutter" >> $GITHUB_ENV
+
+      - name: Setup flutter
+        run: |
+          flutter channel stable
+          flutter doctor
+
+      - name: Run tests
+        run: flutter test
