@@ -1,23 +1,56 @@
 # Rive [![Pub Version](https://img.shields.io/pub/v/rive)](https://pub.dev/packages/rive)
 
-[Flutter package](https://pub.dev/packages/rive) for the new Rive.
-
-## Create and ship interactive animations to any platform
-
 [Rive](https://rive.app/) is a real-time interactive design and animation tool. Use our collaborative editor to create motion graphics that respond to different states and user inputs. Then load your animations into apps, games, and websites with our lightweight open-source runtimes. 
 
 ## Add to pubspec.yaml
 
 ```yaml
 dependencies:
-  rive: ^0.7.10
+  rive: ^0.7.11
 ```
+
+## Quick Start
+
+Play an animation from a Rive file over HTTP:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
+
+void main() {
+  runApp(MaterialApp(home: SimpleAnimation()));
+}
+
+class SimpleAnimation extends StatelessWidget {
+  const SimpleAnimation({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        // child: RiveAnimation.asset('assets/off_road_car.riv'),
+        child: RiveAnimation.network(
+          'https://cdn.rive.app/animations/truck.riv',
+        ),
+      ),
+    );
+  }
+}
+```
+
+To play an animation from an asset bundle, use: 
+
+```dart
+RiveAnimation.asset('assets/truck.riv');
+```
+
+For more info on using the Rive package, check out the [runtime help center docs](https://help.rive.app/runtimes).
 
 ## Examples
 
-### Continuously playing a Looping Animation
+### Controlling animation playback
 
-Here's a simple example of continuously playing a looping animation.
+Here's a simple example of showing how to control animation playback using the `Rive` widget and `RiveAnimationController`:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -41,29 +74,33 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Artboard? _riveArtboard;
+  RiveAnimationController? _controller;
+
+  /// Toggles playing/pausing the animation
   void _togglePlay() {
-    setState(() => _controller.isActive = !_controller.isActive);
+    if (_controller != null) {
+      setState(() => _controller!.isActive = !_controller!.isActive);
+    }
   }
 
   /// Tracks if the animation is playing by whether controller is running.
   bool get isPlaying => _controller?.isActive ?? false;
 
-  Artboard _riveArtboard;
-  RiveAnimationController _controller;
   @override
   void initState() {
     super.initState();
 
     // Load the animation file from the bundle, note that you could also
     // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/off_road_car.riv').then(
+    rootBundle.load('assets/truck.riv').then(
       (data) async {
         // Load the RiveFile from the binary data.
         final file = RiveFile.import(data);
@@ -84,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: _riveArtboard == null
             ? const SizedBox()
-            : Rive(artboard: _riveArtboard),
+            : Rive(artboard: _riveArtboard!),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _togglePlay,
