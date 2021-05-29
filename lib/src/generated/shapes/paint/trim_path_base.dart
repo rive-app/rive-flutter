@@ -99,4 +99,13 @@ abstract class TrimPathBase extends Component {
   }
 
   void modeValueChanged(int from, int to);
+
+  @override
+  void copy(TrimPathBase source) {
+    super.copy(source);
+    _start = source._start;
+    _end = source._end;
+    _offset = source._offset;
+    _modeValue = source._modeValue;
+  }
 }

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 export 'package:rive/src/animation_list.dart';
 export 'package:rive/src/state_machine_components.dart';
@@ -37,6 +38,21 @@ abstract class Core<T extends CoreContext> {
   bool import(ImportStack stack) => true;
 
   bool validate() => true;
+
+  /// Make a duplicate of this core object, N.B. that all properties including
+  /// id's are copied.
+  K? clone<K extends Core>() {
+    var object = context.makeCoreInstance(coreType);
+    object?.copy(this);
+    return object is K ? object : null;
+  }
+
+  /// Copies property values, currently doesn't trigger change callbacks. It's
+  /// meant to be a helper for [clone].
+  @protected
+  void copy(covariant Core source) {
+    id = source.id;
+  }
 }
 
 class InternalCoreHelper {

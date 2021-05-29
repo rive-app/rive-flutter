@@ -15,6 +15,8 @@ class Polygon extends PolygonBase {
 
   @override
   List<PathVertex<Weight>> get vertices {
+    double ox = -originX * width + width / 2;
+    double oy = -originY * height + height / 2;
     var vertexList = <PathVertex<Weight>>[];
     var halfWidth = width / 2;
     var halfHeight = height / 2;
@@ -22,8 +24,8 @@ class Polygon extends PolygonBase {
     var inc = 2 * pi / points;
     for (int i = 0; i < points; i++) {
       vertexList.add(StraightVertex.procedural()
-        ..x = cos(angle) * halfWidth
-        ..y = sin(angle) * halfHeight
+        ..x = ox + cos(angle) * halfWidth
+        ..y = oy + sin(angle) * halfHeight
         ..radius = cornerRadius);
       angle += inc;
     }

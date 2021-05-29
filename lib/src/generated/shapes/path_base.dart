@@ -41,4 +41,10 @@ abstract class PathBase extends Node {
   }
 
   void pathFlagsChanged(int from, int to);
+
+  @override
+  void copy(PathBase source) {
+    super.copy(source);
+    _pathFlags = source._pathFlags;
+  }
 }

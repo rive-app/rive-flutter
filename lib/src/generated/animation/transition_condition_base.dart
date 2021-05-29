@@ -34,4 +34,9 @@ abstract class TransitionConditionBase<T extends CoreContext> extends Core<T> {
   }
 
   void inputIdChanged(int from, int to);
+
+  @override
+  void copy(TransitionConditionBase source) {
+    _inputId = source._inputId;
+  }
 }

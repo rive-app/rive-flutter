@@ -85,4 +85,11 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
   }
 
   void interpolatorIdChanged(int from, int to);
+
+  @override
+  void copy(KeyFrameBase source) {
+    _frame = source._frame;
+    _interpolationType = source._interpolationType;
+    _interpolatorId = source._interpolatorId;
+  }
 }

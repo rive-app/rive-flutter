@@ -35,4 +35,9 @@ abstract class BlendAnimationBase<T extends CoreContext> extends Core<T> {
   }
 
   void animationIdChanged(int from, int to);
+
+  @override
+  void copy(BlendAnimationBase source) {
+    _animationId = source._animationId;
+  }
 }

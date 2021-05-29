@@ -33,4 +33,10 @@ abstract class SolidColorBase extends Component {
   }
 
   void colorValueChanged(int from, int to);
+
+  @override
+  void copy(SolidColorBase source) {
+    super.copy(source);
+    _colorValue = source._colorValue;
+  }
 }

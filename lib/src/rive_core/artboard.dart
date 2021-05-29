@@ -87,6 +87,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         }
         step++;
       }
+
       return true;
     }
     return didUpdate;
@@ -410,5 +411,16 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
 
     _firstDrawable = lastDrawable;
+  }
+
+  /// Make a copy of the this [Artboard]. This duplicates internal objects in
+  /// the hierarchy but shares animations and state machines with the original
+  /// [Artboard] it is instanced from. Instance an [Artboard] when you want to
+  /// show it muliptle times on the screen in the different states.
+  Artboard instance() {
+    /// Intentionally not implemented in the editor, must be overridden in
+    /// runtime version of the artboard.
+    throw UnsupportedError(
+        'Instancing the artboard in the editor isn\'t supported');
   }
 }

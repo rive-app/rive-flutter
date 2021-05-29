@@ -118,4 +118,13 @@ abstract class ParametricPathBase extends Path {
   }
 
   void originYChanged(double from, double to);
+
+  @override
+  void copy(ParametricPathBase source) {
+    super.copy(source);
+    _width = source._width;
+    _height = source._height;
+    _originX = source._originX;
+    _originY = source._originY;
+  }
 }

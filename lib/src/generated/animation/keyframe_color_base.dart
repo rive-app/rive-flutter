@@ -33,4 +33,10 @@ abstract class KeyFrameColorBase extends KeyFrame {
   }
 
   void valueChanged(int from, int to);
+
+  @override
+  void copy(KeyFrameColorBase source) {
+    super.copy(source);
+    _value = source._value;
+  }
 }

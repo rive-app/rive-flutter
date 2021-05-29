@@ -159,4 +159,15 @@ abstract class ArtboardBase extends ContainerComponent {
   }
 
   void originYChanged(double from, double to);
+
+  @override
+  void copy(ArtboardBase source) {
+    super.copy(source);
+    _width = source._width;
+    _height = source._height;
+    _x = source._x;
+    _y = source._y;
+    _originX = source._originX;
+    _originY = source._originY;
+  }
 }

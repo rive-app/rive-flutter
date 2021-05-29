@@ -39,4 +39,10 @@ abstract class FillBase extends ShapePaint {
   }
 
   void fillRuleChanged(int from, int to);
+
+  @override
+  void copy(FillBase source) {
+    super.copy(source);
+    _fillRule = source._fillRule;
+  }
 }

@@ -106,4 +106,32 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   void markNeedsAdvance() {
     _redraw.notify();
   }
+
+  Artboard? instance() {
+    var artboard = RuntimeArtboard();
+    artboard.copy(this);
+    artboard._objects.add(artboard);
+    // First copy the objects ensuring onAddedDirty can later find them in the
+    // _objects list.
+    for (final object in _objects.skip(1)) {
+      Core? clone = object?.clone();
+      artboard._objects.add(clone);
+    }
+
+    // Then run the onAddedDirty loop.
+    for (final object in artboard.objects.skip(1)) {
+      if (object is Component &&
+          object.parentId == ComponentBase.parentIdInitialValue) {
+        object.parent = artboard;
+      }
+      object?.onAddedDirty();
+    }
+    for (final object in artboard.objects.toList(growable: false)) {
+      if (object == null) {
+        continue;
+      }
+      object.onAdded();
+    }
+    artboard.clean();
+  }
 }

@@ -38,4 +38,10 @@ abstract class ShapePaintBase extends ContainerComponent {
   }
 
   void isVisibleChanged(bool from, bool to);
+
+  @override
+  void copy(ShapePaintBase source) {
+    super.copy(source);
+    _isVisible = source._isVisible;
+  }
 }
