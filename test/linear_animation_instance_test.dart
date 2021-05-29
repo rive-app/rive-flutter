@@ -1,23 +1,19 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
 
+import 'src/utils.dart';
+
 void main() {
-  late Artboard artboard;
+  late RiveFile riveFile;
 
-  void loadTestAssets() {
-    final riveData = ByteData.sublistView(
-      File('assets/one_shot_0_6_5.riv').readAsBytesSync(),
-    );
-    final riveFile = RiveFile.import(riveData);
-    artboard = riveFile.mainArtboard;
-  }
-
-  setUp(loadTestAssets);
+  setUp(() {
+    final riveBytes = loadFile('assets/rive-flutter-test-asset.riv');
+    riveFile = RiveFile.import(riveBytes);
+  });
 
   test('LinearAnimationInstance exposes direction is either +/-1', () {
+    final artboard = riveFile.mainArtboard;
+
     expect(artboard.hasAnimations, isTrue);
     LinearAnimationInstance instance =
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);
@@ -31,6 +27,8 @@ void main() {
   });
 
   test('LinearAnimationInstance has a valid start and end time', () {
+    final artboard = riveFile.mainArtboard;
+
     expect(artboard.hasAnimations, isTrue);
     LinearAnimationInstance instance =
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);
@@ -49,6 +47,8 @@ void main() {
   });
 
   test('LinearAnimationInstance can be reset', () {
+    final artboard = riveFile.mainArtboard;
+
     expect(artboard.hasAnimations, isTrue);
     LinearAnimationInstance instance =
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);

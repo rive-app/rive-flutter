@@ -1,28 +1,22 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
 
+import 'src/utils.dart';
+
 void main() {
-  late ByteData riveData;
+  late RiveFile riveFile;
 
-  void loadTestAssets() {
-    riveData = ByteData.sublistView(
-      File('assets/animations_0_6_2.riv').readAsBytesSync(),
-    );
-  }
-
-  setUp(loadTestAssets);
+  setUp(() {
+    final riveBytes = loadFile('assets/rive-flutter-test-asset.riv');
+    riveFile = RiveFile.import(riveBytes);
+  });
 
   test('SimpleAnimation exposes mix', () {
-    // Load a Rive file
-    final riveFile = RiveFile.import(riveData);
-    expect(riveFile.mainArtboard.name, 'My Artboard');
+    expect(riveFile.mainArtboard.name, 'Artboard 1');
 
     final firstController =
         SimpleAnimation(riveFile.mainArtboard.animations.first.name);
-    expect(firstController.animationName, 'First');
+    expect(firstController.animationName, 'Animation 1');
     expect(firstController.mix, 1.0);
 
     firstController.mix = 0.5;
@@ -35,8 +29,8 @@ void main() {
     expect(firstController.mix, 0.0);
 
     final secondController =
-        SimpleAnimation(riveFile.mainArtboard.animations.last.name, mix: 0.8);
-    expect(secondController.animationName, 'Second');
+        SimpleAnimation(riveFile.mainArtboard.animations[1].name, mix: 0.8);
+    expect(secondController.animationName, 'Animation 2');
     expect(secondController.mix, 0.8);
   });
 }
