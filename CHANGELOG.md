@@ -1,3 +1,8 @@
+## [0.7.11] - 2021-05-28 18:00:00
+- Adds `RiveAnimation` high level widget.
+- Fixes tests and add automated testing on push.
+- Updates README.
+
 ## [0.7.10] - 2021-05-18 11:36:34
 - Transitions from Any state will correctly mix from the last active state to the incoming one.
 
