@@ -161,7 +161,7 @@ class StateTransition extends StateTransitionBase {
         var time = exitAnimation.totalTime;
         var exitTime = exitTimeSeconds(stateFrom.state);
         var animationFrom = exitAnimation.animation;
-        if (exitTime < animationFrom.durationSeconds) {
+        if (exitTime <= animationFrom.durationSeconds) {
           // Get exit time relative to the loop lastTime was in.
           exitTime += (lastTime / animationFrom.durationSeconds).floor() *
               animationFrom.durationSeconds;

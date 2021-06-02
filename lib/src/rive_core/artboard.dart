@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
@@ -35,8 +37,16 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   final AnimationList _animations = AnimationList();
 
-  /// List of animations in this artboard.
+  /// List of animations and state machines in the artboard.
   AnimationList get animations => _animations;
+
+  /// List of linear animations in the artboard.
+  Iterable<LinearAnimation> get linearAnimations =>
+      _animations.whereType<LinearAnimation>();
+
+  /// List of state machines in the artboard.
+  Iterable<StateMachine> get stateMachines =>
+      _animations.whereType<StateMachine>();
 
   /// Does this artboard have animations?
   bool get hasAnimations => _animations.isNotEmpty;
@@ -87,7 +97,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         }
         step++;
       }
-
       return true;
     }
     return didUpdate;
@@ -413,10 +422,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     _firstDrawable = lastDrawable;
   }
 
-  /// Make a copy of the this [Artboard]. This duplicates internal objects in
-  /// the hierarchy but shares animations and state machines with the original
-  /// [Artboard] it is instanced from. Instance an [Artboard] when you want to
-  /// show it muliptle times on the screen in the different states.
+  // Make an instance of the artboard, clones internal objects and properties.
   Artboard instance() {
     /// Intentionally not implemented in the editor, must be overridden in
     /// runtime version of the artboard.

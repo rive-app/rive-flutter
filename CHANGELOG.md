@@ -1,3 +1,7 @@
+## [0.7.12] - 2021-06-02 14:35:44
+- Support for artboard instancing!
+- Fixes an issue with 100% exit time not working on loops.
+
 ## [0.7.11] - 2021-05-28 18:00:00
 - Adds `RiveAnimation` high level widget.
 - Fixes tests and add automated testing on push.
