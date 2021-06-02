@@ -118,4 +118,13 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
   }
 
   void outDistanceChanged(double from, double to);
+
+  @override
+  void copy(CubicDetachedVertexBase source) {
+    super.copy(source);
+    _inRotation = source._inRotation;
+    _inDistance = source._inDistance;
+    _outRotation = source._outRotation;
+    _outDistance = source._outDistance;
+  }
 }

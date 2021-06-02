@@ -59,4 +59,11 @@ abstract class DrawTargetBase extends Component {
   }
 
   void placementValueChanged(int from, int to);
+
+  @override
+  void copy(DrawTargetBase source) {
+    super.copy(source);
+    _drawableId = source._drawableId;
+    _placementValue = source._placementValue;
+  }
 }

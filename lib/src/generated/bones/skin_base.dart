@@ -156,4 +156,15 @@ abstract class SkinBase extends ContainerComponent {
   }
 
   void tyChanged(double from, double to);
+
+  @override
+  void copy(SkinBase source) {
+    super.copy(source);
+    _xx = source._xx;
+    _yx = source._yx;
+    _xy = source._xy;
+    _yy = source._yy;
+    _tx = source._tx;
+    _ty = source._ty;
+  }
 }

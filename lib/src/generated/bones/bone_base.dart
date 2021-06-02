@@ -41,4 +41,10 @@ abstract class BoneBase extends SkeletalComponent {
   }
 
   void lengthChanged(double from, double to);
+
+  @override
+  void copy(BoneBase source) {
+    super.copy(source);
+    _length = source._length;
+  }
 }

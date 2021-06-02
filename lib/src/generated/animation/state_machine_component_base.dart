@@ -36,4 +36,9 @@ abstract class StateMachineComponentBase<T extends CoreContext>
   }
 
   void nameChanged(String from, String to);
+
+  @override
+  void copy(StateMachineComponentBase source) {
+    _name = source._name;
+  }
 }

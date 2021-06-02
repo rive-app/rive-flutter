@@ -41,4 +41,10 @@ abstract class BlendStateTransitionBase extends StateTransition {
   }
 
   void exitBlendAnimationIdChanged(int from, int to);
+
+  @override
+  void copy(BlendStateTransitionBase source) {
+    super.copy(source);
+    _exitBlendAnimationId = source._exitBlendAnimationId;
+  }
 }

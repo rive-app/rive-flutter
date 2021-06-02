@@ -81,4 +81,12 @@ abstract class ClippingShapeBase extends Component {
   }
 
   void isVisibleChanged(bool from, bool to);
+
+  @override
+  void copy(ClippingShapeBase source) {
+    super.copy(source);
+    _sourceId = source._sourceId;
+    _fillRule = source._fillRule;
+    _isVisible = source._isVisible;
+  }
 }

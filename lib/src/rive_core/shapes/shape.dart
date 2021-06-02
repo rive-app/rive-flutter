@@ -30,7 +30,9 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   bool addPath(Path path) {
     paintChanged();
-    return paths.add(path);
+    var added = paths.add(path);
+
+    return added;
   }
 
   void _markComposerDirty() {

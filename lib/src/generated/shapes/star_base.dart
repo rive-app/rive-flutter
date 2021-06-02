@@ -50,4 +50,10 @@ abstract class StarBase extends Polygon {
   }
 
   void innerRadiusChanged(double from, double to);
+
+  @override
+  void copy(StarBase source) {
+    super.copy(source);
+    _innerRadius = source._innerRadius;
+  }
 }

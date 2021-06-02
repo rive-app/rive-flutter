@@ -43,4 +43,10 @@ abstract class BlendState1DBase extends BlendState<BlendAnimation1D> {
   }
 
   void inputIdChanged(int from, int to);
+
+  @override
+  void copy(BlendState1DBase source) {
+    super.copy(source);
+    _inputId = source._inputId;
+  }
 }

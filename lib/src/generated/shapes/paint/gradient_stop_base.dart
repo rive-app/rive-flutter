@@ -55,4 +55,11 @@ abstract class GradientStopBase extends Component {
   }
 
   void positionChanged(double from, double to);
+
+  @override
+  void copy(GradientStopBase source) {
+    super.copy(source);
+    _colorValue = source._colorValue;
+    _position = source._position;
+  }
 }

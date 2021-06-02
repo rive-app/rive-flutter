@@ -12,6 +12,9 @@ class Star extends StarBase {
 
   @override
   List<PathVertex<Weight>> get vertices {
+    double ox = -originX * width + width / 2;
+    double oy = -originY * height + height / 2;
+
     var actualPoints = points * 2;
     var vertexList = <PathVertex<Weight>>[];
     var halfWidth = width / 2;
@@ -22,13 +25,13 @@ class Star extends StarBase {
     var inc = 2 * pi / actualPoints;
     while (vertexList.length < actualPoints) {
       vertexList.add(StraightVertex.procedural()
-        ..x = cos(angle) * halfWidth
-        ..y = sin(angle) * halfHeight
+        ..x = ox + cos(angle) * halfWidth
+        ..y = oy + sin(angle) * halfHeight
         ..radius = cornerRadius);
       angle += inc;
       vertexList.add(StraightVertex.procedural()
-        ..x = cos(angle) * innerHalfWidth
-        ..y = sin(angle) * innerHalfHeight
+        ..x = ox + cos(angle) * innerHalfWidth
+        ..y = oy + sin(angle) * innerHalfHeight
         ..radius = cornerRadius);
       angle += inc;
     }

@@ -93,9 +93,8 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   }
 
   @override
-  Core<CoreContext>? makeCoreInstance(int typeKey) {
-    return null;
-  }
+  Core<CoreContext>? makeCoreInstance(int typeKey) =>
+      RiveCoreContext.makeCoreInstance(typeKey);
 
   @override
   void dirty(void Function() dirt) {
@@ -105,5 +104,38 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   @override
   void markNeedsAdvance() {
     _redraw.notify();
+  }
+
+  @override
+  Artboard instance() {
+    var artboard = RuntimeArtboard();
+    artboard.context = artboard;
+    artboard.copy(this);
+    artboard._objects.add(artboard);
+    // First copy the objects ensuring onAddedDirty can later find them in the
+    // _objects list.
+    for (final object in _objects.skip(1)) {
+      Core? clone = object?.clone();
+      artboard.addObject(clone);
+    }
+
+    // Then run the onAddedDirty loop.
+    for (final object in artboard.objects.skip(1)) {
+      if (object is Component &&
+          object.parentId == ComponentBase.parentIdInitialValue) {
+        object.parent = artboard;
+      }
+      object?.onAddedDirty();
+    }
+    animations.forEach(artboard.animations.add);
+    for (final object in artboard.objects.toList(growable: false)) {
+      if (object == null) {
+        continue;
+      }
+      object.onAdded();
+      InternalCoreHelper.markValid(object);
+    }
+    artboard.clean();
+    return artboard;
   }
 }

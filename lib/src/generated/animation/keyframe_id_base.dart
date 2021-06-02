@@ -33,4 +33,10 @@ abstract class KeyFrameIdBase extends KeyFrame {
   }
 
   void valueChanged(int from, int to);
+
+  @override
+  void copy(KeyFrameIdBase source) {
+    super.copy(source);
+    _value = source._value;
+  }
 }

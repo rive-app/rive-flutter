@@ -43,4 +43,10 @@ abstract class StraightVertexBase extends PathVertex<Weight> {
   }
 
   void radiusChanged(double from, double to);
+
+  @override
+  void copy(StraightVertexBase source) {
+    super.copy(source);
+    _radius = source._radius;
+  }
 }

@@ -33,4 +33,10 @@ abstract class KeyFrameDoubleBase extends KeyFrame {
   }
 
   void valueChanged(double from, double to);
+
+  @override
+  void copy(KeyFrameDoubleBase source) {
+    super.copy(source);
+    _value = source._value;
+  }
 }

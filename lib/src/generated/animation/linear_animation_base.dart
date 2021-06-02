@@ -182,4 +182,16 @@ abstract class LinearAnimationBase extends Animation {
   }
 
   void enableWorkAreaChanged(bool from, bool to);
+
+  @override
+  void copy(LinearAnimationBase source) {
+    super.copy(source);
+    _fps = source._fps;
+    _duration = source._duration;
+    _speed = source._speed;
+    _loopValue = source._loopValue;
+    _workStart = source._workStart;
+    _workEnd = source._workEnd;
+    _enableWorkArea = source._enableWorkArea;
+  }
 }

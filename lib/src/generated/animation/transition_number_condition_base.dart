@@ -38,4 +38,10 @@ abstract class TransitionNumberConditionBase extends TransitionValueCondition {
   }
 
   void valueChanged(double from, double to);
+
+  @override
+  void copy(TransitionNumberConditionBase source) {
+    super.copy(source);
+    _value = source._value;
+  }
 }

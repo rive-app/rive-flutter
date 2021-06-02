@@ -38,4 +38,10 @@ abstract class StateMachineBoolBase extends StateMachineInput {
   }
 
   void valueChanged(bool from, bool to);
+
+  @override
+  void copy(StateMachineBoolBase source) {
+    super.copy(source);
+    _value = source._value;
+  }
 }

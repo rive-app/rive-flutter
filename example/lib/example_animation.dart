@@ -35,7 +35,7 @@ class _ExampleAnimationState extends State<ExampleAnimation> {
 
         // The artboard is the root of the animation and gets drawn in the
         // Rive widget.
-        final artboard = file.mainArtboard;
+        final artboard = file.mainArtboard.instance();
         // Add a controller to play back a known animation on the main/default
         // artboard. We store a reference to it so we can toggle playback.
         artboard.addController(_controller = SimpleAnimation('idle'));

@@ -34,4 +34,9 @@ abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
   }
 
   void objectIdChanged(int from, int to);
+
+  @override
+  void copy(KeyedObjectBase source) {
+    _objectId = source._objectId;
+  }
 }

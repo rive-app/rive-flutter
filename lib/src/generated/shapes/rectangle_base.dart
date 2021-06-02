@@ -148,4 +148,14 @@ abstract class RectangleBase extends ParametricPath {
   }
 
   void cornerRadiusBRChanged(double from, double to);
+
+  @override
+  void copy(RectangleBase source) {
+    super.copy(source);
+    _linkCornerRadius = source._linkCornerRadius;
+    _cornerRadiusTL = source._cornerRadiusTL;
+    _cornerRadiusTR = source._cornerRadiusTR;
+    _cornerRadiusBL = source._cornerRadiusBL;
+    _cornerRadiusBR = source._cornerRadiusBR;
+  }
 }

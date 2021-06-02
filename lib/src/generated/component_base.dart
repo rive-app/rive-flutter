@@ -58,4 +58,10 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
   }
 
   void parentIdChanged(int from, int to);
+
+  @override
+  void copy(ComponentBase source) {
+    _name = source._name;
+    _parentId = source._parentId;
+  }
 }

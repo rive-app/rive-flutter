@@ -100,4 +100,13 @@ abstract class CubicWeightBase extends Weight {
   }
 
   void outIndicesChanged(int from, int to);
+
+  @override
+  void copy(CubicWeightBase source) {
+    super.copy(source);
+    _inValues = source._inValues;
+    _inIndices = source._inIndices;
+    _outValues = source._outValues;
+    _outIndices = source._outIndices;
+  }
 }
