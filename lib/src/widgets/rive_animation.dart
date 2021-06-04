@@ -1,10 +1,10 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:universal_io/io.dart';
 
 enum _Source {
   asset,
