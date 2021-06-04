@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   graphs: ^2.0.0
   meta: ^1.3.0
+  universal_io: ^2.0.4
 
 dev_dependencies:
   flutter_test:
