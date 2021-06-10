@@ -13,7 +13,7 @@ class SimpleAnimation extends StatelessWidget {
       body: const Center(
         // child: RiveAnimation.asset('assets/off_road_car.riv'),
         child: RiveAnimation.network(
-          'https://cdn.rive.app/animations/truck.riv',
+          'https://cdn.rive.app/animations/vehicles.riv',
           fit: BoxFit.cover,
         ),
       ),

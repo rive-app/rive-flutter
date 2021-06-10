@@ -1,12 +1,14 @@
 # Rive [![Pub Version](https://img.shields.io/pub/v/rive)](https://pub.dev/packages/rive)
 
+Runtime docs are available in [Rive's help center](https://help.rive.app/runtimes/quick-start).
+
 [Rive](https://rive.app/) is a real-time interactive design and animation tool. Use our collaborative editor to create motion graphics that respond to different states and user inputs. Then load your animations into apps, games, and websites with our lightweight open-source runtimes. 
 
 ## Add to pubspec.yaml
 
 ```yaml
 dependencies:
-  rive: ^0.7.12
+  rive: ^0.7.13
 ```
 
 ## Quick Start
@@ -28,9 +30,8 @@ class SimpleAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        // child: RiveAnimation.asset('assets/off_road_car.riv'),
         child: RiveAnimation.network(
-          'https://cdn.rive.app/animations/truck.riv',
+          'https://cdn.rive.app/animations/vehicles.riv',
         ),
       ),
     );

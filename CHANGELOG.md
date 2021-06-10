@@ -1,3 +1,7 @@
+## [0.7.13] - 2021-06-10 12:00:00
+- Adds linear animation and state machine getters to RuntimeArtboard
+- RiveAnimation now takes lists of animation and state machine names and plays all of them.
+
 ## [0.7.12] - 2021-06-02 14:35:44
 - Support for artboard instancing!
 - Fixes an issue with 100% exit time not working on loops.
