@@ -1,3 +1,6 @@
+## [0.7.14] - 2021-06-10 11:57:35
+- Fixed an issue with State Machine exit time and one shot animations.
+
 ## [0.7.13] - 2021-06-09 19:29:20
 - Fixed an issue with inputs not hooking up to 1D blend states at load time.
 

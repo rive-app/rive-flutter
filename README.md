@@ -6,7 +6,7 @@
 
 ```yaml
 dependencies:
-  rive: ^0.7.13
+  rive: ^0.7.14
 ```
 
 ## Quick Start
