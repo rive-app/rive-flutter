@@ -18,7 +18,8 @@ class RiveAnimation extends StatefulWidget {
   final String name;
   final _Source src;
   final String? artboard;
-  final String? animation;
+  final List<String> animations;
+  final List<String> stateMachines;
   final BoxFit? fit;
   final Alignment? alignment;
   /// Widget displayed while the rive is loading.
@@ -28,7 +29,8 @@ class RiveAnimation extends StatefulWidget {
   const RiveAnimation.asset(
     this.name, {
     this.artboard,
-    this.animation,
+    this.animations = const [],
+    this.stateMachines = const [],
     this.fit,
     this.alignment,
     this.placeHolder,
@@ -37,7 +39,8 @@ class RiveAnimation extends StatefulWidget {
   const RiveAnimation.network(
     this.name, {
     this.artboard,
-    this.animation,
+    this.animations = const [],
+    this.stateMachines = const [],
     this.fit,
     this.alignment,
     this.placeHolder,
@@ -49,7 +52,7 @@ class RiveAnimation extends StatefulWidget {
 
 class _RiveAnimationState extends State<RiveAnimation> {
   /// Rive controller
-  late RiveAnimationController _controller;
+  final _controllers = <RiveAnimationController>[];
 
   /// Active artboard
   Artboard? _artboard;
@@ -114,15 +117,33 @@ class _RiveAnimationState extends State<RiveAnimation> {
       throw FormatException('No animations in artboard ${artboard.name}');
     }
 
-    final animationName = widget.animation ?? artboard.animations.first.name;
+    // Create animations
+    // If there are no animations or state machines specified, select a default
+    // animation
+    final animationNames =
+        widget.animations.isEmpty && widget.stateMachines.isEmpty
+            ? [artboard.animations.first.name]
+            : widget.animations;
 
-    artboard.addController(_controller = SimpleAnimation(animationName));
+    animationNames.forEach((name) => artboard
+        .addController((_controllers..add(SimpleAnimation(name))).last));
+
+    // Create state machines
+    final stateMachineNames = widget.stateMachines;
+
+    stateMachineNames.forEach((name) {
+      final controller = StateMachineController.fromArtboard(artboard, name);
+      if (controller != null) {
+        artboard.addController((_controllers..add(controller)).last);
+      }
+    });
+
     setState(() => _artboard = artboard);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controllers.forEach((c) => c.dispose());
     super.dispose();
   }
 
