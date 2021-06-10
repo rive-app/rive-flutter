@@ -1,3 +1,6 @@
+## [0.7.13] - 2021-06-09 19:29:20
+- Fixed an issue with inputs not hooking up to 1D blend states at load time.
+
 ## [0.7.12] - 2021-06-02 14:35:44
 - Support for artboard instancing!
 - Fixes an issue with 100% exit time not working on loops.
