@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/artboard.dart';
-import 'package:universal_io/io.dart';
+import 'package:http/http.dart' as http;
 
 enum _Source {
   asset,
@@ -22,6 +22,7 @@ class RiveAnimation extends StatefulWidget {
   final List<String> stateMachines;
   final BoxFit? fit;
   final Alignment? alignment;
+
   /// Widget displayed while the rive is loading.
   final Widget? placeHolder;
 
@@ -83,24 +84,27 @@ class _RiveAnimationState extends State<RiveAnimation> {
 
   /// Loads a Rive file from an HTTP source and configures artboard, animation,
   /// and controller.
-  void _loadNetwork() {
-    final client = HttpClient();
-    final contents = <int>[];
+  Future<void> _loadNetwork() async {
+    final res = await http.get(Uri.parse(widget.name));
+    final data = ByteData.view(res.bodyBytes.buffer);
+    _init(data);
+    // final client = HttpClient();
+    // final contents = <int>[];
 
-    client
-        .getUrl(Uri.parse(widget.name))
-        .then(
-          (req) async => req.close(),
-        )
-        .then(
-          (res) => res.listen(
-            contents.addAll,
-            onDone: () {
-              final data = ByteData.view(Uint8List.fromList(contents).buffer);
-              _init(data);
-            },
-          ),
-        );
+    // client
+    //     .getUrl(Uri.parse(widget.name))
+    //     .then(
+    //       (req) async => req.close(),
+    //     )
+    //     .then(
+    //       (res) => res.listen(
+    //         contents.addAll,
+    //         onDone: () {
+    //           final data = ByteData.view(Uint8List.fromList(contents).buffer);
+    //           _init(data);
+    //         },
+    //       ),
+    //     );
   }
 
   /// Initializes the artboard, animation, and controller
