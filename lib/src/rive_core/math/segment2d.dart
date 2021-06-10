@@ -23,7 +23,20 @@ class Segment2D {
 
   /// Difference from start to end. Nullable so we can compute it only when we
   /// need it.
-  Vec2D? diff;
+  Vec2D? _diff;
+  Vec2D get diff {
+    _computeDiff();
+    return _diff!;
+  }
+
+  void _computeDiff() {
+    // We cache these internally so we can call projectPoint multiple times in
+    // succession performantly.
+    if (_diff == null) {
+      _diff = Vec2D.subtract(Vec2D(), start, end);
+      lengthSquared = Vec2D.squaredLength(_diff!);
+    }
+  }
 
   /// The squared length of this segment.
   double lengthSquared = 0;
@@ -32,12 +45,7 @@ class Segment2D {
 
   /// Find where the given [point] lies on this segment.
   ProjectionResult projectPoint(Vec2D point, {bool clamp = true}) {
-    // We cache these internally so we can call projectPoint multiple times in
-    // succession performantly.
-    if (diff == null) {
-      diff = Vec2D.subtract(Vec2D(), start, end);
-      lengthSquared = Vec2D.squaredLength(diff!);
-    }
+    _computeDiff();
     if (lengthSquared == 0) {
       return ProjectionResult(0, start);
     }

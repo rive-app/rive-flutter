@@ -1,6 +1,12 @@
-## [0.7.13] - 2021-06-10 12:00:00
+## [0.7.15] - 2021-06-10 12:00:00
 - Adds linear animation and state machine getters to RuntimeArtboard
 - RiveAnimation now takes lists of animation and state machine names and plays all of them.
+
+## [0.7.14] - 2021-06-10 11:57:35
+- Fixed an issue with State Machine exit time and one shot animations.
+
+## [0.7.13] - 2021-06-09 19:29:20
+- Fixed an issue with inputs not hooking up to 1D blend states at load time.
 
 ## [0.7.12] - 2021-06-02 14:35:44
 - Support for artboard instancing!

@@ -22,6 +22,8 @@ class RiveAnimation extends StatefulWidget {
   final List<String> stateMachines;
   final BoxFit? fit;
   final Alignment? alignment;
+  /// Widget displayed while the rive is loading.
+  final Widget? placeHolder;
 
   /// Creates a new RiveAnimation from an asset bundle
   const RiveAnimation.asset(
@@ -31,6 +33,7 @@ class RiveAnimation extends StatefulWidget {
     this.stateMachines = const [],
     this.fit,
     this.alignment,
+    this.placeHolder,
   }) : src = _Source.asset;
 
   const RiveAnimation.network(
@@ -40,6 +43,7 @@ class RiveAnimation extends StatefulWidget {
     this.stateMachines = const [],
     this.fit,
     this.alignment,
+    this.placeHolder,
   }) : src = _Source.network;
 
   @override
@@ -150,5 +154,5 @@ class _RiveAnimationState extends State<RiveAnimation> {
           fit: widget.fit,
           alignment: widget.alignment,
         )
-      : const SizedBox();
+      : widget.placeHolder ?? const SizedBox();
 }

@@ -6,6 +6,7 @@ import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
+import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
@@ -161,7 +162,8 @@ class StateTransition extends StateTransitionBase {
         var time = exitAnimation.totalTime;
         var exitTime = exitTimeSeconds(stateFrom.state);
         var animationFrom = exitAnimation.animation;
-        if (exitTime <= animationFrom.durationSeconds) {
+        if (exitTime <= animationFrom.durationSeconds &&
+            animationFrom.loop != Loop.oneShot) {
           // Get exit time relative to the loop lastTime was in.
           exitTime += (lastTime / animationFrom.durationSeconds).floor() *
               animationFrom.durationSeconds;
