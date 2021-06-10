@@ -1,8 +1,20 @@
 import 'package:flutter/foundation.dart';
+import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/core/core.dart';
+
+/// Adds getters for linear animations and state machines
+extension RuntimeArtboardGetters on RuntimeArtboard {
+  /// Returns an iterable of linear animations in the artboard
+  Iterable<LinearAnimation> get linearAnimations =>
+      animations.whereType<LinearAnimation>();
+
+  /// Returns an iterable of state machines in the artboard
+  Iterable<StateMachine> get stateMachines =>
+      animations.whereType<StateMachine>();
+}
 
 /// This artboard type is purely for use by the runtime system and should not be
 /// directly referenced. Use the Artboard type for any direct interactions with

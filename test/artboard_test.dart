@@ -33,4 +33,10 @@ void main() {
     expect(artboard.animationByName('Animation 1') is LinearAnimationInstance,
         true);
   });
+
+  test('Linear animations can be retreived ffrom artboards', () {
+    final artboard = riveFile.mainArtboard;
+    expect(artboard.linearAnimations.toList().length, 2);
+    expect(artboard.stateMachines.toList().length, 1);
+  });
 }
