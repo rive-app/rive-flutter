@@ -15,6 +15,7 @@ class SimpleAnimation extends StatelessWidget {
         child: RiveAnimation.network(
           'https://cdn.rive.app/animations/vehicles.riv',
           fit: BoxFit.cover,
+          antialiasing: false,
         ),
       ),
     );

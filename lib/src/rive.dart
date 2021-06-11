@@ -6,6 +6,7 @@ import 'package:rive/src/rive_render_box.dart';
 import 'package:rive/src/runtime_artboard.dart';
 
 class Rive extends LeafRenderObjectWidget {
+  /// Artboard used for drawing
   final Artboard artboard;
 
   /// Determines whether to use the inherent size of the [artboard], i.e. the
@@ -27,12 +28,19 @@ class Rive extends LeafRenderObjectWidget {
   /// this to `true`.
   final bool useArtboardSize;
 
+  /// Fit for the rendering artboard
   final BoxFit fit;
+
+  /// Alignment for the rendering artboard
   final Alignment alignment;
+
+  /// Enables/disables anitalising
+  final bool antialiasing;
 
   const Rive({
     required this.artboard,
     this.useArtboardSize = false,
+    this.antialiasing = true,
     BoxFit? fit,
     Alignment? alignment,
   })  : fit = fit ?? BoxFit.contain,
@@ -40,6 +48,8 @@ class Rive extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
+    // Doing this here and not in constructor so it can remain const
+    artboard.antialiasing = antialiasing;
     return RiveRenderObject(artboard as RuntimeArtboard)
       ..fit = fit
       ..alignment = alignment
@@ -50,6 +60,7 @@ class Rive extends LeafRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, covariant RiveRenderObject renderObject) {
+    artboard.antialiasing = antialiasing;
     renderObject
       ..artboard = artboard
       ..fit = fit

@@ -15,15 +15,31 @@ enum _Source {
 /// animation are not specified, the default artboard and first animation fonund
 /// within it are used.
 class RiveAnimation extends StatefulWidget {
+  /// The asset name or url
   final String name;
+
+  /// The type of source used to retrieve the asset
   final _Source src;
+
+  /// The name of the artboard to use; default artboard if not specified
   final String? artboard;
+
+  /// List of animations to play; default animation if not specified
   final List<String> animations;
+
+  /// List of state machines to play; none will play if not specified
   final List<String> stateMachines;
+
+  /// Fit for the animation in the widget
   final BoxFit? fit;
+
+  /// Alignment for the animation in the widget
   final Alignment? alignment;
 
-  /// Widget displayed while the rive is loading.
+  /// Enable/disable antialiasing when rendering
+  final bool antialiasing;
+
+  /// Widget displayed while the rive is loading
   final Widget? placeHolder;
 
   /// Creates a new RiveAnimation from an asset bundle
@@ -35,6 +51,7 @@ class RiveAnimation extends StatefulWidget {
     this.fit,
     this.alignment,
     this.placeHolder,
+    this.antialiasing = true,
   }) : src = _Source.asset;
 
   const RiveAnimation.network(
@@ -45,6 +62,7 @@ class RiveAnimation extends StatefulWidget {
     this.fit,
     this.alignment,
     this.placeHolder,
+    this.antialiasing = true,
   }) : src = _Source.network;
 
   @override
@@ -88,23 +106,6 @@ class _RiveAnimationState extends State<RiveAnimation> {
     final res = await http.get(Uri.parse(widget.name));
     final data = ByteData.view(res.bodyBytes.buffer);
     _init(data);
-    // final client = HttpClient();
-    // final contents = <int>[];
-
-    // client
-    //     .getUrl(Uri.parse(widget.name))
-    //     .then(
-    //       (req) async => req.close(),
-    //     )
-    //     .then(
-    //       (res) => res.listen(
-    //         contents.addAll,
-    //         onDone: () {
-    //           final data = ByteData.view(Uint8List.fromList(contents).buffer);
-    //           _init(data);
-    //         },
-    //       ),
-    //     );
   }
 
   /// Initializes the artboard, animation, and controller
@@ -157,6 +158,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
           artboard: _artboard!,
           fit: widget.fit,
           alignment: widget.alignment,
+          antialiasing: widget.antialiasing,
         )
       : widget.placeHolder ?? const SizedBox();
 }
