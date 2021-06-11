@@ -35,6 +35,7 @@ class SolidColor extends SolidColorBase with ShapePaintMutator {
 
   @override
   void syncColor() {
+    super.syncColor();
     paint.color = color
         .withOpacity((color.opacity * renderOpacity).clamp(0, 1).toDouble());
   }

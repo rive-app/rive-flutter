@@ -1,11 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 
 abstract class ShapePaintMutator {
   ShapePaintContainer? _shapePaintContainer;
   Paint _paint = Paint();
+
+  /// Getter for the component's artboard
+  Artboard? get artboard;
 
   /// The container is usually either a Shape or an Artboard, basically any of
   /// the various ContainerComponents that can contain Fills or Strokes.
@@ -22,7 +26,8 @@ abstract class ShapePaintMutator {
   }
 
   @protected
-  void syncColor();
+  @mustCallSuper
+  void syncColor() => _paint.isAntiAlias = artboard?.antialiasing ?? true;
 
   @mustCallSuper
   void initializePaintMutator(ShapePaintContainer container, Paint paint) {
