@@ -1,5 +1,8 @@
+## [0.7.16] - 2021-06-11 12:00:00
+- Exposes antialiasing option in Rive and RiveAnimation widgets.
+
 ## [0.7.15] - 2021-06-10 12:00:00
-- Adds linear animation and state machine getters to RuntimeArtboard
+- Adds linear animation and state machine getters to RuntimeArtboard.
 - RiveAnimation now takes lists of animation and state machine names and plays all of them.
 
 ## [0.7.14] - 2021-06-10 11:57:35
