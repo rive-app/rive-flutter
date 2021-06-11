@@ -21,6 +21,9 @@ import 'package:rive/src/generated/artboard_base.dart';
 export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
+  /// Should antialiasing be used when drawing?
+  bool antialiasing = true;
+
   /// Artboard are one of the few (only?) components that can be orphaned.
   @override
   bool get canBeOrphaned => true;
