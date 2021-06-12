@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rive_example/example_animation.dart';
+import 'package:rive_example/play_pause_animation.dart';
 import 'package:rive_example/example_state_machine.dart';
 import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
@@ -42,7 +42,7 @@ class Home extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (context) => const ExampleAnimation(),
+                    builder: (context) => const PlayPauseAnimation(),
                   ),
                 );
               },

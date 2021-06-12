@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
 import 'package:rive/src/generated/animation/animation_state_base.dart';
@@ -217,6 +219,19 @@ class RiveFile {
   factory RiveFile.import(ByteData bytes) {
     var reader = BinaryReader(bytes);
     return RiveFile._(reader, RuntimeHeader.read(reader));
+  }
+
+  /// Imports a Rive file from an asset bundle
+  static Future<RiveFile> asset(String bundleKey) async {
+    final bytes = await rootBundle.load(bundleKey);
+    return RiveFile.import(bytes);
+  }
+
+  /// Imports a Rive file from a url over http
+  static Future<RiveFile> network(String url) async {
+    final res = await http.get(Uri.parse(url));
+    final bytes = ByteData.view(res.bodyBytes.buffer);
+    return RiveFile.import(bytes);
   }
 
   /// Returns all artboards in the file

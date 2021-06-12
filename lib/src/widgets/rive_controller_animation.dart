@@ -10,7 +10,7 @@ enum _Source {
 /// High level widget that plays an animation from a Rive file. If artboard or
 /// animation are not specified, the default artboard and first animation fonund
 /// within it are used.
-class RiveAnimation extends StatefulWidget {
+class RiveControllerAnimation extends StatefulWidget {
   /// The asset name or url
   final String name;
 
@@ -20,11 +20,8 @@ class RiveAnimation extends StatefulWidget {
   /// The name of the artboard to use; default artboard if not specified
   final String? artboard;
 
-  /// List of animations to play; default animation if not specified
-  final List<String> animations;
-
-  /// List of state machines to play; none will play if not specified
-  final List<String> stateMachines;
+  /// List of Rive controllers to attach
+  final List<RiveAnimationController> controllers;
 
   /// Fit for the animation in the widget
   final BoxFit? fit;
@@ -38,23 +35,21 @@ class RiveAnimation extends StatefulWidget {
   /// Widget displayed while the rive is loading
   final Widget? placeHolder;
 
-  /// Creates a new RiveAnimation from an asset bundle
-  const RiveAnimation.asset(
+  /// Creates a new RiveControllerAnimation from an asset bundle
+  const RiveControllerAnimation.asset(
     this.name, {
     this.artboard,
-    this.animations = const [],
-    this.stateMachines = const [],
+    this.controllers = const [],
     this.fit,
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
   }) : src = _Source.asset;
 
-  const RiveAnimation.network(
+  const RiveControllerAnimation.network(
     this.name, {
     this.artboard,
-    this.animations = const [],
-    this.stateMachines = const [],
+    this.controllers = const [],
     this.fit,
     this.alignment,
     this.placeHolder,
@@ -62,10 +57,11 @@ class RiveAnimation extends StatefulWidget {
   }) : src = _Source.network;
 
   @override
-  _RiveAnimationState createState() => _RiveAnimationState();
+  _RiveControllerAnimationState createState() =>
+      _RiveControllerAnimationState();
 }
 
-class _RiveAnimationState extends State<RiveAnimation> {
+class _RiveControllerAnimationState extends State<RiveControllerAnimation> {
   /// Rive controller
   final _controllers = <RiveAnimationController>[];
 
@@ -96,27 +92,8 @@ class _RiveAnimationState extends State<RiveAnimation> {
       throw FormatException('No animations in artboard ${artboard.name}');
     }
 
-    // Create animations
-    // If there are no animations or state machines specified, select a default
-    // animation
-    final animationNames =
-        widget.animations.isEmpty && widget.stateMachines.isEmpty
-            ? [artboard.animations.first.name]
-            : widget.animations;
-
-    animationNames.forEach((name) => artboard
-        .addController((_controllers..add(SimpleAnimation(name))).last));
-
-    // Create state machines
-    final stateMachineNames = widget.stateMachines;
-
-    stateMachineNames.forEach((name) {
-      final controller = StateMachineController.fromArtboard(artboard, name);
-      if (controller != null) {
-        artboard.addController((_controllers..add(controller)).last);
-      }
-    });
-
+    // Attach each controller to the artboard
+    widget.controllers.forEach(artboard.addController);
     setState(() => _artboard = artboard);
   }
 
