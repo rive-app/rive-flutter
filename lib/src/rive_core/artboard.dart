@@ -22,7 +22,23 @@ export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Should antialiasing be used when drawing?
-  bool antialiasing = true;
+  bool _antialiasing = true;
+
+  bool get antialiasing => _antialiasing;
+  set antialiasing(bool value) {
+    if (_antialiasing == value) {
+      return;
+    }
+    _antialiasing = value;
+    // Call syncColor on all ShapePaintMutators to update antialiasing on the
+    // paint objects
+    forAll((c) {
+      if (c is ShapePaintMutator) {
+        (c as ShapePaintMutator).syncColor();
+      }
+      return true;
+    });
+  }
 
   /// Artboard are one of the few (only?) components that can be orphaned.
   @override

@@ -25,7 +25,6 @@ abstract class ShapePaintMutator {
     }
   }
 
-  @protected
   @mustCallSuper
   void syncColor() => _paint.isAntiAlias = artboard?.antialiasing ?? true;
 
