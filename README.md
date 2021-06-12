@@ -154,6 +154,6 @@ _controller.isActiveChanged.addListener(() {
 }
 ```
 
-## More Info
+## Antialiasing
 
-For an in-depth tutorial on how to use the runtime, check out [this blog post](https://blog.rive.app/rives-flutter-runtime-part-1/).
+If you want to disable antialiasing (usually for performance reasons), you can set `antialiasing` to `false` on the `Rive` and `RiveAnimation` widgets.
