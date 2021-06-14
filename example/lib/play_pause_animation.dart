@@ -1,3 +1,5 @@
+/// Demonstrates how to play and pause a looping animation
+
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
@@ -9,10 +11,10 @@ class PlayPauseAnimation extends StatefulWidget {
 }
 
 class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
-  // Controller for playback
+  /// Controller for playback
   late RiveAnimationController _controller;
 
-  // Toggles between play and pause animation states
+  /// Toggles between play and pause animation states
   void _togglePlay() =>
       setState(() => _controller.isActive = !_controller.isActive);
 

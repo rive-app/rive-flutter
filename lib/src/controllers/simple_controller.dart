@@ -21,7 +21,6 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
   final String animationName;
 
   /// Stops the animation on the next apply
-  ///
   bool _stopOnNextApply = false;
 
   /// Pauses the animation when it's created
@@ -70,5 +69,10 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
     // the controller is re-activated after stopping, it doesn't prematurely
     // stop itself.
     _stopOnNextApply = false;
+  }
+
+  /// Resets the animation back to it's starting time position
+  void reset() {
+    _instance?.reset();
   }
 }

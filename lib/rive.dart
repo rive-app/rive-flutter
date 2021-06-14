@@ -1,6 +1,7 @@
 library rive;
 
 export 'package:rive/src/controllers/simple_controller.dart';
+export 'package:rive/src/controllers/one_shot_controller.dart';
 export 'package:rive/src/extensions.dart';
 export 'package:rive/src/extensions.dart';
 export 'package:rive/src/rive.dart';
