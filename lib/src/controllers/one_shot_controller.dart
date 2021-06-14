@@ -4,14 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:rive/src/controllers/simple_controller.dart';
 
 /// Controller tailered for managing one-shot animations
-class OnShotAnimation extends SimpleAnimation {
+class OneShotAnimation extends SimpleAnimation {
   /// Fires when the animation stops being active
   final VoidCallback? onStop;
 
   /// Fires when the animation starts being active
   final VoidCallback? onStart;
 
-  OnShotAnimation(
+  OneShotAnimation(
     String animationName, {
     double mix = 1,
     bool autoplay = true,
