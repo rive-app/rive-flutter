@@ -1,4 +1,4 @@
-/// Demonstrates play a one-shot animation on demand
+/// Demonstrates playing a one-shot animation on demand
 
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -36,7 +36,7 @@ class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
       ),
       body: Center(
         child: RiveAnimation.network(
-          'https://cdn.rive.app/vehicles.riv',
+          'https://cdn.rive.app/animations/vehicles.riv',
           animations: const ['idle', 'curves'],
           controllers: [_controller],
         ),
