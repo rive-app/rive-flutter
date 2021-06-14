@@ -1,3 +1,9 @@
+## [0.7.18] - 2021-06-14 12:00:00
+- Adds ability to pass controllers into RiveAnimation widgets
+- Adds autoplay option to SimpleAnimation controller
+- Adds one-shot animation contoller
+- Updates examples
+
 ## [0.7.17] - 2021-06-11 18:00:00
 - Exposes antialiasing option in Rive and RiveAnimation widgets.
 

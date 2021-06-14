@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rive_example/example_animation.dart';
+import 'package:rive_example/custom_controller.dart';
+import 'package:rive_example/play_one_shot_animation.dart';
+import 'package:rive_example/play_pause_animation.dart';
 import 'package:rive_example/example_state_machine.dart';
 import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
@@ -42,7 +44,21 @@ class Home extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (context) => const ExampleAnimation(),
+                    builder: (context) => const PlayPauseAnimation(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('Play One-Shot Animation'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const PlayOneShotAnimation(),
                   ),
                 );
               },
@@ -99,6 +115,20 @@ class Home extends StatelessWidget {
                   context,
                   MaterialPageRoute<void>(
                     builder: (context) => const LiquidDownload(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('Custom Controller - Speed'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const SpeedyAnimation(),
                   ),
                 );
               },
