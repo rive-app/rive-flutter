@@ -45,84 +45,46 @@ To play an animation from an asset bundle, use:
 RiveAnimation.asset('assets/truck.riv');
 ```
 
-For more info on using the Rive package, check out the [runtime help center docs](https://help.rive.app/runtimes).
-
-## Examples
-
-### Controlling animation playback
-
-Here's a simple example of showing how to control animation playback using the `Rive` widget and `RiveAnimationController`:
+Control playing and pausing a looping animation:
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class PlayPauseAnimation extends StatefulWidget {
+  const PlayPauseAnimation({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _PlayPauseAnimationState createState() => _PlayPauseAnimationState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  Artboard? _riveArtboard;
-  RiveAnimationController? _controller;
+class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
+  // Controller for playback
+  late RiveAnimationController _controller;
 
-  /// Toggles playing/pausing the animation
-  void _togglePlay() {
-    if (_controller != null) {
-      setState(() => _controller!.isActive = !_controller!.isActive);
-    }
-  }
+  // Toggles between play and pause animation states
+  void _togglePlay() =>
+      setState(() => _controller.isActive = !_controller.isActive);
 
-  /// Tracks if the animation is playing by whether controller is running.
-  bool get isPlaying => _controller?.isActive ?? false;
+  /// Tracks if the animation is playing by whether controller is running
+  bool get isPlaying => _controller.isActive;
 
   @override
   void initState() {
     super.initState();
-
-    // Load the animation file from the bundle, note that you could also
-    // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/truck.riv').then(
-      (data) async {
-        // Load the RiveFile from the binary data.
-        final file = RiveFile.import(data);
-        // The artboard is the root of the animation and gets drawn in the
-        // Rive widget.
-        final artboard = file.mainArtboard;
-        // Add a controller to play back a known animation on the main/default
-        // artboard.We store a reference to it so we can toggle playback.
-        artboard.addController(_controller = SimpleAnimation('idle'));
-        setState(() => _riveArtboard = artboard);
-      },
-    );
+    _controller = SimpleAnimation('idle');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _riveArtboard == null
-            ? const SizedBox()
-            : Rive(artboard: _riveArtboard!),
+        child: RiveAnimation.network(
+          'https://cdn.rive.app/animations/vehicles.riv',
+          controllers: [_controller],
+          // Update the play state when the widget's initialized
+          onInit: () => setState(() {}),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _togglePlay,
@@ -132,24 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
-  }
-}
-```
-
-Check out the full [example](example).
-
-### Playing a one-shot animation
-
-Rive's ```SimpleAnimation``` will automatically play a looping or ping-pong animation repeatedly, but will play a one-shot animation only once. To determine when a one-shot has completed playing, subscribe to the controller's ```isActiveChanged``` listenable:
-
-```dart
-// Listen for changes to the controller to know when an animation has
-// started or stopped playing
-_controller.isActiveChanged.addListener(() {
-  if (_controller.isActive) {
-    print('Animation started playing');
-  } else {
-    print('Animation stopped playing');
   }
 }
 ```
