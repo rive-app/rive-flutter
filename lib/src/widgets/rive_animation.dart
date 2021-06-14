@@ -1,7 +1,10 @@
+import 'dart:ui' show VoidCallback;
+
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 
+/// Specifies whether a source is from an asset bundle or http
 enum _Source {
   asset,
   network,
@@ -32,11 +35,18 @@ class RiveAnimation extends StatefulWidget {
   /// Alignment for the animation in the widget
   final Alignment? alignment;
 
+  /// Widget displayed while the rive is loading
+  final Widget? placeHolder;
+
   /// Enable/disable antialiasing when rendering
   final bool antialiasing;
 
-  /// Widget displayed while the rive is loading
-  final Widget? placeHolder;
+  /// Controllers for instanced animations and state machines; use this
+  /// to directly control animation states instead of passing names.
+  final List<RiveAnimationController> controllers;
+
+  /// Callback fired when Riveanimation has initialized
+  final VoidCallback? onInit;
 
   /// Creates a new RiveAnimation from an asset bundle
   const RiveAnimation.asset(
@@ -48,6 +58,8 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.controllers = const [],
+    this.onInit,
   }) : src = _Source.asset;
 
   const RiveAnimation.network(
@@ -59,6 +71,8 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.controllers = const [],
+    this.onInit,
   }) : src = _Source.network;
 
   @override
@@ -83,7 +97,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
     }
   }
 
-  /// Initializes the artboard, animation, and controller
+  /// Initializes the artboard, animations, state machines and controllers
   void _init(RiveFile file) {
     final artboard = widget.artboard != null
         ? file.artboardByName(widget.artboard!)
@@ -96,13 +110,13 @@ class _RiveAnimationState extends State<RiveAnimation> {
       throw FormatException('No animations in artboard ${artboard.name}');
     }
 
-    // Create animations
-    // If there are no animations or state machines specified, select a default
-    // animation
-    final animationNames =
-        widget.animations.isEmpty && widget.stateMachines.isEmpty
-            ? [artboard.animations.first.name]
-            : widget.animations;
+    // Create animations If there are no animations, state machines, or
+    // controller specified, select a default animation
+    final animationNames = widget.animations.isEmpty &&
+            widget.stateMachines.isEmpty &&
+            widget.controllers.isEmpty
+        ? [artboard.animations.first.name]
+        : widget.animations;
 
     animationNames.forEach((name) => artboard
         .addController((_controllers..add(SimpleAnimation(name))).last));
@@ -117,7 +131,13 @@ class _RiveAnimationState extends State<RiveAnimation> {
       }
     });
 
+    // Add any user-created contollers
+    widget.controllers.forEach(artboard.addController);
+
     setState(() => _artboard = artboard);
+
+    // Call the onInit callback if provided
+    widget.onInit?.call();
   }
 
   @override

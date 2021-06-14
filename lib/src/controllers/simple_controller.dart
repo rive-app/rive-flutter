@@ -17,12 +17,21 @@ import 'package:rive/src/runtime_artboard.dart';
 class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
   LinearAnimationInstance? _instance;
 
+  /// Animation name
   final String animationName;
+
+  /// Stops the animation on the next apply
+  ///
   bool _stopOnNextApply = false;
+
+  /// Pauses the animation when it's created
+  final bool autoplay;
+
+  /// Mix value for the animation, value between 0 and 1
   double _mix;
 
   // Controls the level of mix for the animation, clamped between 0 and 1
-  SimpleAnimation(this.animationName, {double mix = 1})
+  SimpleAnimation(this.animationName, {double mix = 1, this.autoplay = true})
       : _mix = mix.clamp(0, 1).toDouble();
   LinearAnimationInstance? get instance => _instance;
   double get mix => _mix;
@@ -51,7 +60,7 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
   @override
   bool init(RuntimeArtboard artboard) {
     _instance = artboard.animationByName(animationName);
-    isActive = true;
+    isActive = autoplay;
     return _instance != null;
   }
 

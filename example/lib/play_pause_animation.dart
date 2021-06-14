@@ -12,12 +12,11 @@ class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
   // Controller for playback
   late RiveAnimationController _controller;
 
-  // This will toggle between play and pause states for the animation
-  void _togglePlay() {
-    setState(() => _controller.isActive = !_controller.isActive);
-  }
+  // Toggles between play and pause animation states
+  void _togglePlay() =>
+      setState(() => _controller.isActive = !_controller.isActive);
 
-  /// Tracks if the animation is playing by whether controller is running.
+  /// Tracks if the animation is playing by whether controller is running
   bool get isPlaying => _controller.isActive;
 
   @override
@@ -33,9 +32,11 @@ class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
         title: const Text('Animation Example'),
       ),
       body: Center(
-        child: RiveControllerAnimation.network(
+        child: RiveAnimation.network(
           'https://cdn.rive.app/animations/vehicles.riv',
           controllers: [_controller],
+          // Update the play state when the widget's initialized
+          onInit: () => setState(() {}),
         ),
       ),
       floatingActionButton: FloatingActionButton(
