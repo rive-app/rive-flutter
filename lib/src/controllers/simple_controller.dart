@@ -20,9 +20,6 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
   /// Animation name
   final String animationName;
 
-  /// Stops the animation on the next apply
-  bool _stopOnNextApply = false;
-
   /// Pauses the animation when it's created
   final bool autoplay;
 
@@ -39,21 +36,19 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
 
   @override
   void apply(RuntimeArtboard artboard, double elapsedSeconds) {
-    if (_stopOnNextApply || _instance == null) {
+    if (_instance == null || !_instance!.keepGoing) {
       isActive = false;
     }
 
     // We apply before advancing. So we want to stop rendering only once the
-    // last advanced frame has been applied. This means tracking when the last
+    // last advanced frame has been applied. This means knowing when the last
     // frame is advanced, ensuring the next apply happens, and then finally
-    // stopping playback. We do this by tracking _stopOnNextApply making sure to
-    // reset it when the controller is re-activated. Fixes #28 and should help
-    // with issues #51 and #56.
-    _instance!.animation
-        .apply(_instance!.time, coreContext: artboard, mix: mix);
-    if (!_instance!.advance(elapsedSeconds)) {
-      _stopOnNextApply = true;
-    }
+    // stopping playback. We do this with keepGoing as this will be true of a
+    // one-shot has passed its stop time. Fixes #28 and should help with issues
+    // #51 and #56.
+    _instance!
+      ..animation.apply(_instance!.time, coreContext: artboard, mix: mix)
+      ..advance(elapsedSeconds);
   }
 
   @override
@@ -63,16 +58,6 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
     return _instance != null;
   }
 
-  @override
-  void onActivate() {
-    // We override onActivate to reset stopOnNextApply. This ensures that when
-    // the controller is re-activated after stopping, it doesn't prematurely
-    // stop itself.
-    _stopOnNextApply = false;
-  }
-
   /// Resets the animation back to it's starting time position
-  void reset() {
-    _instance?.reset();
-  }
+  void reset() => _instance?.reset();
 }

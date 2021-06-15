@@ -44,7 +44,7 @@ class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
       floatingActionButton: FloatingActionButton(
         // disable the button while playing the animation
         onPressed: () => _isPlaying ? null : _controller.isActive = true,
-        tooltip: 'Play',
+        tooltip: 'Bounce',
         child: const Icon(Icons.arrow_upward),
       ),
     );

@@ -28,30 +28,19 @@ class SpeedyAnimation extends StatelessWidget {
 class SpeedController extends SimpleAnimation {
   final double speedMultiplier;
 
-  /// Stops the animation on the next apply
-  bool _stopOnNextApply = false;
-
   SpeedController(
     String animationName, {
     double mix = 1,
     this.speedMultiplier = 1,
-  }) : super(
-          animationName,
-          mix: mix,
-        );
+  }) : super(animationName, mix: mix);
 
   @override
   void apply(RuntimeArtboard artboard, double elapsedSeconds) {
-    if (_stopOnNextApply || instance == null) {
+    if (instance == null || !instance!.keepGoing) {
       isActive = false;
     }
-
-    instance!.animation.apply(instance!.time, coreContext: artboard, mix: mix);
-    if (!instance!.advance(elapsedSeconds * speedMultiplier)) {
-      _stopOnNextApply = true;
-    }
+    instance!
+      ..animation.apply(instance!.time, coreContext: artboard, mix: mix)
+      ..advance(elapsedSeconds * speedMultiplier);
   }
-
-  @override
-  void onActivate() => _stopOnNextApply = false;
 }
