@@ -38,7 +38,7 @@ class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
           'https://cdn.rive.app/animations/vehicles.riv',
           controllers: [_controller],
           // Update the play state when the widget's initialized
-          onInit: () => setState(() {}),
+          onInit: (_) => setState(() {}),
         ),
       ),
       floatingActionButton: FloatingActionButton(
