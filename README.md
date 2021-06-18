@@ -123,7 +123,7 @@ class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
   @override
   void initState() {
     super.initState();
-    _controller = OnShotAnimation(
+    _controller = OneShotAnimation(
       'bounce',
       autoplay: false,
       onStop: () => setState(() => _isPlaying = false),
