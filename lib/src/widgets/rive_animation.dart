@@ -1,5 +1,3 @@
-import 'dart:ui' show VoidCallback;
-
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/artboard.dart';
@@ -9,6 +7,9 @@ enum _Source {
   asset,
   network,
 }
+
+/// The callback signature for onInit
+typedef OnInitCallback = void Function(Artboard);
 
 /// High level widget that plays an animation from a Rive file. If artboard or
 /// animation are not specified, the default artboard and first animation fonund
@@ -46,7 +47,7 @@ class RiveAnimation extends StatefulWidget {
   final List<RiveAnimationController> controllers;
 
   /// Callback fired when Riveanimation has initialized
-  final VoidCallback? onInit;
+  final OnInitCallback? onInit;
 
   /// Creates a new RiveAnimation from an asset bundle
   const RiveAnimation.asset(
@@ -137,7 +138,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
     setState(() => _artboard = artboard);
 
     // Call the onInit callback if provided
-    widget.onInit?.call();
+    widget.onInit?.call(_artboard!);
   }
 
   @override

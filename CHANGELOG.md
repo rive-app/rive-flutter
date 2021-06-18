@@ -1,3 +1,6 @@
+## [0.7.19] - 2021-06-18 12:00:00
+- BREAKING CHANGE: onInit callback now takes an artboard as a parameter
+- Adds simple state machine example
 ## [0.7.18] - 2021-06-14 12:00:00
 - Adds ability to pass controllers into RiveAnimation widgets
 - Adds autoplay option to SimpleAnimation controller
