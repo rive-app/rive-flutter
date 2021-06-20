@@ -8,7 +8,7 @@ Runtime docs are available in [Rive's help center](https://help.rive.app/runtime
 
 ```yaml
 dependencies:
-  rive: ^0.7.19
+  rive: ^0.7.20
 ```
 
 ## Quick Start
@@ -110,6 +110,10 @@ Play a one-shot animation repeatedly on demand
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
+void main() {
+  runApp(MaterialApp(home: PlayOneShotAnimation()));
+}
+
 class PlayOneShotAnimation extends StatefulWidget {
   const PlayOneShotAnimation({Key? key}) : super(key: key);
 
@@ -127,7 +131,7 @@ class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
   @override
   void initState() {
     super.initState();
-    _controller = OnShotAnimation(
+    _controller = OneShotAnimation(
       'bounce',
       autoplay: false,
       onStop: () => setState(() => _isPlaying = false),

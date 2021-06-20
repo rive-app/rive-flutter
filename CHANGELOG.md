@@ -1,3 +1,5 @@
+## [0.7.20] - 2021-06-19 19:01:10
+- Quick start fixes in README.md.
 ## [0.7.19] - 2021-06-18 12:00:00
 - BREAKING CHANGE: onInit callback now takes an artboard as a parameter
 - Adds simple state machine example
