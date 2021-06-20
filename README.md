@@ -51,6 +51,10 @@ Control playing and pausing a looping animation:
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
+void main() {
+  runApp(MaterialApp(home: PlayPauseAnimation()));
+}
+
 class PlayPauseAnimation extends StatefulWidget {
   const PlayPauseAnimation({Key? key}) : super(key: key);
 
@@ -83,7 +87,7 @@ class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
           'https://cdn.rive.app/animations/vehicles.riv',
           controllers: [_controller],
           // Update the play state when the widget's initialized
-          onInit: () => setState(() {}),
+          onInit: (_) => setState(() {}),
         ),
       ),
       floatingActionButton: FloatingActionButton(
