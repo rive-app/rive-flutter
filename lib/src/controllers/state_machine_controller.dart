@@ -119,7 +119,10 @@ class StateMachineController extends core.StateMachineController {
   /// A list of inputs available in the StateMachine.
   Iterable<SMIInput> get inputs => _inputs;
 
-  StateMachineController(StateMachine stateMachine) : super(stateMachine) {
+  StateMachineController(
+    StateMachine stateMachine, {
+    core.OnStateChange? onStateChange,
+  }) : super(stateMachine, onStateChange: onStateChange) {
     isActive = true;
     for (final input in stateMachine.inputs) {
       switch (input.coreType) {
@@ -140,10 +143,13 @@ class StateMachineController extends core.StateMachineController {
   /// [stateMachineName]. Returns the [StateMachineController] or null if no
   /// [StateMachine] with [stateMachineName] is found.
   static StateMachineController? fromArtboard(
-      Artboard artboard, String stateMachineName) {
+    Artboard artboard,
+    String stateMachineName, {
+    core.OnStateChange? onStateChange,
+  }) {
     for (final animation in artboard.animations) {
       if (animation is StateMachine && animation.name == stateMachineName) {
-        return StateMachineController(animation);
+        return StateMachineController(animation, onStateChange: onStateChange);
       }
     }
     return null;

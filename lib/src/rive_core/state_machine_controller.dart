@@ -2,8 +2,12 @@ import 'dart:collection';
 
 import 'package:rive/src/core/core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
+import 'package:rive/src/rive_core/animation/entry_state.dart';
+import 'package:rive/src/rive_core/animation/exit_state.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
@@ -11,6 +15,12 @@ import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
+
+/// Callback signature for satate machine state changes
+typedef OnStateChange = void Function(String, String);
+
+/// Callback signature for layer state changes
+typedef OnLayerStateChange = void Function(LayerState);
 
 class LayerController {
   final StateMachineLayer layer;
@@ -23,7 +33,11 @@ class LayerController {
   double _mix = 1.0;
   double _mixFrom = 1.0;
 
-  LayerController(this.layer)
+  /// Optional callback which is called when a state changes
+  /// Takes the state machine name and state name
+  final OnLayerStateChange? onLayerStateChange;
+
+  LayerController(this.layer, {this.onLayerStateChange})
       : assert(layer.anyState != null),
         anyStateInstance = layer.anyState!.makeInstance() {
     _changeState(layer.entryState);
@@ -167,6 +181,10 @@ class LayerController {
         // Make sure to reset _waitingForExit to false if we succeed at taking a
         // transition.
         _waitingForExit = false;
+        // State has changed, fire the callback if there's one
+        if (_currentState != null) {
+          onLayerStateChange?.call(_currentState!.state);
+        }
         return true;
       } else if (allowed == AllowTransition.waitingForExit) {
         _waitingForExit = true;
@@ -179,8 +197,13 @@ class LayerController {
 class StateMachineController extends RiveAnimationController<CoreContext> {
   final StateMachine stateMachine;
   final inputValues = HashMap<int, dynamic>();
-  StateMachineController(this.stateMachine);
   final layerControllers = <LayerController>[];
+
+  /// Optional callback for state changes
+  final OnStateChange? onStateChange;
+
+  /// Constructor that takes a state machine and optional state change callback
+  StateMachineController(this.stateMachine, {this.onStateChange});
 
   void _clearLayerControllers() {
     for (final layer in layerControllers) {
@@ -189,12 +212,33 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     layerControllers.clear();
   }
 
+  /// Handles state change callbacks
+  void _onStateChange(LayerState layerState) =>
+      SchedulerBinding.instance?.addPostFrameCallback((_) {
+        String stateName = 'unknown';
+        print('Layer state type ${layerState.runtimeType}');
+        if (layerState is AnimationState && layerState.animation != null) {
+          stateName = layerState.animation!.name;
+        } else if (layerState is EntryState) {
+          stateName = 'EntryState';
+        } else if (layerState is AnyState) {
+          stateName = 'EntryState';
+        } else if (layerState is ExitState) {
+          stateName = 'ExitState';
+        }
+
+        onStateChange?.call(stateMachine.name, stateName);
+      });
+
   @override
   bool init(CoreContext core) {
     _clearLayerControllers();
 
     for (final layer in stateMachine.layers) {
-      layerControllers.add(LayerController(layer));
+      layerControllers.add(LayerController(
+        layer,
+        onLayerStateChange: _onStateChange,
+      ));
     }
 
     // Make sure triggers are all reset.
