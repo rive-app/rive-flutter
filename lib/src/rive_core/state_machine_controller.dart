@@ -1,10 +1,13 @@
 import 'dart:collection';
 
-import 'package:flutter/scheduler.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
+import 'package:rive/src/rive_core/animation/entry_state.dart';
+import 'package:rive/src/rive_core/animation/exit_state.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
@@ -12,10 +15,6 @@ import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
-
-import 'animation/animation_state.dart';
-import 'animation/entry_state.dart';
-import 'animation/exit_state.dart';
 
 /// Callback signature for satate machine state changes
 typedef OnStateChange = void Function(String, String);
