@@ -15,6 +15,9 @@ class _LittleMachineState extends State<LittleMachine> {
   /// Tracks if the animation is playing by whether controller is running.
   bool get isPlaying => _controller?.isActive ?? false;
 
+  /// Message that displays when state has changed
+  String stateChangeMessage = '';
+
   Artboard? _riveArtboard;
   StateMachineController? _controller;
   SMIInput<bool>? _trigger;
@@ -33,8 +36,11 @@ class _LittleMachineState extends State<LittleMachine> {
         // The artboard is the root of the animation and gets drawn in the
         // Rive widget.
         final artboard = file.mainArtboard;
-        var controller =
-            StateMachineController.fromArtboard(artboard, 'State Machine 1');
+        var controller = StateMachineController.fromArtboard(
+          artboard,
+          'State Machine 1',
+          onStateChange: _onStateChange,
+        );
         if (controller != null) {
           artboard.addController(controller);
           _trigger = controller.findInput('Trigger 1');
@@ -43,6 +49,12 @@ class _LittleMachineState extends State<LittleMachine> {
       },
     );
   }
+
+  /// Do something when the state machine changes state
+  void _onStateChange(String stateMachineName, String stateName) => setState(
+        () => stateChangeMessage =
+            'State Changed in $stateMachineName to $stateName',
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +83,9 @@ class _LittleMachineState extends State<LittleMachine> {
                         artboard: _riveArtboard!,
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    Text('$stateChangeMessage'),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
