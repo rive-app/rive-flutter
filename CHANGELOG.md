@@ -1,3 +1,6 @@
+## [0.7.22] - 2021-06-22 11:03:32
+- Stroke don't draw when their thickness is 0.
+
 ## [0.7.21] - 2021-06-21 14:00:00
 - Adds onStateChange callback to state machine controllers
 
