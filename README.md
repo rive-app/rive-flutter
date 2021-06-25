@@ -1,4 +1,10 @@
-# Rive [![Pub Version](https://img.shields.io/pub/v/rive)](https://pub.dev/packages/rive)
+[![Pub Version](https://img.shields.io/pub/v/rive)](https://pub.dev/packages/rive)
+![Build Status](https://github.com/rive-app/rive-flutter/actions/workflows/tests.yaml/badge.svg) 
+![Discord badge](https://img.shields.io/discord/532365473602600965)
+![Twitter handle](https://img.shields.io/twitter/follow/rive_app.svg?style=social&label=Follow)
+
+
+# Rive 
 
 Runtime docs are available in [Rive's help center](https://help.rive.app/runtimes/quick-start).
 
