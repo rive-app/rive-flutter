@@ -7,16 +7,15 @@ assignees: ''
 
 ---
 
-<-- 
-Thanks for using Rive!
+<-- Thanks for using Rive!
 
 If something isn't working like you expected, please:
-- Make sure you've updated to rive-flutter to the latest version:
+- Make sure you've updated rive-flutter to the latest version:
 			https://pub.dev/packages/rive/versions
 - Check out our help center
 			https://help.rive.app/
 
-   If you found a bug or if you can't find what you're looking for 
+   If you think you found a bug or if you can't find what you're looking for 
 in our docs, fill out the template below.
 -->
 
@@ -32,8 +31,9 @@ Steps to reproduce the behavior:
 
 #### Source `.riv`/`.rev` file
 <-- 
-	Attaching the source `.riv` file that reproduces the issue is immensely helpful for our team to identify the problem as fast as possible and fix it.
-	If you can also attach the source (`.rev`) by [downloading a backup](https://help.rive.app/editor/exporting#for-backup) from the Editor, that will help us speed things up too.
+	Attaching the runtime-exported `.riv` file that reproduces the issue is immensely helpful for our team to identify the problem as fast as possible and fix it.
+	Please also include the source (`.rev`) by [downloading a backup](https://help.rive.app/editor/exporting#for-backup) from the Editor. 
+	You can also privately share the `.riv`/`.rev` file with us at hello@rive.app.
 -->
 
 ### Expected behavior
