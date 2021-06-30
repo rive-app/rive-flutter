@@ -14,9 +14,12 @@ If something isn't working like you expected, please:
 			https://pub.dev/packages/rive/versions
 - Check out our help center
 			https://help.rive.app/
-
-   If you think you found a bug or if you can't find what you're looking for 
+- You can file a new feature request at
+			https://feedback.rive.app/
+			
+If you think you found a bug or if you can't find what you're looking for 
 in our docs, fill out the template below.
+
 -->
 
 ### Description
@@ -31,9 +34,12 @@ Steps to reproduce the behavior:
 
 #### Source `.riv`/`.rev` file
 <-- 
-	Attaching the runtime-exported `.riv` file that reproduces the issue is immensely helpful for our team to identify the problem as fast as possible and fix it.
-	Please also include the source (`.rev`) by [downloading a backup](https://help.rive.app/editor/exporting#for-backup) from the Editor. 
-	You can also privately share the `.riv`/`.rev` file with us at hello@rive.app.
+Attaching runtime-exported `.riv` file that reproduces the issue is immensely helpful for our team to identify the problem as fast as possible and fix it.
+Please also include the source (`.rev`) by [downloading a backup](https://help.rive.app/editor/exporting#for-backup) from the Editor. 
+	
+N.B. Because GitHub only supports certain file types use a ZIP archive to upload `.riv`/`.rev` files to this issue.
+
+You can also privately share the `.riv`/`.rev` file with us at hello@rive.app.
 -->
 
 ### Expected behavior
@@ -41,19 +47,20 @@ Steps to reproduce the behavior:
 
 #### Screenshots
 <-- If applicable, add screenshots to help explain your problem. -->
+
 ![Screenshot](url)
 
 ### Device & Versions (please complete the following information)
 - Device: [e.g. Android Emulator, iOS Simulator] 
 - OS: [e.g. Android SDK API Level 30, iOS 14.5]
 - Flutter Version: Copy-paste the output of `flutter --version`
-	e.g.:
-	```
-	Flutter 2.2.2 • channel stable • https://github.com/flutter/flutter.git
-	Framework • revision d79295af24 (2 weeks ago) • 2021-06-11 08:56:01 -0700
-	Engine • revision 91c9fc8fe0
-	Tools • Dart 2.13.3
-	```
+e.g.:
+```
+Flutter 2.2.2 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 12a3456bc7 (2 eons ago) • 1970-01-01 08:56:01
+Engine • revision 12a3456bc7
+Tools • Dart 1.10.1
+```
 
 #### Additional context
 <-- Add any other context about the problem here. -->
