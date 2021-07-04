@@ -135,7 +135,9 @@ class _RiveAnimationState extends State<RiveAnimation> {
     // Add any user-created contollers
     widget.controllers.forEach(artboard.addController);
 
+    if(mounted){
     setState(() => _artboard = artboard);
+    }
 
     // Call the onInit callback if provided
     widget.onInit?.call(_artboard!);
