@@ -1,9 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:rive/src/generated/shapes/cubic_vertex_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
-import 'package:rive/src/generated/shapes/cubic_vertex_base.dart';
+
 export 'package:rive/src/generated/shapes/cubic_vertex_base.dart';
 
 abstract class CubicVertex extends CubicVertexBase {

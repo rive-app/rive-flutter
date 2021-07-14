@@ -1,9 +1,9 @@
+import 'package:meta/meta.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 
 import 'package:rive/src/rive_core/shapes/paint/fill.dart';
-import 'package:meta/meta.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 
@@ -71,7 +71,7 @@ abstract class ShapePaintContainer {
   /// ShapePaintContainer to ContainerComponent/Shape/Artboard/etc.
   bool addDirt(int value, {bool recurse = false});
 
-  bool addDependent(Component dependent);
+  bool addDependent(Component dependent, {Component? via});
   void appendChild(Component child);
   Mat2D get worldTransform;
   Vec2D get worldTranslation;

@@ -1,11 +1,11 @@
-import 'package:rive/src/core/core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/container_component.dart';
-
-import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/utilities/dependency_sorter.dart';
 import 'package:rive/src/utilities/tops.dart';
+
 export 'package:rive/src/generated/component_base.dart';
 
 abstract class Component extends ComponentBase<RuntimeArtboard>
@@ -140,7 +140,11 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @override
   Set<Component> get dependents => _dependents;
 
-  bool addDependent(Component dependent) {
+  /// Mark [dependent] as a component which must update after this. Provide
+  /// [via] as the Component registering the dependency when it is not
+  /// [dependent] itself. At edit time this allows the editor to rebuild both
+  /// [dependent] and [via] when [dependent] has its dependencies cleared.
+  bool addDependent(Component dependent, {Component? via}) {
     assert(artboard == dependent.artboard,
         'Components must be in the same artboard.');
 
@@ -164,15 +168,14 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     }
   }
 
-  @mustCallSuper
-  void buildDependencies() {
+  void clearDependencies() {
     for (final parentDep in _dependsOn) {
       parentDep._dependents.remove(this);
     }
     _dependsOn.clear();
-    // by default a component depends on nothing (likely it will depend on the
-    // parent but we leave that for specific implementations to supply).
   }
+
+  void buildDependencies() {}
 
   /// Something we depend on has been removed. It's important to clear out any
   /// stored references to that dependency so it can be garbage collected (if

@@ -1,0 +1,275 @@
+import 'dart:math';
+
+import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
+import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/bones/bone.dart';
+import 'package:rive/src/rive_core/math/mat2d.dart';
+import 'package:rive/src/rive_core/math/transform_components.dart';
+import 'package:rive/src/rive_core/math/vec2d.dart';
+import 'package:rive/src/rive_core/transform_component.dart';
+
+export 'package:rive/src/generated/constraints/ik_constraint_base.dart';
+
+/// A constraint which rotates its constrained bone and the parentBoneCount
+/// bones above it in order to move the tip of the constrained bone towards the
+/// target.
+class IKConstraint extends IKConstraintBase {
+  @override
+  void invertDirectionChanged(bool from, bool to) => markConstraintDirty();
+
+  @override
+  void parentBoneCountChanged(int from, int to) {}
+
+  @override
+  void markConstraintDirty() {
+    super.markConstraintDirty();
+
+    // We automatically propagate dirt to the parent constrained bone, but we
+    // also need to make sure the other bones we influence above it rebuild
+    // their transforms.
+    for (int i = 0; i < _fkChain.length - 1; i++) {
+      _fkChain[i].bone.markTransformDirty();
+    }
+  }
+
+  /// The list of bones in FK order.
+  final List<_BoneChainLink> _fkChain = [];
+  @override
+  void buildDependencies() {
+    super.buildDependencies();
+
+    parent!.addDependent(this);
+
+    // Rebuild the FK chain when we update dependencies.
+    _fkChain.clear();
+    var boneCount = parentBoneCount;
+    var bone = parent as Bone;
+    var bones = <Bone>[bone];
+    // Get the reverse FK chain of bones (from tip up).
+    while (bone.parent is Bone && boneCount > 0) {
+      boneCount--;
+      bone = bone.parent as Bone;
+      bones.add(bone);
+    }
+    // Now put them in FK order (top to bottom).
+    for (final bone in bones.reversed) {
+      _fkChain.add(_BoneChainLink(
+        index: _fkChain.length,
+        bone: bone,
+      ));
+    }
+
+    // Make sure all of the first level children of each bone depend on the
+    // tip (constrainedComponent).
+    var tip = parent as Bone;
+    for (final bone in bones.skip(1)) {
+      for (final child in bone.children) {
+        if (child is TransformComponent && !bones.contains(child)) {
+          tip.addDependent(child, via: this);
+        }
+      }
+    }
+  }
+
+  @override
+  bool validate() => super.validate() && parent is Bone;
+
+  @override
+  void constrain(TransformComponent component) {
+    if (target == null) {
+      return;
+    }
+
+    var worldTargetTranslation = target!.worldTranslation;
+    // Decompose the chain.
+    for (final item in _fkChain) {
+      var bone = item.bone;
+      Mat2D parentWorld = _parentWorld(bone);
+
+      Mat2D.invert(item.parentWorldInverse, parentWorld);
+
+      var boneTransform = bone.transform;
+      Mat2D.multiply(
+          boneTransform, item.parentWorldInverse, bone.worldTransform);
+      Mat2D.decompose(boneTransform, item.transformComponents);
+    }
+
+    switch (_fkChain.length) {
+      case 1:
+        solve1(_fkChain.first, worldTargetTranslation);
+        break;
+      case 2:
+        solve2(_fkChain[0], _fkChain[1], worldTargetTranslation);
+        break;
+      default:
+        {
+          var last = _fkChain.length - 1;
+          var tip = _fkChain[last];
+          for (int i = 0; i < last; i++) {
+            var item = _fkChain[i];
+            solve2(item, tip, worldTargetTranslation);
+            for (int j = item.index + 1, end = _fkChain.length - 1;
+                j < end;
+                j++) {
+              var fk = _fkChain[j];
+              Mat2D.invert(fk.parentWorldInverse, _parentWorld(fk.bone));
+            }
+          }
+          break;
+        }
+    }
+
+    // At the end, mix the FK angle with the IK angle by strength
+    if (strength != 1.0) {
+      for (final fk in _fkChain) {
+        var fromAngle = fk.transformComponents.rotation % (pi * 2);
+        var toAngle = fk.angle % (pi * 2);
+        var diff = toAngle - fromAngle;
+        if (diff > pi) {
+          diff -= pi * 2;
+        } else if (diff < -pi) {
+          diff += pi * 2;
+        }
+        var angle = fromAngle + diff * strength;
+        _constrainRotation(fk, angle);
+      }
+    }
+  }
+
+  void solve1(_BoneChainLink fk1, Vec2D worldTargetTranslation) {
+    Mat2D iworld = fk1.parentWorldInverse;
+    var pA = fk1.bone.worldTranslation;
+    var pBT = Vec2D.clone(worldTargetTranslation);
+
+    // To target in worldspace
+    var toTarget = Vec2D.subtract(Vec2D(), pBT, pA);
+
+    // Note this is directional, hence not transformMat2d
+    Vec2D toTargetLocal = Vec2D.transformMat2(Vec2D(), toTarget, iworld);
+    var r = atan2(toTargetLocal[1], toTargetLocal[0]);
+
+    _constrainRotation(fk1, r);
+    fk1.angle = r;
+  }
+
+  void solve2(
+      _BoneChainLink fk1, _BoneChainLink fk2, Vec2D worldTargetTranslation) {
+    Bone b1 = fk1.bone;
+    Bone b2 = fk2.bone;
+    var firstChild = _fkChain[fk1.index + 1];
+
+    var iworld = fk1.parentWorldInverse;
+
+    var pA = b1.worldTranslation;
+    var pC = firstChild.bone.worldTranslation;
+    var pB = b2.tipWorldTranslation;
+    var pBT = Vec2D.clone(worldTargetTranslation);
+
+    Vec2D.transformMat2D(pA, pA, iworld);
+    Vec2D.transformMat2D(pC, pC, iworld);
+    Vec2D.transformMat2D(pB, pB, iworld);
+    Vec2D.transformMat2D(pBT, pBT, iworld);
+
+    // http://mathworld.wolfram.com/LawofCosines.html
+
+    var av = Vec2D.subtract(Vec2D(), pB, pC);
+    var a = Vec2D.length(av);
+
+    var bv = Vec2D.subtract(Vec2D(), pC, pA);
+    var b = Vec2D.length(bv);
+
+    var cv = Vec2D.subtract(Vec2D(), pBT, pA);
+    var c = Vec2D.length(cv);
+
+    var A = acos(max(-1, min(1, (-a * a + b * b + c * c) / (2 * b * c))));
+    var C = acos(max(-1, min(1, (a * a + b * b - c * c) / (2 * a * b))));
+
+    double r1, r2;
+    if (b2.parent != b1) {
+      var secondChild = _fkChain[fk1.index + 2];
+
+      var secondChildWorldInverse = secondChild.parentWorldInverse;
+
+      pC = firstChild.bone.worldTranslation;
+      pB = b2.tipWorldTranslation;
+
+      var avec = Vec2D.subtract(Vec2D(), pB, pC);
+
+      var avLocal = Vec2D.transformMat2(Vec2D(), avec, secondChildWorldInverse);
+      var angleCorrection = -atan2(avLocal[1], avLocal[0]);
+
+      if (invertDirection) {
+        r1 = atan2(cv[1], cv[0]) - A;
+        r2 = -C + pi + angleCorrection;
+      } else {
+        r1 = A + atan2(cv[1], cv[0]);
+        r2 = C - pi + angleCorrection;
+      }
+    } else if (invertDirection) {
+      r1 = atan2(cv[1], cv[0]) - A;
+      r2 = -C + pi;
+    } else {
+      r1 = A + atan2(cv[1], cv[0]);
+      r2 = C - pi;
+    }
+    _constrainRotation(fk1, r1);
+    _constrainRotation(firstChild, r2);
+    if (firstChild != fk2) {
+      var bone = fk2.bone;
+      Mat2D.multiply(bone.worldTransform, _parentWorld(bone), bone.transform);
+    }
+
+    // Simple storage, need this for interpolation.
+    fk1.angle = r1;
+    firstChild.angle = r2;
+  }
+}
+
+class _BoneChainLink {
+  final int index;
+  final Bone bone;
+  double angle = 0;
+  TransformComponents transformComponents = TransformComponents();
+  Mat2D parentWorldInverse = Mat2D();
+
+  _BoneChainLink({
+    required this.index,
+    required this.bone,
+  });
+}
+
+void _constrainRotation(_BoneChainLink link, double rotation) {
+  var bone = link.bone;
+  Mat2D parentWorld = _parentWorld(bone);
+  var boneTransform = bone.transform;
+  if (rotation == 0) {
+    Mat2D.setIdentity(boneTransform);
+  } else {
+    Mat2D.fromRotation(boneTransform, rotation);
+  }
+  var c = link.transformComponents;
+  boneTransform[4] = c.x;
+  boneTransform[5] = c.y;
+  var scaleX = c.scaleX;
+  var scaleY = c.scaleY;
+  boneTransform[0] *= scaleX;
+  boneTransform[1] *= scaleX;
+  boneTransform[2] *= scaleY;
+  boneTransform[3] *= scaleY;
+
+  var skew = c.skew;
+  if (skew != 0) {
+    boneTransform[2] = boneTransform[0] * skew + boneTransform[2];
+    boneTransform[3] = boneTransform[1] * skew + boneTransform[3];
+  }
+  Mat2D.multiply(bone.worldTransform, parentWorld, boneTransform);
+}
+
+Mat2D _parentWorld(TransformComponent component) {
+  var parent = component.parent;
+  if (parent is Artboard) {
+    return parent.worldTransform;
+  } else {
+    return (parent as TransformComponent).worldTransform;
+  }
+}

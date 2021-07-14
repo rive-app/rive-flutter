@@ -1,8 +1,9 @@
 import 'dart:collection';
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
+import 'package:rive/src/rive_core/animation/state_machine.dart';
+
 export 'package:rive/src/generated/animation/state_machine_component_base.dart';
 
 /// Implemented by state machine inputs and layers.

@@ -1,9 +1,10 @@
 import 'dart:ui';
 
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/artboard_base.dart';
+import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
-import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
@@ -15,8 +16,6 @@ import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive/src/utilities/dependency_sorter.dart';
-
-import 'package:rive/src/generated/artboard_base.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
@@ -448,4 +447,21 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     throw UnsupportedError(
         'Instancing the artboard in the editor isn\'t supported');
   }
+
+  // void rebuildDependencies() {
+  //   for (final component in _components) {
+  //     component.dependents.clear();
+  //   }
+  //   for (final component in _components) {
+  //     component.buildDependencies();
+  //   }
+  //   for (final component in _components) {
+  //     component.dependentIds = component.dependents
+  //         // Make sure non-core (won't resolve on server) items aren't
+  //         // included
+  //         .where((other) => other.isActive)
+  //         .map((other) => other.id)
+  //         .toList(growable: false);
+  //   }
+  // }
 }
