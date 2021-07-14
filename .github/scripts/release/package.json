@@ -1,0 +1,14 @@
+{
+    "name": "release",
+    "description": "",
+    "scripts": {
+        "release": "release-it"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@release-it/bumper": "^2.0.0",
+        "auto-changelog": "^2.3.0",
+        "release-it": "^14.10.0"
+    }
+}
