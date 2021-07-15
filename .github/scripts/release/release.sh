@@ -13,7 +13,3 @@ cider version $RELEASE_VERSION
 popd
 
 npm run release -- --ci
-
-pushd ../../../
-dart pub publish -f
-popd
