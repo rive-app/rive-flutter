@@ -38,9 +38,13 @@ jobs:
         run: |
           git config --local user.email 'hello@rive.app'
           git config --local user.name ${{ github.actor }}
-      - name: Publish
+      - name: Release
         run: ./release.sh
         working-directory: ./.github/scripts/release
         env:
           GITHUB_AUTHOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
+      - name: Publish
+        run: |
+          cat ~/.pub-cache/credentials.json
+          dart pub publish -f
