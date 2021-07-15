@@ -34,6 +34,10 @@ jobs:
             "expiration": 1624388694898
           }
           EOF
+      - name: Git config
+        run: |
+          git config --local user.email 'hello@rive.app'
+          git config --local user.name ${{ github.actor }}
       - name: Publish
         run: ./release.sh
         working-directory: ./.github/scripts/release
