@@ -28,7 +28,8 @@
         "after:bump": [
             "npx auto-changelog -p --commit-limit false --template changelog.hbs --prepend -o ../../../CHANGELOG.md",
             "git add ../../../CHANGELOG.md",
-            "git add ../../../VERSION"
+            "git add ../../../VERSION",
+            "git add ../../../pubspec.yaml"
         ]
     }
 }

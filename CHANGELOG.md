@@ -1,12 +1,3 @@
-## 0.7.27
-- Automate pub.dev publishing. [`#152`](https://github.com/rive-app/rive-flutter/pull/152)
-
-## 0.7.26
-- Attempting release again. [`#151`](https://github.com/rive-app/rive-flutter/pull/151)
-
-## 0.7.25
-- IK Support [`#150`](https://github.com/rive-app/rive-flutter/pull/150)
-
 ## 0.7.22 - (2021-06-22)
 - Stroke don't draw when their thickness is 0.
 
