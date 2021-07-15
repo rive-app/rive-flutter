@@ -22,12 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
         working-directory: ./.github/scripts/release
-      - name: Setup pub.dev credentials
-        run: |
-          mkdir -p ~/.pub-cache 
-          cat <<EOF > ~/.pub-cache/credentials.json
-          ${{ secrets.PUB_DEV_CREDENTIALS }}
-          EOF
       - name: Git config
         run: |
           git config --local user.email 'hello@rive.app'
@@ -38,6 +32,3 @@ jobs:
         env:
           GITHUB_AUTHOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
-      - name: Publish
-        run: |
-          dart pub publish -f
