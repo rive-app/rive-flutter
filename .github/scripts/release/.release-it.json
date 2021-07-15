@@ -1,8 +1,8 @@
 {
     "git": {
+        "requireCleanWorkingDir": false,
         "commitMessage": "chore: release v${version}",
-        "tagName": "${version}",
-        "changelog": "npx auto-changelog --stdout --commit-limit false --unreleased --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
+        "tagName": "${version}"
     },
     "github": {
         "release": true,
@@ -26,7 +26,7 @@
     },
     "hooks": {
         "after:bump": [
-            "npx auto-changelog -p --starting-version 0.3.0 -o ../../../CHANGELOG.md",
+            "npx auto-changelog -p --commit-limit false --template changelog.hbs --prepend -o ../../../CHANGELOG.md",
             "git add ../../../CHANGELOG.md",
             "git add ../../../VERSION"
         ]
