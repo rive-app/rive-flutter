@@ -45,6 +45,9 @@ import 'package:rive/src/generated/bones/skin_base.dart';
 import 'package:rive/src/generated/bones/tendon_base.dart';
 import 'package:rive/src/generated/bones/weight_base.dart';
 import 'package:rive/src/generated/component_base.dart';
+import 'package:rive/src/generated/constraints/constraint_base.dart';
+import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
+import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
 import 'package:rive/src/generated/draw_rules_base.dart';
 import 'package:rive/src/generated/draw_target_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
@@ -107,6 +110,7 @@ import 'package:rive/src/rive_core/bones/root_bone.dart';
 import 'package:rive/src/rive_core/bones/skin.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
+import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/node.dart';
@@ -136,6 +140,8 @@ class RiveCoreContext {
     switch (typeKey) {
       case DrawTargetBase.typeKey:
         return DrawTarget();
+      case IKConstraintBase.typeKey:
+        return IKConstraint();
       case AnimationStateBase.typeKey:
         return AnimationState();
       case KeyedObjectBase.typeKey:
@@ -271,6 +277,26 @@ class RiveCoreContext {
       case DrawTargetBase.placementValuePropertyKey:
         if (object is DrawTargetBase && value is int) {
           object.placementValue = value;
+        }
+        break;
+      case ConstraintBase.strengthPropertyKey:
+        if (object is ConstraintBase && value is double) {
+          object.strength = value;
+        }
+        break;
+      case TargetedConstraintBase.targetIdPropertyKey:
+        if (object is TargetedConstraintBase && value is int) {
+          object.targetId = value;
+        }
+        break;
+      case IKConstraintBase.invertDirectionPropertyKey:
+        if (object is IKConstraintBase && value is bool) {
+          object.invertDirection = value;
+        }
+        break;
+      case IKConstraintBase.parentBoneCountPropertyKey:
+        if (object is IKConstraintBase && value is int) {
+          object.parentBoneCount = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -879,8 +905,8 @@ class RiveCoreContext {
   static CoreFieldType stringType = CoreStringType();
   static CoreFieldType uintType = CoreUintType();
   static CoreFieldType doubleType = CoreDoubleType();
-  static CoreFieldType colorType = CoreColorType();
   static CoreFieldType boolType = CoreBoolType();
+  static CoreFieldType colorType = CoreColorType();
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
@@ -890,6 +916,8 @@ class RiveCoreContext {
       case ComponentBase.parentIdPropertyKey:
       case DrawTargetBase.drawableIdPropertyKey:
       case DrawTargetBase.placementValuePropertyKey:
+      case TargetedConstraintBase.targetIdPropertyKey:
+      case IKConstraintBase.parentBoneCountPropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
       case BlendAnimationBase.animationIdPropertyKey:
@@ -931,6 +959,7 @@ class RiveCoreContext {
       case DrawRulesBase.drawTargetIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
         return uintType;
+      case ConstraintBase.strengthPropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
       case TransitionNumberConditionBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
@@ -1000,10 +1029,7 @@ class RiveCoreContext {
       case TendonBase.txPropertyKey:
       case TendonBase.tyPropertyKey:
         return doubleType;
-      case KeyFrameColorBase.valuePropertyKey:
-      case SolidColorBase.colorValuePropertyKey:
-      case GradientStopBase.colorValuePropertyKey:
-        return colorType;
+      case IKConstraintBase.invertDirectionPropertyKey:
       case LinearAnimationBase.enableWorkAreaPropertyKey:
       case StateMachineBoolBase.valuePropertyKey:
       case ShapePaintBase.isVisiblePropertyKey:
@@ -1012,6 +1038,10 @@ class RiveCoreContext {
       case RectangleBase.linkCornerRadiusPropertyKey:
       case ClippingShapeBase.isVisiblePropertyKey:
         return boolType;
+      case KeyFrameColorBase.valuePropertyKey:
+      case SolidColorBase.colorValuePropertyKey:
+      case GradientStopBase.colorValuePropertyKey:
+        return colorType;
       default:
         return null;
     }
@@ -1037,6 +1067,10 @@ class RiveCoreContext {
         return (object as DrawTargetBase).drawableId;
       case DrawTargetBase.placementValuePropertyKey:
         return (object as DrawTargetBase).placementValue;
+      case TargetedConstraintBase.targetIdPropertyKey:
+        return (object as TargetedConstraintBase).targetId;
+      case IKConstraintBase.parentBoneCountPropertyKey:
+        return (object as IKConstraintBase).parentBoneCount;
       case AnimationStateBase.animationIdPropertyKey:
         return (object as AnimationStateBase).animationId;
       case KeyedObjectBase.objectIdPropertyKey:
@@ -1123,6 +1157,8 @@ class RiveCoreContext {
 
   static double getDouble(Core object, int propertyKey) {
     switch (propertyKey) {
+      case ConstraintBase.strengthPropertyKey:
+        return (object as ConstraintBase).strength;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
       case TransitionNumberConditionBase.valuePropertyKey:
@@ -1263,20 +1299,10 @@ class RiveCoreContext {
     return 0.0;
   }
 
-  static int getColor(Core object, int propertyKey) {
-    switch (propertyKey) {
-      case KeyFrameColorBase.valuePropertyKey:
-        return (object as KeyFrameColorBase).value;
-      case SolidColorBase.colorValuePropertyKey:
-        return (object as SolidColorBase).colorValue;
-      case GradientStopBase.colorValuePropertyKey:
-        return (object as GradientStopBase).colorValue;
-    }
-    return 0;
-  }
-
   static bool getBool(Core object, int propertyKey) {
     switch (propertyKey) {
+      case IKConstraintBase.invertDirectionPropertyKey:
+        return (object as IKConstraintBase).invertDirection;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         return (object as LinearAnimationBase).enableWorkArea;
       case StateMachineBoolBase.valuePropertyKey:
@@ -1293,6 +1319,18 @@ class RiveCoreContext {
         return (object as ClippingShapeBase).isVisible;
     }
     return false;
+  }
+
+  static int getColor(Core object, int propertyKey) {
+    switch (propertyKey) {
+      case KeyFrameColorBase.valuePropertyKey:
+        return (object as KeyFrameColorBase).value;
+      case SolidColorBase.colorValuePropertyKey:
+        return (object as SolidColorBase).colorValue;
+      case GradientStopBase.colorValuePropertyKey:
+        return (object as GradientStopBase).colorValue;
+    }
+    return 0;
   }
 
   static void setString(Core object, int propertyKey, String value) {
@@ -1330,6 +1368,16 @@ class RiveCoreContext {
       case DrawTargetBase.placementValuePropertyKey:
         if (object is DrawTargetBase) {
           object.placementValue = value;
+        }
+        break;
+      case TargetedConstraintBase.targetIdPropertyKey:
+        if (object is TargetedConstraintBase) {
+          object.targetId = value;
+        }
+        break;
+      case IKConstraintBase.parentBoneCountPropertyKey:
+        if (object is IKConstraintBase) {
+          object.parentBoneCount = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -1537,6 +1585,11 @@ class RiveCoreContext {
 
   static void setDouble(Core object, int propertyKey, double value) {
     switch (propertyKey) {
+      case ConstraintBase.strengthPropertyKey:
+        if (object is ConstraintBase) {
+          object.strength = value;
+        }
+        break;
       case StateMachineNumberBase.valuePropertyKey:
         if (object is StateMachineNumberBase) {
           object.value = value;
@@ -1880,28 +1933,13 @@ class RiveCoreContext {
     }
   }
 
-  static void setColor(Core object, int propertyKey, int value) {
-    switch (propertyKey) {
-      case KeyFrameColorBase.valuePropertyKey:
-        if (object is KeyFrameColorBase) {
-          object.value = value;
-        }
-        break;
-      case SolidColorBase.colorValuePropertyKey:
-        if (object is SolidColorBase) {
-          object.colorValue = value;
-        }
-        break;
-      case GradientStopBase.colorValuePropertyKey:
-        if (object is GradientStopBase) {
-          object.colorValue = value;
-        }
-        break;
-    }
-  }
-
   static void setBool(Core object, int propertyKey, bool value) {
     switch (propertyKey) {
+      case IKConstraintBase.invertDirectionPropertyKey:
+        if (object is IKConstraintBase) {
+          object.invertDirection = value;
+        }
+        break;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         if (object is LinearAnimationBase) {
           object.enableWorkArea = value;
@@ -1935,6 +1973,26 @@ class RiveCoreContext {
       case ClippingShapeBase.isVisiblePropertyKey:
         if (object is ClippingShapeBase) {
           object.isVisible = value;
+        }
+        break;
+    }
+  }
+
+  static void setColor(Core object, int propertyKey, int value) {
+    switch (propertyKey) {
+      case KeyFrameColorBase.valuePropertyKey:
+        if (object is KeyFrameColorBase) {
+          object.value = value;
+        }
+        break;
+      case SolidColorBase.colorValuePropertyKey:
+        if (object is SolidColorBase) {
+          object.colorValue = value;
+        }
+        break;
+      case GradientStopBase.colorValuePropertyKey:
+        if (object is GradientStopBase) {
+          object.colorValue = value;
         }
         break;
     }

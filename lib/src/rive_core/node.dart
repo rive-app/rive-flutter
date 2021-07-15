@@ -1,6 +1,7 @@
+import 'package:rive/src/generated/node_base.dart';
 import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
-import 'package:rive/src/generated/node_base.dart';
+
 export 'package:rive/src/generated/node_base.dart';
 
 class _UnknownNode extends Node {}

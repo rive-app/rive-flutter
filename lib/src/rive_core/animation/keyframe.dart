@@ -1,10 +1,9 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/animation/keyframe_base.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/keyframe_interpolation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
-
-import 'package:rive/src/generated/animation/keyframe_base.dart';
 
 export 'package:rive/src/generated/animation/keyframe_base.dart';
 

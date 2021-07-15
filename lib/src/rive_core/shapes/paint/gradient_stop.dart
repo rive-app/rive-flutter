@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
-import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/generated/shapes/paint/gradient_stop_base.dart';
+import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart';
 
 export 'package:rive/src/generated/shapes/paint/gradient_stop_base.dart';

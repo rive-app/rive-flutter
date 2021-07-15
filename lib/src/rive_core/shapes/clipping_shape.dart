@@ -1,9 +1,10 @@
 import 'dart:ui';
 
+import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
-import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
+
 export 'package:rive/src/generated/shapes/clipping_shape_base.dart';
 
 class ClippingShape extends ClippingShapeBase {

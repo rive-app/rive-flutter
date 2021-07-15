@@ -93,7 +93,9 @@ class RiveRenderObject extends RiveRenderBox {
     markNeedsLayout();
   }
 
-  void dispose() => _artboard.redraw.removeListener(scheduleRepaint);
+  void dispose() {
+    _artboard.redraw.removeListener(scheduleRepaint);
+  }
 
   @override
   AABB get aabb {

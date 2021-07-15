@@ -1,4 +1,7 @@
 import 'package:rive/src/generated/bones/bone_base.dart';
+import 'package:rive/src/rive_core/math/mat2d.dart';
+import 'package:rive/src/rive_core/math/vec2d.dart';
+
 export 'package:rive/src/generated/bones/bone_base.dart';
 
 typedef bool BoneCallback(Bone bone);
@@ -58,5 +61,13 @@ class Bone extends BoneBase {
     // special case, but they inherit from bone so we check the concrete type
     // here to make sure we evalute this check only for non-root bones.
     return super.validate() && (coreType != BoneBase.typeKey || parent is Bone);
+  }
+
+  Vec2D get tipWorldTranslation => getTipWorldTranslation(worldTransform);
+
+  Vec2D getTipWorldTranslation(Mat2D worldTransform) {
+    var tip = Vec2D();
+    Vec2D.transformMat2D(tip, Vec2D.fromValues(length, 0), worldTransform);
+    return tip;
   }
 }

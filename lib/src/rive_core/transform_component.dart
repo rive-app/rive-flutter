@@ -1,14 +1,17 @@
 import 'package:flutter/foundation.dart';
+import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
+import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/constraints/constraint.dart';
+import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
-import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
-import 'package:rive/src/generated/transform_component_base.dart';
+
 export 'package:rive/src/generated/transform_component_base.dart';
 
 abstract class TransformComponent extends TransformComponentBase {
@@ -19,6 +22,10 @@ abstract class TransformComponent extends TransformComponentBase {
 
   final List<ClippingShape> _clippingShapes = [];
   Iterable<ClippingShape> get clippingShapes => _clippingShapes;
+
+  /// Constraints applied to this TransformComponent.
+  final List<Constraint> _constraints = [];
+  Iterable<Constraint> get constraints => _constraints;
 
   double _renderOpacity = 0;
   double get renderOpacity => _renderOpacity;
@@ -76,6 +83,12 @@ abstract class TransformComponent extends TransformComponentBase {
       Mat2D.multiply(worldTransform, parentNode.worldTransform, transform);
     } else {
       Mat2D.copy(worldTransform, transform);
+    }
+
+    if (_constraints.isNotEmpty) {
+      for (final constraint in _constraints) {
+        constraint.constrain(this);
+      }
     }
   }
 
@@ -151,6 +164,9 @@ abstract class TransformComponent extends TransformComponentBase {
         addDirt(ComponentDirt.clip, recurse: true);
 
         break;
+      case IKConstraintBase.typeKey:
+        _constraints.add(child as Constraint);
+        break;
     }
   }
 
@@ -168,6 +184,10 @@ abstract class TransformComponent extends TransformComponentBase {
           _clippingShapes.remove(child as ClippingShape);
           addDirt(ComponentDirt.clip, recurse: true);
         }
+        break;
+      case IKConstraintBase.typeKey:
+        _constraints.remove(child as Constraint);
+
         break;
     }
   }

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:rive/src/core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';

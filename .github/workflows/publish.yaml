@@ -1,0 +1,42 @@
+name: Publish to pub.dev
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+jobs:
+  merge_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12.x"
+          registry-url: "https://registry.npmjs.org"
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./.github/scripts/release
+      - name: Setup pub.dev credentials
+        run: |
+          mkdir -p ~/.pub-cache 
+          cat <<EOF > ~/.pub-cache/credentials.json
+          {
+            "accessToken":"${{ secrets.OAUTH_ACCESS_TOKEN }}",
+            "refreshToken":"${{ secrets.OAUTH_REFRESH_TOKEN }}",
+            "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
+            "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
+            "expiration": 1624388694898
+          }
+          EOF
+      - name: Publish
+        run: ./release.sh
+        working-directory: ./.github/scripts/release
+        env:
+          GITHUB_AUTHOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}

@@ -1,8 +1,9 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/animation/layer_state_base.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
-import 'package:rive/src/generated/animation/layer_state_base.dart';
+
 export 'package:rive/src/generated/animation/layer_state_base.dart';
 
 abstract class LayerState extends LayerStateBase {

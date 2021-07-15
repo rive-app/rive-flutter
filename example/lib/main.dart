@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rive_example/custom_controller.dart';
-import 'package:rive_example/play_one_shot_animation.dart';
-import 'package:rive_example/play_pause_animation.dart';
 import 'package:rive_example/example_state_machine.dart';
 import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
+import 'package:rive_example/play_one_shot_animation.dart';
+import 'package:rive_example/play_pause_animation.dart';
 import 'package:rive_example/simple_animation.dart';
 import 'package:rive_example/simple_state_machine.dart';
 import 'package:rive_example/state_machine_skills.dart';

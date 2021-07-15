@@ -1,0 +1,34 @@
+{
+    "git": {
+        "requireCleanWorkingDir": false,
+        "commitMessage": "chore: release v${version}",
+        "tagName": "${version}"
+    },
+    "github": {
+        "release": true,
+        "releaseName": "${version}"
+    },
+    "npm": {
+        "publish": false,
+        "ignoreVersion": true
+    },
+    "plugins": {
+        "@release-it/bumper": {
+            "in": {
+                "file": "../../../VERSION",
+                "type": "text/plain"
+            },
+            "out": {
+                "file": "../../../VERSION",
+                "type": "text/plain"
+            }
+        }
+    },
+    "hooks": {
+        "after:bump": [
+            "npx auto-changelog -p --commit-limit false --template changelog.hbs --prepend -o ../../../CHANGELOG.md",
+            "git add ../../../CHANGELOG.md",
+            "git add ../../../VERSION"
+        ]
+    }
+}
