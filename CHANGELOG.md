@@ -1,3 +1,6 @@
+## 0.7.27
+- Automate pub.dev publishing. [`#152`](https://github.com/rive-app/rive-flutter/pull/152)
+
 ## 0.7.26
 - Attempting release again. [`#151`](https://github.com/rive-app/rive-flutter/pull/151)
 
