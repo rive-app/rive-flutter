@@ -1,6 +1,3 @@
-## 0.7.24
-- Adding git config to publish workflow. [`#149`](https://github.com/rive-app/rive-flutter/pull/149)
-
 ## 0.7.22 - (2021-06-22)
 - Stroke don't draw when their thickness is 0.
 

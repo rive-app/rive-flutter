@@ -31,7 +31,7 @@ jobs:
             "refreshToken":"${{ secrets.OAUTH_REFRESH_TOKEN }}",
             "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
             "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
-            "expiration": 1624388694898
+            "expiration": 1626373611962
           }
           EOF
       - name: Git config
