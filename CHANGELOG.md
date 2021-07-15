@@ -1,3 +1,6 @@
+## 0.7.23
+- Support for IK constraints in Flutter. [`#153`](https://github.com/rive-app/rive-flutter/pull/153)
+
 ## 0.7.22 - (2021-06-22)
 - Stroke don't draw when their thickness is 0.
 
