@@ -1,3 +1,6 @@
+## 0.7.25
+- IK Support [`#150`](https://github.com/rive-app/rive-flutter/pull/150)
+
 ## 0.7.22 - (2021-06-22)
 - Stroke don't draw when their thickness is 0.
 
