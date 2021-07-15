@@ -6,7 +6,6 @@ RELEASE_VERSION=`npm run release -- --ci --release-version | tail -n 1`
 if ! command -v cider &> /dev/null
 then
     pub global activate cider
-    exit
 fi
 
 pushd ../../../
