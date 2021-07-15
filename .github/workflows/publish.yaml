@@ -26,13 +26,7 @@ jobs:
         run: |
           mkdir -p ~/.pub-cache 
           cat <<EOF > ~/.pub-cache/credentials.json
-          {
-            "accessToken":"${{ secrets.OAUTH_ACCESS_TOKEN }}",
-            "refreshToken":"${{ secrets.OAUTH_REFRESH_TOKEN }}",
-            "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
-            "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
-            "expiration": 1626373611962
-          }
+          ${{ secrets.PUB_DEV_CREDENTIALS }}
           EOF
       - name: Git config
         run: |
@@ -46,5 +40,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
       - name: Publish
         run: |
-          cat ~/.pub-cache/credentials.json
           dart pub publish -f
