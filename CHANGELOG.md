@@ -1,3 +1,5 @@
+## 0.7.24
+
 ## 0.7.23
 - Support for IK constraints in Flutter. [`#153`](https://github.com/rive-app/rive-flutter/pull/153)
 
