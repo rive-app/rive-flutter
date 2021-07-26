@@ -1,10 +1,9 @@
 import 'dart:ui';
 
-import 'package:rive/src/generated/shapes/paint/solid_color_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
-
+import 'package:rive/src/generated/shapes/paint/solid_color_base.dart';
 export 'package:rive/src/generated/shapes/paint/solid_color_base.dart';
 
 /// A solid color painter for a shape. Works for both Fill and Stroke.

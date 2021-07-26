@@ -1,10 +1,9 @@
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/animation/animation_state_base.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/artboard.dart';
-
+import 'package:rive/src/generated/animation/animation_state_base.dart';
 export 'package:rive/src/generated/animation/animation_state_base.dart';
 
 class AnimationState extends AnimationStateBase {

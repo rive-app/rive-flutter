@@ -46,6 +46,7 @@ import 'package:rive/src/generated/bones/tendon_base.dart';
 import 'package:rive/src/generated/bones/weight_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
+import 'package:rive/src/generated/constraints/distance_constraint_base.dart';
 import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
 import 'package:rive/src/generated/draw_rules_base.dart';
@@ -110,6 +111,7 @@ import 'package:rive/src/rive_core/bones/root_bone.dart';
 import 'package:rive/src/rive_core/bones/skin.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
+import 'package:rive/src/rive_core/constraints/distance_constraint.dart';
 import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
@@ -140,6 +142,8 @@ class RiveCoreContext {
     switch (typeKey) {
       case DrawTargetBase.typeKey:
         return DrawTarget();
+      case DistanceConstraintBase.typeKey:
+        return DistanceConstraint();
       case IKConstraintBase.typeKey:
         return IKConstraint();
       case AnimationStateBase.typeKey:
@@ -287,6 +291,16 @@ class RiveCoreContext {
       case TargetedConstraintBase.targetIdPropertyKey:
         if (object is TargetedConstraintBase && value is int) {
           object.targetId = value;
+        }
+        break;
+      case DistanceConstraintBase.distancePropertyKey:
+        if (object is DistanceConstraintBase && value is double) {
+          object.distance = value;
+        }
+        break;
+      case DistanceConstraintBase.modeValuePropertyKey:
+        if (object is DistanceConstraintBase && value is int) {
+          object.modeValue = value;
         }
         break;
       case IKConstraintBase.invertDirectionPropertyKey:
@@ -917,6 +931,7 @@ class RiveCoreContext {
       case DrawTargetBase.drawableIdPropertyKey:
       case DrawTargetBase.placementValuePropertyKey:
       case TargetedConstraintBase.targetIdPropertyKey:
+      case DistanceConstraintBase.modeValuePropertyKey:
       case IKConstraintBase.parentBoneCountPropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
@@ -960,6 +975,7 @@ class RiveCoreContext {
       case TendonBase.boneIdPropertyKey:
         return uintType;
       case ConstraintBase.strengthPropertyKey:
+      case DistanceConstraintBase.distancePropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
       case TransitionNumberConditionBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
@@ -1069,6 +1085,8 @@ class RiveCoreContext {
         return (object as DrawTargetBase).placementValue;
       case TargetedConstraintBase.targetIdPropertyKey:
         return (object as TargetedConstraintBase).targetId;
+      case DistanceConstraintBase.modeValuePropertyKey:
+        return (object as DistanceConstraintBase).modeValue;
       case IKConstraintBase.parentBoneCountPropertyKey:
         return (object as IKConstraintBase).parentBoneCount;
       case AnimationStateBase.animationIdPropertyKey:
@@ -1159,6 +1177,8 @@ class RiveCoreContext {
     switch (propertyKey) {
       case ConstraintBase.strengthPropertyKey:
         return (object as ConstraintBase).strength;
+      case DistanceConstraintBase.distancePropertyKey:
+        return (object as DistanceConstraintBase).distance;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
       case TransitionNumberConditionBase.valuePropertyKey:
@@ -1375,6 +1395,11 @@ class RiveCoreContext {
           object.targetId = value;
         }
         break;
+      case DistanceConstraintBase.modeValuePropertyKey:
+        if (object is DistanceConstraintBase) {
+          object.modeValue = value;
+        }
+        break;
       case IKConstraintBase.parentBoneCountPropertyKey:
         if (object is IKConstraintBase) {
           object.parentBoneCount = value;
@@ -1588,6 +1613,11 @@ class RiveCoreContext {
       case ConstraintBase.strengthPropertyKey:
         if (object is ConstraintBase) {
           object.strength = value;
+        }
+        break;
+      case DistanceConstraintBase.distancePropertyKey:
+        if (object is DistanceConstraintBase) {
+          object.distance = value;
         }
         break;
       case StateMachineNumberBase.valuePropertyKey:

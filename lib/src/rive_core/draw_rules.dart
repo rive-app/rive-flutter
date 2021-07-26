@@ -1,8 +1,7 @@
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/draw_rules_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
-
+import 'package:rive/src/generated/draw_rules_base.dart';
 export 'package:rive/src/generated/draw_rules_base.dart';
 
 class DrawRules extends DrawRulesBase {

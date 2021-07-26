@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/container_component_base.dart';
+import 'package:flutter/material.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/drawable.dart';
+import 'package:rive/src/generated/container_component_base.dart';
 
 typedef bool DescentCallback(Component component);
 

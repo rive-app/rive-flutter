@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/artboard_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
@@ -15,6 +14,7 @@ import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
+import 'package:rive/src/generated/artboard_base.dart';
 import 'package:rive/src/utilities/dependency_sorter.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
@@ -129,7 +129,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         didUpdate = true;
       }
     }
-    return updateComponents() || didUpdate;
+    if (updateComponents() || didUpdate) {
+      return true;
+    }
+    return false;
   }
 
   @override

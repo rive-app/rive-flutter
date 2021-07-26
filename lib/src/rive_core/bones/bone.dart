@@ -1,7 +1,6 @@
-import 'package:rive/src/generated/bones/bone_base.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
-
+import 'package:rive/src/generated/bones/bone_base.dart';
 export 'package:rive/src/generated/bones/bone_base.dart';
 
 typedef bool BoneCallback(Bone bone);

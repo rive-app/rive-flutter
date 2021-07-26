@@ -1,12 +1,11 @@
 import 'dart:collection';
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/animation/keyed_object_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/component.dart';
 
+import 'package:rive/src/generated/animation/keyed_object_base.dart';
 import 'linear_animation.dart';
-
 export 'package:rive/src/generated/animation/keyed_object_base.dart';
 
 class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {

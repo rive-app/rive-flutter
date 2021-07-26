@@ -25,7 +25,9 @@ abstract class TargetedConstraint extends TargetedConstraintBase {
     super.buildDependencies();
     // Targeted constraints must have their constrainedComponent update after
     // the target.
-    _target?.addDependent(constrainedComponent, via: this);
+    if (constrainedComponent != null) {
+      _target?.addDependent(constrainedComponent!, via: this);
+    }
   }
 
   @override
@@ -33,4 +35,5 @@ abstract class TargetedConstraint extends TargetedConstraintBase {
     super.onAddedDirty();
     target = context.resolve(targetId);
   }
+
 }
