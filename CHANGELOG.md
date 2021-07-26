@@ -1,4 +1,5 @@
 ## 0.7.24
+- Support for distance constraints in Flutter. [`#156`](https://github.com/rive-app/rive-flutter/pull/156)
 
 ## 0.7.23
 - Support for IK constraints in Flutter. [`#153`](https://github.com/rive-app/rive-flutter/pull/153)
