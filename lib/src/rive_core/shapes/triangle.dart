@@ -1,6 +1,6 @@
-import 'package:rive/src/generated/shapes/triangle_base.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
+import 'package:rive/src/generated/shapes/triangle_base.dart';
 
 /// Export the Base class for external use (e.g. rive.dart)
 export 'package:rive/src/generated/shapes/triangle_base.dart';

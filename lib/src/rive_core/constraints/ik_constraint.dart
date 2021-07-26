@@ -1,13 +1,11 @@
 import 'dart:math';
-
-import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
+import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
-
 export 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 
 /// A constraint which rotates its constrained bone and the parentBoneCount
@@ -34,11 +32,11 @@ class IKConstraint extends IKConstraintBase {
 
   /// The list of bones in FK order.
   final List<_BoneChainLink> _fkChain = [];
+  Iterable<_BoneChainLink> get fkChain => _fkChain;
+
   @override
   void buildDependencies() {
     super.buildDependencies();
-
-    parent!.addDependent(this);
 
     // Rebuild the FK chain when we update dependencies.
     _fkChain.clear();

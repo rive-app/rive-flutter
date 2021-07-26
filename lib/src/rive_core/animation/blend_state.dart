@@ -1,7 +1,6 @@
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/animation/blend_state_base.dart';
 import 'package:rive/src/rive_core/animation/blend_animation.dart';
-
+import 'package:rive/src/generated/animation/blend_state_base.dart';
 export 'package:rive/src/generated/animation/blend_state_base.dart';
 
 //

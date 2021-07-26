@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:rive/src/generated/animation/transition_number_condition_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine_number.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
+import 'package:rive/src/generated/animation/transition_number_condition_base.dart';
 
 export 'package:rive/src/generated/animation/transition_number_condition_base.dart';
 

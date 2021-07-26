@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:rive/src/generated/shapes/polygon_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
+import 'package:rive/src/generated/shapes/polygon_base.dart';
 
 export 'package:rive/src/generated/shapes/polygon_base.dart';
 

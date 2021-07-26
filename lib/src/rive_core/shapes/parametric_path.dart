@@ -1,6 +1,5 @@
-import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
-
+import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 export 'package:rive/src/generated/shapes/parametric_path_base.dart';
 
 abstract class ParametricPath extends ParametricPathBase {

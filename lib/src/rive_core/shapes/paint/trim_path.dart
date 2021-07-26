@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke_effect.dart';
 import 'package:rive/src/rive_core/shapes/paint/trim_path_drawing.dart';
 
+import 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 export 'package:rive/src/generated/shapes/paint/trim_path_base.dart';
 
 enum TrimPathMode {

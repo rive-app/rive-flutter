@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke_effect.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
-
+import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 export 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 
 /// A stroke Shape painter.

@@ -1,9 +1,9 @@
 import 'dart:collection';
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/animation/transition_condition_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
+import 'package:rive/src/generated/animation/transition_condition_base.dart';
 
 export 'package:rive/src/generated/animation/transition_condition_base.dart';
 

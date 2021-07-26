@@ -1,10 +1,9 @@
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/animation/blend_state_1d_base.dart';
 import 'package:rive/src/rive_core/animation/blend_state_1d_instance.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_number.dart';
-
+import 'package:rive/src/generated/animation/blend_state_1d_base.dart';
 export 'package:rive/src/generated/animation/blend_state_1d_base.dart';
 
 class BlendState1D extends BlendState1DBase {

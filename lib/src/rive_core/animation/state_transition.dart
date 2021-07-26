@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/animation/state_transition_base.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
@@ -11,8 +10,8 @@ import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
+import 'package:rive/src/generated/animation/state_transition_base.dart';
 import 'package:rive/src/rive_core/state_transition_flags.dart';
-
 export 'package:rive/src/generated/animation/state_transition_base.dart';
 
 enum AllowTransition { no, waitingForExit, yes }

@@ -1,14 +1,13 @@
 import 'dart:ui' as ui;
 
 import 'package:meta/meta.dart';
-import 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/paint/gradient_stop.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
-
+import 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 export 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
 
 /// A core linear gradient. Can be added as a child to a [Shape]'s [Fill] or

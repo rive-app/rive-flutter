@@ -6,13 +6,12 @@ export 'package:rive/src/generated/constraints/constraint_base.dart';
 /// providing rules for how to constrain its transform space.
 abstract class Constraint extends ConstraintBase {
   /// Returns the [TransformComponent] which this [Constraint] is applied to.
-  // TransformComponent? get constrainedComponent =>
-  //     parent is TransformComponent ? parent as TransformComponent : null;
-  TransformComponent get constrainedComponent => parent as TransformComponent;
+  TransformComponent? get constrainedComponent =>
+      parent is TransformComponent ? parent as TransformComponent : null;
 
   @override
   void strengthChanged(double from, double to) =>
-      constrainedComponent.markTransformDirty();
+      constrainedComponent?.markTransformDirty();
 
   @override
   bool validate() => super.validate() && parent is TransformComponent;
@@ -20,7 +19,14 @@ abstract class Constraint extends ConstraintBase {
   void constrain(TransformComponent component);
 
   @override
+  void buildDependencies() {
+    super.buildDependencies();
+
+    parent!.addDependent(this);
+  }
+
+  @override
   void update(int dirt) {}
 
-  void markConstraintDirty() => constrainedComponent.markTransformDirty();
+  void markConstraintDirty() => constrainedComponent?.markTransformDirty();
 }
