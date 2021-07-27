@@ -1,3 +1,4 @@
+import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/generated/bones/bone_base.dart';
@@ -6,6 +7,14 @@ export 'package:rive/src/generated/bones/bone_base.dart';
 typedef bool BoneCallback(Bone bone);
 
 class Bone extends BoneBase {
+  /// Child constraints applied to some child of this bone which also affect
+  /// this bone.
+  final Set<Constraint> _peerConstraints = {};
+  Iterable<Constraint> get peerConstraints => _peerConstraints;
+
+  bool addPeerConstraint(Constraint child) => _peerConstraints.add(child);
+  bool removePeerConstraint(Constraint child) => _peerConstraints.remove(child);
+
   @override
   void lengthChanged(double from, double to) {
     for (final child in children) {

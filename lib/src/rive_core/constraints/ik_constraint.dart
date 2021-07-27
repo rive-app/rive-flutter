@@ -35,11 +35,28 @@ class IKConstraint extends IKConstraintBase {
   Iterable<_BoneChainLink> get fkChain => _fkChain;
 
   @override
-  void buildDependencies() {
-    super.buildDependencies();
+  void onAdded() {
+    super.onAdded();
+    _buildFKChain();
+  }
 
-    // Rebuild the FK chain when we update dependencies.
+  @override
+  void onRemoved() {
+    _clearFKChain();
+
+    super.onRemoved();
+  }
+
+  void _clearFKChain() {
+    for (final link in _fkChain) {
+      link.bone.markRebuildDependencies();
+      link.bone.removePeerConstraint(this);
+    }
     _fkChain.clear();
+  }
+
+  bool _buildFKChain() {
+    var nextFKChain = <_BoneChainLink>[];
     var boneCount = parentBoneCount;
     var bone = parent as Bone;
     var bones = <Bone>[bone];
@@ -51,15 +68,33 @@ class IKConstraint extends IKConstraintBase {
     }
     // Now put them in FK order (top to bottom).
     for (final bone in bones.reversed) {
-      _fkChain.add(_BoneChainLink(
-        index: _fkChain.length,
+      bone.addPeerConstraint(this);
+      nextFKChain.add(_BoneChainLink(
+        index: nextFKChain.length,
         bone: bone,
       ));
     }
 
+    _clearFKChain();
+
+    _fkChain.addAll(nextFKChain);
+    for (final link in _fkChain) {
+      link.bone.markRebuildDependencies();
+      link.bone.addPeerConstraint(this);
+    }
+    markRebuildDependencies();
+    return true;
+  }
+
+  @override
+  void buildDependencies() {
+    super.buildDependencies();
+
     // Make sure all of the first level children of each bone depend on the
     // tip (constrainedComponent).
     var tip = parent as Bone;
+
+    var bones = _fkChain.reversed.map((link) => link.bone).toSet();
     for (final bone in bones.skip(1)) {
       for (final child in bone.children) {
         if (child is TransformComponent && !bones.contains(child)) {
