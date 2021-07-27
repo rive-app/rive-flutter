@@ -1,4 +1,5 @@
 ## 0.7.25
+- Fixes an issue with bones bound to paths which are also constrained via IK. [`#157`](https://github.com/rive-app/rive-flutter/pull/157)
 
 ## 0.7.24
 - Support for distance constraints in Flutter. [`#156`](https://github.com/rive-app/rive-flutter/pull/156)
