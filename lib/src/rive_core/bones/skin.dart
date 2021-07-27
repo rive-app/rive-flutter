@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:rive/src/rive_core/bones/bone.dart';
 import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -96,7 +97,16 @@ class Skin extends SkinBase {
     // A skin depends on all its bones. N.B. that we don't depend on the parent
     // skinnable. The skinnable depends on us.
     for (final tendon in _tendons) {
-      tendon.bone?.addDependent(this);
+      var bone = tendon.bone;
+      if (bone == null) {
+        continue;
+      }
+      bone.addDependent(this);
+      if (bone is Bone) {
+        for (final childConstraint in bone.peerConstraints) {
+          childConstraint.constrainedComponent?.addDependent(this);
+        }
+      }
     }
   }
 
