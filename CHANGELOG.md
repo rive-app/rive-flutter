@@ -1,3 +1,5 @@
+## 0.7.25
+
 ## 0.7.24
 - Support for distance constraints in Flutter. [`#156`](https://github.com/rive-app/rive-flutter/pull/156)
 
