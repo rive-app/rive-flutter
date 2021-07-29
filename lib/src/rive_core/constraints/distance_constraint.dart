@@ -3,6 +3,7 @@ import 'package:rive/src/generated/constraints/distance_constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 export 'package:rive/src/generated/constraints/distance_constraint_base.dart';
 
+/// [DistanceConstraint]'s logical distancing method.
 enum DistanceConstraintMode { closer, further, exact }
 
 const _distanceEpsilon = 0.001;
@@ -57,7 +58,4 @@ class DistanceConstraint extends DistanceConstraintBase {
 
   DistanceConstraintMode get mode => DistanceConstraintMode.values[modeValue];
   set mode(DistanceConstraintMode value) => modeValue = value.index;
-
-  @override
-  bool validate() => super.validate() && parent is TransformComponent;
 }

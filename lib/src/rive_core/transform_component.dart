@@ -3,6 +3,7 @@ import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
+import 'package:rive/src/rive_core/constraints/transform_constraint.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/drawable.dart';
@@ -165,6 +166,7 @@ abstract class TransformComponent extends TransformComponentBase {
         addDirt(ComponentDirt.clip, recurse: true);
 
         break;
+      case TransformConstraintBase.typeKey:
       case IKConstraintBase.typeKey:
       case DistanceConstraintBase.typeKey:
         _constraints.add(child as Constraint);
@@ -187,6 +189,7 @@ abstract class TransformComponent extends TransformComponentBase {
           addDirt(ComponentDirt.clip, recurse: true);
         }
         break;
+      case TransformConstraintBase.typeKey:
       case IKConstraintBase.typeKey:
       case DistanceConstraintBase.typeKey:
         _constraints.remove(child as Constraint);
