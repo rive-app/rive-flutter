@@ -1,3 +1,6 @@
+import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 export 'package:rive/src/generated/constraints/constraint_base.dart';
@@ -29,4 +32,19 @@ abstract class Constraint extends ConstraintBase {
   void update(int dirt) {}
 
   void markConstraintDirty() => constrainedComponent?.markTransformDirty();
+
+  @override
+  void onDirty(int mask) => markConstraintDirty();
+}
+
+/// Get the parent's world transform. Takes into consideration when the parent
+/// is an artboard.
+Mat2D parentWorld(TransformComponent component) {
+  var parent = component.parent;
+  if (parent is Artboard) {
+    return parent.worldTransform;
+  } else if (parent is TransformComponent) {
+    return parent.worldTransform;
+  }
+  return Mat2D();
 }

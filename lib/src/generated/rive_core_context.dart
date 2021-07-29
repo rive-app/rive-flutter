@@ -49,6 +49,7 @@ import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/generated/constraints/distance_constraint_base.dart';
 import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
+import 'package:rive/src/generated/constraints/transform_constraint_base.dart';
 import 'package:rive/src/generated/draw_rules_base.dart';
 import 'package:rive/src/generated/draw_target_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
@@ -113,6 +114,7 @@ import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/constraints/distance_constraint.dart';
 import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
+import 'package:rive/src/rive_core/constraints/transform_constraint.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/node.dart';
@@ -146,6 +148,8 @@ class RiveCoreContext {
         return DistanceConstraint();
       case IKConstraintBase.typeKey:
         return IKConstraint();
+      case TransformConstraintBase.typeKey:
+        return TransformConstraint();
       case AnimationStateBase.typeKey:
         return AnimationState();
       case KeyedObjectBase.typeKey:
@@ -311,6 +315,16 @@ class RiveCoreContext {
       case IKConstraintBase.parentBoneCountPropertyKey:
         if (object is IKConstraintBase && value is int) {
           object.parentBoneCount = value;
+        }
+        break;
+      case TransformConstraintBase.sourceSpaceValuePropertyKey:
+        if (object is TransformConstraintBase && value is int) {
+          object.sourceSpaceValue = value;
+        }
+        break;
+      case TransformConstraintBase.destSpaceValuePropertyKey:
+        if (object is TransformConstraintBase && value is int) {
+          object.destSpaceValue = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -933,6 +947,8 @@ class RiveCoreContext {
       case TargetedConstraintBase.targetIdPropertyKey:
       case DistanceConstraintBase.modeValuePropertyKey:
       case IKConstraintBase.parentBoneCountPropertyKey:
+      case TransformConstraintBase.sourceSpaceValuePropertyKey:
+      case TransformConstraintBase.destSpaceValuePropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
       case BlendAnimationBase.animationIdPropertyKey:
@@ -1089,6 +1105,10 @@ class RiveCoreContext {
         return (object as DistanceConstraintBase).modeValue;
       case IKConstraintBase.parentBoneCountPropertyKey:
         return (object as IKConstraintBase).parentBoneCount;
+      case TransformConstraintBase.sourceSpaceValuePropertyKey:
+        return (object as TransformConstraintBase).sourceSpaceValue;
+      case TransformConstraintBase.destSpaceValuePropertyKey:
+        return (object as TransformConstraintBase).destSpaceValue;
       case AnimationStateBase.animationIdPropertyKey:
         return (object as AnimationStateBase).animationId;
       case KeyedObjectBase.objectIdPropertyKey:
@@ -1403,6 +1423,16 @@ class RiveCoreContext {
       case IKConstraintBase.parentBoneCountPropertyKey:
         if (object is IKConstraintBase) {
           object.parentBoneCount = value;
+        }
+        break;
+      case TransformConstraintBase.sourceSpaceValuePropertyKey:
+        if (object is TransformConstraintBase) {
+          object.sourceSpaceValue = value;
+        }
+        break;
+      case TransformConstraintBase.destSpaceValuePropertyKey:
+        if (object is TransformConstraintBase) {
+          object.destSpaceValue = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:

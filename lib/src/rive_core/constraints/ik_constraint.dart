@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
+import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
@@ -68,7 +68,6 @@ class IKConstraint extends IKConstraintBase {
     }
     // Now put them in FK order (top to bottom).
     for (final bone in bones.reversed) {
-      bone.addPeerConstraint(this);
       nextFKChain.add(_BoneChainLink(
         index: nextFKChain.length,
         bone: bone,
@@ -117,9 +116,9 @@ class IKConstraint extends IKConstraintBase {
     // Decompose the chain.
     for (final item in _fkChain) {
       var bone = item.bone;
-      Mat2D parentWorld = _parentWorld(bone);
+      Mat2D parentWorldTransform = parentWorld(bone);
 
-      Mat2D.invert(item.parentWorldInverse, parentWorld);
+      Mat2D.invert(item.parentWorldInverse, parentWorldTransform);
 
       var boneTransform = bone.transform;
       Mat2D.multiply(
@@ -145,7 +144,7 @@ class IKConstraint extends IKConstraintBase {
                 j < end;
                 j++) {
               var fk = _fkChain[j];
-              Mat2D.invert(fk.parentWorldInverse, _parentWorld(fk.bone));
+              Mat2D.invert(fk.parentWorldInverse, parentWorld(fk.bone));
             }
           }
           break;
@@ -249,7 +248,7 @@ class IKConstraint extends IKConstraintBase {
     _constrainRotation(firstChild, r2);
     if (firstChild != fk2) {
       var bone = fk2.bone;
-      Mat2D.multiply(bone.worldTransform, _parentWorld(bone), bone.transform);
+      Mat2D.multiply(bone.worldTransform, parentWorld(bone), bone.transform);
     }
 
     // Simple storage, need this for interpolation.
@@ -273,7 +272,7 @@ class _BoneChainLink {
 
 void _constrainRotation(_BoneChainLink link, double rotation) {
   var bone = link.bone;
-  Mat2D parentWorld = _parentWorld(bone);
+  Mat2D parentWorldTransform = parentWorld(bone);
   var boneTransform = bone.transform;
   if (rotation == 0) {
     Mat2D.setIdentity(boneTransform);
@@ -295,14 +294,5 @@ void _constrainRotation(_BoneChainLink link, double rotation) {
     boneTransform[2] = boneTransform[0] * skew + boneTransform[2];
     boneTransform[3] = boneTransform[1] * skew + boneTransform[3];
   }
-  Mat2D.multiply(bone.worldTransform, parentWorld, boneTransform);
-}
-
-Mat2D _parentWorld(TransformComponent component) {
-  var parent = component.parent;
-  if (parent is Artboard) {
-    return parent.worldTransform;
-  } else {
-    return (parent as TransformComponent).worldTransform;
-  }
+  Mat2D.multiply(bone.worldTransform, parentWorldTransform, boneTransform);
 }
