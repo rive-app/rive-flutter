@@ -1,3 +1,6 @@
+## 0.7.27
+- Adds support for translation, scale, and rotation constraints. 
+
 ## 0.7.26
 - Adds support for distance constraints. [`#158`](https://github.com/rive-app/rive-flutter/pull/158)
 
