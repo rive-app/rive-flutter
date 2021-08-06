@@ -56,7 +56,7 @@ abstract class WeightBase extends Component {
   void indicesChanged(int from, int to);
 
   @override
-  void copy(WeightBase source) {
+  void copy(covariant WeightBase source) {
     super.copy(source);
     _values = source._values;
     _indices = source._indices;

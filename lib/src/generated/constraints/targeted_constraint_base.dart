@@ -43,7 +43,7 @@ abstract class TargetedConstraintBase extends Constraint {
   void targetIdChanged(int from, int to);
 
   @override
-  void copy(TargetedConstraintBase source) {
+  void copy(covariant TargetedConstraintBase source) {
     super.copy(source);
     _targetId = source._targetId;
   }

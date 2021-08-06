@@ -95,7 +95,7 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   void outDistanceChanged(double from, double to);
 
   @override
-  void copy(CubicAsymmetricVertexBase source) {
+  void copy(covariant CubicAsymmetricVertexBase source) {
     super.copy(source);
     _rotation = source._rotation;
     _inDistance = source._inDistance;

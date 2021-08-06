@@ -38,7 +38,7 @@ abstract class BlendAnimationDirectBase extends BlendAnimation {
   void inputIdChanged(int from, int to);
 
   @override
-  void copy(BlendAnimationDirectBase source) {
+  void copy(covariant BlendAnimationDirectBase source) {
     super.copy(source);
     _inputId = source._inputId;
   }

@@ -35,7 +35,7 @@ abstract class KeyFrameIdBase extends KeyFrame {
   void valueChanged(int from, int to);
 
   @override
-  void copy(KeyFrameIdBase source) {
+  void copy(covariant KeyFrameIdBase source) {
     super.copy(source);
     _value = source._value;
   }

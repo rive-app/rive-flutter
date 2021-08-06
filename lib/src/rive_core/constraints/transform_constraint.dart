@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/generated/constraints/transform_constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 import 'package:rive/src/rive_core/transform_space.dart';
@@ -11,21 +10,6 @@ export 'package:rive/src/generated/constraints/transform_constraint_base.dart';
 /// A constraint copies the transform from the target component to the
 /// constrained component in world or local space.
 class TransformConstraint extends TransformConstraintBase {
-  final TransformComponents componentsA = TransformComponents();
-  final TransformComponents componentsB = TransformComponents();
-
-  TransformSpace get destSpace => TransformSpace.values[destSpaceValue];
-  set destSpace(TransformSpace value) => destSpaceValue = value.index;
-
-  TransformSpace get sourceSpace => TransformSpace.values[sourceSpaceValue];
-  set sourceSpace(TransformSpace value) => sourceSpaceValue = value.index;
-
-  @override
-  void destSpaceValueChanged(int from, int to) => markConstraintDirty();
-
-  @override
-  void sourceSpaceValueChanged(int from, int to) => markConstraintDirty();
-
   @override
   void constrain(TransformComponent component) {
     if (target == null) {

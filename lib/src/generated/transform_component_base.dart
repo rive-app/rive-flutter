@@ -106,7 +106,7 @@ abstract class TransformComponentBase extends ContainerComponent {
   void opacityChanged(double from, double to);
 
   @override
-  void copy(TransformComponentBase source) {
+  void copy(covariant TransformComponentBase source) {
     super.copy(source);
     _rotation = source._rotation;
     _scaleX = source._scaleX;

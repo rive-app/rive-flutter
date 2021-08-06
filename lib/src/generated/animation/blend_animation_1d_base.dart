@@ -36,7 +36,7 @@ abstract class BlendAnimation1DBase extends BlendAnimation {
   void valueChanged(double from, double to);
 
   @override
-  void copy(BlendAnimation1DBase source) {
+  void copy(covariant BlendAnimation1DBase source) {
     super.copy(source);
     _value = source._value;
   }

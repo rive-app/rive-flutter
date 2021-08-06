@@ -48,7 +48,7 @@ abstract class PointsPathBase extends Path {
   void isClosedChanged(bool from, bool to);
 
   @override
-  void copy(PointsPathBase source) {
+  void copy(covariant PointsPathBase source) {
     super.copy(source);
     _isClosed = source._isClosed;
   }

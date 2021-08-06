@@ -72,7 +72,7 @@ abstract class IKConstraintBase extends TargetedConstraint {
   void parentBoneCountChanged(int from, int to);
 
   @override
-  void copy(IKConstraintBase source) {
+  void copy(covariant IKConstraintBase source) {
     super.copy(source);
     _invertDirection = source._invertDirection;
     _parentBoneCount = source._parentBoneCount;

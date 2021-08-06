@@ -65,7 +65,7 @@ abstract class PathVertexBase extends ContainerComponent {
   void yChanged(double from, double to);
 
   @override
-  void copy(PathVertexBase source) {
+  void copy(covariant PathVertexBase source) {
     super.copy(source);
     _x = source._x;
     _y = source._y;

@@ -74,7 +74,7 @@ abstract class PolygonBase extends ParametricPath {
   void cornerRadiusChanged(double from, double to);
 
   @override
-  void copy(PolygonBase source) {
+  void copy(covariant PolygonBase source) {
     super.copy(source);
     _points = source._points;
     _cornerRadius = source._cornerRadius;

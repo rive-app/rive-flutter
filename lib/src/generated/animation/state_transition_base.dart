@@ -111,7 +111,7 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
   void exitTimeChanged(int from, int to);
 
   @override
-  void copy(StateTransitionBase source) {
+  void copy(covariant StateTransitionBase source) {
     super.copy(source);
     _stateToId = source._stateToId;
     _flags = source._flags;

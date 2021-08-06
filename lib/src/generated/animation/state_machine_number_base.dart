@@ -40,7 +40,7 @@ abstract class StateMachineNumberBase extends StateMachineInput {
   void valueChanged(double from, double to);
 
   @override
-  void copy(StateMachineNumberBase source) {
+  void copy(covariant StateMachineNumberBase source) {
     super.copy(source);
     _value = source._value;
   }

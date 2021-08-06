@@ -43,7 +43,7 @@ abstract class AnimationStateBase extends LayerState {
   void animationIdChanged(int from, int to);
 
   @override
-  void copy(AnimationStateBase source) {
+  void copy(covariant AnimationStateBase source) {
     super.copy(source);
     _animationId = source._animationId;
   }

@@ -69,7 +69,7 @@ abstract class DistanceConstraintBase extends TargetedConstraint {
   void modeValueChanged(int from, int to);
 
   @override
-  void copy(DistanceConstraintBase source) {
+  void copy(covariant DistanceConstraintBase source) {
     super.copy(source);
     _distance = source._distance;
     _modeValue = source._modeValue;

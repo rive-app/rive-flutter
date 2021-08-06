@@ -3,7 +3,10 @@ import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
+import 'package:rive/src/rive_core/constraints/rotation_constraint.dart';
+import 'package:rive/src/rive_core/constraints/scale_constraint.dart';
 import 'package:rive/src/rive_core/constraints/transform_constraint.dart';
+import 'package:rive/src/rive_core/constraints/translation_constraint.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/drawable.dart';
@@ -169,6 +172,9 @@ abstract class TransformComponent extends TransformComponentBase {
       case TransformConstraintBase.typeKey:
       case IKConstraintBase.typeKey:
       case DistanceConstraintBase.typeKey:
+      case TranslationConstraintBase.typeKey:
+      case RotationConstraintBase.typeKey:
+      case ScaleConstraintBase.typeKey:
         _constraints.add(child as Constraint);
         break;
     }

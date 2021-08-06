@@ -180,7 +180,7 @@ abstract class TendonBase extends Component {
   void tyChanged(double from, double to);
 
   @override
-  void copy(TendonBase source) {
+  void copy(covariant TendonBase source) {
     super.copy(source);
     _boneId = source._boneId;
     _xx = source._xx;

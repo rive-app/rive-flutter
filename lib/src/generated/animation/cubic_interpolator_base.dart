@@ -100,7 +100,7 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
   void y2Changed(double from, double to);
 
   @override
-  void copy(CubicInterpolatorBase source) {
+  void copy(covariant CubicInterpolatorBase source) {
     _x1 = source._x1;
     _y1 = source._y1;
     _x2 = source._x2;

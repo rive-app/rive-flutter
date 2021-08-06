@@ -109,7 +109,7 @@ abstract class StrokeBase extends ShapePaint {
   void transformAffectsStrokeChanged(bool from, bool to);
 
   @override
-  void copy(StrokeBase source) {
+  void copy(covariant StrokeBase source) {
     super.copy(source);
     _thickness = source._thickness;
     _cap = source._cap;

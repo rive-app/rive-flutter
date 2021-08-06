@@ -67,7 +67,7 @@ abstract class DrawableBase extends Node {
   void drawableFlagsChanged(int from, int to);
 
   @override
-  void copy(DrawableBase source) {
+  void copy(covariant DrawableBase source) {
     super.copy(source);
     _blendModeValue = source._blendModeValue;
     _drawableFlags = source._drawableFlags;

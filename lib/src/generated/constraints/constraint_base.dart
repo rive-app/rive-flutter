@@ -37,7 +37,7 @@ abstract class ConstraintBase extends Component {
   void strengthChanged(double from, double to);
 
   @override
-  void copy(ConstraintBase source) {
+  void copy(covariant ConstraintBase source) {
     super.copy(source);
     _strength = source._strength;
   }

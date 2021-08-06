@@ -41,7 +41,7 @@ abstract class FillBase extends ShapePaint {
   void fillRuleChanged(int from, int to);
 
   @override
-  void copy(FillBase source) {
+  void copy(covariant FillBase source) {
     super.copy(source);
     _fillRule = source._fillRule;
   }

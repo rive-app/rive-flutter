@@ -38,7 +38,7 @@ abstract class TransitionValueConditionBase extends TransitionCondition {
   void opValueChanged(int from, int to);
 
   @override
-  void copy(TransitionValueConditionBase source) {
+  void copy(covariant TransitionValueConditionBase source) {
     super.copy(source);
     _opValue = source._opValue;
   }

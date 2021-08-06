@@ -20,6 +20,7 @@ import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/animation/keyed_object_base.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
+import 'package:rive/src/generated/animation/keyframe_bool_base.dart';
 import 'package:rive/src/generated/animation/keyframe_color_base.dart';
 import 'package:rive/src/generated/animation/keyframe_double_base.dart';
 import 'package:rive/src/generated/animation/keyframe_id_base.dart';
@@ -48,8 +49,14 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/generated/constraints/distance_constraint_base.dart';
 import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
+import 'package:rive/src/generated/constraints/rotation_constraint_base.dart';
+import 'package:rive/src/generated/constraints/scale_constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
+import 'package:rive/src/generated/constraints/transform_component_constraint_base.dart';
+import 'package:rive/src/generated/constraints/transform_component_constraint_y_base.dart';
 import 'package:rive/src/generated/constraints/transform_constraint_base.dart';
+import 'package:rive/src/generated/constraints/transform_space_constraint_base.dart';
+import 'package:rive/src/generated/constraints/translation_constraint_base.dart';
 import 'package:rive/src/generated/draw_rules_base.dart';
 import 'package:rive/src/generated/draw_target_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
@@ -91,6 +98,7 @@ import 'package:rive/src/rive_core/animation/entry_state.dart';
 import 'package:rive/src/rive_core/animation/exit_state.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
+import 'package:rive/src/rive_core/animation/keyframe_bool.dart';
 import 'package:rive/src/rive_core/animation/keyframe_color.dart';
 import 'package:rive/src/rive_core/animation/keyframe_double.dart';
 import 'package:rive/src/rive_core/animation/keyframe_id.dart';
@@ -114,7 +122,10 @@ import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/constraints/distance_constraint.dart';
 import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
+import 'package:rive/src/rive_core/constraints/rotation_constraint.dart';
+import 'package:rive/src/rive_core/constraints/scale_constraint.dart';
 import 'package:rive/src/rive_core/constraints/transform_constraint.dart';
+import 'package:rive/src/rive_core/constraints/translation_constraint.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/node.dart';
@@ -148,8 +159,14 @@ class RiveCoreContext {
         return DistanceConstraint();
       case IKConstraintBase.typeKey:
         return IKConstraint();
+      case TranslationConstraintBase.typeKey:
+        return TranslationConstraint();
       case TransformConstraintBase.typeKey:
         return TransformConstraint();
+      case ScaleConstraintBase.typeKey:
+        return ScaleConstraint();
+      case RotationConstraintBase.typeKey:
+        return RotationConstraint();
       case AnimationStateBase.typeKey:
         return AnimationState();
       case KeyedObjectBase.typeKey:
@@ -164,6 +181,8 @@ class RiveCoreContext {
         return KeyedProperty();
       case KeyFrameIdBase.typeKey:
         return KeyFrameId();
+      case KeyFrameBoolBase.typeKey:
+        return KeyFrameBool();
       case TransitionNumberConditionBase.typeKey:
         return TransitionNumberCondition();
       case AnyStateBase.typeKey:
@@ -307,6 +326,86 @@ class RiveCoreContext {
           object.modeValue = value;
         }
         break;
+      case TransformSpaceConstraintBase.sourceSpaceValuePropertyKey:
+        if (object is TransformSpaceConstraintBase && value is int) {
+          object.sourceSpaceValue = value;
+        }
+        break;
+      case TransformSpaceConstraintBase.destSpaceValuePropertyKey:
+        if (object is TransformSpaceConstraintBase && value is int) {
+          object.destSpaceValue = value;
+        }
+        break;
+      case TransformComponentConstraintBase.minMaxSpaceValuePropertyKey:
+        if (object is TransformComponentConstraintBase && value is int) {
+          object.minMaxSpaceValue = value;
+        }
+        break;
+      case TransformComponentConstraintBase.copyFactorPropertyKey:
+        if (object is TransformComponentConstraintBase && value is double) {
+          object.copyFactor = value;
+        }
+        break;
+      case TransformComponentConstraintBase.minValuePropertyKey:
+        if (object is TransformComponentConstraintBase && value is double) {
+          object.minValue = value;
+        }
+        break;
+      case TransformComponentConstraintBase.maxValuePropertyKey:
+        if (object is TransformComponentConstraintBase && value is double) {
+          object.maxValue = value;
+        }
+        break;
+      case TransformComponentConstraintBase.offsetPropertyKey:
+        if (object is TransformComponentConstraintBase && value is bool) {
+          object.offset = value;
+        }
+        break;
+      case TransformComponentConstraintBase.doesCopyPropertyKey:
+        if (object is TransformComponentConstraintBase && value is bool) {
+          object.doesCopy = value;
+        }
+        break;
+      case TransformComponentConstraintBase.minPropertyKey:
+        if (object is TransformComponentConstraintBase && value is bool) {
+          object.min = value;
+        }
+        break;
+      case TransformComponentConstraintBase.maxPropertyKey:
+        if (object is TransformComponentConstraintBase && value is bool) {
+          object.max = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.copyFactorYPropertyKey:
+        if (object is TransformComponentConstraintYBase && value is double) {
+          object.copyFactorY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.minValueYPropertyKey:
+        if (object is TransformComponentConstraintYBase && value is double) {
+          object.minValueY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.maxValueYPropertyKey:
+        if (object is TransformComponentConstraintYBase && value is double) {
+          object.maxValueY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
+        if (object is TransformComponentConstraintYBase && value is bool) {
+          object.doesCopyY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.minYPropertyKey:
+        if (object is TransformComponentConstraintYBase && value is bool) {
+          object.minY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.maxYPropertyKey:
+        if (object is TransformComponentConstraintYBase && value is bool) {
+          object.maxY = value;
+        }
+        break;
       case IKConstraintBase.invertDirectionPropertyKey:
         if (object is IKConstraintBase && value is bool) {
           object.invertDirection = value;
@@ -315,16 +414,6 @@ class RiveCoreContext {
       case IKConstraintBase.parentBoneCountPropertyKey:
         if (object is IKConstraintBase && value is int) {
           object.parentBoneCount = value;
-        }
-        break;
-      case TransformConstraintBase.sourceSpaceValuePropertyKey:
-        if (object is TransformConstraintBase && value is int) {
-          object.sourceSpaceValue = value;
-        }
-        break;
-      case TransformConstraintBase.destSpaceValuePropertyKey:
-        if (object is TransformConstraintBase && value is int) {
-          object.destSpaceValue = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -384,6 +473,11 @@ class RiveCoreContext {
         break;
       case KeyFrameIdBase.valuePropertyKey:
         if (object is KeyFrameIdBase && value is int) {
+          object.value = value;
+        }
+        break;
+      case KeyFrameBoolBase.valuePropertyKey:
+        if (object is KeyFrameBoolBase && value is bool) {
           object.value = value;
         }
         break;
@@ -946,9 +1040,10 @@ class RiveCoreContext {
       case DrawTargetBase.placementValuePropertyKey:
       case TargetedConstraintBase.targetIdPropertyKey:
       case DistanceConstraintBase.modeValuePropertyKey:
+      case TransformSpaceConstraintBase.sourceSpaceValuePropertyKey:
+      case TransformSpaceConstraintBase.destSpaceValuePropertyKey:
+      case TransformComponentConstraintBase.minMaxSpaceValuePropertyKey:
       case IKConstraintBase.parentBoneCountPropertyKey:
-      case TransformConstraintBase.sourceSpaceValuePropertyKey:
-      case TransformConstraintBase.destSpaceValuePropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
       case BlendAnimationBase.animationIdPropertyKey:
@@ -992,6 +1087,12 @@ class RiveCoreContext {
         return uintType;
       case ConstraintBase.strengthPropertyKey:
       case DistanceConstraintBase.distancePropertyKey:
+      case TransformComponentConstraintBase.copyFactorPropertyKey:
+      case TransformComponentConstraintBase.minValuePropertyKey:
+      case TransformComponentConstraintBase.maxValuePropertyKey:
+      case TransformComponentConstraintYBase.copyFactorYPropertyKey:
+      case TransformComponentConstraintYBase.minValueYPropertyKey:
+      case TransformComponentConstraintYBase.maxValueYPropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
       case TransitionNumberConditionBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
@@ -1061,7 +1162,15 @@ class RiveCoreContext {
       case TendonBase.txPropertyKey:
       case TendonBase.tyPropertyKey:
         return doubleType;
+      case TransformComponentConstraintBase.offsetPropertyKey:
+      case TransformComponentConstraintBase.doesCopyPropertyKey:
+      case TransformComponentConstraintBase.minPropertyKey:
+      case TransformComponentConstraintBase.maxPropertyKey:
+      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
+      case TransformComponentConstraintYBase.minYPropertyKey:
+      case TransformComponentConstraintYBase.maxYPropertyKey:
       case IKConstraintBase.invertDirectionPropertyKey:
+      case KeyFrameBoolBase.valuePropertyKey:
       case LinearAnimationBase.enableWorkAreaPropertyKey:
       case StateMachineBoolBase.valuePropertyKey:
       case ShapePaintBase.isVisiblePropertyKey:
@@ -1103,12 +1212,14 @@ class RiveCoreContext {
         return (object as TargetedConstraintBase).targetId;
       case DistanceConstraintBase.modeValuePropertyKey:
         return (object as DistanceConstraintBase).modeValue;
+      case TransformSpaceConstraintBase.sourceSpaceValuePropertyKey:
+        return (object as TransformSpaceConstraintBase).sourceSpaceValue;
+      case TransformSpaceConstraintBase.destSpaceValuePropertyKey:
+        return (object as TransformSpaceConstraintBase).destSpaceValue;
+      case TransformComponentConstraintBase.minMaxSpaceValuePropertyKey:
+        return (object as TransformComponentConstraintBase).minMaxSpaceValue;
       case IKConstraintBase.parentBoneCountPropertyKey:
         return (object as IKConstraintBase).parentBoneCount;
-      case TransformConstraintBase.sourceSpaceValuePropertyKey:
-        return (object as TransformConstraintBase).sourceSpaceValue;
-      case TransformConstraintBase.destSpaceValuePropertyKey:
-        return (object as TransformConstraintBase).destSpaceValue;
       case AnimationStateBase.animationIdPropertyKey:
         return (object as AnimationStateBase).animationId;
       case KeyedObjectBase.objectIdPropertyKey:
@@ -1199,6 +1310,18 @@ class RiveCoreContext {
         return (object as ConstraintBase).strength;
       case DistanceConstraintBase.distancePropertyKey:
         return (object as DistanceConstraintBase).distance;
+      case TransformComponentConstraintBase.copyFactorPropertyKey:
+        return (object as TransformComponentConstraintBase).copyFactor;
+      case TransformComponentConstraintBase.minValuePropertyKey:
+        return (object as TransformComponentConstraintBase).minValue;
+      case TransformComponentConstraintBase.maxValuePropertyKey:
+        return (object as TransformComponentConstraintBase).maxValue;
+      case TransformComponentConstraintYBase.copyFactorYPropertyKey:
+        return (object as TransformComponentConstraintYBase).copyFactorY;
+      case TransformComponentConstraintYBase.minValueYPropertyKey:
+        return (object as TransformComponentConstraintYBase).minValueY;
+      case TransformComponentConstraintYBase.maxValueYPropertyKey:
+        return (object as TransformComponentConstraintYBase).maxValueY;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
       case TransitionNumberConditionBase.valuePropertyKey:
@@ -1341,8 +1464,24 @@ class RiveCoreContext {
 
   static bool getBool(Core object, int propertyKey) {
     switch (propertyKey) {
+      case TransformComponentConstraintBase.offsetPropertyKey:
+        return (object as TransformComponentConstraintBase).offset;
+      case TransformComponentConstraintBase.doesCopyPropertyKey:
+        return (object as TransformComponentConstraintBase).doesCopy;
+      case TransformComponentConstraintBase.minPropertyKey:
+        return (object as TransformComponentConstraintBase).min;
+      case TransformComponentConstraintBase.maxPropertyKey:
+        return (object as TransformComponentConstraintBase).max;
+      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
+        return (object as TransformComponentConstraintYBase).doesCopyY;
+      case TransformComponentConstraintYBase.minYPropertyKey:
+        return (object as TransformComponentConstraintYBase).minY;
+      case TransformComponentConstraintYBase.maxYPropertyKey:
+        return (object as TransformComponentConstraintYBase).maxY;
       case IKConstraintBase.invertDirectionPropertyKey:
         return (object as IKConstraintBase).invertDirection;
+      case KeyFrameBoolBase.valuePropertyKey:
+        return (object as KeyFrameBoolBase).value;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         return (object as LinearAnimationBase).enableWorkArea;
       case StateMachineBoolBase.valuePropertyKey:
@@ -1420,19 +1559,24 @@ class RiveCoreContext {
           object.modeValue = value;
         }
         break;
-      case IKConstraintBase.parentBoneCountPropertyKey:
-        if (object is IKConstraintBase) {
-          object.parentBoneCount = value;
-        }
-        break;
-      case TransformConstraintBase.sourceSpaceValuePropertyKey:
-        if (object is TransformConstraintBase) {
+      case TransformSpaceConstraintBase.sourceSpaceValuePropertyKey:
+        if (object is TransformSpaceConstraintBase) {
           object.sourceSpaceValue = value;
         }
         break;
-      case TransformConstraintBase.destSpaceValuePropertyKey:
-        if (object is TransformConstraintBase) {
+      case TransformSpaceConstraintBase.destSpaceValuePropertyKey:
+        if (object is TransformSpaceConstraintBase) {
           object.destSpaceValue = value;
+        }
+        break;
+      case TransformComponentConstraintBase.minMaxSpaceValuePropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.minMaxSpaceValue = value;
+        }
+        break;
+      case IKConstraintBase.parentBoneCountPropertyKey:
+        if (object is IKConstraintBase) {
+          object.parentBoneCount = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -1648,6 +1792,36 @@ class RiveCoreContext {
       case DistanceConstraintBase.distancePropertyKey:
         if (object is DistanceConstraintBase) {
           object.distance = value;
+        }
+        break;
+      case TransformComponentConstraintBase.copyFactorPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.copyFactor = value;
+        }
+        break;
+      case TransformComponentConstraintBase.minValuePropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.minValue = value;
+        }
+        break;
+      case TransformComponentConstraintBase.maxValuePropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.maxValue = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.copyFactorYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.copyFactorY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.minValueYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.minValueY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.maxValueYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.maxValueY = value;
         }
         break;
       case StateMachineNumberBase.valuePropertyKey:
@@ -1995,9 +2169,49 @@ class RiveCoreContext {
 
   static void setBool(Core object, int propertyKey, bool value) {
     switch (propertyKey) {
+      case TransformComponentConstraintBase.offsetPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.offset = value;
+        }
+        break;
+      case TransformComponentConstraintBase.doesCopyPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.doesCopy = value;
+        }
+        break;
+      case TransformComponentConstraintBase.minPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.min = value;
+        }
+        break;
+      case TransformComponentConstraintBase.maxPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.max = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.doesCopyY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.minYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.minY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.maxYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.maxY = value;
+        }
+        break;
       case IKConstraintBase.invertDirectionPropertyKey:
         if (object is IKConstraintBase) {
           object.invertDirection = value;
+        }
+        break;
+      case KeyFrameBoolBase.valuePropertyKey:
+        if (object is KeyFrameBoolBase) {
+          object.value = value;
         }
         break;
       case LinearAnimationBase.enableWorkAreaPropertyKey:

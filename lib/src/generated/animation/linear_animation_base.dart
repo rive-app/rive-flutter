@@ -184,7 +184,7 @@ abstract class LinearAnimationBase extends Animation {
   void enableWorkAreaChanged(bool from, bool to);
 
   @override
-  void copy(LinearAnimationBase source) {
+  void copy(covariant LinearAnimationBase source) {
     super.copy(source);
     _fps = source._fps;
     _duration = source._duration;

@@ -52,7 +52,7 @@ abstract class StarBase extends Polygon {
   void innerRadiusChanged(double from, double to);
 
   @override
-  void copy(StarBase source) {
+  void copy(covariant StarBase source) {
     super.copy(source);
     _innerRadius = source._innerRadius;
   }

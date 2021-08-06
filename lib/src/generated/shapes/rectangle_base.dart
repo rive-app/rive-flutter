@@ -150,7 +150,7 @@ abstract class RectangleBase extends ParametricPath {
   void cornerRadiusBRChanged(double from, double to);
 
   @override
-  void copy(RectangleBase source) {
+  void copy(covariant RectangleBase source) {
     super.copy(source);
     _linkCornerRadius = source._linkCornerRadius;
     _cornerRadiusTL = source._cornerRadiusTL;

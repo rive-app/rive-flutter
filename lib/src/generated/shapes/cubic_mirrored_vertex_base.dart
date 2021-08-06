@@ -70,7 +70,7 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
   void distanceChanged(double from, double to);
 
   @override
-  void copy(CubicMirroredVertexBase source) {
+  void copy(covariant CubicMirroredVertexBase source) {
     super.copy(source);
     _rotation = source._rotation;
     _distance = source._distance;

@@ -128,7 +128,7 @@ abstract class LinearGradientBase extends ContainerComponent {
   void opacityChanged(double from, double to);
 
   @override
-  void copy(LinearGradientBase source) {
+  void copy(covariant LinearGradientBase source) {
     super.copy(source);
     _startX = source._startX;
     _startY = source._startY;

@@ -71,7 +71,7 @@ abstract class RootBoneBase extends Bone {
   void yChanged(double from, double to);
 
   @override
-  void copy(RootBoneBase source) {
+  void copy(covariant RootBoneBase source) {
     super.copy(source);
     _x = source._x;
     _y = source._y;
