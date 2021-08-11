@@ -6,6 +6,7 @@ import 'package:rive/src/generated/bones/skeletal_component_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
+import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
 
 abstract class RootBoneBase extends Bone {
@@ -18,6 +19,7 @@ abstract class RootBoneBase extends Bone {
         BoneBase.typeKey,
         SkeletalComponentBase.typeKey,
         TransformComponentBase.typeKey,
+        WorldTransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };

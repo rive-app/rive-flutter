@@ -1,8 +1,8 @@
-import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
+import 'package:rive/src/rive_core/world_transform_component.dart';
 export 'package:rive/src/generated/constraints/constraint_base.dart';
 
 /// A specialized [Component] which can be parented to any [TransformComponent]
@@ -41,9 +41,7 @@ abstract class Constraint extends ConstraintBase {
 /// is an artboard.
 Mat2D parentWorld(TransformComponent component) {
   var parent = component.parent;
-  if (parent is Artboard) {
-    return parent.worldTransform;
-  } else if (parent is TransformComponent) {
+  if (parent is WorldTransformComponent) {
     return parent.worldTransform;
   }
   return Mat2D();

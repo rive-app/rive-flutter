@@ -41,7 +41,7 @@ class ScaleConstraint extends ScaleConstraintBase {
 
       if (!doesCopyY) {
         componentsB.scaleY =
-            destSpace == TransformSpace.local ? 0 : componentsA.scaleY;
+            destSpace == TransformSpace.local ? 1 : componentsA.scaleY;
       } else {
         componentsB.scaleY = componentsB.scaleY * copyFactorY;
         if (offset) {
