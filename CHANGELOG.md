@@ -1,4 +1,5 @@
 ## 0.7.28
+- Ability to disable clipping on artboards. [`#161`](https://github.com/rive-app/rive-flutter/pull/161)
 
 ## 0.7.27
 - Adds support for translation, scale, and rotation constraints. 
