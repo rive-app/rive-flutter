@@ -7,6 +7,7 @@ import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
+import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/shapes/path.dart';
 
 abstract class ParametricPathBase extends Path {
@@ -19,6 +20,7 @@ abstract class ParametricPathBase extends Path {
         PathBase.typeKey,
         NodeBase.typeKey,
         TransformComponentBase.typeKey,
+        WorldTransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };

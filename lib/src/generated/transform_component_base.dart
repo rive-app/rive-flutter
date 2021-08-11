@@ -4,15 +4,17 @@
 
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
-import 'package:rive/src/rive_core/container_component.dart';
+import 'package:rive/src/generated/world_transform_component_base.dart';
+import 'package:rive/src/rive_core/world_transform_component.dart';
 
-abstract class TransformComponentBase extends ContainerComponent {
+abstract class TransformComponentBase extends WorldTransformComponent {
   static const int typeKey = 38;
   @override
   int get coreType => TransformComponentBase.typeKey;
   @override
   Set<int> get coreTypes => {
         TransformComponentBase.typeKey,
+        WorldTransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
@@ -83,34 +85,11 @@ abstract class TransformComponentBase extends ContainerComponent {
 
   void scaleYChanged(double from, double to);
 
-  /// --------------------------------------------------------------------------
-  /// Opacity field with key 18.
-  static const double opacityInitialValue = 1;
-  double _opacity = opacityInitialValue;
-  static const int opacityPropertyKey = 18;
-  double get opacity => _opacity;
-
-  /// Change the [_opacity] field value.
-  /// [opacityChanged] will be invoked only if the field's value has changed.
-  set opacity(double value) {
-    if (_opacity == value) {
-      return;
-    }
-    double from = _opacity;
-    _opacity = value;
-    if (hasValidated) {
-      opacityChanged(from, value);
-    }
-  }
-
-  void opacityChanged(double from, double to);
-
   @override
   void copy(covariant TransformComponentBase source) {
     super.copy(source);
     _rotation = source._rotation;
     _scaleX = source._scaleX;
     _scaleY = source._scaleY;
-    _opacity = source._opacity;
   }
 }

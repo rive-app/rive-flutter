@@ -85,6 +85,7 @@ import 'package:rive/src/generated/shapes/star_base.dart';
 import 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 import 'package:rive/src/generated/shapes/triangle_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
+import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
@@ -691,6 +692,11 @@ class RiveCoreContext {
           object.fillRule = value;
         }
         break;
+      case WorldTransformComponentBase.opacityPropertyKey:
+        if (object is WorldTransformComponentBase && value is double) {
+          object.opacity = value;
+        }
+        break;
       case TransformComponentBase.rotationPropertyKey:
         if (object is TransformComponentBase && value is double) {
           object.rotation = value;
@@ -704,11 +710,6 @@ class RiveCoreContext {
       case TransformComponentBase.scaleYPropertyKey:
         if (object is TransformComponentBase && value is double) {
           object.scaleY = value;
-        }
-        break;
-      case TransformComponentBase.opacityPropertyKey:
-        if (object is TransformComponentBase && value is double) {
-          object.opacity = value;
         }
         break;
       case NodeBase.xPropertyKey:
@@ -909,6 +910,11 @@ class RiveCoreContext {
       case DrawRulesBase.drawTargetIdPropertyKey:
         if (object is DrawRulesBase && value is int) {
           object.drawTargetId = value;
+        }
+        break;
+      case ArtboardBase.clipPropertyKey:
+        if (object is ArtboardBase && value is bool) {
+          object.clip = value;
         }
         break;
       case ArtboardBase.widthPropertyKey:
@@ -1112,10 +1118,10 @@ class RiveCoreContext {
       case TrimPathBase.startPropertyKey:
       case TrimPathBase.endPropertyKey:
       case TrimPathBase.offsetPropertyKey:
+      case WorldTransformComponentBase.opacityPropertyKey:
       case TransformComponentBase.rotationPropertyKey:
       case TransformComponentBase.scaleXPropertyKey:
       case TransformComponentBase.scaleYPropertyKey:
-      case TransformComponentBase.opacityPropertyKey:
       case NodeBase.xPropertyKey:
       case NodeBase.yPropertyKey:
       case PathVertexBase.xPropertyKey:
@@ -1178,6 +1184,7 @@ class RiveCoreContext {
       case PointsPathBase.isClosedPropertyKey:
       case RectangleBase.linkCornerRadiusPropertyKey:
       case ClippingShapeBase.isVisiblePropertyKey:
+      case ArtboardBase.clipPropertyKey:
         return boolType;
       case KeyFrameColorBase.valuePropertyKey:
       case SolidColorBase.colorValuePropertyKey:
@@ -1360,14 +1367,14 @@ class RiveCoreContext {
         return (object as TrimPathBase).end;
       case TrimPathBase.offsetPropertyKey:
         return (object as TrimPathBase).offset;
+      case WorldTransformComponentBase.opacityPropertyKey:
+        return (object as WorldTransformComponentBase).opacity;
       case TransformComponentBase.rotationPropertyKey:
         return (object as TransformComponentBase).rotation;
       case TransformComponentBase.scaleXPropertyKey:
         return (object as TransformComponentBase).scaleX;
       case TransformComponentBase.scaleYPropertyKey:
         return (object as TransformComponentBase).scaleY;
-      case TransformComponentBase.opacityPropertyKey:
-        return (object as TransformComponentBase).opacity;
       case NodeBase.xPropertyKey:
         return (object as NodeBase).x;
       case NodeBase.yPropertyKey:
@@ -1496,6 +1503,8 @@ class RiveCoreContext {
         return (object as RectangleBase).linkCornerRadius;
       case ClippingShapeBase.isVisiblePropertyKey:
         return (object as ClippingShapeBase).isVisible;
+      case ArtboardBase.clipPropertyKey:
+        return (object as ArtboardBase).clip;
     }
     return false;
   }
@@ -1919,6 +1928,11 @@ class RiveCoreContext {
           object.offset = value;
         }
         break;
+      case WorldTransformComponentBase.opacityPropertyKey:
+        if (object is WorldTransformComponentBase) {
+          object.opacity = value;
+        }
+        break;
       case TransformComponentBase.rotationPropertyKey:
         if (object is TransformComponentBase) {
           object.rotation = value;
@@ -1932,11 +1946,6 @@ class RiveCoreContext {
       case TransformComponentBase.scaleYPropertyKey:
         if (object is TransformComponentBase) {
           object.scaleY = value;
-        }
-        break;
-      case TransformComponentBase.opacityPropertyKey:
-        if (object is TransformComponentBase) {
-          object.opacity = value;
         }
         break;
       case NodeBase.xPropertyKey:
@@ -2247,6 +2256,11 @@ class RiveCoreContext {
       case ClippingShapeBase.isVisiblePropertyKey:
         if (object is ClippingShapeBase) {
           object.isVisible = value;
+        }
+        break;
+      case ArtboardBase.clipPropertyKey:
+        if (object is ArtboardBase) {
+          object.clip = value;
         }
         break;
     }

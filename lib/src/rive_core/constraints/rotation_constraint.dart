@@ -35,7 +35,7 @@ class RotationConstraint extends RotationConstraintBase {
 
       if (!doesCopy) {
         componentsB.rotation =
-            destSpace == TransformSpace.local ? 1 : componentsA.rotation;
+            destSpace == TransformSpace.local ? 0 : componentsA.rotation;
       } else {
         componentsB.rotation = componentsB.rotation * copyFactor;
         if (offset) {

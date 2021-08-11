@@ -9,7 +9,6 @@ import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
@@ -236,7 +235,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Draw the drawable components in this artboard.
   void draw(Canvas canvas) {
     canvas.save();
-    canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
+    if (clip) {
+      canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
+    }
     // Get into artboard's world space. This is because the artboard draws
     // components in the artboard's space (in component lingo we call this world
     // space). The artboards themselves are drawn in the editor's world space,
@@ -262,10 +263,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
     canvas.restore();
   }
-
-  /// Our world transform is always the identity. Artboard defines world space.
-  @override
-  Mat2D get worldTransform => Mat2D();
 
   @override
   void originXChanged(double from, double to) {
@@ -451,20 +448,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         'Instancing the artboard in the editor isn\'t supported');
   }
 
-  // void rebuildDependencies() {
-  //   for (final component in _components) {
-  //     component.dependents.clear();
-  //   }
-  //   for (final component in _components) {
-  //     component.buildDependencies();
-  //   }
-  //   for (final component in _components) {
-  //     component.dependentIds = component.dependents
-  //         // Make sure non-core (won't resolve on server) items aren't
-  //         // included
-  //         .where((other) => other.isActive)
-  //         .map((other) => other.id)
-  //         .toList(growable: false);
-  //   }
-  // }
+  @override
+  void clipChanged(bool from, bool to) => addDirt(ComponentDirt.paint);
+
+  @override
+  void opacityChanged(double from, double to) => markWorldTransformDirty;
 }

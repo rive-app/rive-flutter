@@ -4,6 +4,7 @@
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
+import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 
 abstract class NodeBase extends TransformComponent {
@@ -14,6 +15,7 @@ abstract class NodeBase extends TransformComponent {
   Set<int> get coreTypes => {
         NodeBase.typeKey,
         TransformComponentBase.typeKey,
+        WorldTransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };

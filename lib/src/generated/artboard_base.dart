@@ -3,18 +3,44 @@
 
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
-import 'package:rive/src/rive_core/container_component.dart';
+import 'package:rive/src/generated/world_transform_component_base.dart';
+import 'package:rive/src/rive_core/world_transform_component.dart';
 
-abstract class ArtboardBase extends ContainerComponent {
+abstract class ArtboardBase extends WorldTransformComponent {
   static const int typeKey = 1;
   @override
   int get coreType => ArtboardBase.typeKey;
   @override
   Set<int> get coreTypes => {
         ArtboardBase.typeKey,
+        WorldTransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
+
+  /// --------------------------------------------------------------------------
+  /// Clip field with key 196.
+  static const bool clipInitialValue = true;
+  bool _clip = clipInitialValue;
+  static const int clipPropertyKey = 196;
+
+  /// True when the artboard bounds clip its contents.
+  bool get clip => _clip;
+
+  /// Change the [_clip] field value.
+  /// [clipChanged] will be invoked only if the field's value has changed.
+  set clip(bool value) {
+    if (_clip == value) {
+      return;
+    }
+    bool from = _clip;
+    _clip = value;
+    if (hasValidated) {
+      clipChanged(from, value);
+    }
+  }
+
+  void clipChanged(bool from, bool to);
 
   /// --------------------------------------------------------------------------
   /// Width field with key 7.
@@ -163,6 +189,7 @@ abstract class ArtboardBase extends ContainerComponent {
   @override
   void copy(covariant ArtboardBase source) {
     super.copy(source);
+    _clip = source._clip;
     _width = source._width;
     _height = source._height;
     _x = source._x;

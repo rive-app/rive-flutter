@@ -8,6 +8,7 @@ import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
 import 'package:rive/src/generated/shapes/polygon_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
+import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/shapes/polygon.dart';
 
 abstract class StarBase extends Polygon {
@@ -22,6 +23,7 @@ abstract class StarBase extends Polygon {
         PathBase.typeKey,
         NodeBase.typeKey,
         TransformComponentBase.typeKey,
+        WorldTransformComponentBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
