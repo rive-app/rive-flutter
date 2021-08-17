@@ -60,6 +60,7 @@ import 'package:rive/src/generated/constraints/translation_constraint_base.dart'
 import 'package:rive/src/generated/draw_rules_base.dart';
 import 'package:rive/src/generated/draw_target_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
+import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/generated/node_base.dart';
 import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
 import 'package:rive/src/generated/shapes/cubic_asymmetric_vertex_base.dart';
@@ -129,6 +130,7 @@ import 'package:rive/src/rive_core/constraints/transform_constraint.dart';
 import 'package:rive/src/rive_core/constraints/translation_constraint.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
+import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
 import 'package:rive/src/rive_core/shapes/cubic_asymmetric_vertex.dart';
@@ -168,6 +170,10 @@ class RiveCoreContext {
         return ScaleConstraint();
       case RotationConstraintBase.typeKey:
         return RotationConstraint();
+      case NodeBase.typeKey:
+        return Node();
+      case NestedArtboardBase.typeKey:
+        return NestedArtboard();
       case AnimationStateBase.typeKey:
         return AnimationState();
       case KeyedObjectBase.typeKey:
@@ -236,8 +242,6 @@ class RiveCoreContext {
         return TrimPath();
       case FillBase.typeKey:
         return Fill();
-      case NodeBase.typeKey:
-        return Node();
       case ShapeBase.typeKey:
         return Shape();
       case WeightBase.typeKey:
@@ -415,6 +419,51 @@ class RiveCoreContext {
       case IKConstraintBase.parentBoneCountPropertyKey:
         if (object is IKConstraintBase && value is int) {
           object.parentBoneCount = value;
+        }
+        break;
+      case WorldTransformComponentBase.opacityPropertyKey:
+        if (object is WorldTransformComponentBase && value is double) {
+          object.opacity = value;
+        }
+        break;
+      case TransformComponentBase.rotationPropertyKey:
+        if (object is TransformComponentBase && value is double) {
+          object.rotation = value;
+        }
+        break;
+      case TransformComponentBase.scaleXPropertyKey:
+        if (object is TransformComponentBase && value is double) {
+          object.scaleX = value;
+        }
+        break;
+      case TransformComponentBase.scaleYPropertyKey:
+        if (object is TransformComponentBase && value is double) {
+          object.scaleY = value;
+        }
+        break;
+      case NodeBase.xPropertyKey:
+        if (object is NodeBase && value is double) {
+          object.x = value;
+        }
+        break;
+      case NodeBase.yPropertyKey:
+        if (object is NodeBase && value is double) {
+          object.y = value;
+        }
+        break;
+      case DrawableBase.blendModeValuePropertyKey:
+        if (object is DrawableBase && value is int) {
+          object.blendModeValue = value;
+        }
+        break;
+      case DrawableBase.drawableFlagsPropertyKey:
+        if (object is DrawableBase && value is int) {
+          object.drawableFlags = value;
+        }
+        break;
+      case NestedArtboardBase.artboardIdPropertyKey:
+        if (object is NestedArtboardBase && value is int) {
+          object.artboardId = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -692,49 +741,9 @@ class RiveCoreContext {
           object.fillRule = value;
         }
         break;
-      case WorldTransformComponentBase.opacityPropertyKey:
-        if (object is WorldTransformComponentBase && value is double) {
-          object.opacity = value;
-        }
-        break;
-      case TransformComponentBase.rotationPropertyKey:
-        if (object is TransformComponentBase && value is double) {
-          object.rotation = value;
-        }
-        break;
-      case TransformComponentBase.scaleXPropertyKey:
-        if (object is TransformComponentBase && value is double) {
-          object.scaleX = value;
-        }
-        break;
-      case TransformComponentBase.scaleYPropertyKey:
-        if (object is TransformComponentBase && value is double) {
-          object.scaleY = value;
-        }
-        break;
-      case NodeBase.xPropertyKey:
-        if (object is NodeBase && value is double) {
-          object.x = value;
-        }
-        break;
-      case NodeBase.yPropertyKey:
-        if (object is NodeBase && value is double) {
-          object.y = value;
-        }
-        break;
       case PathBase.pathFlagsPropertyKey:
         if (object is PathBase && value is int) {
           object.pathFlags = value;
-        }
-        break;
-      case DrawableBase.blendModeValuePropertyKey:
-        if (object is DrawableBase && value is int) {
-          object.blendModeValue = value;
-        }
-        break;
-      case DrawableBase.drawableFlagsPropertyKey:
-        if (object is DrawableBase && value is int) {
-          object.drawableFlags = value;
         }
         break;
       case PathVertexBase.xPropertyKey:
@@ -1050,6 +1059,9 @@ class RiveCoreContext {
       case TransformSpaceConstraintBase.destSpaceValuePropertyKey:
       case TransformComponentConstraintBase.minMaxSpaceValuePropertyKey:
       case IKConstraintBase.parentBoneCountPropertyKey:
+      case DrawableBase.blendModeValuePropertyKey:
+      case DrawableBase.drawableFlagsPropertyKey:
+      case NestedArtboardBase.artboardIdPropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
       case BlendAnimationBase.animationIdPropertyKey:
@@ -1077,8 +1089,6 @@ class RiveCoreContext {
       case TrimPathBase.modeValuePropertyKey:
       case FillBase.fillRulePropertyKey:
       case PathBase.pathFlagsPropertyKey:
-      case DrawableBase.blendModeValuePropertyKey:
-      case DrawableBase.drawableFlagsPropertyKey:
       case WeightBase.valuesPropertyKey:
       case WeightBase.indicesPropertyKey:
       case CubicWeightBase.inValuesPropertyKey:
@@ -1099,6 +1109,12 @@ class RiveCoreContext {
       case TransformComponentConstraintYBase.copyFactorYPropertyKey:
       case TransformComponentConstraintYBase.minValueYPropertyKey:
       case TransformComponentConstraintYBase.maxValueYPropertyKey:
+      case WorldTransformComponentBase.opacityPropertyKey:
+      case TransformComponentBase.rotationPropertyKey:
+      case TransformComponentBase.scaleXPropertyKey:
+      case TransformComponentBase.scaleYPropertyKey:
+      case NodeBase.xPropertyKey:
+      case NodeBase.yPropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
       case TransitionNumberConditionBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
@@ -1118,12 +1134,6 @@ class RiveCoreContext {
       case TrimPathBase.startPropertyKey:
       case TrimPathBase.endPropertyKey:
       case TrimPathBase.offsetPropertyKey:
-      case WorldTransformComponentBase.opacityPropertyKey:
-      case TransformComponentBase.rotationPropertyKey:
-      case TransformComponentBase.scaleXPropertyKey:
-      case TransformComponentBase.scaleYPropertyKey:
-      case NodeBase.xPropertyKey:
-      case NodeBase.yPropertyKey:
       case PathVertexBase.xPropertyKey:
       case PathVertexBase.yPropertyKey:
       case StraightVertexBase.radiusPropertyKey:
@@ -1227,6 +1237,12 @@ class RiveCoreContext {
         return (object as TransformComponentConstraintBase).minMaxSpaceValue;
       case IKConstraintBase.parentBoneCountPropertyKey:
         return (object as IKConstraintBase).parentBoneCount;
+      case DrawableBase.blendModeValuePropertyKey:
+        return (object as DrawableBase).blendModeValue;
+      case DrawableBase.drawableFlagsPropertyKey:
+        return (object as DrawableBase).drawableFlags;
+      case NestedArtboardBase.artboardIdPropertyKey:
+        return (object as NestedArtboardBase).artboardId;
       case AnimationStateBase.animationIdPropertyKey:
         return (object as AnimationStateBase).animationId;
       case KeyedObjectBase.objectIdPropertyKey:
@@ -1281,10 +1297,6 @@ class RiveCoreContext {
         return (object as FillBase).fillRule;
       case PathBase.pathFlagsPropertyKey:
         return (object as PathBase).pathFlags;
-      case DrawableBase.blendModeValuePropertyKey:
-        return (object as DrawableBase).blendModeValue;
-      case DrawableBase.drawableFlagsPropertyKey:
-        return (object as DrawableBase).drawableFlags;
       case WeightBase.valuesPropertyKey:
         return (object as WeightBase).values;
       case WeightBase.indicesPropertyKey:
@@ -1329,6 +1341,18 @@ class RiveCoreContext {
         return (object as TransformComponentConstraintYBase).minValueY;
       case TransformComponentConstraintYBase.maxValueYPropertyKey:
         return (object as TransformComponentConstraintYBase).maxValueY;
+      case WorldTransformComponentBase.opacityPropertyKey:
+        return (object as WorldTransformComponentBase).opacity;
+      case TransformComponentBase.rotationPropertyKey:
+        return (object as TransformComponentBase).rotation;
+      case TransformComponentBase.scaleXPropertyKey:
+        return (object as TransformComponentBase).scaleX;
+      case TransformComponentBase.scaleYPropertyKey:
+        return (object as TransformComponentBase).scaleY;
+      case NodeBase.xPropertyKey:
+        return (object as NodeBase).x;
+      case NodeBase.yPropertyKey:
+        return (object as NodeBase).y;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
       case TransitionNumberConditionBase.valuePropertyKey:
@@ -1367,18 +1391,6 @@ class RiveCoreContext {
         return (object as TrimPathBase).end;
       case TrimPathBase.offsetPropertyKey:
         return (object as TrimPathBase).offset;
-      case WorldTransformComponentBase.opacityPropertyKey:
-        return (object as WorldTransformComponentBase).opacity;
-      case TransformComponentBase.rotationPropertyKey:
-        return (object as TransformComponentBase).rotation;
-      case TransformComponentBase.scaleXPropertyKey:
-        return (object as TransformComponentBase).scaleX;
-      case TransformComponentBase.scaleYPropertyKey:
-        return (object as TransformComponentBase).scaleY;
-      case NodeBase.xPropertyKey:
-        return (object as NodeBase).x;
-      case NodeBase.yPropertyKey:
-        return (object as NodeBase).y;
       case PathVertexBase.xPropertyKey:
         return (object as PathVertexBase).x;
       case PathVertexBase.yPropertyKey:
@@ -1588,6 +1600,21 @@ class RiveCoreContext {
           object.parentBoneCount = value;
         }
         break;
+      case DrawableBase.blendModeValuePropertyKey:
+        if (object is DrawableBase) {
+          object.blendModeValue = value;
+        }
+        break;
+      case DrawableBase.drawableFlagsPropertyKey:
+        if (object is DrawableBase) {
+          object.drawableFlags = value;
+        }
+        break;
+      case NestedArtboardBase.artboardIdPropertyKey:
+        if (object is NestedArtboardBase) {
+          object.artboardId = value;
+        }
+        break;
       case AnimationStateBase.animationIdPropertyKey:
         if (object is AnimationStateBase) {
           object.animationId = value;
@@ -1723,16 +1750,6 @@ class RiveCoreContext {
           object.pathFlags = value;
         }
         break;
-      case DrawableBase.blendModeValuePropertyKey:
-        if (object is DrawableBase) {
-          object.blendModeValue = value;
-        }
-        break;
-      case DrawableBase.drawableFlagsPropertyKey:
-        if (object is DrawableBase) {
-          object.drawableFlags = value;
-        }
-        break;
       case WeightBase.valuesPropertyKey:
         if (object is WeightBase) {
           object.values = value;
@@ -1833,6 +1850,36 @@ class RiveCoreContext {
           object.maxValueY = value;
         }
         break;
+      case WorldTransformComponentBase.opacityPropertyKey:
+        if (object is WorldTransformComponentBase) {
+          object.opacity = value;
+        }
+        break;
+      case TransformComponentBase.rotationPropertyKey:
+        if (object is TransformComponentBase) {
+          object.rotation = value;
+        }
+        break;
+      case TransformComponentBase.scaleXPropertyKey:
+        if (object is TransformComponentBase) {
+          object.scaleX = value;
+        }
+        break;
+      case TransformComponentBase.scaleYPropertyKey:
+        if (object is TransformComponentBase) {
+          object.scaleY = value;
+        }
+        break;
+      case NodeBase.xPropertyKey:
+        if (object is NodeBase) {
+          object.x = value;
+        }
+        break;
+      case NodeBase.yPropertyKey:
+        if (object is NodeBase) {
+          object.y = value;
+        }
+        break;
       case StateMachineNumberBase.valuePropertyKey:
         if (object is StateMachineNumberBase) {
           object.value = value;
@@ -1926,36 +1973,6 @@ class RiveCoreContext {
       case TrimPathBase.offsetPropertyKey:
         if (object is TrimPathBase) {
           object.offset = value;
-        }
-        break;
-      case WorldTransformComponentBase.opacityPropertyKey:
-        if (object is WorldTransformComponentBase) {
-          object.opacity = value;
-        }
-        break;
-      case TransformComponentBase.rotationPropertyKey:
-        if (object is TransformComponentBase) {
-          object.rotation = value;
-        }
-        break;
-      case TransformComponentBase.scaleXPropertyKey:
-        if (object is TransformComponentBase) {
-          object.scaleX = value;
-        }
-        break;
-      case TransformComponentBase.scaleYPropertyKey:
-        if (object is TransformComponentBase) {
-          object.scaleY = value;
-        }
-        break;
-      case NodeBase.xPropertyKey:
-        if (object is NodeBase) {
-          object.x = value;
-        }
-        break;
-      case NodeBase.yPropertyKey:
-        if (object is NodeBase) {
-          object.y = value;
         }
         break;
       case PathVertexBase.xPropertyKey:

@@ -100,9 +100,10 @@ class _RiveAnimationState extends State<RiveAnimation> {
 
   /// Initializes the artboard, animations, state machines and controllers
   void _init(RiveFile file) {
-    final artboard = widget.artboard != null
-        ? file.artboardByName(widget.artboard!)
-        : file.mainArtboard;
+    final artboard = (widget.artboard != null
+            ? file.artboardByName(widget.artboard!)
+            : file.mainArtboard)
+        ?.instance();
 
     if (artboard == null) {
       throw const FormatException('Unable to load artboard');

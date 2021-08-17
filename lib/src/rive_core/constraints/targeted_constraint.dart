@@ -16,9 +16,7 @@ abstract class TargetedConstraint extends TargetedConstraintBase {
   }
 
   @override
-  void targetIdChanged(int from, int to) {
-    target = context.resolve(to);
-  }
+  void targetIdChanged(int from, int to) => target = context.resolve(to);
 
   @override
   void buildDependencies() {
