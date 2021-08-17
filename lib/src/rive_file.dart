@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
+import 'package:rive/src/core/importers/backboard_importer.dart';
 import 'package:rive/src/generated/animation/animation_state_base.dart';
 import 'package:rive/src/generated/animation/any_state_base.dart';
 import 'package:rive/src/generated/animation/blend_state_transition_base.dart';
@@ -13,6 +14,7 @@ import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/generated/animation/state_machine_base.dart';
+import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
@@ -24,6 +26,7 @@ import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
+import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 
 import 'generated/animation/blend_state_1d_base.dart';
@@ -38,6 +41,9 @@ Core<CoreContext>? _readRuntimeObject(
   switch (coreObjectKey) {
     case ArtboardBase.typeKey:
       instance = RuntimeArtboard();
+      break;
+    case NestedArtboardBase.typeKey:
+      instance = RuntimeNestedArtboard();
       break;
   }
   var object = instance ?? RiveCoreContext.makeCoreInstance(coreObjectKey);
@@ -103,6 +109,8 @@ class RiveFile {
 
       propertyToField[key] = indexToField[fieldIndex];
     });
+    int artboardId = 0;
+    var artboardLookup = HashMap<int, Artboard>();
     var importStack = ImportStack();
     while (!reader.isEOF) {
       final object = _readRuntimeObject(reader, propertyToField);
@@ -120,6 +128,9 @@ class RiveFile {
       ImportStackObject? stackObject;
       var stackType = object.coreType;
       switch (object.coreType) {
+        case BackboardBase.typeKey:
+          stackObject = BackboardImporter(artboardLookup, object as Backboard);
+          break;
         case ArtboardBase.typeKey:
           stackObject = ArtboardImporter(object as RuntimeArtboard);
           break;
@@ -178,10 +189,13 @@ class RiveFile {
         throw const RiveFormatErrorException('Rive file is corrupt.');
       }
 
+      // Store all as some may fail to import (will be set to null, but we still
+      // want them to occupy an id).
       if (object.import(importStack)) {
         switch (object.coreType) {
           case ArtboardBase.typeKey:
-            _artboards.add(object as Artboard);
+            artboardLookup[artboardId++] = object as Artboard;
+            _artboards.add(object);
             break;
           case BackboardBase.typeKey:
             if (_backboard != Backboard.unknown) {
@@ -189,6 +203,12 @@ class RiveFile {
                   'Rive file expects only one backboard.');
             }
             _backboard = object as Backboard;
+            break;
+        }
+      } else {
+        switch (object.coreType) {
+          case ArtboardBase.typeKey:
+            artboardId++;
             break;
         }
       }

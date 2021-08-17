@@ -4,6 +4,7 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
+import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
@@ -453,4 +454,16 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   @override
   void opacityChanged(double from, double to) => markWorldTransformDirty;
+
+  @override
+  bool import(ImportStack stack) {
+    var backboardImporter =
+        stack.latest<BackboardImporter>(BackboardBase.typeKey);
+    if (backboardImporter == null) {
+      return false;
+    }
+    backboardImporter.addArtboard(this);
+
+    return super.import(stack);
+  }
 }
