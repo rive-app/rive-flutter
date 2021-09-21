@@ -216,7 +216,6 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
   void _onStateChange(LayerState layerState) =>
       SchedulerBinding.instance?.addPostFrameCallback((_) {
         String stateName = 'unknown';
-        print('Layer state type ${layerState.runtimeType}');
         if (layerState is AnimationState && layerState.animation != null) {
           stateName = layerState.animation!.name;
         } else if (layerState is EntryState) {
