@@ -1,10 +1,11 @@
 import 'dart:collection';
 
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/animation/linear_animation_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/artboard.dart';
-import 'package:rive/src/generated/animation/linear_animation_base.dart';
+
 export 'package:rive/src/generated/animation/linear_animation_base.dart';
 
 class LinearAnimation extends LinearAnimationBase {
@@ -77,6 +78,27 @@ class LinearAnimation extends LinearAnimationBase {
 
   @override
   void workStartChanged(int from, int to) {}
+
+  /// Returns the end time of the animation in seconds
+  double get endTime => (enableWorkArea ? workEnd : duration).toDouble() / fps;
+
+  /// Returns the start time of the animation in seconds
+  double get startTime => (enableWorkArea ? workStart : 0).toDouble() / fps;
+
+  /// Convert a global clock to local seconds (takes into consideration work
+  /// area start/end, speed, looping).
+  double globalToLocalTime(double seconds) {
+    switch (loop) {
+      case Loop.oneShot:
+        return seconds + startTime;
+      case Loop.loop:
+        return seconds % (endTime - startTime) + startTime;
+      case Loop.pingPong:
+        var localTime = seconds % (endTime - startTime);
+        var direction = (seconds ~/ (endTime - startTime)) % 2;
+        return direction == 0 ? localTime + startTime : endTime - localTime;
+    }
+  }
 
   @override
   bool import(ImportStack stack) {

@@ -1,6 +1,7 @@
-import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/generated/constraints/transform_space_constraint_base.dart';
+import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/rive_core/transform_space.dart';
+
 export 'package:rive/src/generated/constraints/transform_space_constraint_base.dart';
 
 abstract class TransformSpaceConstraint extends TransformSpaceConstraintBase {

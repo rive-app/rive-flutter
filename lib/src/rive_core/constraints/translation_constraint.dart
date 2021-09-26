@@ -1,9 +1,10 @@
+import 'package:rive/src/generated/constraints/translation_constraint_base.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
-import 'package:rive/src/generated/constraints/translation_constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 import 'package:rive/src/rive_core/transform_space.dart';
+
 export 'package:rive/src/generated/constraints/translation_constraint_base.dart';
 
 /// A constraint copies the translation from the target component to the

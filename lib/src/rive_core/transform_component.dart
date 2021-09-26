@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
+import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
@@ -13,11 +15,10 @@ import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
-import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
-import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
 
 import 'constraints/distance_constraint.dart';
+
 export 'package:rive/src/generated/transform_component_base.dart';
 
 abstract class TransformComponent extends TransformComponentBase {

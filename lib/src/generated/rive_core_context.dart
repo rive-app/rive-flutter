@@ -25,6 +25,10 @@ import 'package:rive/src/generated/animation/keyframe_color_base.dart';
 import 'package:rive/src/generated/animation/keyframe_double_base.dart';
 import 'package:rive/src/generated/animation/keyframe_id_base.dart';
 import 'package:rive/src/generated/animation/linear_animation_base.dart';
+import 'package:rive/src/generated/animation/nested_linear_animation_base.dart';
+import 'package:rive/src/generated/animation/nested_remap_animation_base.dart';
+import 'package:rive/src/generated/animation/nested_simple_animation_base.dart';
+import 'package:rive/src/generated/animation/nested_state_machine_base.dart';
 import 'package:rive/src/generated/animation/state_machine_base.dart';
 import 'package:rive/src/generated/animation/state_machine_bool_base.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
@@ -60,6 +64,7 @@ import 'package:rive/src/generated/constraints/translation_constraint_base.dart'
 import 'package:rive/src/generated/draw_rules_base.dart';
 import 'package:rive/src/generated/draw_target_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
+import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/generated/node_base.dart';
 import 'package:rive/src/generated/shapes/clipping_shape_base.dart';
@@ -105,6 +110,9 @@ import 'package:rive/src/rive_core/animation/keyframe_color.dart';
 import 'package:rive/src/rive_core/animation/keyframe_double.dart';
 import 'package:rive/src/rive_core/animation/keyframe_id.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/rive_core/animation/nested_remap_animation.dart';
+import 'package:rive/src/rive_core/animation/nested_simple_animation.dart';
+import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
@@ -174,6 +182,12 @@ class RiveCoreContext {
         return Node();
       case NestedArtboardBase.typeKey:
         return NestedArtboard();
+      case AnimationBase.typeKey:
+        return Animation();
+      case LinearAnimationBase.typeKey:
+        return LinearAnimation();
+      case NestedSimpleAnimationBase.typeKey:
+        return NestedSimpleAnimation();
       case AnimationStateBase.typeKey:
         return AnimationState();
       case KeyedObjectBase.typeKey:
@@ -196,8 +210,6 @@ class RiveCoreContext {
         return AnyState();
       case StateMachineLayerBase.typeKey:
         return StateMachineLayer();
-      case AnimationBase.typeKey:
-        return Animation();
       case CubicInterpolatorBase.typeKey:
         return CubicInterpolator();
       case StateTransitionBase.typeKey:
@@ -210,18 +222,20 @@ class RiveCoreContext {
         return StateMachine();
       case EntryStateBase.typeKey:
         return EntryState();
-      case LinearAnimationBase.typeKey:
-        return LinearAnimation();
       case StateMachineTriggerBase.typeKey:
         return StateMachineTrigger();
       case BlendStateDirectBase.typeKey:
         return BlendStateDirect();
+      case NestedStateMachineBase.typeKey:
+        return NestedStateMachine();
       case ExitStateBase.typeKey:
         return ExitState();
       case BlendAnimation1DBase.typeKey:
         return BlendAnimation1D();
       case BlendState1DBase.typeKey:
         return BlendState1D();
+      case NestedRemapAnimationBase.typeKey:
+        return NestedRemapAnimation();
       case TransitionBoolConditionBase.typeKey:
         return TransitionBoolCondition();
       case BlendStateTransitionBase.typeKey:
@@ -466,6 +480,66 @@ class RiveCoreContext {
           object.artboardId = value;
         }
         break;
+      case NestedAnimationBase.animationIdPropertyKey:
+        if (object is NestedAnimationBase && value is int) {
+          object.animationId = value;
+        }
+        break;
+      case AnimationBase.namePropertyKey:
+        if (object is AnimationBase && value is String) {
+          object.name = value;
+        }
+        break;
+      case LinearAnimationBase.fpsPropertyKey:
+        if (object is LinearAnimationBase && value is int) {
+          object.fps = value;
+        }
+        break;
+      case LinearAnimationBase.durationPropertyKey:
+        if (object is LinearAnimationBase && value is int) {
+          object.duration = value;
+        }
+        break;
+      case LinearAnimationBase.speedPropertyKey:
+        if (object is LinearAnimationBase && value is double) {
+          object.speed = value;
+        }
+        break;
+      case LinearAnimationBase.loopValuePropertyKey:
+        if (object is LinearAnimationBase && value is int) {
+          object.loopValue = value;
+        }
+        break;
+      case LinearAnimationBase.workStartPropertyKey:
+        if (object is LinearAnimationBase && value is int) {
+          object.workStart = value;
+        }
+        break;
+      case LinearAnimationBase.workEndPropertyKey:
+        if (object is LinearAnimationBase && value is int) {
+          object.workEnd = value;
+        }
+        break;
+      case LinearAnimationBase.enableWorkAreaPropertyKey:
+        if (object is LinearAnimationBase && value is bool) {
+          object.enableWorkArea = value;
+        }
+        break;
+      case NestedLinearAnimationBase.mixPropertyKey:
+        if (object is NestedLinearAnimationBase && value is double) {
+          object.mix = value;
+        }
+        break;
+      case NestedSimpleAnimationBase.speedPropertyKey:
+        if (object is NestedSimpleAnimationBase && value is double) {
+          object.speed = value;
+        }
+        break;
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+        if (object is NestedSimpleAnimationBase && value is bool) {
+          object.isPlaying = value;
+        }
+        break;
       case AnimationStateBase.animationIdPropertyKey:
         if (object is AnimationStateBase && value is int) {
           object.animationId = value;
@@ -541,11 +615,6 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
-      case AnimationBase.namePropertyKey:
-        if (object is AnimationBase && value is String) {
-          object.name = value;
-        }
-        break;
       case CubicInterpolatorBase.x1PropertyKey:
         if (object is CubicInterpolatorBase && value is double) {
           object.x1 = value;
@@ -596,41 +665,6 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
-      case LinearAnimationBase.fpsPropertyKey:
-        if (object is LinearAnimationBase && value is int) {
-          object.fps = value;
-        }
-        break;
-      case LinearAnimationBase.durationPropertyKey:
-        if (object is LinearAnimationBase && value is int) {
-          object.duration = value;
-        }
-        break;
-      case LinearAnimationBase.speedPropertyKey:
-        if (object is LinearAnimationBase && value is double) {
-          object.speed = value;
-        }
-        break;
-      case LinearAnimationBase.loopValuePropertyKey:
-        if (object is LinearAnimationBase && value is int) {
-          object.loopValue = value;
-        }
-        break;
-      case LinearAnimationBase.workStartPropertyKey:
-        if (object is LinearAnimationBase && value is int) {
-          object.workStart = value;
-        }
-        break;
-      case LinearAnimationBase.workEndPropertyKey:
-        if (object is LinearAnimationBase && value is int) {
-          object.workEnd = value;
-        }
-        break;
-      case LinearAnimationBase.enableWorkAreaPropertyKey:
-        if (object is LinearAnimationBase && value is bool) {
-          object.enableWorkArea = value;
-        }
-        break;
       case BlendAnimation1DBase.valuePropertyKey:
         if (object is BlendAnimation1DBase && value is double) {
           object.value = value;
@@ -639,6 +673,11 @@ class RiveCoreContext {
       case BlendState1DBase.inputIdPropertyKey:
         if (object is BlendState1DBase && value is int) {
           object.inputId = value;
+        }
+        break;
+      case NestedRemapAnimationBase.timePropertyKey:
+        if (object is NestedRemapAnimationBase && value is double) {
+          object.time = value;
         }
         break;
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
@@ -1047,8 +1086,8 @@ class RiveCoreContext {
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
-      case StateMachineComponentBase.namePropertyKey:
       case AnimationBase.namePropertyKey:
+      case StateMachineComponentBase.namePropertyKey:
         return stringType;
       case ComponentBase.parentIdPropertyKey:
       case DrawTargetBase.drawableIdPropertyKey:
@@ -1062,6 +1101,12 @@ class RiveCoreContext {
       case DrawableBase.blendModeValuePropertyKey:
       case DrawableBase.drawableFlagsPropertyKey:
       case NestedArtboardBase.artboardIdPropertyKey:
+      case NestedAnimationBase.animationIdPropertyKey:
+      case LinearAnimationBase.fpsPropertyKey:
+      case LinearAnimationBase.durationPropertyKey:
+      case LinearAnimationBase.loopValuePropertyKey:
+      case LinearAnimationBase.workStartPropertyKey:
+      case LinearAnimationBase.workEndPropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
       case BlendAnimationBase.animationIdPropertyKey:
@@ -1077,11 +1122,6 @@ class RiveCoreContext {
       case StateTransitionBase.flagsPropertyKey:
       case StateTransitionBase.durationPropertyKey:
       case StateTransitionBase.exitTimePropertyKey:
-      case LinearAnimationBase.fpsPropertyKey:
-      case LinearAnimationBase.durationPropertyKey:
-      case LinearAnimationBase.loopValuePropertyKey:
-      case LinearAnimationBase.workStartPropertyKey:
-      case LinearAnimationBase.workEndPropertyKey:
       case BlendState1DBase.inputIdPropertyKey:
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
       case StrokeBase.capPropertyKey:
@@ -1115,6 +1155,9 @@ class RiveCoreContext {
       case TransformComponentBase.scaleYPropertyKey:
       case NodeBase.xPropertyKey:
       case NodeBase.yPropertyKey:
+      case LinearAnimationBase.speedPropertyKey:
+      case NestedLinearAnimationBase.mixPropertyKey:
+      case NestedSimpleAnimationBase.speedPropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
       case TransitionNumberConditionBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
@@ -1122,8 +1165,8 @@ class RiveCoreContext {
       case CubicInterpolatorBase.x2PropertyKey:
       case CubicInterpolatorBase.y2PropertyKey:
       case KeyFrameDoubleBase.valuePropertyKey:
-      case LinearAnimationBase.speedPropertyKey:
       case BlendAnimation1DBase.valuePropertyKey:
+      case NestedRemapAnimationBase.timePropertyKey:
       case LinearGradientBase.startXPropertyKey:
       case LinearGradientBase.startYPropertyKey:
       case LinearGradientBase.endXPropertyKey:
@@ -1186,8 +1229,9 @@ class RiveCoreContext {
       case TransformComponentConstraintYBase.minYPropertyKey:
       case TransformComponentConstraintYBase.maxYPropertyKey:
       case IKConstraintBase.invertDirectionPropertyKey:
-      case KeyFrameBoolBase.valuePropertyKey:
       case LinearAnimationBase.enableWorkAreaPropertyKey:
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+      case KeyFrameBoolBase.valuePropertyKey:
       case StateMachineBoolBase.valuePropertyKey:
       case ShapePaintBase.isVisiblePropertyKey:
       case StrokeBase.transformAffectsStrokePropertyKey:
@@ -1209,10 +1253,10 @@ class RiveCoreContext {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
         return (object as ComponentBase).name;
-      case StateMachineComponentBase.namePropertyKey:
-        return (object as StateMachineComponentBase).name;
       case AnimationBase.namePropertyKey:
         return (object as AnimationBase).name;
+      case StateMachineComponentBase.namePropertyKey:
+        return (object as StateMachineComponentBase).name;
     }
     return '';
   }
@@ -1243,6 +1287,18 @@ class RiveCoreContext {
         return (object as DrawableBase).drawableFlags;
       case NestedArtboardBase.artboardIdPropertyKey:
         return (object as NestedArtboardBase).artboardId;
+      case NestedAnimationBase.animationIdPropertyKey:
+        return (object as NestedAnimationBase).animationId;
+      case LinearAnimationBase.fpsPropertyKey:
+        return (object as LinearAnimationBase).fps;
+      case LinearAnimationBase.durationPropertyKey:
+        return (object as LinearAnimationBase).duration;
+      case LinearAnimationBase.loopValuePropertyKey:
+        return (object as LinearAnimationBase).loopValue;
+      case LinearAnimationBase.workStartPropertyKey:
+        return (object as LinearAnimationBase).workStart;
+      case LinearAnimationBase.workEndPropertyKey:
+        return (object as LinearAnimationBase).workEnd;
       case AnimationStateBase.animationIdPropertyKey:
         return (object as AnimationStateBase).animationId;
       case KeyedObjectBase.objectIdPropertyKey:
@@ -1273,16 +1329,6 @@ class RiveCoreContext {
         return (object as StateTransitionBase).duration;
       case StateTransitionBase.exitTimePropertyKey:
         return (object as StateTransitionBase).exitTime;
-      case LinearAnimationBase.fpsPropertyKey:
-        return (object as LinearAnimationBase).fps;
-      case LinearAnimationBase.durationPropertyKey:
-        return (object as LinearAnimationBase).duration;
-      case LinearAnimationBase.loopValuePropertyKey:
-        return (object as LinearAnimationBase).loopValue;
-      case LinearAnimationBase.workStartPropertyKey:
-        return (object as LinearAnimationBase).workStart;
-      case LinearAnimationBase.workEndPropertyKey:
-        return (object as LinearAnimationBase).workEnd;
       case BlendState1DBase.inputIdPropertyKey:
         return (object as BlendState1DBase).inputId;
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
@@ -1353,6 +1399,12 @@ class RiveCoreContext {
         return (object as NodeBase).x;
       case NodeBase.yPropertyKey:
         return (object as NodeBase).y;
+      case LinearAnimationBase.speedPropertyKey:
+        return (object as LinearAnimationBase).speed;
+      case NestedLinearAnimationBase.mixPropertyKey:
+        return (object as NestedLinearAnimationBase).mix;
+      case NestedSimpleAnimationBase.speedPropertyKey:
+        return (object as NestedSimpleAnimationBase).speed;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
       case TransitionNumberConditionBase.valuePropertyKey:
@@ -1367,10 +1419,10 @@ class RiveCoreContext {
         return (object as CubicInterpolatorBase).y2;
       case KeyFrameDoubleBase.valuePropertyKey:
         return (object as KeyFrameDoubleBase).value;
-      case LinearAnimationBase.speedPropertyKey:
-        return (object as LinearAnimationBase).speed;
       case BlendAnimation1DBase.valuePropertyKey:
         return (object as BlendAnimation1DBase).value;
+      case NestedRemapAnimationBase.timePropertyKey:
+        return (object as NestedRemapAnimationBase).time;
       case LinearGradientBase.startXPropertyKey:
         return (object as LinearGradientBase).startX;
       case LinearGradientBase.startYPropertyKey:
@@ -1499,10 +1551,12 @@ class RiveCoreContext {
         return (object as TransformComponentConstraintYBase).maxY;
       case IKConstraintBase.invertDirectionPropertyKey:
         return (object as IKConstraintBase).invertDirection;
-      case KeyFrameBoolBase.valuePropertyKey:
-        return (object as KeyFrameBoolBase).value;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         return (object as LinearAnimationBase).enableWorkArea;
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+        return (object as NestedSimpleAnimationBase).isPlaying;
+      case KeyFrameBoolBase.valuePropertyKey:
+        return (object as KeyFrameBoolBase).value;
       case StateMachineBoolBase.valuePropertyKey:
         return (object as StateMachineBoolBase).value;
       case ShapePaintBase.isVisiblePropertyKey:
@@ -1540,13 +1594,13 @@ class RiveCoreContext {
           object.name = value;
         }
         break;
-      case StateMachineComponentBase.namePropertyKey:
-        if (object is StateMachineComponentBase) {
+      case AnimationBase.namePropertyKey:
+        if (object is AnimationBase) {
           object.name = value;
         }
         break;
-      case AnimationBase.namePropertyKey:
-        if (object is AnimationBase) {
+      case StateMachineComponentBase.namePropertyKey:
+        if (object is StateMachineComponentBase) {
           object.name = value;
         }
         break;
@@ -1613,6 +1667,36 @@ class RiveCoreContext {
       case NestedArtboardBase.artboardIdPropertyKey:
         if (object is NestedArtboardBase) {
           object.artboardId = value;
+        }
+        break;
+      case NestedAnimationBase.animationIdPropertyKey:
+        if (object is NestedAnimationBase) {
+          object.animationId = value;
+        }
+        break;
+      case LinearAnimationBase.fpsPropertyKey:
+        if (object is LinearAnimationBase) {
+          object.fps = value;
+        }
+        break;
+      case LinearAnimationBase.durationPropertyKey:
+        if (object is LinearAnimationBase) {
+          object.duration = value;
+        }
+        break;
+      case LinearAnimationBase.loopValuePropertyKey:
+        if (object is LinearAnimationBase) {
+          object.loopValue = value;
+        }
+        break;
+      case LinearAnimationBase.workStartPropertyKey:
+        if (object is LinearAnimationBase) {
+          object.workStart = value;
+        }
+        break;
+      case LinearAnimationBase.workEndPropertyKey:
+        if (object is LinearAnimationBase) {
+          object.workEnd = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -1688,31 +1772,6 @@ class RiveCoreContext {
       case StateTransitionBase.exitTimePropertyKey:
         if (object is StateTransitionBase) {
           object.exitTime = value;
-        }
-        break;
-      case LinearAnimationBase.fpsPropertyKey:
-        if (object is LinearAnimationBase) {
-          object.fps = value;
-        }
-        break;
-      case LinearAnimationBase.durationPropertyKey:
-        if (object is LinearAnimationBase) {
-          object.duration = value;
-        }
-        break;
-      case LinearAnimationBase.loopValuePropertyKey:
-        if (object is LinearAnimationBase) {
-          object.loopValue = value;
-        }
-        break;
-      case LinearAnimationBase.workStartPropertyKey:
-        if (object is LinearAnimationBase) {
-          object.workStart = value;
-        }
-        break;
-      case LinearAnimationBase.workEndPropertyKey:
-        if (object is LinearAnimationBase) {
-          object.workEnd = value;
         }
         break;
       case BlendState1DBase.inputIdPropertyKey:
@@ -1880,6 +1939,21 @@ class RiveCoreContext {
           object.y = value;
         }
         break;
+      case LinearAnimationBase.speedPropertyKey:
+        if (object is LinearAnimationBase) {
+          object.speed = value;
+        }
+        break;
+      case NestedLinearAnimationBase.mixPropertyKey:
+        if (object is NestedLinearAnimationBase) {
+          object.mix = value;
+        }
+        break;
+      case NestedSimpleAnimationBase.speedPropertyKey:
+        if (object is NestedSimpleAnimationBase) {
+          object.speed = value;
+        }
+        break;
       case StateMachineNumberBase.valuePropertyKey:
         if (object is StateMachineNumberBase) {
           object.value = value;
@@ -1915,14 +1989,14 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
-      case LinearAnimationBase.speedPropertyKey:
-        if (object is LinearAnimationBase) {
-          object.speed = value;
-        }
-        break;
       case BlendAnimation1DBase.valuePropertyKey:
         if (object is BlendAnimation1DBase) {
           object.value = value;
+        }
+        break;
+      case NestedRemapAnimationBase.timePropertyKey:
+        if (object is NestedRemapAnimationBase) {
+          object.time = value;
         }
         break;
       case LinearGradientBase.startXPropertyKey:
@@ -2235,14 +2309,19 @@ class RiveCoreContext {
           object.invertDirection = value;
         }
         break;
-      case KeyFrameBoolBase.valuePropertyKey:
-        if (object is KeyFrameBoolBase) {
-          object.value = value;
-        }
-        break;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         if (object is LinearAnimationBase) {
           object.enableWorkArea = value;
+        }
+        break;
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+        if (object is NestedSimpleAnimationBase) {
+          object.isPlaying = value;
+        }
+        break;
+      case KeyFrameBoolBase.valuePropertyKey:
+        if (object is KeyFrameBoolBase) {
+          object.value = value;
         }
         break;
       case StateMachineBoolBase.valuePropertyKey:

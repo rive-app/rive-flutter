@@ -1,8 +1,9 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
-import 'package:rive/src/generated/shapes/straight_vertex_base.dart';
+
 export 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 
 class StraightVertex extends StraightVertexBase {

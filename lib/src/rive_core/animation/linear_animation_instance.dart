@@ -1,9 +1,12 @@
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 
 class LinearAnimationInstance {
   final LinearAnimation animation;
+
   double _time = 0;
+  double _lastTime = 0;
   double _totalTime = 0;
   double _lastTotalTime = 0;
   int _direction = 1;
@@ -18,7 +21,9 @@ class LinearAnimationInstance {
   LinearAnimationInstance(this.animation)
       : _time =
             (animation.enableWorkArea ? animation.workStart : 0).toDouble() /
-                animation.fps;
+                animation.fps {
+    _lastTime = _time;
+  }
 
   /// Note that when time is set, the direction will be changed to 1
   set time(double value) {
@@ -28,7 +33,7 @@ class LinearAnimationInstance {
     // Make sure to keep last and total in relative lockstep so state machines
     // can track change even when setting time.
     var diff = _totalTime - _lastTotalTime;
-    _time = _totalTime = value;
+    _lastTime = _time = _totalTime = value;
     _lastTotalTime = _totalTime - diff;
     _direction = 1;
   }
@@ -36,39 +41,40 @@ class LinearAnimationInstance {
   /// Returns the current time position of the animation in seconds
   double get time => _time;
 
+  /// Returns the time the position was at when the previous advance was called.
+  double get lastTime => _lastTime;
+
   /// Direction should only be +1 or -1
   set direction(int value) => _direction = value == -1 ? -1 : 1;
 
   /// Returns the animation's play direction: 1 for forwards, -1 for backwards
   int get direction => _direction;
 
-  /// Returns the end time of the animation in seconds
-  double get endTime =>
-      (animation.enableWorkArea ? animation.workEnd : animation.duration)
-          .toDouble() /
-      animation.fps;
-
-  /// Returns the start time of the animation in seconds
-  double get startTime =>
-      (animation.enableWorkArea ? animation.workStart : 0).toDouble() /
-      animation.fps;
-
-  double get progress => (_time - startTime) / (endTime - startTime);
+  double get progress =>
+      (_time - animation.startTime) / (animation.endTime - animation.startTime);
 
   /// Resets the animation to the starting frame
-  void reset() => _time = startTime;
+  void reset() => _time = animation.startTime;
 
   /// Whether the controller driving this animation should keep requesting
   /// frames be drawn.
   bool get keepGoing => animation.loop != Loop.oneShot || !_didLoop;
 
+  /// Apply the changes incurred during advance, also automatically fires any
+  /// accrued events.
+  void apply(CoreContext core, {double mix = 1}) {
+    animation.apply(time, coreContext: core, mix: mix);
+  }
+
   bool advance(double elapsedSeconds) {
     var deltaSeconds = elapsedSeconds * animation.speed * _direction;
     _lastTotalTime = _totalTime;
     _totalTime += deltaSeconds;
+    _lastTime = _time;
     _time += deltaSeconds;
 
     double frames = _time * animation.fps;
+    var fps = animation.fps;
 
     var start = animation.enableWorkArea ? animation.workStart : 0;
     var end = animation.enableWorkArea ? animation.workEnd : animation.duration;
@@ -82,18 +88,18 @@ class LinearAnimationInstance {
       case Loop.oneShot:
         if (frames > end) {
           keepGoing = false;
-          _spilledTime = (frames - end) / animation.fps;
+          _spilledTime = (frames - end) / fps;
           frames = end.toDouble();
-          _time = frames / animation.fps;
+          _time = frames / fps;
           _didLoop = true;
         }
         break;
       case Loop.loop:
         if (frames >= end) {
-          _spilledTime = (frames - end) / animation.fps;
-          frames = _time * animation.fps;
+          _spilledTime = (frames - end) / fps;
+          frames = _time * fps;
           frames = start + (frames - start) % range;
-          _time = frames / animation.fps;
+          _time = frames / fps;
           _didLoop = true;
         }
         break;
@@ -120,6 +126,7 @@ class LinearAnimationInstance {
             // advanced on regular intervals.
             break;
           }
+          _lastTime = _time;
         }
         break;
     }

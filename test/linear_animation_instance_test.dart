@@ -33,8 +33,8 @@ void main() {
     LinearAnimationInstance instance =
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);
 
-    final startTime = instance.startTime;
-    final endTime = instance.endTime;
+    final startTime = instance.animation.startTime;
+    final endTime = instance.animation.endTime;
     expect(startTime <= endTime, isTrue);
     expect(instance.direction, 1);
     // Advance the animation to the mid point
@@ -54,15 +54,15 @@ void main() {
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);
 
     // Check the starting position
-    expect(instance.startTime < instance.endTime, isTrue);
-    expect(instance.startTime, instance.time);
+    expect(instance.animation.startTime < instance.animation.endTime, isTrue);
+    expect(instance.animation.startTime, instance.time);
 
     // Advance
-    instance.advance(instance.endTime);
-    expect(instance.time, instance.endTime);
+    instance.advance(instance.animation.endTime);
+    expect(instance.time, instance.animation.endTime);
 
     // Reset
     instance.reset();
-    expect(instance.time, instance.startTime);
+    expect(instance.time, instance.animation.startTime);
   });
 }

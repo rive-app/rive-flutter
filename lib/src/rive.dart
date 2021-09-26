@@ -68,11 +68,6 @@ class Rive extends LeafRenderObjectWidget {
       ..artboardSize = Size(artboard.width, artboard.height)
       ..useArtboardSize = useArtboardSize;
   }
-
-  @override
-  void didUnmountRenderObject(covariant RiveRenderObject renderObject) {
-    renderObject.dispose();
-  }
 }
 
 class RiveRenderObject extends RiveRenderBox {
@@ -93,7 +88,9 @@ class RiveRenderObject extends RiveRenderBox {
     markNeedsLayout();
   }
 
+  @override
   void dispose() {
+    super.dispose();
     _artboard.redraw.removeListener(scheduleRepaint);
   }
 
@@ -105,7 +102,8 @@ class RiveRenderObject extends RiveRenderBox {
   }
 
   @override
-  bool advance(double elapsedSeconds) => _artboard.advance(elapsedSeconds);
+  bool advance(double elapsedSeconds) =>
+      _artboard.advance(elapsedSeconds, nested: true);
 
   @override
   void beforeDraw(Canvas canvas, Offset offset) {
