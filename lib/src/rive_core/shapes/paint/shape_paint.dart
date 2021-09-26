@@ -1,13 +1,14 @@
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
+import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
-import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
+
 export 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 
 /// Generic ShapePaint that abstracts Stroke and Fill. Automatically hooks up

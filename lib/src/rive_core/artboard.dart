@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/artboard_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
@@ -11,10 +12,10 @@ import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
+import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
-import 'package:rive/src/generated/artboard_base.dart';
 import 'package:rive/src/utilities/dependency_sorter.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
@@ -120,8 +121,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
+  final Set<NestedArtboard> _activeNestedArtboards = {};
+
   /// Update any dirty components in this artboard.
-  bool advance(double elapsedSeconds) {
+  bool advance(double elapsedSeconds, {bool nested = false}) {
     bool didUpdate = false;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
@@ -129,6 +132,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         didUpdate = true;
       }
     }
+
+    if (nested) {
+      var active = _activeNestedArtboards.toList(growable: false);
+      for (final activeNestedArtboard in active) {
+        activeNestedArtboard.advance(elapsedSeconds);
+      }
+    }
+
     if (updateComponents() || didUpdate) {
       return true;
     }
@@ -216,12 +227,18 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     if (!_components.add(component)) {
       return;
     }
+    if (component is NestedArtboard) {
+      _activeNestedArtboards.add(component);
+    }
   }
 
   /// Remove a component from the artboard and its various tracked lists of
   /// components.
   void removeComponent(Component component) {
     _components.remove(component);
+    if (component is NestedArtboard) {
+      _activeNestedArtboards.remove(component);
+    }
   }
 
   /// Let the artboard know that the drawables need to be resorted before

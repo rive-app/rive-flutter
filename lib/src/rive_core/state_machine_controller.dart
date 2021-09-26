@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:rive/src/core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
@@ -25,6 +25,7 @@ typedef OnLayerStateChange = void Function(LayerState);
 class LayerController {
   final StateMachineLayer layer;
   final StateInstance anyStateInstance;
+  final CoreContext core;
 
   StateInstance? _currentState;
   StateInstance? _stateFrom;
@@ -37,8 +38,11 @@ class LayerController {
   /// Takes the state machine name and state name
   final OnLayerStateChange? onLayerStateChange;
 
-  LayerController(this.layer, {this.onLayerStateChange})
-      : assert(layer.anyState != null),
+  LayerController(
+    this.layer, {
+    required this.core,
+    this.onLayerStateChange,
+  })  : assert(layer.anyState != null),
         anyStateInstance = layer.anyState!.makeInstance() {
     _changeState(layer.entryState);
   }
@@ -237,6 +241,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     for (final layer in stateMachine.layers) {
       layerControllers.add(LayerController(
         layer,
+        core: core,
         onLayerStateChange: _onStateChange,
       ));
     }

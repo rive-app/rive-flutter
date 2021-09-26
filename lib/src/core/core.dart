@@ -57,6 +57,7 @@ abstract class Core<T extends CoreContext> {
   }
 }
 
+// ignore: avoid_classes_with_only_static_members
 class InternalCoreHelper {
   static void markValid(Core object) {
     object._hasValidated = true;

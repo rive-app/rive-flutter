@@ -1,6 +1,7 @@
-import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/generated/constraints/distance_constraint_base.dart';
+import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
+
 export 'package:rive/src/generated/constraints/distance_constraint_base.dart';
 
 /// [DistanceConstraint]'s logical distancing method.

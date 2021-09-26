@@ -1,11 +1,13 @@
 import 'dart:math';
+
+import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
-import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
+
 export 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 
 /// A constraint which rotates its constrained bone and the parentBoneCount

@@ -1,8 +1,8 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 
-import 'package:rive/src/generated/animation/keyed_property_base.dart';
 export 'package:rive/src/generated/animation/keyed_property_base.dart';
 
 abstract class KeyFrameInterface {
@@ -11,7 +11,7 @@ abstract class KeyFrameInterface {
 
 class KeyFrameList<T extends KeyFrameInterface> {
   List<T> _keyframes = [];
-  Iterable<T> get keyframes => _keyframes;
+  List<T> get keyframes => _keyframes;
   set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
 
   /// Get the keyframe immediately following the provided one.

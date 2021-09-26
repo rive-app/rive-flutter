@@ -1,11 +1,11 @@
 import 'dart:collection';
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/animation/keyed_property.dart';
-import 'package:rive/src/rive_core/component.dart';
-
 import 'package:rive/src/generated/animation/keyed_object_base.dart';
+import 'package:rive/src/rive_core/animation/keyed_property.dart';
+
 import 'linear_animation.dart';
+
 export 'package:rive/src/generated/animation/keyed_object_base.dart';
 
 class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
@@ -19,20 +19,6 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
 
   @override
   void onAdded() {}
-
-  @override
-  bool validate() {
-    if (!super.validate()) {
-      return false;
-    }
-
-    var component = context.resolve<Component>(objectId);
-    if (component == null) {
-      return false;
-    }
-
-    return true;
-  }
 
   @override
   void onRemoved() {
@@ -61,6 +47,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
       return false;
     }
     _keyedProperties[property.propertyKey] = property;
+
     return true;
   }
 
@@ -75,6 +62,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     }
     // assert(removed == null || removed == property,
     //     '$removed was not $property or null');
+
     return removed != null;
   }
 

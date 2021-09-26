@@ -1,9 +1,10 @@
+import 'package:rive/src/generated/constraints/scale_constraint_base.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/transform_components.dart';
-import 'package:rive/src/generated/constraints/scale_constraint_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 import 'package:rive/src/rive_core/transform_space.dart';
+
 export 'package:rive/src/generated/constraints/scale_constraint_base.dart';
 
 /// A constraint copies the scale from the target component to the
