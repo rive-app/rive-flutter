@@ -11,4 +11,9 @@ abstract class WorldTransformComponent extends WorldTransformComponentBase {
 
   void markWorldTransformDirty() =>
       addDirt(ComponentDirt.worldTransform, recurse: true);
+
+  @override
+  void opacityChanged(double from, double to) {
+    markWorldTransformDirty();
+  }
 }

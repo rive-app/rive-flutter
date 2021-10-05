@@ -470,16 +470,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void clipChanged(bool from, bool to) => addDirt(ComponentDirt.paint);
 
   @override
-  void opacityChanged(double from, double to) => markWorldTransformDirty;
-
-  @override
   bool import(ImportStack stack) {
     var backboardImporter =
         stack.latest<BackboardImporter>(BackboardBase.typeKey);
-    if (backboardImporter == null) {
-      return false;
+    if (backboardImporter != null) {
+      // Backboard isn't strictly required (editor doesn't always export a
+      // backboard when serializing for the clipboard, for example).
+      backboardImporter.addArtboard(this);
     }
-    backboardImporter.addArtboard(this);
 
     return super.import(stack);
   }
