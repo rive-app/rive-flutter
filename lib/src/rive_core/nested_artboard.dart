@@ -20,6 +20,8 @@ abstract class MountedArtboard {
   Mat2D get worldTransform;
   set worldTransform(Mat2D value);
   AABB get bounds;
+  double get renderOpacity;
+  set renderOpacity(double value);
 }
 
 class NestedArtboard extends NestedArtboardBase {
@@ -35,6 +37,7 @@ class NestedArtboard extends NestedArtboardBase {
     }
     _mountedArtboard = value;
     _mountedArtboard?.worldTransform = worldTransform;
+    _mountedArtboard?.renderOpacity = renderOpacity;
     addDirt(ComponentDirt.paint);
   }
 
@@ -83,16 +86,33 @@ class NestedArtboard extends NestedArtboardBase {
   }
 
   @override
-  void draw(Canvas canvas) => mountedArtboard?.draw(canvas);
+  void update(int dirt) {
+    super.update(dirt);
+    // RenderOpacity gets updated with the worldTransform (accumulates through
+    // hierarchy), so if we see worldTransform is dirty, update our internal
+    // render opacities.
+    if (dirt & ComponentDirt.worldTransform != 0) {
+      mountedArtboard?.renderOpacity = renderOpacity;
+    }
+  }
+
+  @override
+  void draw(Canvas canvas) {
+    bool clipped = clip(canvas);
+    mountedArtboard?.draw(canvas);
+
+    if (clipped) {
+      canvas.restore();
+    }
+  }
 
   @override
   bool import(ImportStack stack) {
     var backboardImporter =
         stack.latest<BackboardImporter>(BackboardBase.typeKey);
-    if (backboardImporter == null) {
-      return false;
+    if (backboardImporter != null) {
+      backboardImporter.addNestedArtboard(this);
     }
-    backboardImporter.addNestedArtboard(this);
 
     return super.import(stack);
   }

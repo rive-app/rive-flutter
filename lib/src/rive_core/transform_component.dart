@@ -145,6 +145,8 @@ abstract class TransformComponent extends TransformComponentBase {
 
   @override
   void opacityChanged(double from, double to) {
+    // Intentionally doesn't call super as this will call
+    // markWorldTransformDirty if necessary.
     markTransformDirty();
   }
 

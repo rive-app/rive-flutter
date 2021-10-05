@@ -108,4 +108,12 @@ class RuntimeMountedArtboard extends MountedArtboard {
     var y = -artboardInstance.originY * height;
     return AABB.fromValues(x, y, x + width, y + height);
   }
+
+  @override
+  double get renderOpacity => artboardInstance.opacity;
+
+  @override
+  set renderOpacity(double value) {
+    artboardInstance.opacity = value;
+  }
 }
