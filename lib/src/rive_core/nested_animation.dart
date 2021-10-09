@@ -16,18 +16,6 @@ abstract class NestedAnimation<T extends Animation>
   bool get isEnabled;
   void advance(double elapsedSeconds, MountedArtboard mountedArtboard);
 
-  // @override
-  // bool import(ImportStack stack) {
-  //   var backboardImporter =
-  //       stack.latest<BackboardImporter>(BackboardBase.typeKey);
-  //   if (backboardImporter == null) {
-  //     return false;
-  //   }
-  //   backboardImporter.addNestedArtboard(this);
-
-  //   return super.import(stack);
-  // }
-
   @override
   void update(int dirt) {}
 }

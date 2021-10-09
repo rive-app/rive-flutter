@@ -42,6 +42,7 @@ import 'package:rive/src/generated/animation/transition_number_condition_base.da
 import 'package:rive/src/generated/animation/transition_trigger_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/artboard_base.dart';
+import 'package:rive/src/generated/asset_base.dart';
 import 'package:rive/src/generated/backboard_base.dart';
 import 'package:rive/src/generated/bones/bone_base.dart';
 import 'package:rive/src/generated/bones/cubic_weight_base.dart';
@@ -123,6 +124,7 @@ import 'package:rive/src/rive_core/animation/transition_bool_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_number_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
 import 'package:rive/src/rive_core/bones/cubic_weight.dart';
@@ -298,6 +300,8 @@ class RiveCoreContext {
         return Skin();
       case TendonBase.typeKey:
         return Tendon();
+      case AssetBase.typeKey:
+        return Asset();
       default:
         return null;
     }
