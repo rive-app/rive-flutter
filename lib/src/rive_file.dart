@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -251,6 +252,13 @@ class RiveFile {
   static Future<RiveFile> network(String url) async {
     final res = await http.get(Uri.parse(url));
     final bytes = ByteData.view(res.bodyBytes.buffer);
+    return RiveFile.import(bytes);
+  }
+
+  /// Imports a Rive file from local folder
+  static Future<RiveFile> file(String path) async {
+    final file = File(path);
+    final bytes = ByteData.view(file.readAsBytesSync().buffer);
     return RiveFile.import(bytes);
   }
 
