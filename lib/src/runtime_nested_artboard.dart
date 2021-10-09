@@ -116,4 +116,8 @@ class RuntimeMountedArtboard extends MountedArtboard {
   set renderOpacity(double value) {
     artboardInstance.opacity = value;
   }
+
+  @override
+  void advance(double seconds) =>
+      artboardInstance.advance(seconds, nested: true);
 }

@@ -22,6 +22,7 @@ abstract class MountedArtboard {
   AABB get bounds;
   double get renderOpacity;
   set renderOpacity(double value);
+  void advance(double seconds);
 }
 
 class NestedArtboard extends NestedArtboardBase {
@@ -83,6 +84,7 @@ class NestedArtboard extends NestedArtboardBase {
         animation.advance(elapsedSeconds, mountedArtboard!);
       }
     }
+    mountedArtboard!.advance(elapsedSeconds);
   }
 
   @override
