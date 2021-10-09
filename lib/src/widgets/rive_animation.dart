@@ -6,6 +6,7 @@ import 'package:rive/src/rive_core/artboard.dart';
 enum _Source {
   asset,
   network,
+  file,
 }
 
 /// The callback signature for onInit
@@ -76,6 +77,19 @@ class RiveAnimation extends StatefulWidget {
     this.onInit,
   }) : src = _Source.network;
 
+  const RiveAnimation.file(
+    this.name, {
+    this.artboard,
+    this.animations = const [],
+    this.stateMachines = const [],
+    this.fit,
+    this.alignment,
+    this.placeHolder,
+    this.antialiasing = true,
+    this.controllers = const [],
+    this.onInit,
+  }) : src = _Source.file;
+
   @override
   _RiveAnimationState createState() => _RiveAnimationState();
 }
@@ -95,6 +109,8 @@ class _RiveAnimationState extends State<RiveAnimation> {
       RiveFile.asset(widget.name).then(_init);
     } else if (widget.src == _Source.network) {
       RiveFile.network(widget.name).then(_init);
+    } else if (widget.src == _Source.file) {
+      RiveFile.file(widget.name).then(_init);
     }
   }
 
