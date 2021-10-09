@@ -100,6 +100,12 @@ class _RiveAnimationState extends State<RiveAnimation> {
 
   /// Initializes the artboard, animations, state machines and controllers
   void _init(RiveFile file) {
+    if (!mounted) {
+      /// _init is usually called asynchronously, so this is a good time to
+      /// check if the widget is still mounted. If it's not we can get out of
+      /// here early.
+      return;
+    }
     final artboard = (widget.artboard != null
             ? file.artboardByName(widget.artboard!)
             : file.mainArtboard)
