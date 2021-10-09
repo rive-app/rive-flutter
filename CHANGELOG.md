@@ -1,6 +1,8 @@
 ## 0.7.30
+Fix for setState being called while mounted in RiveAnimation. [`#172`](https://github.com/rive-app/rive-flutter/pull/172)
 
 ## 0.7.29
+- Runtime support for Nested Artboards, a new Rive feature launching soon. [`#171`](https://github.com/rive-app/rive-flutter/pull/171)
 
 ## 0.7.28
 - Ability to disable clipping on artboards. [`#161`](https://github.com/rive-app/rive-flutter/pull/161)
