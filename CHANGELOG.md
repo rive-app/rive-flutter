@@ -1,3 +1,5 @@
+## 0.7.29
+
 ## 0.7.28
 - Ability to disable clipping on artboards. [`#161`](https://github.com/rive-app/rive-flutter/pull/161)
 
