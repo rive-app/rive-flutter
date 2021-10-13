@@ -1,4 +1,3 @@
-import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/asset_base.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 
@@ -17,9 +16,4 @@ class Asset extends AssetBase {
 
   @override
   void onAddedDirty() {}
-
-  @override
-  bool import(ImportStack stack) {
-    return super.import(stack);
-  }
 }

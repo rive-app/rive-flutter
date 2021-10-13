@@ -21,6 +21,27 @@ import 'package:rive/src/utilities/dependency_sorter.dart';
 export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
+  bool _frameOrigin = true;
+
+  /// Returns true when the artboard will shift the origin from the top left to
+  /// the relative width/height of the artboard itself. This is what the editor
+  /// does visually when you change the origin value to give context as to where
+  /// the origin lies within the framed bounds.
+  bool get frameOrigin => _frameOrigin;
+
+  /// When composing multiple artboards together in a common world-space, it may
+  /// be desireable to have them share the same space regardless of origin
+  /// offset from the bounding artboard. Set frameOrigin to false to move the
+  /// bounds relative to the origin instead of the origin relative to the
+  /// bounds.
+  set frameOrigin(bool value) {
+    if (_frameOrigin == value) {
+      return;
+    }
+    _frameOrigin = value;
+    addDirt(ComponentDirt.paint);
+  }
+
   /// Should antialiasing be used when drawing?
   bool _antialiasing = true;
 
@@ -73,8 +94,19 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   int _dirtDepth = 0;
   int _dirt = 255;
 
+  /// Iterate each component and call callback for it.
   void forEachComponent(void Function(Component) callback) =>
       _components.forEach(callback);
+
+  /// Find a component of a specific type with a specific name.
+  T? component<T>(String name) {
+    for (final component in _components) {
+      if (component is T && component.name == name) {
+        return component as T;
+      }
+    }
+    return null;
+  }
 
   @override
   Artboard get artboard => this;
@@ -254,7 +286,12 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void draw(Canvas canvas) {
     canvas.save();
     if (clip) {
-      canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
+      if (_frameOrigin) {
+        canvas.clipRect(Rect.fromLTWH(0, 0, width, height));
+      } else {
+        canvas.clipRect(
+            Rect.fromLTWH(-width * originX, -height * originY, width, height));
+      }
     }
     // Get into artboard's world space. This is because the artboard draws
     // components in the artboard's space (in component lingo we call this world
@@ -266,7 +303,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     // rename those to artboardTransform and worldTransform is only reserved for
     // stageItems? The other option is to stick with 'worldTransform' in
     // components and use 'editor or stageTransform' for stageItems.
-    canvas.translate(width * originX, height * originY);
+    if (_frameOrigin) {
+      canvas.translate(width * originX, height * originY);
+    }
     for (final fill in fills) {
       fill.draw(canvas, path);
     }
