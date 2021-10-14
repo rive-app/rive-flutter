@@ -1,3 +1,5 @@
+## 0.7.31
+
 ## 0.7.30
 Fix for setState being called while mounted in RiveAnimation. [`#172`](https://github.com/rive-app/rive-flutter/pull/172)
 
