@@ -190,6 +190,11 @@ abstract class RiveRenderBox extends RenderBox {
         SchedulerBinding.instance?.scheduleFrameCallback(_frameCallback) ?? -1;
   }
 
+  /// Override this if you want to do custom viewTransform alignment. This will
+  /// be called after advancing. Return true to prevent regular paint.
+  bool customPaint(PaintingContext context, Offset offset) => false;
+
+  @protected
   @override
   void paint(PaintingContext context, Offset offset) {
     _frameCallbackId = -1;
@@ -199,6 +204,10 @@ abstract class RiveRenderBox extends RenderBox {
       _stopwatch.stop();
     }
     _elapsedSeconds = 0;
+
+    if (customPaint(context, offset)) {
+      return;
+    }
 
     final Canvas canvas = context.canvas;
 
