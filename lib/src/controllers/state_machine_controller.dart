@@ -165,6 +165,16 @@ class StateMachineController extends core.StateMachineController {
     return null;
   }
 
+  /// Find an input of specific concrete input type, with a given name.
+  T? findSMI<T>(String name) {
+    for (final input in _inputs) {
+      if (input is T && input.name == name) {
+        return input as T;
+      }
+    }
+    return null;
+  }
+
   @override
   void advanceInputs() {
     for (final input in _inputs) {

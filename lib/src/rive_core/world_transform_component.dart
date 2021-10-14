@@ -16,4 +16,10 @@ abstract class WorldTransformComponent extends WorldTransformComponentBase {
   void opacityChanged(double from, double to) {
     markWorldTransformDirty();
   }
+
+  /// Returns the world transform of the parent component. Returns the identity
+  /// if there is no parent (the artboard should be the only case here).
+  Mat2D get parentWorldTransform => parent is WorldTransformComponent
+      ? (parent as WorldTransformComponent).worldTransform
+      : Mat2D.identity;
 }

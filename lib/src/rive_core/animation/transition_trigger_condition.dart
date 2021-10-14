@@ -16,7 +16,6 @@ class TransitionTriggerCondition extends TransitionTriggerConditionBase {
     }
     dynamic providedValue = values[input.id];
     if (providedValue is bool && providedValue) {
-      values[input.id] = false;
       return true;
     }
 
