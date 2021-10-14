@@ -1,4 +1,8 @@
 ## 0.7.31
+- API Improvements. [`#177`](https://github.com/rive-app/rive-flutter/pull/177)
+- Option to frame origin, same as C++ runtime.
+- RiveScene renderer and controller for making custom Rive vignettes of Rive content with multiple artboards, custom camera movement, etc.
+- New StateMachineController.findSMI to find any StateMachineInput (fixes issue with findInput that cannot distinguish between Boolean and Trigger inputs).
 
 ## 0.7.30
 Fix for setState being called while mounted in RiveAnimation. [`#172`](https://github.com/rive-app/rive-flutter/pull/172)
