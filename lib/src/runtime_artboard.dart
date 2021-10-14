@@ -122,6 +122,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   Artboard instance() {
     var artboard = RuntimeArtboard();
     artboard.context = artboard;
+    artboard.frameOrigin = frameOrigin;
     artboard.copy(this);
     artboard._objects.add(artboard);
     // First copy the objects ensuring onAddedDirty can later find them in the

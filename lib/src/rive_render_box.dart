@@ -146,6 +146,10 @@ abstract class RiveRenderBox extends RenderBox {
   @override
   bool hitTestSelf(Offset screenOffset) => true;
 
+  // Override this to false if you don't want the local offset applied to the
+  // view transform passed to the draw method.
+  bool get offsetViewTransform => true;
+
   @override
   void detach() {
     _stopwatch.stop();
@@ -253,10 +257,13 @@ abstract class RiveRenderBox extends RenderBox {
     }
 
     Mat2D transform = Mat2D();
-    transform[4] =
-        offset.dx + size.width / 2.0 + (_alignment.x * size.width / 2.0);
-    transform[5] =
-        offset.dy + size.height / 2.0 + (_alignment.y * size.height / 2.0);
+
+    transform[4] = size.width / 2.0 + (_alignment.x * size.width / 2.0);
+    transform[5] = size.height / 2.0 + (_alignment.y * size.height / 2.0);
+    if (offsetViewTransform) {
+      transform[4] += offset.dx;
+      transform[5] += offset.dy;
+    }
     Mat2D.scale(transform, transform, Vec2D.fromValues(scaleX, scaleY));
     Mat2D center = Mat2D();
     center[4] = x;

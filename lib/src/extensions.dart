@@ -1,8 +1,10 @@
 /// Extensions to the runtime core classes
 import 'package:collection/collection.dart';
+import 'package:rive/src/controllers/state_machine_controller.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 
 /// Artboard extensions
 extension ArtboardAdditions on Artboard {
@@ -16,4 +18,10 @@ extension ArtboardAdditions on Artboard {
     }
     return null;
   }
+
+  /// Returns a StateMachine with the given name, or null if no state machine
+  /// with that name exists in the artboard
+  StateMachineController? stateMachineByName(String name,
+          {core.OnStateChange? onChange}) =>
+      StateMachineController.fromArtboard(this, name, onStateChange: onChange);
 }
