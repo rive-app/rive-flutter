@@ -21,5 +21,6 @@ export 'package:rive/src/rive_core/shapes/paint/solid_color.dart';
 export 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 export 'package:rive/src/rive_core/shapes/shape.dart';
 export 'package:rive/src/rive_file.dart';
+export 'package:rive/src/rive_scene.dart';
 export 'package:rive/src/runtime_artboard.dart';
 export 'package:rive/src/widgets/rive_animation.dart';
