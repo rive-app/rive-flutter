@@ -83,7 +83,9 @@ class RuntimeNestedLinearAnimationInstance
 
 class RuntimeMountedArtboard extends MountedArtboard {
   final RuntimeArtboard artboardInstance;
-  RuntimeMountedArtboard(this.artboardInstance);
+  RuntimeMountedArtboard(this.artboardInstance) {
+    artboardInstance.advance(0, nested: true);
+  }
 
   @override
   Mat2D worldTransform = Mat2D();
@@ -94,7 +96,6 @@ class RuntimeMountedArtboard extends MountedArtboard {
     canvas.transform(worldTransform.mat4);
     canvas.translate(-artboardInstance.originX * artboardInstance.width,
         -artboardInstance.originY * artboardInstance.height);
-    artboardInstance.advance(0);
     artboardInstance.draw(canvas);
     canvas.restore();
   }
