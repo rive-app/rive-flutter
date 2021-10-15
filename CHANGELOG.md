@@ -1,3 +1,5 @@
+## 0.7.32
+
 ## 0.7.31
 - API Improvements. [`#177`](https://github.com/rive-app/rive-flutter/pull/177)
 - Option to frame origin, same as C++ runtime.
