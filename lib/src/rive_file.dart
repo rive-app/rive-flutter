@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:typed_data';
-import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -16,12 +15,17 @@ import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/generated/animation/state_machine_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
+import 'package:rive/src/local_file_io.dart'
+    if (dart.library.html) 'package:rive/src/local_file_web.dart';
+import 'package:rive/src/rive_core/animation/blend_state_1d.dart';
+import 'package:rive/src/rive_core/animation/blend_state_direct.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
+import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -29,10 +33,6 @@ import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exceptio
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
-
-import 'generated/animation/blend_state_1d_base.dart';
-import 'generated/animation/blend_state_direct_base.dart';
-import 'rive_core/animation/state_transition.dart';
 
 Core<CoreContext>? _readRuntimeObject(
     BinaryReader reader, HashMap<int, CoreFieldType> propertyToField) {
@@ -257,9 +257,8 @@ class RiveFile {
 
   /// Imports a Rive file from local folder
   static Future<RiveFile> file(String path) async {
-    final file = File(path);
-    final bytes = ByteData.view(file.readAsBytesSync().buffer);
-    return RiveFile.import(bytes);
+    final bytes = await localFileBytes(path);
+    return RiveFile.import(ByteData.view(bytes!.buffer));
   }
 
   /// Returns all artboards in the file

@@ -33,5 +33,4 @@ abstract class TargetedConstraint extends TargetedConstraintBase {
     super.onAddedDirty();
     target = context.resolve(targetId);
   }
-
 }
