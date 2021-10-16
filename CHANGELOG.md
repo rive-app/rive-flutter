@@ -1,4 +1,5 @@
 ## 0.7.32
+- Fixing issues reported by pub.dev ['#180](https://github.com/rive-app/rive-flutter/pull/180)
 
 ## 0.7.31
 - API Improvements. [`#177`](https://github.com/rive-app/rive-flutter/pull/177)
