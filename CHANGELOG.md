@@ -1,3 +1,5 @@
+## 0.7.33
+
 ## 0.7.32
 - Fixing issues reported by pub.dev ['#180](https://github.com/rive-app/rive-flutter/pull/180)
 
