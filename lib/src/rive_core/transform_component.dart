@@ -34,7 +34,7 @@ abstract class TransformComponent extends TransformComponentBase {
   final List<Constraint> _constraints = [];
   Iterable<Constraint> get constraints => _constraints;
 
-  double _renderOpacity = 0;
+  double _renderOpacity = 1;
   double get renderOpacity => _renderOpacity;
 
   final Mat2D transform = Mat2D();

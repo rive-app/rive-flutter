@@ -92,7 +92,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool get hasAnimations => _animations.isNotEmpty;
 
   int _dirtDepth = 0;
-  int _dirt = 255;
 
   /// Iterate each component and call callback for it.
   void forEachComponent(void Function(Component) callback) =>
@@ -120,17 +119,17 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool updateComponents() {
     bool didUpdate = false;
 
-    if ((_dirt & ComponentDirt.drawOrder) != 0) {
+    if ((dirt & ComponentDirt.drawOrder) != 0) {
       sortDrawOrder();
-      _dirt &= ~ComponentDirt.drawOrder;
+      dirt &= ~ComponentDirt.drawOrder;
       didUpdate = true;
     }
-    if ((_dirt & ComponentDirt.components) != 0) {
+    if ((dirt & ComponentDirt.components) != 0) {
       const int maxSteps = 100;
       int step = 0;
       int count = _dependencyOrder.length;
-      while ((_dirt & ComponentDirt.components) != 0 && step < maxSteps) {
-        _dirt &= ~ComponentDirt.components;
+      while ((dirt & ComponentDirt.components) != 0 && step < maxSteps) {
+        dirt &= ~ComponentDirt.components;
         // Track dirt depth here so that if something else marks
         // dirty, we restart.
         for (int i = 0; i < count; i++) {
@@ -164,6 +163,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         didUpdate = true;
       }
     }
+    if (updateComponents() || didUpdate) {
+      didUpdate = true;
+    }
 
     if (nested) {
       var active = _activeNestedArtboards.toList(growable: false);
@@ -172,10 +174,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
 
-    if (updateComponents() || didUpdate) {
-      return true;
-    }
-    return false;
+    return didUpdate;
   }
 
   @override
@@ -187,7 +186,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void onComponentDirty(Component component) {
     if ((dirt & ComponentDirt.components) == 0) {
       context.markNeedsAdvance();
-      _dirt |= ComponentDirt.components;
+      dirt |= ComponentDirt.components;
     }
 
     /// If the order of the component is less than the current dirt depth,
@@ -218,7 +217,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       // component.dirt = 255;
     }
 
-    _dirt |= ComponentDirt.components;
+    dirt |= ComponentDirt.components;
   }
 
   @override
@@ -228,6 +227,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           Rect.fromLTWH(width * -originX, height * -originY, width, height);
       path.reset();
       path.addRect(rect);
+
+      for (final fill in fills) {
+        fill.renderOpacity = opacity;
+      }
+      for (final stroke in strokes) {
+        stroke.renderOpacity = opacity;
+      }
     }
   }
 
@@ -278,7 +284,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void markDrawOrderDirty() {
     if ((dirt & ComponentDirt.drawOrder) == 0) {
       context.markNeedsAdvance();
-      _dirt |= ComponentDirt.drawOrder;
+      dirt |= ComponentDirt.drawOrder;
     }
   }
 
