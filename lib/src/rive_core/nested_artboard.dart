@@ -39,11 +39,13 @@ class NestedArtboard extends NestedArtboardBase {
     _mountedArtboard = value;
     _mountedArtboard?.worldTransform = worldTransform;
     _mountedArtboard?.renderOpacity = renderOpacity;
+    _mountedArtboard?.advance(0);
     addDirt(ComponentDirt.paint);
   }
 
   @override
   void artboardIdChanged(int from, int to) {}
+
 
   @override
   void childAdded(Component child) {
