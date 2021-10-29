@@ -18,8 +18,9 @@ class StateTransitionImporter extends ArtboardImportStackObject {
     var inputs = stateMachineImporter.machine.inputs;
     for (final condition in transition.conditions) {
       var inputIndex = condition.inputId;
-      assert(inputIndex >= 0 && inputIndex < inputs.length);
-      condition.inputId = inputs[inputIndex].id;
+      if (inputIndex >= 0 && inputIndex < inputs.length) {
+        condition.inputId = inputs[inputIndex].id;
+      }
     }
     return true;
   }

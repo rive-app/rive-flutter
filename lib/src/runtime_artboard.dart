@@ -94,7 +94,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   @override
   T resolveWithDefault<T>(int id, T defaultValue) {
-    if (id >= _objects.length) {
+    if (id < 0 || id >= _objects.length) {
       return defaultValue;
     }
     var object = _objects[id];
