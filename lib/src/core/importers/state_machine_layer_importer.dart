@@ -30,9 +30,10 @@ class StateMachineLayerImporter extends ImportStackObject {
         // (which state in this layer). We can use that to find the matching
         // importedState and assign back the core id that will resolve after the
         // entire artboard imports.
-        assert(transition.stateToId >= 0 &&
-            transition.stateToId < importedStates.length);
-        transition.stateTo = importedStates[transition.stateToId];
+        if (transition.stateToId >= 0 &&
+            transition.stateToId < importedStates.length) {
+          transition.stateTo = importedStates[transition.stateToId];
+        }
       }
     }
     return true;
