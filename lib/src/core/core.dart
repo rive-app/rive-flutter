@@ -9,6 +9,7 @@ export 'package:rive/src/blend_animations.dart';
 export 'package:rive/src/container_children.dart';
 export 'package:rive/src/core/importers/artboard_importer.dart';
 export 'package:rive/src/core/importers/backboard_importer.dart';
+export 'package:rive/src/core/importers/file_asset_importer.dart';
 export 'package:rive/src/core/importers/keyed_object_importer.dart';
 export 'package:rive/src/core/importers/keyed_property_importer.dart';
 export 'package:rive/src/core/importers/layer_state_importer.dart';

@@ -214,7 +214,11 @@ class IKConstraint extends IKConstraintBase {
 
     var cv = Vec2D.subtract(Vec2D(), pBT, pA);
     var c = Vec2D.length(cv);
-
+    if (b == 0 || c == 0) {
+      // Cannot solve, would cause divide by zero. Usually means one of the two
+      // bones has a 0/0 scale.
+      return;
+    }
     var A = acos(max(-1, min(1, (-a * a + b * b + c * c) / (2 * b * c))));
     var C = acos(max(-1, min(1, (a * a + b * b - c * c) / (2 * a * b))));
 

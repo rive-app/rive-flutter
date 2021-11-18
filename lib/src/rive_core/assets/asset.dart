@@ -1,5 +1,7 @@
-import 'package:rive/src/generated/asset_base.dart';
+import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/rive_core/backboard.dart';
+
+export 'package:rive/src/generated/assets/asset_base.dart';
 
 class Asset extends AssetBase {
   Backboard? _backboard;
@@ -16,4 +18,9 @@ class Asset extends AssetBase {
 
   @override
   void onAddedDirty() {}
+
+  @override
+  void parentIdChanged(int from, int to) {}
+
+  bool get isUsable => false;
 }

@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
 import 'package:rive/src/core/importers/backboard_importer.dart';
+import 'package:rive/src/core/importers/file_asset_importer.dart';
 import 'package:rive/src/generated/animation/animation_state_base.dart';
 import 'package:rive/src/generated/animation/any_state_base.dart';
 import 'package:rive/src/generated/animation/blend_state_transition_base.dart';
@@ -27,6 +28,8 @@ import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/assets/file_asset.dart';
+import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
@@ -37,7 +40,6 @@ import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 Core<CoreContext>? _readRuntimeObject(
     BinaryReader reader, HashMap<int, CoreFieldType> propertyToField) {
   int coreObjectKey = reader.readVarUint();
-
   Core<CoreContext>? instance;
   switch (coreObjectKey) {
     case ArtboardBase.typeKey:
@@ -179,6 +181,10 @@ class RiveFile {
             stackType = StateTransitionBase.typeKey;
             break;
           }
+        case ImageAssetBase.typeKey:
+          stackObject = FileAssetImporter(object as FileAsset);
+          stackType = FileAssetBase.typeKey;
+          break;
         default:
           if (object is Component) {
             // helper = _ArtboardObjectImportHelper();

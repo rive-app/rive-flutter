@@ -1,5 +1,6 @@
 import 'dart:collection';
-import 'package:rive/src/rive_core/asset.dart';
+
+import 'package:rive/src/rive_core/assets/asset.dart';
 
 // List of assets used by the backboard.
 class AssetList extends ListBase<Asset> {
