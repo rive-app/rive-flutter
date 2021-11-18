@@ -1,6 +1,6 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/backboard_base.dart';
-import 'package:rive/src/rive_core/asset.dart';
+import 'package:rive/src/rive_core/assets/asset.dart';
 
 export 'package:rive/src/generated/backboard_base.dart';
 

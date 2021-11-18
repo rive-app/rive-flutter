@@ -1,5 +1,6 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_bool_type.dart';
+import 'package:rive/src/core/field_types/core_bytes_type.dart';
 import 'package:rive/src/core/field_types/core_color_type.dart';
 import 'package:rive/src/core/field_types/core_double_type.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
@@ -42,7 +43,10 @@ import 'package:rive/src/generated/animation/transition_number_condition_base.da
 import 'package:rive/src/generated/animation/transition_trigger_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/artboard_base.dart';
-import 'package:rive/src/generated/asset_base.dart';
+import 'package:rive/src/generated/assets/drawable_asset_base.dart';
+import 'package:rive/src/generated/assets/file_asset_contents_base.dart';
+import 'package:rive/src/generated/assets/folder_base.dart';
+import 'package:rive/src/generated/assets/image_asset_base.dart';
 import 'package:rive/src/generated/backboard_base.dart';
 import 'package:rive/src/generated/bones/bone_base.dart';
 import 'package:rive/src/generated/bones/cubic_weight_base.dart';
@@ -73,6 +77,7 @@ import 'package:rive/src/generated/shapes/cubic_asymmetric_vertex_base.dart';
 import 'package:rive/src/generated/shapes/cubic_detached_vertex_base.dart';
 import 'package:rive/src/generated/shapes/cubic_mirrored_vertex_base.dart';
 import 'package:rive/src/generated/shapes/ellipse_base.dart';
+import 'package:rive/src/generated/shapes/image_base.dart';
 import 'package:rive/src/generated/shapes/paint/fill_base.dart';
 import 'package:rive/src/generated/shapes/paint/gradient_stop_base.dart';
 import 'package:rive/src/generated/shapes/paint/linear_gradient_base.dart';
@@ -124,7 +129,9 @@ import 'package:rive/src/rive_core/animation/transition_bool_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_number_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
-import 'package:rive/src/rive_core/asset.dart';
+import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
+import 'package:rive/src/rive_core/assets/folder.dart';
+import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
 import 'package:rive/src/rive_core/bones/cubic_weight.dart';
@@ -147,6 +154,7 @@ import 'package:rive/src/rive_core/shapes/cubic_asymmetric_vertex.dart';
 import 'package:rive/src/rive_core/shapes/cubic_detached_vertex.dart';
 import 'package:rive/src/rive_core/shapes/cubic_mirrored_vertex.dart';
 import 'package:rive/src/rive_core/shapes/ellipse.dart';
+import 'package:rive/src/rive_core/shapes/image.dart';
 import 'package:rive/src/rive_core/shapes/paint/fill.dart';
 import 'package:rive/src/rive_core/shapes/paint/gradient_stop.dart';
 import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart';
@@ -284,6 +292,8 @@ class RiveCoreContext {
         return Polygon();
       case StarBase.typeKey:
         return Star();
+      case ImageBase.typeKey:
+        return Image();
       case CubicDetachedVertexBase.typeKey:
         return CubicDetachedVertex();
       case DrawRulesBase.typeKey:
@@ -300,8 +310,12 @@ class RiveCoreContext {
         return Skin();
       case TendonBase.typeKey:
         return Tendon();
-      case AssetBase.typeKey:
-        return Asset();
+      case FolderBase.typeKey:
+        return Folder();
+      case ImageAssetBase.typeKey:
+        return ImageAsset();
+      case FileAssetContentsBase.typeKey:
+        return FileAssetContents();
       default:
         return null;
     }
@@ -939,6 +953,11 @@ class RiveCoreContext {
           object.innerRadius = value;
         }
         break;
+      case ImageBase.assetIdPropertyKey:
+        if (object is ImageBase && value is int) {
+          object.assetId = value;
+        }
+        break;
       case CubicDetachedVertexBase.inRotationPropertyKey:
         if (object is CubicDetachedVertexBase && value is double) {
           object.inRotation = value;
@@ -1079,6 +1098,21 @@ class RiveCoreContext {
           object.ty = value;
         }
         break;
+      case DrawableAssetBase.heightPropertyKey:
+        if (object is DrawableAssetBase && value is double) {
+          object.height = value;
+        }
+        break;
+      case DrawableAssetBase.widthPropertyKey:
+        if (object is DrawableAssetBase && value is double) {
+          object.width = value;
+        }
+        break;
+      case FileAssetContentsBase.bytesPropertyKey:
+        if (object is FileAssetContentsBase && value is List<int>) {
+          object.bytes = value;
+        }
+        break;
     }
   }
 
@@ -1087,6 +1121,7 @@ class RiveCoreContext {
   static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType boolType = CoreBoolType();
   static CoreFieldType colorType = CoreColorType();
+  static CoreFieldType bytesType = CoreBytesType();
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
@@ -1142,6 +1177,7 @@ class RiveCoreContext {
       case ClippingShapeBase.sourceIdPropertyKey:
       case ClippingShapeBase.fillRulePropertyKey:
       case PolygonBase.pointsPropertyKey:
+      case ImageBase.assetIdPropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
         return uintType;
@@ -1224,6 +1260,8 @@ class RiveCoreContext {
       case TendonBase.yyPropertyKey:
       case TendonBase.txPropertyKey:
       case TendonBase.tyPropertyKey:
+      case DrawableAssetBase.heightPropertyKey:
+      case DrawableAssetBase.widthPropertyKey:
         return doubleType;
       case TransformComponentConstraintBase.offsetPropertyKey:
       case TransformComponentConstraintBase.doesCopyPropertyKey:
@@ -1248,6 +1286,8 @@ class RiveCoreContext {
       case SolidColorBase.colorValuePropertyKey:
       case GradientStopBase.colorValuePropertyKey:
         return colorType;
+      case FileAssetContentsBase.bytesPropertyKey:
+        return bytesType;
       default:
         return null;
     }
@@ -1365,6 +1405,8 @@ class RiveCoreContext {
         return (object as ClippingShapeBase).fillRule;
       case PolygonBase.pointsPropertyKey:
         return (object as PolygonBase).points;
+      case ImageBase.assetIdPropertyKey:
+        return (object as ImageBase).assetId;
       case DrawRulesBase.drawTargetIdPropertyKey:
         return (object as DrawRulesBase).drawTargetId;
       case TendonBase.boneIdPropertyKey:
@@ -1533,6 +1575,10 @@ class RiveCoreContext {
         return (object as TendonBase).tx;
       case TendonBase.tyPropertyKey:
         return (object as TendonBase).ty;
+      case DrawableAssetBase.heightPropertyKey:
+        return (object as DrawableAssetBase).height;
+      case DrawableAssetBase.widthPropertyKey:
+        return (object as DrawableAssetBase).width;
     }
     return 0.0;
   }
@@ -1589,6 +1635,14 @@ class RiveCoreContext {
         return (object as GradientStopBase).colorValue;
     }
     return 0;
+  }
+
+  static List<int> getBytes(Core object, int propertyKey) {
+    switch (propertyKey) {
+      case FileAssetContentsBase.bytesPropertyKey:
+        return (object as FileAssetContentsBase).bytes;
+    }
+    return [];
   }
 
   static void setString(Core object, int propertyKey, String value) {
@@ -1856,6 +1910,11 @@ class RiveCoreContext {
       case PolygonBase.pointsPropertyKey:
         if (object is PolygonBase) {
           object.points = value;
+        }
+        break;
+      case ImageBase.assetIdPropertyKey:
+        if (object is ImageBase) {
+          object.assetId = value;
         }
         break;
       case DrawRulesBase.drawTargetIdPropertyKey:
@@ -2268,6 +2327,16 @@ class RiveCoreContext {
           object.ty = value;
         }
         break;
+      case DrawableAssetBase.heightPropertyKey:
+        if (object is DrawableAssetBase) {
+          object.height = value;
+        }
+        break;
+      case DrawableAssetBase.widthPropertyKey:
+        if (object is DrawableAssetBase) {
+          object.width = value;
+        }
+        break;
     }
   }
 
@@ -2381,6 +2450,16 @@ class RiveCoreContext {
       case GradientStopBase.colorValuePropertyKey:
         if (object is GradientStopBase) {
           object.colorValue = value;
+        }
+        break;
+    }
+  }
+
+  static void setBytes(Core object, int propertyKey, List<int> value) {
+    switch (propertyKey) {
+      case FileAssetContentsBase.bytesPropertyKey:
+        if (object is FileAssetContentsBase) {
+          object.bytes = value;
         }
         break;
     }
