@@ -7,6 +7,9 @@ import 'package:rive/src/rive_core/backboard.dart';
 export 'package:rive/src/generated/assets/file_asset_base.dart';
 
 abstract class FileAsset extends FileAssetBase {
+  @override
+  void assetIdChanged(int from, int to) {}
+
   Future<void> decode(Uint8List bytes);
 
   @override
@@ -19,6 +22,20 @@ abstract class FileAsset extends FileAssetBase {
     backboardImporter.addFileAsset(this);
 
     return super.import(stack);
+  }
+
+  /// Returns the file extension, for example for an image it would be png.
+  String get fileExtension;
+
+  /// Returns a unique filename, useful for resolving files out of band.
+  String get uniqueFilename {
+    // remove final extension
+    var uniqueFilename = name;
+    var index = uniqueFilename.lastIndexOf('.');
+    if (index != -1) {
+      uniqueFilename = uniqueFilename.substring(0, index);
+    }
+    return '$uniqueFilename-$assetId.$fileExtension';
   }
 }
 

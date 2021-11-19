@@ -14,13 +14,13 @@ class Asset extends AssetBase {
   }
 
   @override
+  void nameChanged(String from, String to) {}
+
+  @override
   void onAdded() {}
 
   @override
   void onAddedDirty() {}
-
-  @override
-  void parentIdChanged(int from, int to) {}
 
   bool get isUsable => false;
 }
