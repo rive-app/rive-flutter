@@ -89,10 +89,12 @@ class RiveFile {
 
   Backboard _backboard = Backboard.unknown;
   final _artboards = <Artboard>[];
+  final RiveAssetResolver? _assetResolver;
 
   RiveFile._(
     BinaryReader reader,
     this.header,
+    this._assetResolver,
   ) {
     /// Property fields table of contents
     final propertyToField = HashMap<int, CoreFieldType>();
@@ -182,7 +184,7 @@ class RiveFile {
             break;
           }
         case ImageAssetBase.typeKey:
-          stackObject = FileAssetImporter(object as FileAsset);
+          stackObject = FileAssetImporter(object as FileAsset, _assetResolver);
           stackType = FileAssetBase.typeKey;
           break;
         default:
@@ -243,22 +245,38 @@ class RiveFile {
   /// Imports a Rive file from an array of bytes. Will throw
   /// [RiveFormatErrorException] if data is malformed. Will throw
   /// [RiveUnsupportedVersionException] if the version is not supported.
-  factory RiveFile.import(ByteData bytes) {
+  factory RiveFile.import(
+    ByteData bytes, {
+    RiveAssetResolver? assetResolver,
+  }) {
     var reader = BinaryReader(bytes);
-    return RiveFile._(reader, RuntimeHeader.read(reader));
+    return RiveFile._(reader, RuntimeHeader.read(reader), assetResolver);
   }
 
-  /// Imports a Rive file from an asset bundle
-  static Future<RiveFile> asset(String bundleKey) async {
+  /// Imports a Rive file from an asset bundle. Provide [basePath] if any nested
+  /// Rive asset isn't in the same path as the [bundleKey].
+  static Future<RiveFile> asset(String bundleKey, {String? basePath}) async {
     final bytes = await rootBundle.load(bundleKey);
-    return RiveFile.import(bytes);
+    if (basePath == null) {
+      int index = bundleKey.lastIndexOf('/');
+      if (index != -1) {
+        basePath = bundleKey.substring(0, index + 1);
+      } else {
+        // ignore: parameter_assignments
+        basePath = '';
+      }
+    }
+    return RiveFile.import(bytes, assetResolver: _LocalAssetResolver(basePath));
   }
 
-  /// Imports a Rive file from a url over http
-  static Future<RiveFile> network(String url) async {
+  /// Imports a Rive file from a url over http. Provide an [assetResolver] if
+  /// your file contains images that needed to be loaded with separate network
+  /// requests.
+  static Future<RiveFile> network(String url,
+      {RiveAssetResolver? assetResolver}) async {
     final res = await http.get(Uri.parse(url));
     final bytes = ByteData.view(res.bodyBytes.buffer);
-    return RiveFile.import(bytes);
+    return RiveFile.import(bytes, assetResolver: assetResolver);
   }
 
   /// Imports a Rive file from local folder
@@ -277,4 +295,26 @@ class RiveFile {
   /// that name exists in the file
   Artboard? artboardByName(String name) =>
       _artboards.firstWhereOrNull((a) => a.name == name);
+}
+
+/// Resolves a Rive asset from the network provided a [baseUrl].
+class NetworkAssetResolver extends RiveAssetResolver {
+  final String baseUrl;
+  NetworkAssetResolver(this.baseUrl);
+
+  @override
+  Future<Uint8List> loadContents(FileAsset asset) async {
+    final res = await http.get(Uri.parse(baseUrl + asset.uniqueFilename));
+    return Uint8List.view(res.bodyBytes.buffer);
+  }
+}
+
+class _LocalAssetResolver extends RiveAssetResolver {
+  String basePath;
+  _LocalAssetResolver(this.basePath);
+  @override
+  Future<Uint8List> loadContents(FileAsset asset) async {
+    final bytes = await rootBundle.load(basePath + asset.uniqueFilename);
+    return Uint8List.view(bytes.buffer);
+  }
 }

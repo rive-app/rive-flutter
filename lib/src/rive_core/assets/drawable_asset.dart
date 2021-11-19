@@ -10,4 +10,9 @@ abstract class DrawableAsset extends DrawableAssetBase {
 
   @override
   void widthChanged(double from, double to) {}
+
+  @override
+  void assetIdChanged(int from, int to) {
+    width = height = 0;
+  }
 }

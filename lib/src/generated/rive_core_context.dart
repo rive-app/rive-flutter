@@ -43,7 +43,9 @@ import 'package:rive/src/generated/animation/transition_number_condition_base.da
 import 'package:rive/src/generated/animation/transition_trigger_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/artboard_base.dart';
+import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/generated/assets/drawable_asset_base.dart';
+import 'package:rive/src/generated/assets/file_asset_base.dart';
 import 'package:rive/src/generated/assets/file_asset_contents_base.dart';
 import 'package:rive/src/generated/assets/folder_base.dart';
 import 'package:rive/src/generated/assets/image_asset_base.dart';
@@ -1098,6 +1100,16 @@ class RiveCoreContext {
           object.ty = value;
         }
         break;
+      case AssetBase.namePropertyKey:
+        if (object is AssetBase && value is String) {
+          object.name = value;
+        }
+        break;
+      case FileAssetBase.assetIdPropertyKey:
+        if (object is FileAssetBase && value is int) {
+          object.assetId = value;
+        }
+        break;
       case DrawableAssetBase.heightPropertyKey:
         if (object is DrawableAssetBase && value is double) {
           object.height = value;
@@ -1127,6 +1139,7 @@ class RiveCoreContext {
       case ComponentBase.namePropertyKey:
       case AnimationBase.namePropertyKey:
       case StateMachineComponentBase.namePropertyKey:
+      case AssetBase.namePropertyKey:
         return stringType;
       case ComponentBase.parentIdPropertyKey:
       case DrawTargetBase.drawableIdPropertyKey:
@@ -1180,6 +1193,7 @@ class RiveCoreContext {
       case ImageBase.assetIdPropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
+      case FileAssetBase.assetIdPropertyKey:
         return uintType;
       case ConstraintBase.strengthPropertyKey:
       case DistanceConstraintBase.distancePropertyKey:
@@ -1301,6 +1315,8 @@ class RiveCoreContext {
         return (object as AnimationBase).name;
       case StateMachineComponentBase.namePropertyKey:
         return (object as StateMachineComponentBase).name;
+      case AssetBase.namePropertyKey:
+        return (object as AssetBase).name;
     }
     return '';
   }
@@ -1411,6 +1427,8 @@ class RiveCoreContext {
         return (object as DrawRulesBase).drawTargetId;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
+      case FileAssetBase.assetIdPropertyKey:
+        return (object as FileAssetBase).assetId;
     }
     return 0;
   }
@@ -1659,6 +1677,11 @@ class RiveCoreContext {
         break;
       case StateMachineComponentBase.namePropertyKey:
         if (object is StateMachineComponentBase) {
+          object.name = value;
+        }
+        break;
+      case AssetBase.namePropertyKey:
+        if (object is AssetBase) {
           object.name = value;
         }
         break;
@@ -1925,6 +1948,11 @@ class RiveCoreContext {
       case TendonBase.boneIdPropertyKey:
         if (object is TendonBase) {
           object.boneId = value;
+        }
+        break;
+      case FileAssetBase.assetIdPropertyKey:
+        if (object is FileAssetBase) {
+          object.assetId = value;
         }
         break;
     }
