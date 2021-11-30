@@ -11,5 +11,5 @@
         "auto-changelog": "^2.3.0",
         "release-it": "^14.11.0"
     },
-    "version": "0.7.35"
+    "version": "0.7.36"
 }
