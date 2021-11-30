@@ -7,12 +7,12 @@ import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 /// A helper for resolving Rive file assets (like images) that are provided out
 /// of band with regards to the .riv file itself.
 // ignore: one_member_abstracts
-abstract class RiveAssetResolver {
+abstract class FileAssetResolver {
   Future<Uint8List> loadContents(FileAsset asset);
 }
 
 class FileAssetImporter extends ImportStackObject {
-  final RiveAssetResolver? assetResolver;
+  final FileAssetResolver? assetResolver;
   final FileAsset fileAsset;
 
   FileAssetImporter(this.fileAsset, this.assetResolver);

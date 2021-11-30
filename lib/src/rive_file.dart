@@ -89,7 +89,7 @@ class RiveFile {
 
   Backboard _backboard = Backboard.unknown;
   final _artboards = <Artboard>[];
-  final RiveAssetResolver? _assetResolver;
+  final FileAssetResolver? _assetResolver;
 
   RiveFile._(
     BinaryReader reader,
@@ -247,7 +247,7 @@ class RiveFile {
   /// [RiveUnsupportedVersionException] if the version is not supported.
   factory RiveFile.import(
     ByteData bytes, {
-    RiveAssetResolver? assetResolver,
+    FileAssetResolver? assetResolver,
   }) {
     var reader = BinaryReader(bytes);
     return RiveFile._(reader, RuntimeHeader.read(reader), assetResolver);
@@ -273,7 +273,7 @@ class RiveFile {
   /// your file contains images that needed to be loaded with separate network
   /// requests.
   static Future<RiveFile> network(String url,
-      {RiveAssetResolver? assetResolver}) async {
+      {FileAssetResolver? assetResolver}) async {
     final res = await http.get(Uri.parse(url));
     final bytes = ByteData.view(res.bodyBytes.buffer);
     return RiveFile.import(bytes, assetResolver: assetResolver);
@@ -298,7 +298,7 @@ class RiveFile {
 }
 
 /// Resolves a Rive asset from the network provided a [baseUrl].
-class NetworkAssetResolver extends RiveAssetResolver {
+class NetworkAssetResolver extends FileAssetResolver {
   final String baseUrl;
   NetworkAssetResolver(this.baseUrl);
 
@@ -309,7 +309,7 @@ class NetworkAssetResolver extends RiveAssetResolver {
   }
 }
 
-class _LocalAssetResolver extends RiveAssetResolver {
+class _LocalAssetResolver extends FileAssetResolver {
   String basePath;
   _LocalAssetResolver(this.basePath);
   @override
