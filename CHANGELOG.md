@@ -1,9 +1,3 @@
-## 0.7.36
-
-## 0.7.35
-
-## 0.7.34
-
 ## 0.7.33
 - Fixes issue with nested artboard opacity not updating in sync with the artboard. ['#185](https://github.com/rive-app/rive-flutter/pull/185)
 
