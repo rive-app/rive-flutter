@@ -30,7 +30,7 @@ class Image extends ImageBase with FileAssetReferencer<ImageAsset> {
     }
     bool clipped = clip(canvas);
 
-    final paint = ui.Paint()..color = ui.Color.fromRGBO(0, 0, 0, opacity);
+    final paint = ui.Paint()..color = ui.Color.fromRGBO(0, 0, 0, renderOpacity);
 
     final width = asset!.width;
     final height = asset!.height;
