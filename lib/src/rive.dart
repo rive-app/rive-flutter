@@ -34,7 +34,7 @@ class Rive extends LeafRenderObjectWidget {
   /// Alignment for the rendering artboard
   final Alignment alignment;
 
-  /// Enables/disables anitalising
+  /// Enables/disables antialiasing
   final bool antialiasing;
 
   const Rive({
