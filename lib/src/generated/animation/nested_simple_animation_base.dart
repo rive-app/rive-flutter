@@ -2,7 +2,6 @@
 /// lib/src/generated/animation/nested_simple_animation_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/animation/nested_linear_animation_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/rive_core/animation/nested_linear_animation.dart';

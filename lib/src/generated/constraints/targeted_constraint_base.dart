@@ -3,7 +3,6 @@
 /// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
-import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 
 abstract class TargetedConstraintBase extends Constraint {

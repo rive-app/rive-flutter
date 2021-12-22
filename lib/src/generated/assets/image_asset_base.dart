@@ -2,7 +2,6 @@
 /// Do not modify manually.
 
 import 'package:rive/src/generated/assets/asset_base.dart';
-import 'package:rive/src/generated/assets/drawable_asset_base.dart';
 import 'package:rive/src/generated/assets/file_asset_base.dart';
 import 'package:rive/src/rive_core/assets/drawable_asset.dart';
 

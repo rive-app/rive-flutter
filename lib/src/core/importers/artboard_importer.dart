@@ -1,7 +1,6 @@
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
-import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 class ArtboardImporter extends ImportStackObject {

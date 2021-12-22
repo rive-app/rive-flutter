@@ -6,15 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
-import 'package:rive/src/core/importers/backboard_importer.dart';
-import 'package:rive/src/core/importers/file_asset_importer.dart';
 import 'package:rive/src/generated/animation/animation_state_base.dart';
 import 'package:rive/src/generated/animation/any_state_base.dart';
 import 'package:rive/src/generated/animation/blend_state_transition_base.dart';
 import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
-import 'package:rive/src/generated/animation/keyed_property_base.dart';
-import 'package:rive/src/generated/animation/state_machine_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/local_file_io.dart'
     if (dart.library.html) 'package:rive/src/local_file_web.dart';

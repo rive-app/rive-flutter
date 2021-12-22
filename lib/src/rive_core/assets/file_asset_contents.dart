@@ -16,6 +16,10 @@ class FileAssetContents extends FileAssetContentsBase {
   @override
   void onAddedDirty() {}
 
+  /// Never permanently added to core, so always invalidate.
+  @override
+  bool validate() => false;
+
   @override
   bool import(ImportStack stack) {
     var fileAssetImporter =

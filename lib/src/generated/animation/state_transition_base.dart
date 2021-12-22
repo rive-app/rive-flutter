@@ -2,7 +2,6 @@
 /// lib/src/generated/animation/state_transition_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/animation/state_machine_layer_component_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer_component.dart';
 
 abstract class StateTransitionBase extends StateMachineLayerComponent {

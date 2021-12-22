@@ -3,7 +3,6 @@
 /// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
-import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/nested_animation.dart';
 

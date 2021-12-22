@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/event.dart';
 

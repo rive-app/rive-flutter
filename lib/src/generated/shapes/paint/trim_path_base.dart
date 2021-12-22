@@ -2,7 +2,6 @@
 /// lib/src/generated/shapes/paint/trim_path_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TrimPathBase extends Component {

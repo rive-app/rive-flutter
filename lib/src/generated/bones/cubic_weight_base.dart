@@ -1,7 +1,6 @@
 /// Core automatically generated lib/src/generated/bones/cubic_weight_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/bones/weight_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 

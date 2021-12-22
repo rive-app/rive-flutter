@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 /// Abstraction for receiving a per frame callback while isPlaying is true to
 /// apply animation based on an elapsed amount of time.

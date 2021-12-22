@@ -1,7 +1,6 @@
 /// Core automatically generated lib/src/generated/bones/root_bone_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/bones/bone_base.dart';
 import 'package:rive/src/generated/bones/skeletal_component_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';

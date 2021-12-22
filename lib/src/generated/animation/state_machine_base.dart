@@ -2,7 +2,6 @@
 /// lib/src/generated/animation/state_machine_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/animation/animation_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 
 abstract class StateMachineBase extends Animation {
