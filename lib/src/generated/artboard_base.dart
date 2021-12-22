@@ -3,7 +3,6 @@
 
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
-import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
 
 abstract class ArtboardBase extends WorldTransformComponent {

@@ -1,7 +1,6 @@
 /// Core automatically generated lib/src/generated/bones/tendon_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TendonBase extends Component {

@@ -1,5 +1,3 @@
-import 'dart:ui' show VoidCallback;
-
 import 'package:flutter/widgets.dart';
 import 'package:rive/src/controllers/simple_controller.dart';
 

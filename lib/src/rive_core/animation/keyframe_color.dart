@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_color_base.dart';
-import 'package:rive/src/generated/rive_core_context.dart';
 export 'package:rive/src/generated/animation/keyframe_color_base.dart';
 
 void _apply(Core<CoreContext> object, int propertyKey, double mix, int value) {

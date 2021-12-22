@@ -1,6 +1,5 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_id_base.dart';
-import 'package:rive/src/generated/rive_core_context.dart';
 export 'package:rive/src/generated/animation/keyframe_id_base.dart';
 
 class KeyFrameId extends KeyFrameIdBase {

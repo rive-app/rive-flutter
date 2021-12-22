@@ -1,7 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:rive/src/generated/animation/state_machine_bool_base.dart';
-import 'package:rive/src/generated/animation/state_machine_number_base.dart';
-import 'package:rive/src/generated/animation/state_machine_trigger_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart' as core;

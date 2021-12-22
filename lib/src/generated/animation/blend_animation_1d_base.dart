@@ -2,7 +2,6 @@
 /// lib/src/generated/animation/blend_animation_1d_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/generated/animation/blend_animation_base.dart';
 import 'package:rive/src/rive_core/animation/blend_animation.dart';
 
 abstract class BlendAnimation1DBase extends BlendAnimation {

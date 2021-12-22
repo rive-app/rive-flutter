@@ -3,7 +3,6 @@
 /// Do not modify manually.
 
 import 'package:rive/src/generated/assets/asset_base.dart';
-import 'package:rive/src/generated/assets/file_asset_base.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 
 abstract class DrawableAssetBase extends FileAsset {
