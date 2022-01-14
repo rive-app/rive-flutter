@@ -36,7 +36,9 @@ class BackboardImporter extends ImportStackObject {
     }
 
     for (final referencer in fileAssetReferencers) {
-      referencer.asset = fileAssets[referencer.assetId];
+      if (referencer.assetId >= 0 && referencer.assetId < fileAssets.length) {
+        referencer.asset = fileAssets[referencer.assetId];
+      }
     }
     return super.resolve();
   }
