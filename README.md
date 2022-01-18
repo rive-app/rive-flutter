@@ -1,14 +1,13 @@
 [![Pub Version](https://img.shields.io/pub/v/rive)](https://pub.dev/packages/rive)
-![Build Status](https://github.com/rive-app/rive-flutter/actions/workflows/tests.yaml/badge.svg) 
+![Build Status](https://github.com/rive-app/rive-flutter/actions/workflows/tests.yaml/badge.svg)
 ![Discord badge](https://img.shields.io/discord/532365473602600965)
 ![Twitter handle](https://img.shields.io/twitter/follow/rive_app.svg?style=social&label=Follow)
 
-
-# Rive 
+# Rive
 
 Runtime docs are available in [Rive's help center](https://help.rive.app/runtimes/quick-start).
 
-[Rive](https://rive.app/) is a real-time interactive design and animation tool. Use our collaborative editor to create motion graphics that respond to different states and user inputs. Then load your animations into apps, games, and websites with our lightweight open-source runtimes. 
+[Rive](https://rive.app/) is a real-time interactive design and animation tool. Use our collaborative editor to create motion graphics that respond to different states and user inputs. Then load your animations into apps, games, and websites with our lightweight open-source runtimes.
 
 ## Add to pubspec.yaml
 
@@ -45,7 +44,7 @@ class SimpleAnimation extends StatelessWidget {
 }
 ```
 
-To play an animation from an asset bundle, use: 
+To play an animation from an asset bundle, use:
 
 ```dart
 RiveAnimation.asset('assets/truck.riv');
@@ -172,3 +171,8 @@ class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
 ## Antialiasing
 
 If you want to disable antialiasing (usually for performance reasons), you can set `antialiasing` to `false` on the `Rive` and `RiveAnimation` widgets.
+
+## API Documentation
+
+Check out our more extensive API documentation on pub.dev:
+https://pub.dev/documentation/rive/latest/
