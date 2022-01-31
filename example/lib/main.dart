@@ -8,6 +8,7 @@ import 'package:rive_example/play_pause_animation.dart';
 import 'package:rive_example/simple_animation.dart';
 import 'package:rive_example/simple_state_machine.dart';
 import 'package:rive_example/state_machine_skills.dart';
+import 'package:rive_example/teddy_login_screen.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Navigation Basics',
@@ -145,6 +146,20 @@ class Home extends StatelessWidget {
                     context,
                     MaterialPageRoute<void>(
                       builder: (context) => const SimpleStateMachine(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                child: const Text('Teddy Login Screen'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (context) => const TeddyLoginScreen(),
                     ),
                   );
                 },
