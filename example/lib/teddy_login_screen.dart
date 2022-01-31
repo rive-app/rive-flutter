@@ -268,7 +268,7 @@ class _TrackingTextInputState extends State<TrackingTextInput> {
                     });
                   },
                 )
-              : const SizedBox(),
+              : null,
         ),
         enableSuggestions: !widget.isObscured,
         autocorrect: !widget.isObscured,
