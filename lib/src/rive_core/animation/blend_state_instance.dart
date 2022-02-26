@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter/foundation.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/blend_animation.dart';
 import 'package:rive/src/rive_core/animation/blend_state.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';

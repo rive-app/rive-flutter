@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';

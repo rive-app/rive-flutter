@@ -5,6 +5,7 @@
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
+import 'package:rive/src/generated/shapes/vertex_base.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
 
 abstract class CubicAsymmetricVertexBase extends CubicVertex {
@@ -16,6 +17,7 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
         CubicAsymmetricVertexBase.typeKey,
         CubicVertexBase.typeKey,
         PathVertexBase.typeKey,
+        VertexBase.typeKey,
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };

@@ -7,7 +7,5 @@ abstract class TransitionValueCondition extends TransitionValueConditionBase {
   TransitionConditionOp get op => TransitionConditionOp.values[opValue];
 
   @override
-  void opValueChanged(int from, int to) {
-    // TODO: implement opValueChanged
-  }
+  void opValueChanged(int from, int to) {}
 }

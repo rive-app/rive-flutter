@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
@@ -21,7 +19,7 @@ class FileAssetImporter extends ImportStackObject {
 
   void loadContents(FileAssetContents contents) {
     _loadedContents = true;
-    fileAsset.decode(contents.bytes as Uint8List);
+    fileAsset.decode(contents.bytes);
   }
 
   @override

@@ -14,6 +14,9 @@ class ComponentDirt {
   /// Path is dirty and needs to be rebuilt.
   static const int path = 1 << 4;
 
+  /// Text shape is dirty, the shaper needs to re-run.
+  static const int textShape = 1 << 4;
+
   /// Vertices have changed, re-order cached lists.
   static const int vertices = 1 << 5;
 
