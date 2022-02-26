@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -9,6 +8,9 @@ typedef bool DescentCallback(Component component);
 
 abstract class ContainerComponent extends ContainerComponentBase {
   final ContainerChildren children = ContainerChildren();
+
+  /// Adds the child to the children list and re-wires the parent reference of
+  /// the child to the parent. Effectively detach and append.
   void appendChild(Component child) {
     child.parent = this;
   }

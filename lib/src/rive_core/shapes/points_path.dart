@@ -7,7 +7,7 @@ import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 
 export 'package:rive/src/generated/shapes/points_path_base.dart';
 
-class PointsPath extends PointsPathBase with Skinnable {
+class PointsPath extends PointsPathBase with Skinnable<PathVertex> {
   final List<PathVertex> _vertices = [];
 
   PointsPath() {

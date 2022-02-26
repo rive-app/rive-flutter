@@ -6,7 +6,7 @@ import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/shapes/path_vertex.dart';
+import 'package:rive/src/rive_core/shapes/vertex.dart';
 
 export 'package:rive/src/generated/bones/skin_base.dart';
 
@@ -61,7 +61,7 @@ class Skin extends SkinBase {
     }
   }
 
-  void deform(List<PathVertex> vertices) {
+  void deform(List<Vertex> vertices) {
     for (final vertex in vertices) {
       vertex.deform(_worldTransform, _boneTransforms);
     }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:rive/src/generated/assets/image_asset_base.dart';
 import 'package:rive/src/rive_core/shapes/image.dart';
 
@@ -10,6 +11,11 @@ export 'package:rive/src/generated/assets/image_asset_base.dart';
 class ImageAsset extends ImageAssetBase {
   ui.Image? _image;
   ui.Image? get image => _image;
+
+  ImageAsset();
+
+  @visibleForTesting
+  ImageAsset.fromTestImage(this._image);
 
   @override
   Future<void> decode(Uint8List bytes) {

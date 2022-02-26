@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';

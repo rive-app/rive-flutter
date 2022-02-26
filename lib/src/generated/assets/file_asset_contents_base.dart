@@ -13,27 +13,27 @@ abstract class FileAssetContentsBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Bytes field with key 212.
-  static const List<int> bytesInitialValue = [];
-  List<int> _bytes = bytesInitialValue;
+  static final Uint8List bytesInitialValue = Uint8List(0);
+  Uint8List _bytes = bytesInitialValue;
   static const int bytesPropertyKey = 212;
 
   /// Byte data of the file.
-  List<int> get bytes => _bytes;
+  Uint8List get bytes => _bytes;
 
   /// Change the [_bytes] field value.
   /// [bytesChanged] will be invoked only if the field's value has changed.
-  set bytes(List<int> value) {
-    if (_bytes == value) {
+  set bytes(Uint8List value) {
+    if (listEquals(_bytes, value)) {
       return;
     }
-    List<int> from = _bytes;
+    Uint8List from = _bytes;
     _bytes = value;
     if (hasValidated) {
       bytesChanged(from, value);
     }
   }
 
-  void bytesChanged(List<int> from, List<int> to);
+  void bytesChanged(Uint8List from, Uint8List to);
 
   @override
   void copy(covariant FileAssetContentsBase source) {

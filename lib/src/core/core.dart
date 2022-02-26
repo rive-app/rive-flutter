@@ -3,6 +3,9 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 
+export 'dart:typed_data';
+export 'package:flutter/foundation.dart';
+
 export 'package:rive/src/animation_list.dart';
 export 'package:rive/src/asset_list.dart';
 export 'package:rive/src/blend_animations.dart';
