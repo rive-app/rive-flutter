@@ -5,6 +5,7 @@ import 'package:rive/src/rive_core/bones/bone.dart';
 import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/shapes/vertex.dart';
 
@@ -22,9 +23,6 @@ class Skin extends SkinBase {
   void onDirty(int mask) {
     // When the skin is dirty the deformed skinnable will need to regenerate its
     // drawing commands.
-
-    // TODO: rename path to topology/surface something common between path &
-    // mesh.
     (parent as Skinnable).markSkinDirty();
   }
 
@@ -34,6 +32,7 @@ class Skin extends SkinBase {
     // should only be worldTransform from the bones (recursively passed down) or
     // ComponentDirt.path from the PointsPath (set explicitly).
     var size = (_tendons.length + 1) * 6;
+
     if (_boneTransforms.length != size) {
       _boneTransforms = Float32List(size);
       _boneTransforms[0] = 1;
@@ -116,6 +115,8 @@ class Skin extends SkinBase {
     switch (child.coreType) {
       case TendonBase.typeKey:
         _tendons.add(child as Tendon);
+        // Add dirt to recompute stored _boneTransforms
+        addDirt(ComponentDirt.worldTransform);
         markRebuildDependencies();
         if (parent is Skinnable) {
           parent!.markRebuildDependencies();
@@ -133,6 +134,8 @@ class Skin extends SkinBase {
         if (_tendons.isEmpty) {
           remove();
         } else {
+          // Add dirt to recompute stored _boneTransforms
+          addDirt(ComponentDirt.worldTransform);
           markRebuildDependencies();
         }
         parent?.markRebuildDependencies();

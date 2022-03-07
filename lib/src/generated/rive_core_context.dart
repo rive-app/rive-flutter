@@ -103,8 +103,6 @@ import 'package:rive/src/rive_core/shapes/rectangle.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/star.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
-import 'package:rive/src/rive_core/shapes/text.dart';
-import 'package:rive/src/rive_core/shapes/text_run.dart';
 import 'package:rive/src/rive_core/shapes/triangle.dart';
 
 // ignore: avoid_classes_with_only_static_members
@@ -217,8 +215,6 @@ class RiveCoreContext {
         return CubicAsymmetricVertex();
       case MeshBase.typeKey:
         return Mesh();
-      case TextRunBase.typeKey:
-        return TextRun();
       case PointsPathBase.typeKey:
         return PointsPath();
       case ContourMeshVertexBase.typeKey:
@@ -239,8 +235,6 @@ class RiveCoreContext {
         return Star();
       case ImageBase.typeKey:
         return Image();
-      case TextBase.typeKey:
-        return Text();
       case CubicDetachedVertexBase.typeKey:
         return CubicDetachedVertex();
       case DrawRulesBase.typeKey:
@@ -825,16 +819,6 @@ class RiveCoreContext {
           object.triangleIndexBytes = value;
         }
         break;
-      case TextRunBase.pointSizePropertyKey:
-        if (object is TextRunBase && value is double) {
-          object.pointSize = value;
-        }
-        break;
-      case TextRunBase.textLengthPropertyKey:
-        if (object is TextRunBase && value is int) {
-          object.textLength = value;
-        }
-        break;
       case PointsPathBase.isClosedPropertyKey:
         if (object is PointsPathBase && value is bool) {
           object.isClosed = value;
@@ -928,11 +912,6 @@ class RiveCoreContext {
       case ImageBase.assetIdPropertyKey:
         if (object is ImageBase && value is int) {
           object.assetId = value;
-        }
-        break;
-      case TextBase.valuePropertyKey:
-        if (object is TextBase && value is String) {
-          object.value = value;
         }
         break;
       case CubicDetachedVertexBase.inRotationPropertyKey:
@@ -1114,7 +1093,6 @@ class RiveCoreContext {
       case ComponentBase.namePropertyKey:
       case AnimationBase.namePropertyKey:
       case StateMachineComponentBase.namePropertyKey:
-      case TextBase.valuePropertyKey:
       case AssetBase.namePropertyKey:
         return stringType;
       case ComponentBase.parentIdPropertyKey:
@@ -1163,7 +1141,6 @@ class RiveCoreContext {
       case CubicWeightBase.inIndicesPropertyKey:
       case CubicWeightBase.outValuesPropertyKey:
       case CubicWeightBase.outIndicesPropertyKey:
-      case TextRunBase.textLengthPropertyKey:
       case ClippingShapeBase.sourceIdPropertyKey:
       case ClippingShapeBase.fillRulePropertyKey:
       case PolygonBase.pointsPropertyKey:
@@ -1216,7 +1193,6 @@ class RiveCoreContext {
       case CubicAsymmetricVertexBase.rotationPropertyKey:
       case CubicAsymmetricVertexBase.inDistancePropertyKey:
       case CubicAsymmetricVertexBase.outDistancePropertyKey:
-      case TextRunBase.pointSizePropertyKey:
       case ParametricPathBase.widthPropertyKey:
       case ParametricPathBase.heightPropertyKey:
       case ParametricPathBase.originXPropertyKey:
@@ -1296,8 +1272,6 @@ class RiveCoreContext {
         return (object as AnimationBase).name;
       case StateMachineComponentBase.namePropertyKey:
         return (object as StateMachineComponentBase).name;
-      case TextBase.valuePropertyKey:
-        return (object as TextBase).value;
       case AssetBase.namePropertyKey:
         return (object as AssetBase).name;
     }
@@ -1398,8 +1372,6 @@ class RiveCoreContext {
         return (object as CubicWeightBase).outValues;
       case CubicWeightBase.outIndicesPropertyKey:
         return (object as CubicWeightBase).outIndices;
-      case TextRunBase.textLengthPropertyKey:
-        return (object as TextRunBase).textLength;
       case ClippingShapeBase.sourceIdPropertyKey:
         return (object as ClippingShapeBase).sourceId;
       case ClippingShapeBase.fillRulePropertyKey:
@@ -1508,8 +1480,6 @@ class RiveCoreContext {
         return (object as CubicAsymmetricVertexBase).inDistance;
       case CubicAsymmetricVertexBase.outDistancePropertyKey:
         return (object as CubicAsymmetricVertexBase).outDistance;
-      case TextRunBase.pointSizePropertyKey:
-        return (object as TextRunBase).pointSize;
       case ParametricPathBase.widthPropertyKey:
         return (object as ParametricPathBase).width;
       case ParametricPathBase.heightPropertyKey:
@@ -1671,11 +1641,6 @@ class RiveCoreContext {
       case StateMachineComponentBase.namePropertyKey:
         if (object is StateMachineComponentBase) {
           object.name = value;
-        }
-        break;
-      case TextBase.valuePropertyKey:
-        if (object is TextBase) {
-          object.value = value;
         }
         break;
       case AssetBase.namePropertyKey:
@@ -1916,11 +1881,6 @@ class RiveCoreContext {
       case CubicWeightBase.outIndicesPropertyKey:
         if (object is CubicWeightBase) {
           object.outIndices = value;
-        }
-        break;
-      case TextRunBase.textLengthPropertyKey:
-        if (object is TextRunBase) {
-          object.textLength = value;
         }
         break;
       case ClippingShapeBase.sourceIdPropertyKey:
@@ -2181,11 +2141,6 @@ class RiveCoreContext {
       case CubicAsymmetricVertexBase.outDistancePropertyKey:
         if (object is CubicAsymmetricVertexBase) {
           object.outDistance = value;
-        }
-        break;
-      case TextRunBase.pointSizePropertyKey:
-        if (object is TextRunBase) {
-          object.pointSize = value;
         }
         break;
       case ParametricPathBase.widthPropertyKey:
