@@ -46,7 +46,23 @@ class Mesh extends MeshBase with Skinnable<MeshVertex> {
   Drawable get drawable => parent as Drawable;
 
   @override
-  bool validate() => super.validate() && parent is TransformComponent;
+  bool validate() =>
+      super.validate() &&
+      parent is TransformComponent &&
+      _areTriangleIndicesValid();
+
+  bool _areTriangleIndicesValid() {
+    var maxIndex = vertices.length;
+    if (triangleIndices.length % 3 != 0) {
+      return false;
+    }
+    for (final index in triangleIndices) {
+      if (index >= maxIndex) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   @override
   void childAdded(Component child) {
@@ -120,8 +136,8 @@ class Mesh extends MeshBase with Skinnable<MeshVertex> {
   }
 
   @override
-  void onAdded() {
-    super.onAdded();
+  void onAddedDirty() {
+    super.onAddedDirty();
 
     _deserializeTriangleIndices();
   }
