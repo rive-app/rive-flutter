@@ -187,7 +187,7 @@ abstract class RiveRenderBox extends RenderBox {
       return;
     }
     _frameCallbackId =
-        SchedulerBinding.instance.scheduleFrameCallback(_frameCallback);
+        SchedulerBinding.instance?.scheduleFrameCallback(_frameCallback) ?? -1;
   }
 
   /// Override this if you want to do custom viewTransform alignment. This will

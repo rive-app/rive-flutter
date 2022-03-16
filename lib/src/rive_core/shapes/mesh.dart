@@ -21,7 +21,6 @@ class Mesh extends MeshBase with Skinnable<MeshVertex> {
   // be in world space.
 
   final List<MeshVertex> _vertices = [];
-  @override
   List<MeshVertex> get vertices => _vertices;
 
   ui.Vertices? _uiVertices;
@@ -153,7 +152,6 @@ class Mesh extends MeshBase with Skinnable<MeshVertex> {
     return super.addDirt(value, recurse: recurse);
   }
 
-  @override
   Mat2D get worldTransform =>
       skin != null ? Mat2D.identity : transformComponent.worldTransform;
 

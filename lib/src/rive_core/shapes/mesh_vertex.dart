@@ -8,7 +8,6 @@ export 'package:rive/src/generated/shapes/mesh_vertex_base.dart';
 class MeshVertex extends MeshVertexBase {
   Mesh? get mesh => parent as Mesh?;
 
-  @override
   TransformComponent get transformComponent =>
       mesh?.transformComponent ?? Node();
 
