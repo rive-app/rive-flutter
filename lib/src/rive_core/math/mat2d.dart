@@ -55,8 +55,14 @@ class Mat2D {
       : _buffer = Float32List.fromList(
             [1.0, 0.0, 0.0, 1.0, translation.x, translation.y]);
 
+  Mat2D.fromTranslate(double x, double y)
+      : _buffer = Float32List.fromList([1.0, 0.0, 0.0, 1.0, x, y]);
+
   Mat2D.fromScaling(Vec2D scaling)
       : _buffer = Float32List.fromList([scaling.x, 0, 0, scaling.y, 0, 0]);
+
+  Mat2D.fromScale(double x, double y)
+      : _buffer = Float32List.fromList([x, 0, 0, y, 0, 0]);
 
   Mat2D.fromMat4(Float64List mat4)
       : _buffer = Float32List.fromList(

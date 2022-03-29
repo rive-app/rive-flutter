@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rive_example/custom_controller.dart';
 import 'package:rive_example/example_state_machine.dart';
+import 'package:rive_example/hit_events.dart';
 import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
 import 'package:rive_example/play_one_shot_animation.dart';
@@ -32,6 +33,20 @@ class Home extends StatelessWidget {
                   context,
                   MaterialPageRoute<void>(
                     builder: (context) => const SimpleAnimation(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('Hit Event'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const HitEventExample(),
                   ),
                 );
               },

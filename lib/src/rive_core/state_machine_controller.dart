@@ -262,10 +262,6 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     // Initialize all events.
     HashMap<Shape, _HitShape> hitShapeLookup = HashMap<Shape, _HitShape>();
     for (final event in stateMachine.events) {
-      // Early out if we know target doesn't exist on the source artboard.
-      if (event.target == null) {
-        continue;
-      }
       // Resolve target on this artboard instance.
       var node = core.resolve<Node>(event.targetId);
       if (node == null) {

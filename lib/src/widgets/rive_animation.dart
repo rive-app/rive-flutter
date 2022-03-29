@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:rive/math.dart';
 import 'package:rive/rive.dart';
+import 'package:rive/src/rive_render_box.dart';
 
 /// Specifies whether a source is from an asset bundle or http
 enum _Source {
@@ -100,6 +102,8 @@ class _RiveAnimationState extends State<RiveAnimation> {
   /// Active artboard
   Artboard? _artboard;
 
+  bool _needsHitDetection = false;
+
   @override
   void initState() {
     super.initState();
@@ -151,6 +155,9 @@ class _RiveAnimationState extends State<RiveAnimation> {
       final controller = StateMachineController.fromArtboard(artboard, name);
       if (controller != null) {
         artboard.addController((_controllers..add(controller)).last);
+        if (controller.stateMachine.events.isNotEmpty) {
+          _needsHitDetection = true;
+        }
       }
     });
 
@@ -169,13 +176,92 @@ class _RiveAnimationState extends State<RiveAnimation> {
     super.dispose();
   }
 
+  Vec2D? _transform(Offset offset) {
+    var renderObject = context.findRenderObject();
+    if (renderObject is! RenderBox) {
+      return null;
+    }
+
+    RiveRenderBox? riveRenderBox;
+    renderObject.visitChildren((child) {
+      if (child is RiveRenderBox) {
+        riveRenderBox = child;
+      }
+    });
+    if (riveRenderBox == null) {
+      return null;
+    }
+
+    var localOffset = riveRenderBox!.globalToLocal(offset);
+    var transform = riveRenderBox!.computeAlignment(Offset.zero);
+    if (Mat2D.invert(transform, transform)) {
+      return transform * Vec2D.fromValues(localOffset.dx, localOffset.dy);
+    }
+    return null;
+  }
+
+  Widget _hitDetect(Widget child) {
+    if (!_needsHitDetection) {
+      return child;
+    }
+    return Listener(
+      behavior: HitTestBehavior.opaque,
+      child: child,
+      onPointerDown: (details) {
+        var position = _transform(details.position);
+        if (position == null) {
+          return;
+        }
+        for (final stateMachine
+            in _controllers.whereType<StateMachineController>()) {
+          stateMachine.pointerDown(position);
+        }
+      },
+      onPointerUp: (details) {
+        var position = _transform(details.position);
+        if (position == null) {
+          return;
+        }
+        for (final stateMachine
+            in _controllers.whereType<StateMachineController>()) {
+          stateMachine.pointerUp(position);
+        }
+      },
+      onPointerHover: (details) {
+        var position = _transform(details.position);
+        if (position == null) {
+          return;
+        }
+        for (final stateMachine
+            in _controllers.whereType<StateMachineController>()) {
+          stateMachine.pointerMove(position);
+        }
+      },
+      onPointerMove: (details) {
+        var position = _transform(details.position);
+        if (position == null) {
+          return;
+        }
+        for (final stateMachine
+            in _controllers.whereType<StateMachineController>()) {
+          stateMachine.pointerMove(position);
+        }
+      },
+    );
+  }
+
   @override
-  Widget build(BuildContext context) => _artboard != null
-      ? Rive(
-          artboard: _artboard!,
-          fit: widget.fit,
-          alignment: widget.alignment,
-          antialiasing: widget.antialiasing,
-        )
-      : widget.placeHolder ?? const SizedBox();
+  Widget build(BuildContext context) {
+    if (_artboard == null) {
+      return widget.placeHolder ?? const SizedBox();
+    }
+    return _hitDetect(
+      Rive(
+        artboard: _artboard!,
+        fit: widget.fit,
+        alignment: widget.alignment,
+        antialiasing: widget.antialiasing,
+      ),
+    );
+  }
 }
