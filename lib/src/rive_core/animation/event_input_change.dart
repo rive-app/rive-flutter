@@ -1,4 +1,7 @@
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/event_input_change_base.dart';
+import 'package:rive/src/rive_core/animation/state_machine.dart';
+import 'package:rive/src/rive_core/animation/state_machine_event.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart';
 
@@ -32,4 +35,27 @@ abstract class EventInputChange extends EventInputChangeBase {
 
   /// Make the change to the input values.
   void perform(StateMachineController controller);
+
+  @override
+  bool import(ImportStack importStack) {
+    var importer = importStack
+        .latest<StateMachineEventImporter>(StateMachineEventBase.typeKey);
+    if (importer == null) {
+      return false;
+    }
+    importer.addInputChange(this);
+
+    var stateMachineImporter =
+        importStack.latest<StateMachineImporter>(StateMachineBase.typeKey);
+    if (stateMachineImporter == null) {
+      return false;
+    }
+    if (inputId >= 0 && inputId < stateMachineImporter.machine.inputs.length) {
+      var found = stateMachineImporter.machine.inputs[inputId];
+      _input = found;
+      inputId = found.id;
+    }
+
+    return super.import(importStack);
+  }
 }
