@@ -255,7 +255,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   Vec2D renderTranslation(Vec2D worldTranslation) {
     final wt = originWorld;
-    return Vec2D.add(Vec2D(), worldTranslation, wt);
+    return worldTranslation + wt;
   }
 
   /// Adds a component to the artboard. Good place for the artboard to check for

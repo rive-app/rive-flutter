@@ -75,8 +75,6 @@ class Bone extends BoneBase {
   Vec2D get tipWorldTranslation => getTipWorldTranslation(worldTransform);
 
   Vec2D getTipWorldTranslation(Mat2D worldTransform) {
-    var tip = Vec2D();
-    Vec2D.transformMat2D(tip, Vec2D.fromValues(length, 0), worldTransform);
-    return tip;
+    return worldTransform.mapXY(length, 0);
   }
 }

@@ -11,9 +11,16 @@ import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
+import 'package:rive/src/rive_core/animation/state_machine_event.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
+import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
+import 'package:rive/src/rive_core/math/aabb.dart';
+import 'package:rive/src/rive_core/math/hit_test.dart';
+import 'package:rive/src/rive_core/math/vec2d.dart';
+import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
+import 'package:rive/src/rive_core/shapes/shape.dart';
 
 /// Callback signature for satate machine state changes
 typedef OnStateChange = void Function(String, String);
@@ -37,7 +44,10 @@ class LayerController {
   /// Takes the state machine name and state name
   final OnLayerStateChange? onLayerStateChange;
 
+  final StateMachineController controller;
+
   LayerController(
+    this.controller,
     this.layer, {
     required this.core,
     this.onLayerStateChange,
@@ -94,10 +104,9 @@ class LayerController {
     }
   }
 
-  bool apply(StateMachineController machineController, CoreContext core,
-      double elapsedSeconds, HashMap<int, dynamic> inputValues) {
+  bool apply(CoreContext core, double elapsedSeconds) {
     if (_currentState != null) {
-      _currentState!.advance(elapsedSeconds, inputValues);
+      _currentState!.advance(elapsedSeconds, controller);
     }
 
     _updateMix(elapsedSeconds);
@@ -106,11 +115,11 @@ class LayerController {
       // This didn't advance during our updateState, but it should now that we
       // realize we need to mix it in.
       if (!_holdAnimationFrom) {
-        _stateFrom!.advance(elapsedSeconds, inputValues);
+        _stateFrom!.advance(elapsedSeconds, controller);
       }
     }
 
-    for (int i = 0; updateState(inputValues, i != 0); i++) {
+    for (int i = 0; updateState(i != 0); i++) {
       _apply(core);
 
       if (i == 100) {
@@ -131,27 +140,27 @@ class LayerController {
   LinearAnimation? _holdAnimation;
   double _holdTime = 0;
 
-  bool updateState(HashMap<int, dynamic> inputValues, bool ignoreTriggers) {
+  bool updateState(bool ignoreTriggers) {
     if (isTransitioning) {
       return false;
     }
     _waitingForExit = false;
-    if (tryChangeState(anyStateInstance, inputValues, ignoreTriggers)) {
+    if (tryChangeState(anyStateInstance, ignoreTriggers)) {
       return true;
     }
 
-    return tryChangeState(_currentState, inputValues, ignoreTriggers);
+    return tryChangeState(_currentState, ignoreTriggers);
   }
 
-  bool tryChangeState(StateInstance? stateFrom,
-      HashMap<int, dynamic> inputValues, bool ignoreTriggers) {
+  bool tryChangeState(StateInstance? stateFrom, bool ignoreTriggers) {
     if (stateFrom == null) {
       return false;
     }
 
     var outState = _currentState;
     for (final transition in stateFrom.state.transitions) {
-      var allowed = transition.allowed(stateFrom, inputValues, ignoreTriggers);
+      var allowed = transition.allowed(
+          stateFrom, controller._inputValues, ignoreTriggers);
       if (allowed == AllowTransition.yes &&
           _changeState(transition.stateTo, transition: transition)) {
         // Take transition
@@ -176,7 +185,7 @@ class LayerController {
         }
         if (outState is AnimationStateInstance) {
           var spilledTime = outState.animationInstance.spilledTime;
-          _currentState?.advance(spilledTime, inputValues);
+          _currentState?.advance(spilledTime, controller);
         }
 
         _mix = 0;
@@ -199,7 +208,7 @@ class LayerController {
 
 class StateMachineController extends RiveAnimationController<CoreContext> {
   final StateMachine stateMachine;
-  final inputValues = HashMap<int, dynamic>();
+  final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
 
   /// Optional callback for state changes
@@ -232,12 +241,15 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         onStateChange?.call(stateMachine.name, stateName);
       });
 
+  late List<_HitShape> hitShapes;
+
   @override
   bool init(CoreContext core) {
     _clearLayerControllers();
 
     for (final layer in stateMachine.layers) {
       layerControllers.add(LayerController(
+        this,
         layer,
         core: core,
         onLayerStateChange: _onStateChange,
@@ -246,6 +258,33 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
     // Make sure triggers are all reset.
     advanceInputs();
+
+    // Initialize all events.
+    HashMap<Shape, _HitShape> hitShapeLookup = HashMap<Shape, _HitShape>();
+    for (final event in stateMachine.events) {
+      // Early out if we know target doesn't exist on the source artboard.
+      if (event.target == null) {
+        continue;
+      }
+      // Resolve target on this artboard instance.
+      var node = core.resolve<Node>(event.targetId);
+      if (node == null) {
+        continue;
+      }
+
+      node.forAll((component) {
+        if (component is Shape) {
+          var hitShape = hitShapeLookup[component];
+          if (hitShape == null) {
+            hitShapeLookup[component] = hitShape = _HitShape(component);
+          }
+          hitShape.events.add(event);
+        }
+        // Keep iterating so we find all shapes.
+        return true;
+      });
+    }
+    hitShapes = hitShapeLookup.values.toList();
 
     return super.init(core);
   }
@@ -257,17 +296,104 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
   }
 
   @protected
-  void advanceInputs() {}
+  void advanceInputs() {
+    for (final input in stateMachine.inputs) {
+      if (input is StateMachineTrigger) {
+        _inputValues[input.id] = false;
+      }
+    }
+  }
+
+  dynamic getInputValue(int id) => _inputValues[id];
+  void setInputValue(int id, dynamic value) {
+    _inputValues[id] = value;
+    isActive = true;
+  }
 
   @override
   void apply(CoreContext core, double elapsedSeconds) {
     bool keepGoing = false;
     for (final layerController in layerControllers) {
-      if (layerController.apply(this, core, elapsedSeconds, inputValues)) {
+      if (layerController.apply(core, elapsedSeconds)) {
         keepGoing = true;
       }
     }
     advanceInputs();
     isActive = keepGoing;
   }
+
+  void _processEvent(Vec2D position, {EventType? hitEvent}) {
+    const hitRadius = 2;
+    var hitArea = IAABB(
+      (position.x - hitRadius).round(),
+      (position.y - hitRadius).round(),
+      (position.x + hitRadius).round(),
+      (position.y + hitRadius).round(),
+    );
+
+    for (final hitShape in hitShapes) {
+      // for (final hitShape in event.shapes) {
+      var shape = hitShape.shape;
+      var bounds = shape.worldBounds;
+
+      // Quick reject
+      bool isOver = false;
+      if (bounds.contains(position)) {
+        // Make hit tester.
+
+        var hitTester = TransformingHitTester(hitArea);
+        shape.fillHitTester(hitTester);
+
+        // TODO: figure out where we get the fill rule. We could get it from
+        // the Shape's first fill or do we want to store it on the event as a
+        // user-selectable value in the inspector?
+
+        // Just use bounds for now
+        isOver = hitTester.test();
+      }
+
+      bool hoverChange = hitShape.isHovered != isOver;
+      hitShape.isHovered = isOver;
+      // iterate all events associated with this hit shape
+      for (final event in hitShape.events) {
+        // Always update hover states regardless of which specific event type
+        // we're trying to trigger.
+        if (hoverChange) {
+          if (isOver && event.eventType == EventType.enter) {
+            event.performChanges(this);
+            isActive = true;
+          } else if (!isOver && event.eventType == EventType.exit) {
+            event.performChanges(this);
+            isActive = true;
+          }
+        }
+        if (isOver && hitEvent == event.eventType) {
+          event.performChanges(this);
+          isActive = true;
+        }
+      }
+    }
+  }
+
+  void pointerMove(Vec2D position) => _processEvent(position);
+
+  void pointerDown(Vec2D position) => _processEvent(
+        position,
+        hitEvent: EventType.down,
+      );
+
+  void pointerUp(Vec2D position) => _processEvent(
+        position,
+        hitEvent: EventType.up,
+      );
+}
+
+/// Representation of a Shape from the Artboard Instance and all the events it
+/// triggers. Allows tracking hover and performing hit detection only once on
+/// shapes that trigger multiple events.
+class _HitShape {
+  Shape shape;
+  bool isHovered = false;
+  List<StateMachineEvent> events = [];
+  _HitShape(this.shape);
 }

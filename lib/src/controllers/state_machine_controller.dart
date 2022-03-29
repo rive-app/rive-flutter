@@ -45,16 +45,11 @@ abstract class SMIInput<T> {
   /// For [SMITrigger] it's usually preferable to use the [SMITrigger.fire]
   /// method to change the input value, but calling change(true) is totally
   /// valid.
-  bool change(T value) {
-    if (controller.inputValues[id] == value) {
-      return false;
-    }
-    controller.inputValues[id] = value;
-    controller.isActive = true;
-    return true;
+  void change(T value) {
+    controller.setInputValue(id, value);
   }
 
-  T get value => controller.inputValues[id] as T;
+  T get value => controller.getInputValue(id) as T;
   set value(T newValue) => change(newValue);
 
   bool _is<K>() {
@@ -72,7 +67,7 @@ class SMIBool extends SMIInput<bool> {
           SMIType.boolean,
           controller,
         ) {
-    controller.inputValues[id] = input.value;
+    controller.setInputValue(id, input.value);
   }
 }
 
@@ -86,7 +81,7 @@ class SMINumber extends SMIInput<double> {
           SMIType.number,
           controller,
         ) {
-    controller.inputValues[id] = input.value;
+    controller.setInputValue(id, input.value);
   }
 }
 
@@ -100,7 +95,7 @@ class SMITrigger extends SMIInput<bool> {
           SMIType.trigger,
           controller,
         ) {
-    controller.inputValues[id] = false;
+    controller.setInputValue(id, false);
   }
 
   void fire() => change(true);

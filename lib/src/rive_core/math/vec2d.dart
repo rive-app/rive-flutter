@@ -1,130 +1,141 @@
-import 'dart:math';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/utilities/utilities.dart';
 
 class Vec2D {
-  final Float32List _buffer;
+  double x, y;
 
-  Float32List get values {
-    return _buffer;
+  Vec2D()
+      : x = 0,
+        y = 0;
+
+  Vec2D.clone(Vec2D copy)
+      : x = copy.x,
+        y = copy.y;
+
+  Vec2D.fromValues(double ox, double oy)
+      : x = ox,
+        y = oy;
+
+  double at(int index) {
+    if (index == 0) {
+      return x;
+    }
+    if (index == 1) {
+      return y;
+    }
+    throw RangeError('index out of range');
   }
 
-  double operator [](int index) {
-    return _buffer[index];
+  void setAt(int index, double value) {
+    if (index == 0) {
+      x = value;
+    } else if (index == 1) {
+      y = value;
+    } else {
+      throw RangeError('index out of range');
+    }
   }
 
-  void operator []=(int index, double value) {
-    _buffer[index] = value;
+  double length() => math.sqrt(x * x + y * y);
+
+  double squaredLength() => x * x + y * y;
+
+  double atan2() => math.atan2(y, x);
+
+  Vec2D operator +(Vec2D v) {
+    return Vec2D.fromValues(x + v.x, y + v.y);
   }
 
-  Vec2D() : _buffer = Float32List.fromList([0.0, 0.0]);
+  Vec2D operator -(Vec2D v) {
+    return Vec2D.fromValues(x - v.x, y - v.y);
+  }
 
-  Vec2D.clone(Vec2D copy) : _buffer = Float32List.fromList(copy._buffer);
-
-  Vec2D.fromValues(double x, double y) : _buffer = Float32List.fromList([x, y]);
+  void apply(Mat2D m) {
+    final newX = x * m[0] + y * m[2] + m[4];
+    final newY = x * m[1] + y * m[3] + m[5];
+    x = newX;
+    y = newY;
+  }
 
   static void copy(Vec2D o, Vec2D a) {
-    o[0] = a[0];
-    o[1] = a[1];
+    o.x = a.x;
+    o.y = a.y;
   }
 
   static void copyFromList(Vec2D o, Float32List a) {
-    o[0] = a[0];
-    o[1] = a[1];
+    o.x = a[0];
+    o.y = a[1];
   }
 
   static Vec2D transformMat2D(Vec2D o, Vec2D a, Mat2D m) {
-    double x = a[0];
-    double y = a[1];
-    o[0] = m[0] * x + m[2] * y + m[4];
-    o[1] = m[1] * x + m[3] * y + m[5];
+    final x = a.x;
+    final y = a.y;
+    o.x = m[0] * x + m[2] * y + m[4];
+    o.y = m[1] * x + m[3] * y + m[5];
     return o;
   }
 
   static Vec2D transformMat2(Vec2D o, Vec2D a, Mat2D m) {
-    double x = a[0];
-    double y = a[1];
-    o[0] = m[0] * x + m[2] * y;
-    o[1] = m[1] * x + m[3] * y;
-    return o;
-  }
-
-  static Vec2D subtract(Vec2D o, Vec2D a, Vec2D b) {
-    o[0] = a[0] - b[0];
-    o[1] = a[1] - b[1];
-    return o;
-  }
-
-  static Vec2D add(Vec2D o, Vec2D a, Vec2D b) {
-    o[0] = a[0] + b[0];
-    o[1] = a[1] + b[1];
+    final x = a.x;
+    final y = a.y;
+    o.x = m[0] * x + m[2] * y;
+    o.y = m[1] * x + m[3] * y;
     return o;
   }
 
   static Vec2D scale(Vec2D o, Vec2D a, double scale) {
-    o[0] = a[0] * scale;
-    o[1] = a[1] * scale;
+    o.x = a.x * scale;
+    o.y = a.y * scale;
     return o;
   }
 
   static Vec2D lerp(Vec2D o, Vec2D a, Vec2D b, double f) {
-    double ax = a[0];
-    double ay = a[1];
-    o[0] = ax + f * (b[0] - ax);
-    o[1] = ay + f * (b[1] - ay);
+    double ax = a.x;
+    double ay = a.y;
+    o.x = ax + f * (b.x - ax);
+    o.y = ay + f * (b.y - ay);
     return o;
   }
 
-  static double length(Vec2D a) {
-    double x = a[0];
-    double y = a[1];
-    return sqrt(x * x + y * y);
-  }
-
-  static double squaredLength(Vec2D a) {
-    double x = a[0];
-    double y = a[1];
-    return x * x + y * y;
-  }
-
   static double distance(Vec2D a, Vec2D b) {
-    double x = b[0] - a[0];
-    double y = b[1] - a[1];
-    return sqrt(x * x + y * y);
+    double x = b.x - a.x;
+    double y = b.y - a.y;
+    return math.sqrt(x * x + y * y);
   }
 
   static double squaredDistance(Vec2D a, Vec2D b) {
-    double x = b[0] - a[0];
-    double y = b[1] - a[1];
+    double x = b.x - a.x;
+    double y = b.y - a.y;
     return x * x + y * y;
   }
 
   static Vec2D negate(Vec2D result, Vec2D a) {
-    result[0] = -1 * a[0];
-    result[1] = -1 * a[1];
+    result.x = -1 * a.x;
+    result.y = -1 * a.y;
 
     return result;
   }
 
   static void normalize(Vec2D result, Vec2D a) {
-    double x = a[0];
-    double y = a[1];
+    double x = a.x;
+    double y = a.y;
     double len = x * x + y * y;
     if (len > 0.0) {
-      len = 1.0 / sqrt(len);
-      result[0] = a[0] * len;
-      result[1] = a[1] * len;
+      len = 1.0 / math.sqrt(len);
+      result.x = a.x * len;
+      result.y = a.y * len;
     }
   }
 
   static double dot(Vec2D a, Vec2D b) {
-    return a[0] * b[0] + a[1] * b[1];
+    return a.x * b.x + a.y * b.y;
   }
 
   static Vec2D scaleAndAdd(Vec2D result, Vec2D a, Vec2D b, double scale) {
-    result[0] = a[0] + b[0] * scale;
-    result[1] = a[1] + b[1] * scale;
+    result.x = a.x + b.x * scale;
+    result.y = a.y + b.y * scale;
     return result;
   }
 
@@ -133,9 +144,8 @@ class Vec2D {
     if (l2 == 0) {
       return 0;
     }
-    return ((pt[0] - segmentPoint1[0]) * (segmentPoint2[0] - segmentPoint1[0]) +
-            (pt[1] - segmentPoint1[1]) *
-                (segmentPoint2[1] - segmentPoint1[1])) /
+    return ((pt.x - segmentPoint1.x) * (segmentPoint2.x - segmentPoint1.x) +
+            (pt.y - segmentPoint1.y) * (segmentPoint2.y - segmentPoint1.y)) /
         l2;
   }
 
@@ -150,30 +160,30 @@ class Vec2D {
     }
 
     Vec2D ptOnSeg = Vec2D.fromValues(
-      segmentPoint1[0] + t * (segmentPoint2[0] - segmentPoint1[0]),
-      segmentPoint1[1] + t * (segmentPoint2[1] - segmentPoint1[1]),
+      segmentPoint1.x + t * (segmentPoint2.x - segmentPoint1.x),
+      segmentPoint1.y + t * (segmentPoint2.y - segmentPoint1.y),
     );
 
     return Vec2D.squaredDistance(ptOnSeg, pt);
   }
 
   static bool approximatelyEqual(Vec2D a, Vec2D b, {double threshold = 0.001}) {
-    var a0 = a[0], a1 = a[1];
-    var b0 = b[0], b1 = b[1];
-    return (a0 - b0).abs() <= threshold * max(1.0, max(a0.abs(), b0.abs())) &&
-        (a1 - b1).abs() <= threshold * max(1.0, max(a1.abs(), b1.abs()));
+    var a0 = a.x, a1 = a.y;
+    var b0 = b.x, b1 = b.y;
+    return (a0 - b0).abs() <=
+            threshold * math.max(1.0, math.max(a0.abs(), b0.abs())) &&
+        (a1 - b1).abs() <=
+            threshold * math.max(1.0, math.max(a1.abs(), b1.abs()));
   }
 
   @override
   String toString() {
-    String v = _buffer[0].toString() + ', ';
-    return v + _buffer[1].toString();
+    return '$x, $y';
   }
 
   @override
-  bool operator ==(Object o) =>
-      o is Vec2D && _buffer[0] == o[0] && _buffer[1] == o[1];
+  bool operator ==(Object o) => o is Vec2D && x == o.x && y == o.y;
 
   @override
-  int get hashCode => szudzik(_buffer[0].hashCode, _buffer[1].hashCode);
+  int get hashCode => szudzik(x.hashCode, y.hashCode);
 }

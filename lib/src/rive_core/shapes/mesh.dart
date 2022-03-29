@@ -21,6 +21,7 @@ class Mesh extends MeshBase with Skinnable<MeshVertex> {
   // be in world space.
 
   final List<MeshVertex> _vertices = [];
+
   List<MeshVertex> get vertices => _vertices;
 
   ui.Vertices? _uiVertices;
@@ -101,7 +102,7 @@ class Mesh extends MeshBase with Skinnable<MeshVertex> {
       for (final vertex in _vertices) {
         var point = vertex.renderTranslation;
 
-        vertices.add(ui.Offset(point[0], point[1]));
+        vertices.add(ui.Offset(point.x, point.y));
         bounds.expandToPoint(point);
         uv.add(ui.Offset(vertex.u, vertex.v));
       }
@@ -143,14 +144,6 @@ class Mesh extends MeshBase with Skinnable<MeshVertex> {
 
   @override
   void markSkinDirty() => addDirt(ComponentDirt.vertices);
-
-  @override
-  bool addDirt(int value, {bool recurse = false}) {
-    if (value == ComponentDirt.vertices) {
-      // throw 'why';
-    }
-    return super.addDirt(value, recurse: recurse);
-  }
 
   Mat2D get worldTransform =>
       skin != null ? Mat2D.identity : transformComponent.worldTransform;

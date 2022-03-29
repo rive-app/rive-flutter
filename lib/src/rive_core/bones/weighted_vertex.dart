@@ -137,6 +137,8 @@ abstract class WeightedVertex {
 
   int _getRawWeight(int weightIndex) => (weights >> (weightIndex * 8)) & 0xFF;
 
+  double getWeightAtIndex(int weightIndex) => _getRawWeight(weightIndex) / 255;
+
   double getWeight(int tendonIndex) {
     for (int i = 0; i < 4; i++) {
       if (getTendon(i) == tendonIndex + 1) {

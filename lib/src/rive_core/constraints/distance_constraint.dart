@@ -20,8 +20,8 @@ class DistanceConstraint extends DistanceConstraintBase {
     var targetTranslation = target!.worldTranslation;
     var ourTranslation = component.worldTranslation;
 
-    var toTarget = Vec2D.subtract(Vec2D(), ourTranslation, targetTranslation);
-    var currentDistance = Vec2D.length(toTarget);
+    var toTarget = ourTranslation - targetTranslation;
+    var currentDistance = toTarget.length();
     switch (mode) {
       case DistanceConstraintMode.closer:
         if (currentDistance < distance) {
@@ -45,10 +45,10 @@ class DistanceConstraint extends DistanceConstraintBase {
 
     var world = component.worldTransform;
 
-    var position = Vec2D.add(Vec2D(), targetTranslation, toTarget);
+    var position = targetTranslation + toTarget;
     Vec2D.lerp(position, ourTranslation, position, strength);
-    world[4] = position[0];
-    world[5] = position[1];
+    world[4] = position.x;
+    world[5] = position.y;
   }
 
   @override
