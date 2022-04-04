@@ -32,6 +32,8 @@ import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 
+import 'core/core.dart';
+
 Core<CoreContext>? _readRuntimeObject(
     BinaryReader reader, HashMap<int, CoreFieldType> propertyToField) {
   int coreObjectKey = reader.readVarUint();
@@ -278,6 +280,11 @@ class RiveFile {
   static Future<RiveFile> file(String path) async {
     final bytes = await localFileBytes(path);
     return RiveFile.import(ByteData.view(bytes!.buffer));
+  }
+
+  /// Imports a Rive file from memory
+  static Future<RiveFile> memory(Uint8List bytes) async {
+    return RiveFile.import(ByteData.view(bytes.buffer));
   }
 
   /// Returns all artboards in the file
