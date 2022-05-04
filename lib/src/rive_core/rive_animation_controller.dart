@@ -6,6 +6,14 @@ abstract class RiveAnimationController<T> {
   final _isActive = ValueNotifier<bool>(false);
   ValueListenable<bool> get isActiveChanged => _isActive;
 
+  // TODO: this is a hack.
+  // Ideally nestedArtboards are not run in the Artboard.advance, but instead
+  // always controlled by AnimationControllers.
+  // SimpleAnimationControllers kinda throw a spanner in the works here.
+  // unless we do some magic that means multiple simple animation controllers
+  // won't all compete for advancing the nested artboard....
+  final suppressesNestedArtboards = false;
+
   bool get isActive => _isActive.value;
   set isActive(bool value) {
     if (_isActive.value != value) {

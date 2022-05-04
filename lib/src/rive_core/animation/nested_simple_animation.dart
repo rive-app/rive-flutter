@@ -29,4 +29,12 @@ class NestedSimpleAnimation extends NestedSimpleAnimationBase {
     }
     super.advance(elapsedSeconds, mountedArtboard);
   }
+
+  void goTo(double time, MountedArtboard mountedArtboard) {
+    if (isPlaying) {
+      linearAnimationInstance?.goto(time);
+      linearAnimationInstance?.apply(mountedArtboard, mix);
+      linearAnimationInstance?.needsApply = false;
+    }
+  }
 }

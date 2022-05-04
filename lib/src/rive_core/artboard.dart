@@ -153,21 +153,30 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   final Set<NestedArtboard> _activeNestedArtboards = {};
+  Set<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   /// Update any dirty components in this artboard.
   bool advance(double elapsedSeconds, {bool nested = false}) {
     bool didUpdate = false;
+    bool handleNestedArtboards = true;
+
     for (final controller in _animationControllers) {
+      if (controller.suppressesNestedArtboards) {
+        handleNestedArtboards = false;
+      }
       if (controller.isActive) {
         controller.apply(context, elapsedSeconds);
         didUpdate = true;
       }
     }
+    // NOTE: i think this works out if the nested artboard should still be
+    // animating...
     if (updateComponents() || didUpdate) {
       didUpdate = true;
     }
 
-    if (nested) {
+    // TODO: talk about this.
+    if (nested && handleNestedArtboards) {
       var active = _activeNestedArtboards.toList(growable: false);
       for (final activeNestedArtboard in active) {
         activeNestedArtboard.advance(elapsedSeconds);

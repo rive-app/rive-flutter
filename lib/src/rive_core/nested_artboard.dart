@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/rive_core/animation/nested_remap_animation.dart';
@@ -46,7 +47,6 @@ class NestedArtboard extends NestedArtboardBase {
   @override
   void artboardIdChanged(int from, int to) {}
 
-
   @override
   void childAdded(Component child) {
     super.childAdded(child);
@@ -86,6 +86,22 @@ class NestedArtboard extends NestedArtboardBase {
       }
     }
     mountedArtboard!.advance(elapsedSeconds);
+  }
+
+  void goTo(double seconds) {
+    if (mountedArtboard == null) {
+      return;
+    }
+    for (final animation in _animations) {
+      if (animation.isEnabled) {
+        if (animation is NestedSimpleAnimation) {
+          animation.goTo(seconds, mountedArtboard!);
+        }
+      }
+    }
+    // Gotta advance the artboard to make it dirty?
+    // (if we skip this no redraw)
+    mountedArtboard!.advance(0.0);
   }
 
   @override
