@@ -39,7 +39,6 @@ class Image extends ImageBase
   void draw(ui.Canvas canvas) {
     final uiImage = asset?.image;
     if (uiImage == null) {
-      print('No image yet?! ${asset?.name} $uiImage');
       return;
     }
     bool clipped = clip(canvas);
