@@ -9,22 +9,17 @@ class StateMachineAction extends StatefulWidget {
 }
 
 class _StateMachineActionState extends State<StateMachineAction> {
-  void _onRiveInit(Artboard artboard) {
-    final controller = StateMachineController.fromArtboard(artboard, 'Switch');
-    artboard.addController(controller!);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Light Switch'),
       ),
-      body: Center(
+      body: const Center(
         child: RiveAnimation.asset(
           'assets/light_switch.riv',
           fit: BoxFit.contain,
-          onInit: _onRiveInit,
+          stateMachines: ['Switch'],
         ),
       ),
     );
