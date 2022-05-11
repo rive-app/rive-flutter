@@ -194,30 +194,25 @@ abstract class RiveRenderBox extends RenderBox {
   /// be called after advancing. Return true to prevent regular paint.
   bool customPaint(PaintingContext context, Offset offset) => false;
 
-  @protected
-  @override
-  void paint(PaintingContext context, Offset offset) {
-    _frameCallbackId = -1;
-    if (advance(_elapsedSeconds)) {
-      scheduleRepaint();
-    } else {
-      _stopwatch.stop();
+  Vec2D globalToArtboard(Offset globalPosition) {
+    var local = globalToLocal(globalPosition);
+    var alignArtboard = computeAlignment();
+    var localToArtboard = Mat2D();
+    var localAsVec = Vec2D.fromValues(local.dx, local.dy);
+    if (!Mat2D.invert(localToArtboard, alignArtboard)) {
+      return localAsVec;
     }
-    _elapsedSeconds = 0;
+    return Vec2D.transformMat2D(Vec2D(), localAsVec, localToArtboard);
+  }
 
-    if (customPaint(context, offset)) {
-      return;
-    }
-
-    final Canvas canvas = context.canvas;
-
+  Mat2D computeAlignment([Offset offset = Offset.zero]) {
     AABB bounds = aabb;
 
     double contentWidth = bounds[2] - bounds[0];
     double contentHeight = bounds[3] - bounds[1];
 
     if (contentWidth == 0 || contentHeight == 0) {
-      return;
+      return Mat2D();
     }
 
     double x = -1 * bounds[0] -
@@ -228,9 +223,6 @@ abstract class RiveRenderBox extends RenderBox {
         (_alignment.y * contentHeight / 2.0);
 
     double scaleX = 1.0, scaleY = 1.0;
-
-    canvas.save();
-    beforeDraw(canvas, offset);
 
     switch (_fit) {
       case BoxFit.fill:
@@ -278,14 +270,30 @@ abstract class RiveRenderBox extends RenderBox {
     center[4] = x;
     center[5] = y;
     Mat2D.multiply(transform, transform, center);
+    return transform;
+  }
 
-    canvas.translate(
-      offset.dx + size.width / 2.0 + (_alignment.x * size.width / 2.0),
-      offset.dy + size.height / 2.0 + (_alignment.y * size.height / 2.0),
-    );
+  @protected
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    _frameCallbackId = -1;
+    if (advance(_elapsedSeconds)) {
+      scheduleRepaint();
+    } else {
+      _stopwatch.stop();
+    }
+    _elapsedSeconds = 0;
 
-    canvas.scale(scaleX, scaleY);
-    canvas.translate(x, y);
+    if (customPaint(context, offset)) {
+      return;
+    }
+
+    final Canvas canvas = context.canvas;
+
+    canvas.save();
+    beforeDraw(canvas, offset);
+
+    var transform = computeAlignment(offset);
 
     draw(canvas, transform);
 

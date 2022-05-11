@@ -112,6 +112,7 @@ class RiveRenderObject extends RiveRenderBox {
 
   @override
   void draw(Canvas canvas, Mat2D viewTransform) {
+    canvas.transform(viewTransform.mat4);
     artboard.draw(canvas);
   }
 }

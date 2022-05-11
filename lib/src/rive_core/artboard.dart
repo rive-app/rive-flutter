@@ -360,6 +360,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// advances.
   final Set<RiveAnimationController> _animationControllers = {};
 
+  /// Access a read-only iterator of currently applied animation controllers.
+  Iterable<RiveAnimationController> get animationControllers =>
+      _animationControllers;
+
   /// Add an animation controller to this artboard. Playing will be scheduled if
   /// it's already playing.
   bool addController(RiveAnimationController controller) {

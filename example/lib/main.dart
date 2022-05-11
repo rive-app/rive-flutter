@@ -6,6 +6,7 @@ import 'package:rive_example/little_machine.dart';
 import 'package:rive_example/play_one_shot_animation.dart';
 import 'package:rive_example/play_pause_animation.dart';
 import 'package:rive_example/simple_animation.dart';
+import 'package:rive_example/simple_machine_action.dart';
 import 'package:rive_example/simple_state_machine.dart';
 import 'package:rive_example/state_machine_skills.dart';
 
@@ -144,6 +145,20 @@ class Home extends StatelessWidget {
                   context,
                   MaterialPageRoute<void>(
                     builder: (context) => const SimpleStateMachine(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              child: const Text('State Machine with Action'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (context) => const StateMachineAction(),
                   ),
                 );
               },
