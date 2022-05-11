@@ -15,8 +15,8 @@ abstract class Vertex<T extends Weight> extends VertexBase {
   Vec2D get renderTranslation => weight?.translation ?? translation;
 
   set translation(Vec2D value) {
-    x = value[0];
-    y = value[1];
+    x = value.x;
+    y = value.y;
   }
 
   @override

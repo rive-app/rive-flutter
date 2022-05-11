@@ -46,6 +46,12 @@ class PathComposer extends Component {
                       .mat4);
         }
       }
+
+      // If the world path doesn't get built, we should mark the bounds dirty
+      // here.
+      if (!buildWorldPath) {
+        shape.markBoundsDirty();
+      }
     }
     if (buildWorldPath) {
       worldPath.reset();
@@ -56,6 +62,7 @@ class PathComposer extends Component {
         worldPath.addPath(path.uiPath, ui.Offset.zero,
             matrix4: path.pathTransform.mat4);
       }
+      shape.markBoundsDirty();
     }
     _fillPath = shape.fillInWorld ? worldPath : localPath;
   }

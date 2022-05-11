@@ -17,8 +17,20 @@ abstract class FileAsset extends FileAssetBase {
     if (backboardImporter == null) {
       return false;
     }
-    backboardImporter.addFileAsset(this);
 
+    // When we paste a FileAssetReference (e.g an Image) into a file, we want to
+    // prevent the asset being readded if there is already a copy of it in the
+    // file. We check if an asset with the same assetId  already exists, and if
+    // so add it to the backboard importer, any fileAssetReferences will map
+    // to the existing asset instead.
+    for (final object in backboardImporter.backboard.assets) {
+      if (object is FileAsset && object.assetId == assetId) {
+        backboardImporter.addFileAsset(object);
+        return false;
+      }
+    }
+
+    backboardImporter.addFileAsset(this);
     return super.import(stack);
   }
 

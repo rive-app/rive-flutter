@@ -17,9 +17,14 @@ class ImageAsset extends ImageAssetBase {
   @visibleForTesting
   ImageAsset.fromTestImage(this._image);
 
+  @visibleForTesting
+  set image(ui.Image? image) {
+    _image = image;
+  }
+
   @override
   Future<void> decode(Uint8List bytes) {
-    var completer = Completer<void>();
+    final completer = Completer<void>();
     ui.decodeImageFromList(bytes, (value) {
       _image = value;
       completer.complete();

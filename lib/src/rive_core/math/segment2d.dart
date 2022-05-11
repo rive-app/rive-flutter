@@ -33,8 +33,8 @@ class Segment2D {
     // We cache these internally so we can call projectPoint multiple times in
     // succession performantly.
     if (_diff == null) {
-      _diff = Vec2D.subtract(Vec2D(), start, end);
-      lengthSquared = Vec2D.squaredLength(_diff!);
+      _diff = start - end;
+      lengthSquared = _diff!.squaredLength();
     }
   }
 
@@ -49,8 +49,8 @@ class Segment2D {
     if (lengthSquared == 0) {
       return ProjectionResult(0, start);
     }
-    double t = ((point[0] - start[0]) * (end[0] - start[0]) +
-            (point[1] - start[1]) * (end[1] - start[1])) /
+    double t = ((point.x - start.x) * (end.x - start.x) +
+            (point.y - start.y) * (end.y - start.y)) /
         lengthSquared;
 
     if (clamp) {
@@ -66,8 +66,8 @@ class Segment2D {
     return ProjectionResult(
       t,
       Vec2D.fromValues(
-        start[0] + t * (end[0] - start[0]),
-        start[1] + t * (end[1] - start[1]),
+        start.x + t * (end.x - start.x),
+        start.y + t * (end.y - start.y),
       ),
     );
   }

@@ -101,10 +101,10 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
         // Get the start and end of the gradient in world coordinates (world
         // transform of the shape).
         var world = shapePaintContainer!.worldTransform;
-        var worldStart = Vec2D.transformMat2D(Vec2D(), start, world);
-        var worldEnd = Vec2D.transformMat2D(Vec2D(), end, world);
-        paint.shader = makeGradient(ui.Offset(worldStart[0], worldStart[1]),
-            ui.Offset(worldEnd[0], worldEnd[1]), colors, colorPositions);
+        var worldStart = world * start;
+        var worldEnd = world * end;
+        paint.shader = makeGradient(ui.Offset(worldStart.x, worldStart.y),
+            ui.Offset(worldEnd.x, worldEnd.y), colors, colorPositions);
       } else {
         paint.shader =
             makeGradient(startOffset, endOffset, colors, colorPositions);

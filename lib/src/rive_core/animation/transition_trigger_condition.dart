@@ -18,11 +18,6 @@ class TransitionTriggerCondition extends TransitionTriggerConditionBase {
     if (providedValue is bool && providedValue) {
       return true;
     }
-
-    var triggerInput = input as StateMachineTrigger;
-    if (triggerInput.triggered) {
-      return true;
-    }
     return false;
   }
 }

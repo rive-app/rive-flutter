@@ -76,8 +76,8 @@ abstract class TransformComponent extends TransformComponentBase {
 
   Vec2D get scale => Vec2D.fromValues(scaleX, scaleY);
   set scale(Vec2D value) {
-    scaleX = value[0];
-    scaleY = value[1];
+    scaleX = value.x;
+    scaleY = value.y;
   }
 
   @mustCallSuper

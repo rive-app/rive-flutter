@@ -3,6 +3,9 @@ import 'dart:ui' as ui;
 import 'package:collection/collection.dart';
 import 'package:rive/src/generated/shapes/shape_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/math/aabb.dart';
+import 'package:rive/src/rive_core/math/hit_test.dart';
+import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart' as core;
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
@@ -28,6 +31,22 @@ class Shape extends ShapeBase with ShapePaintContainer {
   }
 
   ui.Path get fillPath => pathComposer.fillPath;
+
+  // Build the bounds on demand, more efficient than re-computing whenever they
+  // change as bounds rarely have bearing at runtime (they will in some cases
+  // with constraints eventually).
+  AABB? _worldBounds;
+  AABB? _localBounds;
+
+  AABB get worldBounds => _worldBounds ??= computeWorldBounds();
+
+  AABB get localBounds => _localBounds ??= computeLocalBounds();
+
+  /// Let the shape know that any further call to get world/local bounds will
+  /// need to rebuild the cached bounds.
+  void markBoundsDirty() {
+    _worldBounds = _localBounds = null;
+  }
 
   bool addPath(Path path) {
     paintChanged();
@@ -157,6 +176,59 @@ class Shape extends ShapeBase with ShapePaintContainer {
     return paths.remove(path);
   }
 
+  AABB computeWorldBounds() {
+    var boundsPaths = paths.where((path) => path.hasBounds);
+    if (boundsPaths.isEmpty) {
+      return AABB.fromMinMax(worldTranslation, worldTranslation);
+    }
+    var path = boundsPaths.first;
+    AABB worldBounds = path.preciseComputeBounds(transform: path.pathTransform);
+    for (final path in boundsPaths.skip(1)) {
+      AABB.combine(worldBounds, worldBounds,
+          path.preciseComputeBounds(transform: path.pathTransform));
+    }
+    return worldBounds;
+  }
+
+  AABB computeBounds(Mat2D relativeTo) {
+    var boundsPaths = paths.where((path) => path.hasBounds);
+    if (boundsPaths.isEmpty) {
+      return AABB();
+    }
+    var path = boundsPaths.first;
+
+    AABB localBounds = path.preciseComputeBounds(
+      transform: Mat2D.multiply(
+        Mat2D(),
+        relativeTo,
+        path.pathTransform,
+      ),
+    );
+
+    for (final path in paths.skip(1)) {
+      AABB.combine(
+        localBounds,
+        localBounds,
+        path.preciseComputeBounds(
+          transform: Mat2D.multiply(
+            Mat2D(),
+            relativeTo,
+            path.pathTransform,
+          ),
+        ),
+      );
+    }
+    return localBounds;
+  }
+
+  AABB computeLocalBounds() {
+    var toTransform = Mat2D();
+    if (!Mat2D.invert(toTransform, worldTransform)) {
+      Mat2D.setIdentity(toTransform);
+    }
+    return computeBounds(toTransform);
+  }
+
   @override
   void blendModeValueChanged(int from, int to) => _markBlendModeDirty();
 
@@ -224,5 +296,14 @@ class Shape extends ShapeBase with ShapePaintContainer {
   void buildDependencies() {
     super.buildDependencies();
     pathComposer.buildDependencies();
+  }
+
+  /// Prep the [hitTester] for checking collision with the paths inside this
+  /// shape.
+  void fillHitTester(TransformingHitTester hitTester) {
+    for (final path in paths) {
+      hitTester.transform = path.pathTransform;
+      path.buildPath(hitTester);
+    }
   }
 }

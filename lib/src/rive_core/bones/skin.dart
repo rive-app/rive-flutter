@@ -23,7 +23,9 @@ class Skin extends SkinBase {
   void onDirty(int mask) {
     // When the skin is dirty the deformed skinnable will need to regenerate its
     // drawing commands.
-    (parent as Skinnable).markSkinDirty();
+    if (parent is Skinnable) {
+      (parent as Skinnable).markSkinDirty();
+    }
   }
 
   @override

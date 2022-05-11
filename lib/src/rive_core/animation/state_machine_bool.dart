@@ -7,7 +7,4 @@ class StateMachineBool extends StateMachineBoolBase {
 
   @override
   bool isValidType<T>() => T == bool;
-
-  @override
-  dynamic get controllerValue => value;
 }
