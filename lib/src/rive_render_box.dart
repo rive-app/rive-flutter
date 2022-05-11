@@ -206,19 +206,21 @@ abstract class RiveRenderBox extends RenderBox {
   }
 
   Mat2D computeAlignment([Offset offset = Offset.zero]) {
-    AABB bounds = aabb;
+    AABB frame = AABB.fromValues(
+        offset.dx, offset.dy, offset.dx + size.width, offset.dy + size.height);
+    AABB content = aabb;
 
-    double contentWidth = bounds[2] - bounds[0];
-    double contentHeight = bounds[3] - bounds[1];
+    double contentWidth = content[2] - content[0];
+    double contentHeight = content[3] - content[1];
 
     if (contentWidth == 0 || contentHeight == 0) {
       return Mat2D();
     }
 
-    double x = -1 * bounds[0] -
+    double x = -1 * content[0] -
         contentWidth / 2.0 -
         (_alignment.x * contentWidth / 2.0);
-    double y = -1 * bounds[1] -
+    double y = -1 * content[1] -
         contentHeight / 2.0 -
         (_alignment.y * contentHeight / 2.0);
 
@@ -226,25 +228,25 @@ abstract class RiveRenderBox extends RenderBox {
 
     switch (_fit) {
       case BoxFit.fill:
-        scaleX = size.width / contentWidth;
-        scaleY = size.height / contentHeight;
+        scaleX = frame.width / contentWidth;
+        scaleY = frame.height / contentHeight;
         break;
       case BoxFit.contain:
         double minScale =
-            min(size.width / contentWidth, size.height / contentHeight);
+            min(frame.width / contentWidth, frame.height / contentHeight);
         scaleX = scaleY = minScale;
         break;
       case BoxFit.cover:
         double maxScale =
-            max(size.width / contentWidth, size.height / contentHeight);
+            max(frame.width / contentWidth, frame.height / contentHeight);
         scaleX = scaleY = maxScale;
         break;
       case BoxFit.fitHeight:
-        double minScale = size.height / contentHeight;
+        double minScale = frame.height / contentHeight;
         scaleX = scaleY = minScale;
         break;
       case BoxFit.fitWidth:
-        double minScale = size.width / contentWidth;
+        double minScale = frame.width / contentWidth;
         scaleX = scaleY = minScale;
         break;
       case BoxFit.none:
@@ -252,15 +254,15 @@ abstract class RiveRenderBox extends RenderBox {
         break;
       case BoxFit.scaleDown:
         double minScale =
-            min(size.width / contentWidth, size.height / contentHeight);
+            min(frame.width / contentWidth, frame.height / contentHeight);
         scaleX = scaleY = minScale < 1.0 ? minScale : 1.0;
         break;
     }
 
     Mat2D transform = Mat2D();
 
-    transform[4] = size.width / 2.0 + (_alignment.x * size.width / 2.0);
-    transform[5] = size.height / 2.0 + (_alignment.y * size.height / 2.0);
+    transform[4] = frame.width / 2.0 + (_alignment.x * frame.width / 2.0);
+    transform[5] = frame.height / 2.0 + (_alignment.y * frame.height / 2.0);
     if (offsetViewTransform) {
       transform[4] += offset.dx;
       transform[5] += offset.dy;
