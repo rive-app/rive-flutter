@@ -1,10 +1,9 @@
-import 'dart:collection';
-
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/blend_animation.dart';
 import 'package:rive/src/rive_core/animation/blend_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart';
 
 /// Individual animation in a blend state instance.
 class BlendStateAnimationInstance<T extends BlendAnimation> {
@@ -34,7 +33,7 @@ abstract class BlendStateInstance<T extends BlendState<K>,
 
   @mustCallSuper
   @override
-  void advance(double seconds, HashMap<int, dynamic> inputValues) {
+  void advance(double seconds, StateMachineController controller) {
     _keepGoing = false;
     // Advance all the animations in the blend state
     for (final animation in animationInstances) {

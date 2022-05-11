@@ -18,11 +18,9 @@ class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
 
   @override
   Vec2D get outPoint {
-    return _outPoint ??= Vec2D.add(
-        Vec2D(),
-        translation,
-        Vec2D.fromValues(
-            cos(rotation) * outDistance, sin(rotation) * outDistance));
+    return _outPoint ??= Vec2D.fromValues(
+        translation.x + cos(rotation) * outDistance,
+        translation.y + sin(rotation) * outDistance);
   }
 
   @override
@@ -32,11 +30,9 @@ class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
 
   @override
   Vec2D get inPoint {
-    return _inPoint ??= Vec2D.add(
-        Vec2D(),
-        translation,
-        Vec2D.fromValues(
-            cos(rotation) * -inDistance, sin(rotation) * -inDistance));
+    return _inPoint ??= Vec2D.fromValues(
+        translation.x + cos(rotation) * -inDistance,
+        translation.y + sin(rotation) * -inDistance);
   }
 
   @override
@@ -46,8 +42,7 @@ class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
 
   @override
   String toString() {
-    return 'in ${inPoint[0]}, ${inPoint[1]} | ${translation.toString()} '
-        '| out ${outPoint[0]}, ${outPoint[1]}';
+    return 'in $inPoint | $translation | out $outPoint';
   }
 
   @override

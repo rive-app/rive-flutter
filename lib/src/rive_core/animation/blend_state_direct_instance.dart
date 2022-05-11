@@ -1,8 +1,7 @@
-import 'dart:collection';
-
 import 'package:rive/src/rive_core/animation/blend_animation_direct.dart';
 import 'package:rive/src/rive_core/animation/blend_state_direct.dart';
 import 'package:rive/src/rive_core/animation/blend_state_instance.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart';
 
 /// [BlendStateDirect] mixing logic that runs inside the [StateMachine].
 class BlendStateDirectInstance
@@ -10,10 +9,11 @@ class BlendStateDirectInstance
   BlendStateDirectInstance(BlendStateDirect state) : super(state);
 
   @override
-  void advance(double seconds, HashMap<int, dynamic> inputValues) {
-    super.advance(seconds, inputValues);
+  void advance(double seconds, StateMachineController controller) {
+    super.advance(seconds, controller);
     for (final animation in animationInstances) {
-      dynamic inputValue = inputValues[animation.blendAnimation.inputId];
+      dynamic inputValue =
+          controller.getInputValue(animation.blendAnimation.inputId);
       var value = (inputValue is double
               ? inputValue
               : animation.blendAnimation.input?.value) ??

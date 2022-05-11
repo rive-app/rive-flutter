@@ -1,7 +1,6 @@
-import 'dart:collection';
-
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart';
 
 /// Represents the instance of a [LayerState] which is being used in a
 /// [LayerController] of a [StateMachineController]. Abstract representation of
@@ -12,7 +11,7 @@ abstract class StateInstance {
 
   StateInstance(this.state);
 
-  void advance(double seconds, HashMap<int, dynamic> inputValues);
+  void advance(double seconds, StateMachineController controller);
   void apply(CoreContext core, double mix);
 
   bool get keepGoing;
@@ -25,7 +24,7 @@ abstract class StateInstance {
 class SystemStateInstance extends StateInstance {
   SystemStateInstance(LayerState state) : super(state);
   @override
-  void advance(double seconds, HashMap<int, dynamic> inputValues) {}
+  void advance(double seconds, StateMachineController controller) {}
 
   @override
   void apply(CoreContext core, double mix) {}

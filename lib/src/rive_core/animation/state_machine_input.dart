@@ -1,3 +1,5 @@
+// ignore_for_file: use_setters_to_change_properties
+
 import 'dart:collection';
 
 import 'package:rive/src/generated/animation/state_machine_input_base.dart';
@@ -14,7 +16,6 @@ abstract class StateMachineInput extends StateMachineInputBase {
       machine.inputs;
 
   bool isValidType<T>() => false;
-  dynamic get controllerValue => null;
 }
 
 class _StateMachineUnknownInput extends StateMachineInput {}

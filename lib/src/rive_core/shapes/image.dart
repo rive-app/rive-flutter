@@ -20,7 +20,6 @@ class Image extends ImageBase
   Mesh? get mesh => _mesh;
   bool get hasMesh => _mesh != null;
 
-  @override
   AABB get localBounds {
     if (hasMesh && _mesh!.draws) {
       return _mesh!.bounds;
@@ -122,5 +121,11 @@ class Image extends ImageBase
   @override
   Skinnable<MeshVertex>? get skinnable => _mesh;
 
-  Mat2D get renderTransform => _mesh?.worldTransform ?? worldTransform;
+  Mat2D get renderTransform {
+    var mesh = _mesh;
+    if (mesh != null && mesh.draws) {
+      return mesh.worldTransform;
+    }
+    return worldTransform;
+  }
 }

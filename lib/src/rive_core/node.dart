@@ -1,5 +1,4 @@
 import 'package:rive/src/generated/node_base.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 
 export 'package:rive/src/generated/node_base.dart';
@@ -11,8 +10,8 @@ class Node extends NodeBase {
 
   /// Sets the position of the Node
   set translation(Vec2D pos) {
-    x = pos[0];
-    y = pos[1];
+    x = pos.x;
+    y = pos.y;
   }
 
   @override
@@ -24,6 +23,4 @@ class Node extends NodeBase {
   void yChanged(double from, double to) {
     markTransformDirty();
   }
-
-  AABB get localBounds => AABB.fromValues(x, y, x, y);
 }

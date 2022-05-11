@@ -3,6 +3,32 @@ import 'dart:typed_data';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 
+class IAABB {
+  int left, top, right, bottom;
+
+  IAABB(int l, int t, int r, int b)
+      : left = l,
+        top = t,
+        right = r,
+        bottom = b;
+
+  IAABB.zero()
+      : left = 0,
+        top = 0,
+        right = 0,
+        bottom = 0;
+
+  int get width => right - left;
+  int get height => bottom - top;
+  bool get empty => left >= right || top >= bottom;
+
+  IAABB inset(int dx, int dy) =>
+      IAABB(left + dx, top + dy, right - dx, bottom - dy);
+
+  IAABB offset(int dx, int dy) =>
+      IAABB(left + dx, top + dy, right + dx, bottom + dy);
+}
+
 class AABB {
   Float32List _buffer;
 
@@ -34,6 +60,14 @@ class AABB {
   double get maxX => _buffer[2];
   double get minY => _buffer[1];
   double get maxY => _buffer[3];
+
+  double get left => _buffer[0];
+  double get top => _buffer[1];
+  double get right => _buffer[2];
+  double get bottom => _buffer[3];
+
+  double get centerX => (_buffer[0] + _buffer[2]) * 0.5;
+  double get centerY => (_buffer[1] + _buffer[3]) * 0.5;
 
   AABB() : _buffer = Float32List.fromList([0.0, 0.0, 0.0, 0.0]);
 
@@ -75,16 +109,24 @@ class AABB {
   bool get isEmpty => !AABB.isValid(this);
 
   Vec2D includePoint(Vec2D point, Mat2D? transform) {
-    var transformedPoint = transform == null
-        ? point
-        : Vec2D.transformMat2D(Vec2D(), point, transform);
+    var transformedPoint = transform == null ? point : transform * point;
     expandToPoint(transformedPoint);
     return transformedPoint;
   }
 
+  AABB inset(double dx, double dy) {
+    return AABB.fromValues(
+        _buffer[0] + dx, _buffer[1] + dy, _buffer[2] - dx, _buffer[3] - dy);
+  }
+
+  AABB offset(double dx, double dy) {
+    return AABB.fromValues(
+        _buffer[0] + dx, _buffer[1] + dy, _buffer[2] + dx, _buffer[3] + dy);
+  }
+
   void expandToPoint(Vec2D point) {
-    var x = point[0];
-    var y = point[1];
+    var x = point.x;
+    var y = point.y;
     if (x < _buffer[0]) {
       _buffer[0] = x;
     }
@@ -100,7 +142,7 @@ class AABB {
   }
 
   AABB.fromMinMax(Vec2D min, Vec2D max)
-      : _buffer = Float32List.fromList([min[0], min[1], max[0], max[1]]);
+      : _buffer = Float32List.fromList([min.x, min.y, max.x, max.y]);
 
   static bool areEqual(AABB a, AABB b) {
     return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3];
@@ -118,6 +160,11 @@ class AABB {
     _buffer[idx] = v;
   }
 
+  Vec2D center() {
+    return Vec2D.fromValues(
+        (this[0] + this[2]) * 0.5, (this[1] + this[3]) * 0.5);
+  }
+
   static AABB copy(AABB out, AABB a) {
     out[0] = a[0];
     out[1] = a[1];
@@ -126,21 +173,15 @@ class AABB {
     return out;
   }
 
-  static Vec2D center(Vec2D out, AABB a) {
-    out[0] = (a[0] + a[2]) * 0.5;
-    out[1] = (a[1] + a[3]) * 0.5;
-    return out;
-  }
-
   static Vec2D size(Vec2D out, AABB a) {
-    out[0] = a[2] - a[0];
-    out[1] = a[3] - a[1];
+    out.x = a[2] - a[0];
+    out.y = a[3] - a[1];
     return out;
   }
 
   static Vec2D extents(Vec2D out, AABB a) {
-    out[0] = (a[2] - a[0]) * 0.5;
-    out[1] = (a[3] - a[1]) * 0.5;
+    out.x = (a[2] - a[0]) * 0.5;
+    out.y = (a[3] - a[1]) * 0.5;
     return out;
   }
 
@@ -158,8 +199,11 @@ class AABB {
     return out;
   }
 
-  static bool contains(AABB a, AABB b) {
-    return a[0] <= b[0] && a[1] <= b[1] && b[2] <= a[2] && b[3] <= a[3];
+  bool containsBounds(AABB b) {
+    return _buffer[0] <= b[0] &&
+        _buffer[1] <= b[1] &&
+        b[2] <= _buffer[2] &&
+        b[3] <= _buffer[3];
   }
 
   static bool isValid(AABB a) {
@@ -191,14 +235,18 @@ class AABB {
     return true;
   }
 
-  static bool testOverlapPoint(AABB a, Vec2D b) {
-    var x = b[0];
-    var y = b[1];
-    return x >= a[0] && x <= a[2] && y >= a[1] && y <= a[3];
+  bool contains(Vec2D point) {
+    return point.x >= _buffer[0] &&
+        point.x <= _buffer[2] &&
+        point.y >= _buffer[1] &&
+        point.y <= _buffer[3];
   }
 
-  AABB translate(Vec2D vec) => AABB.fromValues(_buffer[0] + vec[0],
-      _buffer[1] + vec[1], _buffer[2] + vec[0], _buffer[3] + vec[1]);
+  AABB translate(Vec2D vec) => AABB.fromValues(_buffer[0] + vec.x,
+      _buffer[1] + vec.y, _buffer[2] + vec.x, _buffer[3] + vec.y);
+
+  IAABB round() =>
+      IAABB(left.round(), top.round(), right.round(), bottom.round());
 
   @override
   String toString() {
@@ -208,9 +256,9 @@ class AABB {
   AABB transform(Mat2D matrix) {
     return AABB.fromPoints([
       minimum,
-      Vec2D.fromValues(maximum[0], minimum[1]),
+      Vec2D.fromValues(maximum.x, minimum.y),
       maximum,
-      Vec2D.fromValues(minimum[0], maximum[1])
+      Vec2D.fromValues(minimum.x, maximum.y)
     ], transform: matrix);
   }
 
@@ -227,12 +275,10 @@ class AABB {
     double maxY = -double.maxFinite;
 
     for (final point in points) {
-      var p = transform == null
-          ? point
-          : Vec2D.transformMat2D(Vec2D(), point, transform);
+      var p = transform == null ? point : transform * point;
 
-      double x = p[0];
-      double y = p[1];
+      final x = p.x;
+      final y = p.y;
       if (x < minX) {
         minX = x;
       }

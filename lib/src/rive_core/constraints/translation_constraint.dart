@@ -27,34 +27,31 @@ class TranslationConstraint extends TranslationConstraintBase {
         }
         Mat2D.multiply(transformB, inverse, transformB);
       }
-      translationB[0] = transformB[4];
-      translationB[1] = transformB[5];
+      translationB.x = transformB[4];
+      translationB.y = transformB[5];
 
       if (!doesCopy) {
-        translationB[0] =
-            destSpace == TransformSpace.local ? 0 : translationA[0];
+        translationB.x = destSpace == TransformSpace.local ? 0 : translationA.x;
       } else {
-        translationB[0] *= copyFactor;
+        translationB.x *= copyFactor;
         if (offset) {
-          translationB[0] += component.x;
+          translationB.x += component.x;
         }
       }
 
       if (!doesCopyY) {
-        translationB[1] =
-            destSpace == TransformSpace.local ? 0 : translationA[1];
+        translationB.y = destSpace == TransformSpace.local ? 0 : translationA.y;
       } else {
-        translationB[1] *= copyFactorY;
+        translationB.y *= copyFactorY;
 
         if (offset) {
-          translationB[1] += component.y;
+          translationB.y += component.y;
         }
       }
 
       if (destSpace == TransformSpace.local) {
         // Destination space is in parent transform coordinates.
-        Vec2D.transformMat2D(
-            translationB, translationB, parentWorld(component));
+        translationB.apply(parentWorld(component));
       }
     }
 
@@ -66,29 +63,29 @@ class TranslationConstraint extends TranslationConstraintBase {
         return;
       }
       // Get our target world coordinates in parent local.
-      Vec2D.transformMat2D(translationB, translationB, invert);
+      translationB.apply(invert);
     }
-    if (max && translationB[0] > maxValue) {
-      translationB[0] = maxValue;
+    if (max && translationB.x > maxValue) {
+      translationB.x = maxValue;
     }
-    if (min && translationB[0] < minValue) {
-      translationB[0] = minValue;
+    if (min && translationB.x < minValue) {
+      translationB.x = minValue;
     }
-    if (maxY && translationB[1] > maxValueY) {
-      translationB[1] = maxValueY;
+    if (maxY && translationB.y > maxValueY) {
+      translationB.y = maxValueY;
     }
-    if (minY && translationB[1] < minValueY) {
-      translationB[1] = minValueY;
+    if (minY && translationB.y < minValueY) {
+      translationB.y = minValueY;
     }
     if (clampLocal) {
       // Transform back to world.
-      Vec2D.transformMat2D(translationB, translationB, parentWorld(component));
+      translationB.apply(parentWorld(component));
     }
 
     var ti = 1 - strength;
 
     // Just interpolate world translation
-    transformA[4] = translationA[0] * ti + translationB[0] * strength;
-    transformA[5] = translationA[1] * ti + translationB[1] * strength;
+    transformA[4] = translationA.x * ti + translationB.x * strength;
+    transformA[5] = translationA.y * ti + translationB.y * strength;
   }
 }
