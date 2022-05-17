@@ -28,10 +28,15 @@ class BinaryWriter {
     _byteData = ByteData.view(_buffer.buffer);
   }
 
+  /// Return the smallest multiple of [_alignment] that fits data of [length]
+  int nextAlignment(int length) {
+    return (length / alignment).ceil() * alignment;
+  }
+
   void _ensureAvailable(int byteLength) {
     if (_writeIndex + byteLength > _buffer.length) {
       do {
-        _buffer = Uint8List(_buffer.length + _alignment)
+        _buffer = Uint8List(_buffer.length + nextAlignment(byteLength))
           ..setRange(0, _buffer.length, _buffer);
       } while (_writeIndex + byteLength > _buffer.length);
       _byteData = ByteData.view(_buffer.buffer);
