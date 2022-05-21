@@ -13,7 +13,7 @@ abstract class NestedLinearAnimationInstance {
   double get speed;
   set speed(double value);
 
-  void advance(double elapsedSeconds);
+  bool advance(double elapsedSeconds);
   void apply(covariant MountedArtboard artboard, double mix);
 }
 
@@ -42,10 +42,12 @@ abstract class NestedLinearAnimation extends NestedLinearAnimationBase {
   }
 
   @override
-  void advance(double elapsedSeconds, MountedArtboard mountedArtboard) {
+  bool advance(double elapsedSeconds, MountedArtboard mountedArtboard) {
     if (linearAnimationInstance?.needsApply ?? false) {
       linearAnimationInstance!.apply(mountedArtboard, mix);
       linearAnimationInstance!.needsApply = false;
+      return true;
     }
+    return false;
   }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/rendering.dart';
+import 'package:rive/src/controllers/state_machine_controller.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/animation/nested_linear_animation.dart';
+import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
+import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 
 class RuntimeNestedArtboard extends NestedArtboard {
@@ -19,7 +22,6 @@ class RuntimeNestedArtboard extends NestedArtboard {
           sourceArtboard!.instance() as RuntimeArtboard;
       object.mountedArtboard = RuntimeMountedArtboard(runtimeArtboardInstance);
     }
-
     return object as K;
   }
 
@@ -33,6 +35,8 @@ class RuntimeNestedArtboard extends NestedArtboard {
     }
     var runtimeLinearAnimations =
         sourceArtboard!.linearAnimations.toList(growable: false);
+    var runtimeStateMachines =
+        sourceArtboard!.stateMachines.toList(growable: false);
     for (final animation in animations) {
       if (animation is NestedLinearAnimation) {
         var animationId = animation.animationId;
@@ -40,6 +44,14 @@ class RuntimeNestedArtboard extends NestedArtboard {
           animation.linearAnimationInstance =
               RuntimeNestedLinearAnimationInstance(LinearAnimationInstance(
                   runtimeLinearAnimations[animationId]));
+        }
+      } else if (animation is NestedStateMachine) {
+        var animationId = animation.animationId;
+        if (animationId >= 0 && animationId < runtimeStateMachines.length) {
+          animation.stateMachineInstance = RuntimeNestedStateMachineInstance(
+            (mountedArtboard as RuntimeMountedArtboard).artboardInstance,
+            StateMachineController(runtimeStateMachines[animationId]),
+          );
         }
       }
     }
@@ -59,9 +71,10 @@ class RuntimeNestedLinearAnimationInstance
   }
 
   @override
-  void advance(double elapsedSeconds) {
+  bool advance(double elapsedSeconds) {
     needsApply = true;
     linearAnimation.advance(elapsedSeconds * speed);
+    return linearAnimation.keepGoing;
   }
 
   @override
@@ -81,11 +94,46 @@ class RuntimeNestedLinearAnimationInstance
   double get durationSeconds => linearAnimation.animation.durationSeconds;
 }
 
+class RuntimeNestedStateMachineInstance extends NestedStateMachineInstance {
+  final StateMachineController stateMachineController;
+
+  RuntimeNestedStateMachineInstance(
+      RuntimeArtboard artboard, this.stateMachineController) {
+    stateMachineController.init(artboard);
+  }
+
+  @override
+  void apply(RuntimeMountedArtboard artboard, double elapsedSeconds) {
+    stateMachineController.apply(artboard.artboardInstance, elapsedSeconds);
+  }
+
+  @override
+  bool get isActive => stateMachineController.isActive;
+
+  @override
+  ValueListenable<bool> get isActiveChanged =>
+      stateMachineController.isActiveChanged;
+
+  @override
+  void pointerDown(Vec2D position) =>
+      stateMachineController.pointerDown(position);
+
+  @override
+  void pointerMove(Vec2D position) =>
+      stateMachineController.pointerMove(position);
+
+  @override
+  void pointerUp(Vec2D position) => stateMachineController.pointerUp(position);
+}
+
 class RuntimeMountedArtboard extends MountedArtboard {
   final RuntimeArtboard artboardInstance;
   RuntimeMountedArtboard(this.artboardInstance) {
     artboardInstance.advance(0, nested: true);
   }
+
+  @override
+  void dispose() {}
 
   @override
   Mat2D worldTransform = Mat2D();
@@ -119,6 +167,12 @@ class RuntimeMountedArtboard extends MountedArtboard {
   }
 
   @override
-  void advance(double seconds) =>
+  bool advance(double seconds) =>
       artboardInstance.advance(seconds, nested: true);
+
+  @override
+  Mat2D get originTransform => Mat2D.fromTranslate(
+        artboardInstance.width * -artboardInstance.originX,
+        artboardInstance.height * -artboardInstance.originY,
+      );
 }

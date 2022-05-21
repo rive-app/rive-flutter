@@ -185,6 +185,32 @@ abstract class ArtboardBase extends WorldTransformComponent {
 
   void originYChanged(double from, double to);
 
+  /// --------------------------------------------------------------------------
+  /// DefaultStateMachineId field with key 236.
+  static const int defaultStateMachineIdInitialValue = -1;
+  int _defaultStateMachineId = defaultStateMachineIdInitialValue;
+  static const int defaultStateMachineIdPropertyKey = 236;
+
+  /// The default StateMachine attached to this artboard automatically when it
+  /// is initialized.
+  int get defaultStateMachineId => _defaultStateMachineId;
+
+  /// Change the [_defaultStateMachineId] field value.
+  /// [defaultStateMachineIdChanged] will be invoked only if the field's value
+  /// has changed.
+  set defaultStateMachineId(int value) {
+    if (_defaultStateMachineId == value) {
+      return;
+    }
+    int from = _defaultStateMachineId;
+    _defaultStateMachineId = value;
+    if (hasValidated) {
+      defaultStateMachineIdChanged(from, value);
+    }
+  }
+
+  void defaultStateMachineIdChanged(int from, int to);
+
   @override
   void copy(covariant ArtboardBase source) {
     super.copy(source);
@@ -195,5 +221,6 @@ abstract class ArtboardBase extends WorldTransformComponent {
     _y = source._y;
     _originX = source._originX;
     _originY = source._originY;
+    _defaultStateMachineId = source._defaultStateMachineId;
   }
 }
