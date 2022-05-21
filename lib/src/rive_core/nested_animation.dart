@@ -14,7 +14,7 @@ abstract class NestedAnimation<T extends Animation>
 
 
   bool get isEnabled;
-  void advance(double elapsedSeconds, MountedArtboard mountedArtboard);
+  bool advance(double elapsedSeconds, MountedArtboard mountedArtboard);
 
   @override
   void update(int dirt) {}

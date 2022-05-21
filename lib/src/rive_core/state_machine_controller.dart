@@ -9,15 +9,18 @@ import 'package:rive/src/rive_core/animation/entry_state.dart';
 import 'package:rive/src/rive_core/animation/exit_state.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_event.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
+import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/hit_test.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
+import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
@@ -226,6 +229,9 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
   /// Handles state change callbacks
   void _onStateChange(LayerState layerState) =>
+
+      /// See https://github.com/flutter/flutter/issues/103561#issuecomment-1129356149
+      // ignore: invalid_null_aware_operator
       SchedulerBinding.instance?.addPostFrameCallback((_) {
         String stateName = 'unknown';
         if (layerState is AnimationState && layerState.animation != null) {
@@ -242,6 +248,10 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
       });
 
   late List<_HitShape> hitShapes;
+  late List<NestedArtboard> hitNestedArtboards;
+
+  /// The artboard that this state machine controller is manipulating.
+  Artboard? get artboard => stateMachine.artboard;
 
   @override
   bool init(CoreContext core) {
@@ -282,6 +292,15 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     }
     hitShapes = hitShapeLookup.values.toList();
 
+    var artboard = core as RuntimeArtboard;
+
+    List<NestedArtboard> nestedArtboards = [];
+    for (final nestedArtboard in artboard.activeNestedArtboards) {
+      if (nestedArtboard.hasNestedStateMachine) {
+        nestedArtboards.add(nestedArtboard);
+      }
+    }
+    hitNestedArtboards = nestedArtboards;
     return super.init(core);
   }
 
@@ -350,6 +369,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
       bool hoverChange = hitShape.isHovered != isOver;
       hitShape.isHovered = isOver;
+
       // iterate all events associated with this hit shape
       for (final event in hitShape.events) {
         // Always update hover states regardless of which specific event type
@@ -366,6 +386,27 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         if (isOver && hitEvent == event.eventType) {
           event.performChanges(this);
           isActive = true;
+        }
+      }
+    }
+    for (final nestedArtboard in hitNestedArtboards) {
+      var nestedPosition = nestedArtboard.worldToLocal(position);
+      if (nestedPosition == null) {
+        // Mounted artboard isn't ready or has a 0 scale transform.
+        continue;
+      }
+      for (final nestedStateMachine
+          in nestedArtboard.animations.whereType<NestedStateMachine>()) {
+        switch (hitEvent) {
+          case EventType.down:
+            nestedStateMachine.pointerDown(nestedPosition);
+            break;
+          case EventType.up:
+            nestedStateMachine.pointerUp(nestedPosition);
+            break;
+          default:
+            nestedStateMachine.pointerMove(nestedPosition);
+            break;
         }
       }
     }

@@ -1012,6 +1012,11 @@ class RiveCoreContext {
           object.originY = value;
         }
         break;
+      case ArtboardBase.defaultStateMachineIdPropertyKey:
+        if (object is ArtboardBase && value is int) {
+          object.defaultStateMachineId = value;
+        }
+        break;
       case BoneBase.lengthPropertyKey:
         if (object is BoneBase && value is double) {
           object.length = value;
@@ -1188,6 +1193,7 @@ class RiveCoreContext {
       case PolygonBase.pointsPropertyKey:
       case ImageBase.assetIdPropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
+      case ArtboardBase.defaultStateMachineIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
       case FileAssetBase.assetIdPropertyKey:
         return uintType;
@@ -1433,6 +1439,8 @@ class RiveCoreContext {
         return (object as ImageBase).assetId;
       case DrawRulesBase.drawTargetIdPropertyKey:
         return (object as DrawRulesBase).drawTargetId;
+      case ArtboardBase.defaultStateMachineIdPropertyKey:
+        return (object as ArtboardBase).defaultStateMachineId;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
       case FileAssetBase.assetIdPropertyKey:
@@ -1979,6 +1987,11 @@ class RiveCoreContext {
       case DrawRulesBase.drawTargetIdPropertyKey:
         if (object is DrawRulesBase) {
           object.drawTargetId = value;
+        }
+        break;
+      case ArtboardBase.defaultStateMachineIdPropertyKey:
+        if (object is ArtboardBase) {
+          object.defaultStateMachineId = value;
         }
         break;
       case TendonBase.boneIdPropertyKey:

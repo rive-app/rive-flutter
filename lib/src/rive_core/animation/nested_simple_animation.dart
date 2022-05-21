@@ -23,10 +23,11 @@ class NestedSimpleAnimation extends NestedSimpleAnimationBase {
   bool get isEnabled => true;
 
   @override
-  void advance(double elapsedSeconds, MountedArtboard mountedArtboard) {
-    if (isPlaying) {
-      linearAnimationInstance?.advance(elapsedSeconds);
+  bool advance(double elapsedSeconds, MountedArtboard mountedArtboard) {
+    var keepGoing = false;
+    if (isPlaying && linearAnimationInstance != null) {
+      keepGoing = linearAnimationInstance!.advance(elapsedSeconds);
     }
-    super.advance(elapsedSeconds, mountedArtboard);
+    return super.advance(elapsedSeconds, mountedArtboard) || keepGoing;
   }
 }
