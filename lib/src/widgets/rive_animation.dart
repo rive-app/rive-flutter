@@ -189,7 +189,11 @@ class _RiveAnimationState extends State<RiveAnimation> {
     }
     var globalCoordinates = renderObject.localToGlobal(local);
 
-    return riveRenderer!.globalToArtboard(globalCoordinates);
+    var artboardCoord = riveRenderer!.globalToArtboard(globalCoordinates);
+
+    return artboardCoord -
+        Vec2D.fromValues(_artboard!.originX * _artboard!.width,
+            _artboard!.originY * _artboard!.height);
   }
 
   Widget _optionalHitTester(BuildContext context, Widget child) {
