@@ -22,7 +22,7 @@ import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 
-/// Callback signature for satate machine state changes
+/// Callback signature for state machine state changes
 typedef OnStateChange = void Function(String, String);
 
 /// Callback signature for layer state changes
@@ -206,6 +206,14 @@ class LayerController {
   }
 }
 
+/// This allows a value of type T or T?
+/// to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become
+/// non-nullable can still be used with `!` and `?`
+/// to support older versions of the API as well.
+T? _ambiguate<T>(T? value) => value;
+
 class StateMachineController extends RiveAnimationController<CoreContext> {
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
@@ -226,7 +234,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
   /// Handles state change callbacks
   void _onStateChange(LayerState layerState) =>
-      SchedulerBinding.instance?.addPostFrameCallback((_) {
+      _ambiguate(SchedulerBinding.instance)?.addPostFrameCallback((_) {
         String stateName = 'unknown';
         if (layerState is AnimationState && layerState.animation != null) {
           stateName = layerState.animation!.name;

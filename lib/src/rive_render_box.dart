@@ -7,6 +7,14 @@ import 'package:rive/src/rive_core/math/aabb.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 
+/// This allows a value of type T or T?
+/// to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become
+/// non-nullable can still be used with `!` and `?`
+/// to support older versions of the API as well.
+T? _ambiguate<T>(T? value) => value;
+
 abstract class RiveRenderBox extends RenderBox {
   final Stopwatch _stopwatch = Stopwatch();
   BoxFit _fit = BoxFit.none;
@@ -186,8 +194,9 @@ abstract class RiveRenderBox extends RenderBox {
     if (_frameCallbackId != -1) {
       return;
     }
-    _frameCallbackId =
-        SchedulerBinding.instance?.scheduleFrameCallback(_frameCallback) ?? -1;
+    _frameCallbackId = _ambiguate(SchedulerBinding.instance)
+            ?.scheduleFrameCallback(_frameCallback) ??
+        -1;
   }
 
   /// Override this if you want to do custom viewTransform alignment. This will
