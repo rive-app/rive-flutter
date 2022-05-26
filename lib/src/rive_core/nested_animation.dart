@@ -14,6 +14,11 @@ abstract class NestedAnimation<T extends Animation>
 
 
   bool get isEnabled;
+
+  /// Returns true when the NestedAnimation needs to keep advancing. Returning
+  /// false doesn't guarantee another advance won't be called, it just means
+  /// that it's no longer necessary to call advance again as the reesults will
+  /// be the same.
   bool advance(double elapsedSeconds, MountedArtboard mountedArtboard);
 
   @override

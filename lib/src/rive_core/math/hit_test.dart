@@ -67,11 +67,19 @@ class HitTester implements PathInterface {
     int winding = 1;
     if (y0 > y1) {
       winding = -1;
+
+      // Swap our two points (is there a swap utility?)
       double tmp = y0;
       // ignore: parameter_assignments
       y0 = y1;
       // ignore: parameter_assignments
       y1 = tmp;
+
+      tmp = x0;
+      // ignore: parameter_assignments
+      x0 = x1;
+      // ignore: parameter_assignments
+      x1 = tmp;
     }
     // now we're monotonic in Y: y0 <= y1
     if (y1 <= 0 || y0 >= _height) {
@@ -184,7 +192,7 @@ class HitTester implements PathInterface {
     // ... At^3 + Bt^2 + Ct + D
     //
     final aX = (x3 - _prevX) + 3 * (x1 - x2);
-    // final bX = 3 * ((x2 - x1) + (_prevX - x1));
+    final bX = 3 * ((x2 - x1) + (_prevX - x1));
     final cX = 3 * (x1 - _prevX);
     final dX = _prevX;
 
@@ -198,7 +206,7 @@ class HitTester implements PathInterface {
     double py = _prevY;
     for (int i = 1; i < count - 1; ++i) {
       // Horner's method for evaluating the simple polynomial
-      final nx = ((aX * t + aX) * t + cX) * t + dX;
+      final nx = ((aX * t + bX) * t + cX) * t + dX;
       final ny = ((aY * t + bY) * t + cY) * t + dY;
       _clipLine(px, py, nx, ny);
       px = nx;
