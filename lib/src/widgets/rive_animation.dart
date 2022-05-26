@@ -189,18 +189,17 @@ class _RiveAnimationState extends State<RiveAnimation> {
     }
     var globalCoordinates = renderObject.localToGlobal(local);
 
-    var artboardCoord = riveRenderer!.globalToArtboard(globalCoordinates);
-
-    return artboardCoord -
-        Vec2D.fromValues(_artboard!.originX * _artboard!.width,
-            _artboard!.originY * _artboard!.height);
+    return riveRenderer!.globalToArtboard(globalCoordinates);
   }
 
   Widget _optionalHitTester(BuildContext context, Widget child) {
     assert(_artboard != null);
-    var hasHitTesting = _artboard!.animationControllers.any((controller) =>
-        controller is StateMachineController &&
-        controller.hitShapes.isNotEmpty);
+    var hasHitTesting = _artboard!.animationControllers.any(
+      (controller) =>
+          controller is StateMachineController &&
+          (controller.hitShapes.isNotEmpty ||
+              controller.hitNestedArtboards.isNotEmpty),
+    );
 
     if (hasHitTesting) {
       void hitHelper(PointerEvent event,

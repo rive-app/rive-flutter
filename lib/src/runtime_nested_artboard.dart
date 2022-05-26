@@ -129,6 +129,7 @@ class RuntimeNestedStateMachineInstance extends NestedStateMachineInstance {
 class RuntimeMountedArtboard extends MountedArtboard {
   final RuntimeArtboard artboardInstance;
   RuntimeMountedArtboard(this.artboardInstance) {
+    artboardInstance.frameOrigin = false;
     artboardInstance.advance(0, nested: true);
   }
 
@@ -142,8 +143,6 @@ class RuntimeMountedArtboard extends MountedArtboard {
   void draw(Canvas canvas) {
     canvas.save();
     canvas.transform(worldTransform.mat4);
-    canvas.translate(-artboardInstance.originX * artboardInstance.width,
-        -artboardInstance.originY * artboardInstance.height);
     artboardInstance.draw(canvas);
     canvas.restore();
   }
@@ -169,10 +168,4 @@ class RuntimeMountedArtboard extends MountedArtboard {
   @override
   bool advance(double seconds) =>
       artboardInstance.advance(seconds, nested: true);
-
-  @override
-  Mat2D get originTransform => Mat2D.fromTranslate(
-        artboardInstance.width * -artboardInstance.originX,
-        artboardInstance.height * -artboardInstance.originY,
-      );
 }
