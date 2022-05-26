@@ -250,8 +250,10 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
   late List<_HitShape> hitShapes;
   late List<NestedArtboard> hitNestedArtboards;
 
+  Artboard? _artboard;
+
   /// The artboard that this state machine controller is manipulating.
-  Artboard? get artboard => stateMachine.artboard;
+  Artboard? get artboard => _artboard;
 
   @override
   bool init(CoreContext core) {
@@ -292,12 +294,14 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     }
     hitShapes = hitShapeLookup.values.toList();
 
-    var artboard = core as RuntimeArtboard;
+    _artboard = core as RuntimeArtboard;
 
     List<NestedArtboard> nestedArtboards = [];
-    for (final nestedArtboard in artboard.activeNestedArtboards) {
-      if (nestedArtboard.hasNestedStateMachine) {
-        nestedArtboards.add(nestedArtboard);
+    if (_artboard != null) {
+      for (final nestedArtboard in _artboard!.activeNestedArtboards) {
+        if (nestedArtboard.hasNestedStateMachine) {
+          nestedArtboards.add(nestedArtboard);
+        }
       }
     }
     hitNestedArtboards = nestedArtboards;
@@ -338,6 +342,18 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
   }
 
   void _processEvent(Vec2D position, {EventType? hitEvent}) {
+    var artboard = this.artboard;
+    if (artboard == null) {
+      return;
+    }
+    if (artboard.frameOrigin) {
+      // ignore: parameter_assignments
+      position = position -
+          Vec2D.fromValues(
+            artboard.width * artboard.originX,
+            artboard.height * artboard.originY,
+          );
+    }
     const hitRadius = 2;
     var hitArea = IAABB(
       (position.x - hitRadius).round(),
