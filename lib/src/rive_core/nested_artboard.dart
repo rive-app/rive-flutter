@@ -19,7 +19,6 @@ export 'package:rive/src/generated/nested_artboard_base.dart';
 /// the [NestedArtboard] component.
 abstract class MountedArtboard {
   void draw(Canvas canvas);
-  Mat2D get originTransform;
   Mat2D get worldTransform;
   set worldTransform(Mat2D value);
   AABB get bounds;
