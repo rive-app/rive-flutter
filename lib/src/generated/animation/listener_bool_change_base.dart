@@ -1,16 +1,16 @@
 /// Core automatically generated
-/// lib/src/generated/animation/event_bool_change_base.dart.
+/// lib/src/generated/animation/listener_bool_change_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/rive_core/animation/event_input_change.dart';
+import 'package:rive/src/rive_core/animation/listener_input_change.dart';
 
-abstract class EventBoolChangeBase extends EventInputChange {
+abstract class ListenerBoolChangeBase extends ListenerInputChange {
   static const int typeKey = 117;
   @override
-  int get coreType => EventBoolChangeBase.typeKey;
+  int get coreType => ListenerBoolChangeBase.typeKey;
   @override
   Set<int> get coreTypes =>
-      {EventBoolChangeBase.typeKey, EventInputChangeBase.typeKey};
+      {ListenerBoolChangeBase.typeKey, ListenerInputChangeBase.typeKey};
 
   /// --------------------------------------------------------------------------
   /// Value field with key 228.
@@ -18,7 +18,7 @@ abstract class EventBoolChangeBase extends EventInputChange {
   int _value = valueInitialValue;
   static const int valuePropertyKey = 228;
 
-  /// Value to set the input to when the event occurs.
+  /// Value to set the input to when the listener occurs.
   int get value => _value;
 
   /// Change the [_value] field value.
@@ -37,7 +37,7 @@ abstract class EventBoolChangeBase extends EventInputChange {
   void valueChanged(int from, int to);
 
   @override
-  void copy(covariant EventBoolChangeBase source) {
+  void copy(covariant ListenerBoolChangeBase source) {
     super.copy(source);
     _value = source._value;
   }

@@ -1,15 +1,15 @@
 /// Core automatically generated
-/// lib/src/generated/animation/event_input_change_base.dart.
+/// lib/src/generated/animation/listener_input_change_base.dart.
 /// Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
 
-abstract class EventInputChangeBase<T extends CoreContext> extends Core<T> {
+abstract class ListenerInputChangeBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 116;
   @override
-  int get coreType => EventInputChangeBase.typeKey;
+  int get coreType => ListenerInputChangeBase.typeKey;
   @override
-  Set<int> get coreTypes => {EventInputChangeBase.typeKey};
+  Set<int> get coreTypes => {ListenerInputChangeBase.typeKey};
 
   /// --------------------------------------------------------------------------
   /// InputId field with key 227.
@@ -36,7 +36,7 @@ abstract class EventInputChangeBase<T extends CoreContext> extends Core<T> {
   void inputIdChanged(int from, int to);
 
   @override
-  void copy(covariant EventInputChangeBase source) {
+  void copy(covariant ListenerInputChangeBase source) {
     _inputId = source._inputId;
   }
 }

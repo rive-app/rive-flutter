@@ -1,13 +1,13 @@
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/animation/event_input_change_base.dart';
+import 'package:rive/src/generated/animation/listener_input_change_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
-import 'package:rive/src/rive_core/animation/state_machine_event.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
+import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart';
 
-export 'package:rive/src/generated/animation/event_input_change_base.dart';
+export 'package:rive/src/generated/animation/listener_input_change_base.dart';
 
-abstract class EventInputChange extends EventInputChangeBase {
+abstract class ListenerInputChange extends ListenerInputChangeBase {
   StateMachineInput _input = StateMachineInput.unknown;
   StateMachineInput get input => _input;
   set input(StateMachineInput value) {
@@ -39,7 +39,7 @@ abstract class EventInputChange extends EventInputChangeBase {
   @override
   bool import(ImportStack importStack) {
     var importer = importStack
-        .latest<StateMachineEventImporter>(StateMachineEventBase.typeKey);
+        .latest<StateMachineListenerImporter>(StateMachineListenerBase.typeKey);
     if (importer == null) {
       return false;
     }
