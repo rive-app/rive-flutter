@@ -1,9 +1,9 @@
-import 'package:rive/src/generated/animation/event_bool_change_base.dart';
+import 'package:rive/src/generated/animation/listener_bool_change_base.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart';
 
-export 'package:rive/src/generated/animation/event_bool_change_base.dart';
+export 'package:rive/src/generated/animation/listener_bool_change_base.dart';
 
-class EventBoolChange extends EventBoolChangeBase {
+class ListenerBoolChange extends ListenerBoolChangeBase {
   @override
   void valueChanged(int from, int to) {}
 

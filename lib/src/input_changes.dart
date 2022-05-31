@@ -1,9 +1,10 @@
 import 'dart:collection';
-import 'package:rive/src/rive_core/animation/event_input_change.dart';
 
-class InputChanges extends ListBase<EventInputChange> {
-  final List<EventInputChange?> _values = [];
-  List<EventInputChange> get values => _values.cast<EventInputChange>();
+import 'package:rive/src/rive_core/animation/listener_input_change.dart';
+
+class InputChanges extends ListBase<ListenerInputChange> {
+  final List<ListenerInputChange?> _values = [];
+  List<ListenerInputChange> get values => _values.cast<ListenerInputChange>();
 
   @override
   int get length => _values.length;
@@ -12,9 +13,9 @@ class InputChanges extends ListBase<EventInputChange> {
   set length(int value) => _values.length = value;
 
   @override
-  EventInputChange operator [](int index) => _values[index]!;
+  ListenerInputChange operator [](int index) => _values[index]!;
 
   @override
-  void operator []=(int index, EventInputChange value) =>
+  void operator []=(int index, ListenerInputChange value) =>
       _values[index] = value;
 }

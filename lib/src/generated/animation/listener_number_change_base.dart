@@ -1,16 +1,16 @@
 /// Core automatically generated
-/// lib/src/generated/animation/event_number_change_base.dart.
+/// lib/src/generated/animation/listener_number_change_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/rive_core/animation/event_input_change.dart';
+import 'package:rive/src/rive_core/animation/listener_input_change.dart';
 
-abstract class EventNumberChangeBase extends EventInputChange {
+abstract class ListenerNumberChangeBase extends ListenerInputChange {
   static const int typeKey = 118;
   @override
-  int get coreType => EventNumberChangeBase.typeKey;
+  int get coreType => ListenerNumberChangeBase.typeKey;
   @override
   Set<int> get coreTypes =>
-      {EventNumberChangeBase.typeKey, EventInputChangeBase.typeKey};
+      {ListenerNumberChangeBase.typeKey, ListenerInputChangeBase.typeKey};
 
   /// --------------------------------------------------------------------------
   /// Value field with key 229.
@@ -18,7 +18,7 @@ abstract class EventNumberChangeBase extends EventInputChange {
   double _value = valueInitialValue;
   static const int valuePropertyKey = 229;
 
-  /// Value to set the input to when the event occurs.
+  /// Value to set the input to when the listener occurs.
   double get value => _value;
 
   /// Change the [_value] field value.
@@ -37,7 +37,7 @@ abstract class EventNumberChangeBase extends EventInputChange {
   void valueChanged(double from, double to);
 
   @override
-  void copy(covariant EventNumberChangeBase source) {
+  void copy(covariant ListenerNumberChangeBase source) {
     super.copy(source);
     _value = source._value;
   }

@@ -12,8 +12,8 @@ import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
-import 'package:rive/src/rive_core/animation/state_machine_event.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
+import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
@@ -25,7 +25,7 @@ import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 
-/// Callback signature for state machine state changes
+/// Callback signature for satate machine state changes
 typedef OnStateChange = void Function(String, String);
 
 /// Callback signature for layer state changes
@@ -209,14 +209,6 @@ class LayerController {
   }
 }
 
-/// This allows a value of type T or T?
-/// to be treated as a value of type T?.
-///
-/// We use this so that APIs that have become
-/// non-nullable can still be used with `!` and `?`
-/// to support older versions of the API as well.
-T? _ambiguate<T>(T? value) => value;
-
 class StateMachineController extends RiveAnimationController<CoreContext> {
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
@@ -237,6 +229,8 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
   /// Handles state change callbacks
   void _onStateChange(LayerState layerState) =>
+
+      /// See https://github.com/flutter/flutter/issues/103561#issuecomment-1129356149
       _ambiguate(SchedulerBinding.instance)?.addPostFrameCallback((_) {
         String stateName = 'unknown';
         if (layerState is AnimationState && layerState.animation != null) {
@@ -278,7 +272,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
     // Initialize all events.
     HashMap<Shape, _HitShape> hitShapeLookup = HashMap<Shape, _HitShape>();
-    for (final event in stateMachine.events) {
+    for (final event in stateMachine.listeners) {
       // Resolve target on this artboard instance.
       var node = core.resolve<Node>(event.targetId);
       if (node == null) {
@@ -346,7 +340,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     isActive = keepGoing;
   }
 
-  void _processEvent(Vec2D position, {EventType? hitEvent}) {
+  void _processEvent(Vec2D position, {ListenerType? hitEvent}) {
     var artboard = this.artboard;
     if (artboard == null) {
       return;
@@ -396,15 +390,15 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         // Always update hover states regardless of which specific event type
         // we're trying to trigger.
         if (hoverChange) {
-          if (isOver && event.eventType == EventType.enter) {
+          if (isOver && event.listenerType == ListenerType.enter) {
             event.performChanges(this);
             isActive = true;
-          } else if (!isOver && event.eventType == EventType.exit) {
+          } else if (!isOver && event.listenerType == ListenerType.exit) {
             event.performChanges(this);
             isActive = true;
           }
         }
-        if (isOver && hitEvent == event.eventType) {
+        if (isOver && hitEvent == event.listenerType) {
           event.performChanges(this);
           isActive = true;
         }
@@ -419,10 +413,10 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
       for (final nestedStateMachine
           in nestedArtboard.animations.whereType<NestedStateMachine>()) {
         switch (hitEvent) {
-          case EventType.down:
+          case ListenerType.down:
             nestedStateMachine.pointerDown(nestedPosition);
             break;
-          case EventType.up:
+          case ListenerType.up:
             nestedStateMachine.pointerUp(nestedPosition);
             break;
           default:
@@ -437,12 +431,12 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
   void pointerDown(Vec2D position) => _processEvent(
         position,
-        hitEvent: EventType.down,
+        hitEvent: ListenerType.down,
       );
 
   void pointerUp(Vec2D position) => _processEvent(
         position,
-        hitEvent: EventType.up,
+        hitEvent: ListenerType.up,
       );
 }
 
@@ -452,6 +446,14 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 class _HitShape {
   Shape shape;
   bool isHovered = false;
-  List<StateMachineEvent> events = [];
+  List<StateMachineListener> events = [];
   _HitShape(this.shape);
 }
+
+/// This allows a value of type T or T?
+/// to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become
+/// non-nullable can still be used with `!` and `?`
+/// to support older versions of the API as well.
+T? _ambiguate<T>(T? value) => value;
