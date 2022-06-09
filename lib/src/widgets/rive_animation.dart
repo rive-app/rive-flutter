@@ -43,6 +43,11 @@ class RiveAnimation extends StatefulWidget {
   /// Enable/disable antialiasing when rendering
   final bool antialiasing;
 
+  /// Determines whether to use the inherent size of the [artboard], i.e. the
+  /// absolute size defined by the artboard, or size the widget based on the
+  /// available constraints only (sized by parent).
+  final bool useArtboardSize;
+
   /// Controllers for instanced animations and state machines; use this
   /// to directly control animation states instead of passing names.
   final List<RiveAnimationController> controllers;
@@ -60,6 +65,7 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.useArtboardSize = false,
     this.controllers = const [],
     this.onInit,
   }) : src = _Source.asset;
@@ -73,6 +79,7 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.useArtboardSize = false,
     this.controllers = const [],
     this.onInit,
   }) : src = _Source.network;
@@ -86,6 +93,7 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.useArtboardSize = false,
     this.controllers = const [],
     this.onInit,
   }) : src = _Source.file;
@@ -251,6 +259,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
             fit: widget.fit,
             alignment: widget.alignment,
             antialiasing: widget.antialiasing,
+            useArtboardSize: widget.useArtboardSize,
           ),
         )
       : widget.placeHolder ?? const SizedBox();
