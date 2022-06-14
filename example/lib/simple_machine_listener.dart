@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
-class StateMachineAction extends StatefulWidget {
-  const StateMachineAction({Key? key}) : super(key: key);
+class StateMachineListener extends StatefulWidget {
+  const StateMachineListener({Key? key}) : super(key: key);
 
   @override
-  _StateMachineActionState createState() => _StateMachineActionState();
+  _StateMachineListenerState createState() => _StateMachineListenerState();
 }
 
-class _StateMachineActionState extends State<StateMachineAction> {
+class _StateMachineListenerState extends State<StateMachineListener> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

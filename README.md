@@ -13,7 +13,7 @@ Runtime docs are available in [Rive's help center](https://help.rive.app/runtime
 
 ```yaml
 dependencies:
-  rive: ^0.8.4
+  rive: ^0.9.0
 ```
 
 ## Quick Start
