@@ -17,6 +17,7 @@ export 'package:rive/src/core/importers/keyed_object_importer.dart';
 export 'package:rive/src/core/importers/keyed_property_importer.dart';
 export 'package:rive/src/core/importers/layer_state_importer.dart';
 export 'package:rive/src/core/importers/linear_animation_importer.dart';
+export 'package:rive/src/core/importers/nested_state_machine_importer.dart';
 export 'package:rive/src/core/importers/state_machine_importer.dart';
 export 'package:rive/src/core/importers/state_machine_layer_importer.dart';
 export 'package:rive/src/core/importers/state_machine_listener_importer.dart';

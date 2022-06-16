@@ -33,6 +33,17 @@ abstract class TransformComponent extends TransformComponentBase {
   final List<Constraint> _constraints = [];
   Iterable<Constraint> get constraints => _constraints;
 
+  bool get isConstrained {
+    Component? component = this;
+    while (component != null) {
+      if (component is TransformComponent && component.constraints.isNotEmpty) {
+        return true;
+      }
+      component = component.parent;
+    }
+    return false;
+  }
+
   double _renderOpacity = 1;
   double get renderOpacity => _renderOpacity;
 

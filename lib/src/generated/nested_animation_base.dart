@@ -1,15 +1,20 @@
 /// Core automatically generated lib/src/generated/nested_animation_base.dart.
 /// Do not modify manually.
 
-import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/generated/component_base.dart';
+import 'package:rive/src/generated/container_component_base.dart';
+import 'package:rive/src/rive_core/container_component.dart';
 
-abstract class NestedAnimationBase extends Component {
+abstract class NestedAnimationBase extends ContainerComponent {
   static const int typeKey = 93;
   @override
   int get coreType => NestedAnimationBase.typeKey;
   @override
-  Set<int> get coreTypes =>
-      {NestedAnimationBase.typeKey, ComponentBase.typeKey};
+  Set<int> get coreTypes => {
+        NestedAnimationBase.typeKey,
+        ContainerComponentBase.typeKey,
+        ComponentBase.typeKey
+      };
 
   /// --------------------------------------------------------------------------
   /// AnimationId field with key 198.

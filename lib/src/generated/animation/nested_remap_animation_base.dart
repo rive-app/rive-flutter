@@ -3,6 +3,7 @@
 /// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
+import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/rive_core/animation/nested_linear_animation.dart';
 
@@ -15,6 +16,7 @@ abstract class NestedRemapAnimationBase extends NestedLinearAnimation {
         NestedRemapAnimationBase.typeKey,
         NestedLinearAnimationBase.typeKey,
         NestedAnimationBase.typeKey,
+        ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
 
