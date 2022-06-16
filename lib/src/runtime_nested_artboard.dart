@@ -124,6 +124,14 @@ class RuntimeNestedStateMachineInstance extends NestedStateMachineInstance {
 
   @override
   void pointerUp(Vec2D position) => stateMachineController.pointerUp(position);
+
+  @override
+  void setInputValue(int id, dynamic value) {
+    var inputs = stateMachineController.stateMachine.inputs;
+    if (id < inputs.length && id >= 0) {
+      stateMachineController.setInputValue(inputs[id].id, value);
+    }
+  }
 }
 
 class RuntimeMountedArtboard extends MountedArtboard {

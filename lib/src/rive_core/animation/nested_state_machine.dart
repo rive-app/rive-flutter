@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/nested_state_machine_base.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
@@ -16,6 +17,8 @@ abstract class NestedStateMachineInstance {
   void pointerDown(Vec2D position);
 
   void pointerUp(Vec2D position);
+
+  void setInputValue(int id, dynamic value);
 }
 
 class NestedStateMachine extends NestedStateMachineBase {
@@ -43,6 +46,12 @@ class NestedStateMachine extends NestedStateMachineBase {
       NestedStateMachineInstance? from, NestedStateMachineInstance? to) {
     from?.isActiveChanged.removeListener(_isActiveChanged);
     to?.isActiveChanged.addListener(_isActiveChanged);
+  }
+
+  void setInputValue(int id, dynamic value) {
+    int inputId = id;
+
+    _stateMachineInstance?.setInputValue(inputId, value);
   }
 
   void pointerMove(Vec2D position) =>

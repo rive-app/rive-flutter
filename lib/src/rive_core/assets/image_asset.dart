@@ -21,6 +21,7 @@ class ImageAsset extends ImageAssetBase {
     if (_image == image) {
       return;
     }
+
     _image = image;
   }
 
@@ -28,7 +29,7 @@ class ImageAsset extends ImageAssetBase {
   Future<void> decode(Uint8List bytes) {
     final completer = Completer<void>();
     ui.decodeImageFromList(bytes, (value) {
-      _image = value;
+      image = value;
       completer.complete();
     });
     return completer.future;

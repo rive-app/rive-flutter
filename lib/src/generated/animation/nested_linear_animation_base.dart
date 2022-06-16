@@ -3,6 +3,7 @@
 /// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
+import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/nested_animation.dart';
 
@@ -15,6 +16,7 @@ abstract class NestedLinearAnimationBase
   Set<int> get coreTypes => {
         NestedLinearAnimationBase.typeKey,
         NestedAnimationBase.typeKey,
+        ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
 
