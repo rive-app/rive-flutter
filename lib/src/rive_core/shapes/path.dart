@@ -6,7 +6,6 @@ import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/component_flags.dart';
 import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/circle_constant.dart';
 import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
@@ -168,17 +167,19 @@ abstract class Path extends PathBase {
         toNext.x /= toNextLength;
         toNext.y /= toNextLength;
 
-        var renderRadius = min(toPrevLength, min(toNextLength, radius));
+        var renderRadius = min(toPrevLength / 2, min(toNextLength / 2, radius));
+        var idealDistance =
+            _computeIdealControlPointDistance(toPrev, toNext, renderRadius);
 
         var translation = Vec2D.scaleAndAdd(Vec2D(), pos, toPrev, renderRadius);
         path.moveTo(startInX = startX = translation.x,
             startInY = startY = translation.y);
 
         var outPoint = Vec2D.scaleAndAdd(
-            Vec2D(), pos, toPrev, icircleConstant * renderRadius);
+            Vec2D(), pos, toPrev, renderRadius - idealDistance);
 
         var inPoint = Vec2D.scaleAndAdd(
-            Vec2D(), pos, toNext, icircleConstant * renderRadius);
+            Vec2D(), pos, toNext, renderRadius - idealDistance);
 
         var posNext = Vec2D.scaleAndAdd(Vec2D(), pos, toNext, renderRadius);
         path.cubicTo(outPoint.x, outPoint.y, inPoint.x, inPoint.y,
@@ -210,9 +211,13 @@ abstract class Path extends PathBase {
 
         var radius = point.radius;
         if (radius > 0) {
-          var pos = point.renderTranslation;
+          var prev = vertices[i - 1];
 
-          var toPrev = Vec2D.fromValues(outX - pos.x, outY - pos.y);
+          var pos = point.renderTranslation;
+          var toPrev =
+              (prev is CubicVertex ? prev.renderOut : prev.renderTranslation) -
+                  pos;
+
           var toPrevLength = toPrev.length();
           toPrev.x /= toPrevLength;
           toPrev.y /= toPrevLength;
@@ -226,7 +231,11 @@ abstract class Path extends PathBase {
           toNext.x /= toNextLength;
           toNext.y /= toNextLength;
 
-          var renderRadius = min(toPrevLength, min(toNextLength, radius));
+          var renderRadius =
+              min(toPrevLength / 2, min(toNextLength / 2, radius));
+
+          var idealDistance =
+              _computeIdealControlPointDistance(toPrev, toNext, renderRadius);
 
           var translation =
               Vec2D.scaleAndAdd(Vec2D(), pos, toPrev, renderRadius);
@@ -238,10 +247,10 @@ abstract class Path extends PathBase {
           }
 
           var outPoint = Vec2D.scaleAndAdd(
-              Vec2D(), pos, toPrev, icircleConstant * renderRadius);
+              Vec2D(), pos, toPrev, renderRadius - idealDistance);
 
           var inPoint = Vec2D.scaleAndAdd(
-              Vec2D(), pos, toNext, icircleConstant * renderRadius);
+              Vec2D(), pos, toNext, renderRadius - idealDistance);
 
           var posNext = Vec2D.scaleAndAdd(Vec2D(), pos, toNext, renderRadius);
           path.cubicTo(outPoint.x, outPoint.y, inPoint.x, inPoint.y,
@@ -492,4 +501,21 @@ void _expandBoundsForAxis(AABB bounds, int component, double start, double cp1,
     _expandBoundsToCubicPoint(
         bounds, component, d2a / (d2a - d2b), start, cp1, cp2, end);
   }
+}
+
+/// Compute an ideal control point distance to create a curve of the given
+/// radius.
+double _computeIdealControlPointDistance(
+    Vec2D toPrev, Vec2D toNext, double radius) {
+  // Get the angle between next and prev
+  var angle = atan2(toPrev.x * toNext.y - toPrev.y * toNext.x,
+          toPrev.x * toNext.x + toPrev.y * toNext.y)
+      .abs();
+
+  return min(
+      radius,
+      (4 / 3) *
+          tan(pi / (2 * ((2 * pi) / angle))) *
+          radius *
+          (angle < pi / 2 ? 1 + cos(angle) : 2 - sin(angle)));
 }
