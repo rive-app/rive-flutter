@@ -1,3 +1,8 @@
+## 0.9.1
+
+- Support for Nested Inputs.
+- Updated corner radius logic (matches new editor changes).
+
 ## 0.9.0
 
 - Support for Listeners.
