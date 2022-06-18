@@ -254,8 +254,12 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
   /// The artboard that this state machine controller is manipulating.
   Artboard? get artboard => _artboard;
 
+  late CoreContext core;
+
   @override
   bool init(CoreContext core) {
+    this.core = core;
+
     _clearLayerControllers();
 
     for (final layer in stateMachine.layers) {
@@ -391,15 +395,15 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         // we're trying to trigger.
         if (hoverChange) {
           if (isOver && event.listenerType == ListenerType.enter) {
-            event.performChanges(this);
+            event.performChanges(this, position);
             isActive = true;
           } else if (!isOver && event.listenerType == ListenerType.exit) {
-            event.performChanges(this);
+            event.performChanges(this, position);
             isActive = true;
           }
         }
         if (isOver && hitEvent == event.listenerType) {
-          event.performChanges(this);
+          event.performChanges(this, position);
           isActive = true;
         }
       }
@@ -427,7 +431,10 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     }
   }
 
-  void pointerMove(Vec2D position) => _processEvent(position);
+  void pointerMove(Vec2D position) => _processEvent(
+        position,
+        hitEvent: ListenerType.move,
+      );
 
   void pointerDown(Vec2D position) => _processEvent(
         position,

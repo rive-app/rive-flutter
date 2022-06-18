@@ -50,6 +50,7 @@ import 'package:rive/src/rive_core/animation/keyframe_color.dart';
 import 'package:rive/src/rive_core/animation/keyframe_double.dart';
 import 'package:rive/src/rive_core/animation/keyframe_id.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/rive_core/animation/listener_align_target.dart';
 import 'package:rive/src/rive_core/animation/listener_bool_change.dart';
 import 'package:rive/src/rive_core/animation/listener_number_change.dart';
 import 'package:rive/src/rive_core/animation/listener_trigger_change.dart';
@@ -164,6 +165,8 @@ class RiveCoreContext {
         return KeyFrameBool();
       case ListenerBoolChangeBase.typeKey:
         return ListenerBoolChange();
+      case ListenerAlignTargetBase.typeKey:
+        return ListenerAlignTarget();
       case TransitionNumberConditionBase.typeKey:
         return TransitionNumberCondition();
       case AnyStateBase.typeKey:
@@ -610,6 +613,11 @@ class RiveCoreContext {
       case ListenerBoolChangeBase.valuePropertyKey:
         if (object is ListenerBoolChangeBase && value is int) {
           object.value = value;
+        }
+        break;
+      case ListenerAlignTargetBase.targetIdPropertyKey:
+        if (object is ListenerAlignTargetBase && value is int) {
+          object.targetId = value;
         }
         break;
       case TransitionValueConditionBase.opValuePropertyKey:
@@ -1196,6 +1204,7 @@ class RiveCoreContext {
       case KeyFrameBase.interpolatorIdPropertyKey:
       case KeyFrameIdBase.valuePropertyKey:
       case ListenerBoolChangeBase.valuePropertyKey:
+      case ListenerAlignTargetBase.targetIdPropertyKey:
       case TransitionValueConditionBase.opValuePropertyKey:
       case StateTransitionBase.stateToIdPropertyKey:
       case StateTransitionBase.flagsPropertyKey:
@@ -1423,6 +1432,8 @@ class RiveCoreContext {
         return (object as KeyFrameIdBase).value;
       case ListenerBoolChangeBase.valuePropertyKey:
         return (object as ListenerBoolChangeBase).value;
+      case ListenerAlignTargetBase.targetIdPropertyKey:
+        return (object as ListenerAlignTargetBase).targetId;
       case TransitionValueConditionBase.opValuePropertyKey:
         return (object as TransitionValueConditionBase).opValue;
       case StateTransitionBase.stateToIdPropertyKey:
@@ -1911,6 +1922,11 @@ class RiveCoreContext {
       case ListenerBoolChangeBase.valuePropertyKey:
         if (object is ListenerBoolChangeBase) {
           object.value = value;
+        }
+        break;
+      case ListenerAlignTargetBase.targetIdPropertyKey:
+        if (object is ListenerAlignTargetBase) {
+          object.targetId = value;
         }
         break;
       case TransitionValueConditionBase.opValuePropertyKey:
