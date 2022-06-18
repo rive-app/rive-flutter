@@ -2,6 +2,7 @@
 /// lib/src/generated/animation/listener_bool_change_base.dart.
 /// Do not modify manually.
 
+import 'package:rive/src/generated/animation/listener_action_base.dart';
 import 'package:rive/src/rive_core/animation/listener_input_change.dart';
 
 abstract class ListenerBoolChangeBase extends ListenerInputChange {
@@ -9,8 +10,11 @@ abstract class ListenerBoolChangeBase extends ListenerInputChange {
   @override
   int get coreType => ListenerBoolChangeBase.typeKey;
   @override
-  Set<int> get coreTypes =>
-      {ListenerBoolChangeBase.typeKey, ListenerInputChangeBase.typeKey};
+  Set<int> get coreTypes => {
+        ListenerBoolChangeBase.typeKey,
+        ListenerInputChangeBase.typeKey,
+        ListenerActionBase.typeKey
+      };
 
   /// --------------------------------------------------------------------------
   /// Value field with key 228.
