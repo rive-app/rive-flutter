@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:clock/clock.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -16,7 +18,7 @@ import 'package:rive/src/rive_core/math/vec2d.dart';
 T? _ambiguate<T>(T? value) => value;
 
 abstract class RiveRenderBox extends RenderBox {
-  final Stopwatch _stopwatch = Stopwatch();
+  final Stopwatch _stopwatch = clock.stopwatch();
   BoxFit _fit = BoxFit.none;
   Alignment _alignment = Alignment.center;
   bool _useArtboardSize = false;
