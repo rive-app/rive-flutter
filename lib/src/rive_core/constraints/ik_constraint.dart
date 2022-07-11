@@ -176,11 +176,11 @@ class IKConstraint extends IKConstraintBase {
     var pBT = Vec2D.clone(worldTargetTranslation);
 
     // To target in worldspace
-    var toTarget = Vec2D.subtract(Vec2D(), pBT, pA);
+    var toTarget = pBT - pA;
 
     // Note this is directional, hence not transformMat2d
     Vec2D toTargetLocal = Vec2D.transformMat2(Vec2D(), toTarget, iworld);
-    var r = atan2(toTargetLocal[1], toTargetLocal[0]);
+    var r = toTargetLocal.atan2();
 
     _constrainRotation(fk1, r);
     fk1.angle = r;
@@ -199,21 +199,21 @@ class IKConstraint extends IKConstraintBase {
     var pB = b2.tipWorldTranslation;
     var pBT = Vec2D.clone(worldTargetTranslation);
 
-    Vec2D.transformMat2D(pA, pA, iworld);
-    Vec2D.transformMat2D(pC, pC, iworld);
-    Vec2D.transformMat2D(pB, pB, iworld);
-    Vec2D.transformMat2D(pBT, pBT, iworld);
+    pA.apply(iworld);
+    pC.apply(iworld);
+    pB.apply(iworld);
+    pBT.apply(iworld);
 
     // http://mathworld.wolfram.com/LawofCosines.html
 
-    var av = Vec2D.subtract(Vec2D(), pB, pC);
-    var a = Vec2D.length(av);
+    var av = pB - pC;
+    var a = av.length();
 
-    var bv = Vec2D.subtract(Vec2D(), pC, pA);
-    var b = Vec2D.length(bv);
+    var bv = pC - pA;
+    var b = bv.length();
 
-    var cv = Vec2D.subtract(Vec2D(), pBT, pA);
-    var c = Vec2D.length(cv);
+    var cv = pBT - pA;
+    var c = cv.length();
     if (b == 0 || c == 0) {
       // Cannot solve, would cause divide by zero. Usually means one of the two
       // bones has a 0/0 scale.
@@ -221,6 +221,7 @@ class IKConstraint extends IKConstraintBase {
     }
     var A = acos(max(-1, min(1, (-a * a + b * b + c * c) / (2 * b * c))));
     var C = acos(max(-1, min(1, (a * a + b * b - c * c) / (2 * a * b))));
+    final cvAngle = cv.atan2();
 
     double r1, r2;
     if (b2.parent != b1) {
@@ -231,23 +232,23 @@ class IKConstraint extends IKConstraintBase {
       pC = firstChild.bone.worldTranslation;
       pB = b2.tipWorldTranslation;
 
-      var avec = Vec2D.subtract(Vec2D(), pB, pC);
+      var avec = pB - pC;
 
       var avLocal = Vec2D.transformMat2(Vec2D(), avec, secondChildWorldInverse);
-      var angleCorrection = -atan2(avLocal[1], avLocal[0]);
+      var angleCorrection = -avLocal.atan2();
 
       if (invertDirection) {
-        r1 = atan2(cv[1], cv[0]) - A;
+        r1 = cvAngle - A;
         r2 = -C + pi + angleCorrection;
       } else {
-        r1 = A + atan2(cv[1], cv[0]);
+        r1 = A + cvAngle;
         r2 = C - pi + angleCorrection;
       }
     } else if (invertDirection) {
-      r1 = atan2(cv[1], cv[0]) - A;
+      r1 = cvAngle - A;
       r2 = -C + pi;
     } else {
-      r1 = A + atan2(cv[1], cv[0]);
+      r1 = A + cvAngle;
       r2 = C - pi;
     }
     _constrainRotation(fk1, r1);

@@ -41,8 +41,8 @@ class Weight extends WeightBase {
       tx += boneTransforms[startBoneTransformIndex++] * normalizedWeight;
       ty += boneTransforms[startBoneTransformIndex++] * normalizedWeight;
     }
-    result[0] = xx * rx + yx * ry + tx;
-    result[1] = xy * rx + yy * ry + ty;
+    result.x = xx * rx + yx * ry + tx;
+    result.y = xy * rx + yy * ry + ty;
   }
 
   static int encodedWeightValue(int index, int data) {

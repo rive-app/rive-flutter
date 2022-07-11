@@ -33,6 +33,17 @@ abstract class TransformComponent extends TransformComponentBase {
   final List<Constraint> _constraints = [];
   Iterable<Constraint> get constraints => _constraints;
 
+  bool get isConstrained {
+    Component? component = this;
+    while (component != null) {
+      if (component is TransformComponent && component.constraints.isNotEmpty) {
+        return true;
+      }
+      component = component.parent;
+    }
+    return false;
+  }
+
   double _renderOpacity = 1;
   double get renderOpacity => _renderOpacity;
 
@@ -76,8 +87,8 @@ abstract class TransformComponent extends TransformComponentBase {
 
   Vec2D get scale => Vec2D.fromValues(scaleX, scaleY);
   set scale(Vec2D value) {
-    scaleX = value[0];
-    scaleY = value[1];
+    scaleX = value.x;
+    scaleY = value.y;
   }
 
   @mustCallSuper

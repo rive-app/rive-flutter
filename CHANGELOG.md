@@ -1,3 +1,14 @@
+## 0.9.1
+
+- Support for Nested Inputs.
+- Updated corner radius logic (matches new editor changes).
+
+## 0.9.0
+
+- Support for Listeners.
+- Fixes for Flutter 3.0 warnings.
+- Initial support for NestedStateMachine
+
 ## 0.8.4
 
 - Mesh deform support for image assets, including bone binding and skin deformation.

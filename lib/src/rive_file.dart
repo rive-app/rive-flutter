@@ -19,8 +19,10 @@ import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
+import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
@@ -160,7 +162,14 @@ class RiveFile {
         case StateMachineLayerBase.typeKey:
           stackObject = StateMachineLayerImporter(object as StateMachineLayer);
           break;
-
+        case StateMachineListenerBase.typeKey:
+          stackObject =
+              StateMachineListenerImporter(object as StateMachineListener);
+          break;
+        case NestedStateMachineBase.typeKey:
+          stackObject =
+              NestedStateMachineImporter(object as NestedStateMachine);
+          break;
         case EntryStateBase.typeKey:
         case AnyStateBase.typeKey:
         case ExitStateBase.typeKey:

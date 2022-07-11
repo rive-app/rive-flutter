@@ -153,6 +153,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   final Set<NestedArtboard> _activeNestedArtboards = {};
+  Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   /// Update any dirty components in this artboard.
   bool advance(double elapsedSeconds, {bool nested = false}) {
@@ -170,7 +171,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     if (nested) {
       var active = _activeNestedArtboards.toList(growable: false);
       for (final activeNestedArtboard in active) {
-        activeNestedArtboard.advance(elapsedSeconds);
+        if (activeNestedArtboard.advance(elapsedSeconds)) {
+          didUpdate = true;
+        }
       }
     }
 
@@ -255,7 +258,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   Vec2D renderTranslation(Vec2D worldTranslation) {
     final wt = originWorld;
-    return Vec2D.add(Vec2D(), worldTranslation, wt);
+    return worldTranslation + wt;
   }
 
   /// Adds a component to the artboard. Good place for the artboard to check for
@@ -359,6 +362,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// The animation controllers that are called back whenever the artboard
   /// advances.
   final Set<RiveAnimationController> _animationControllers = {};
+
+  /// Access a read-only iterator of currently applied animation controllers.
+  Iterable<RiveAnimationController> get animationControllers =>
+      _animationControllers;
 
   /// Add an animation controller to this artboard. Playing will be scheduled if
   /// it's already playing.
@@ -525,5 +532,29 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
 
     return super.import(stack);
+  }
+
+  StateMachine? _defaultStateMachine;
+  StateMachine? get defaultStateMachine => _defaultStateMachine;
+  set defaultStateMachine(StateMachine? value) {
+    if (_defaultStateMachine == value) {
+      return;
+    }
+
+    _defaultStateMachine = value;
+    defaultStateMachineId = value?.id ?? Core.missingId;
+  }
+
+  @override
+  void onAddedDirty() {
+    super.onAddedDirty();
+    defaultStateMachine = defaultStateMachineId == Core.missingId
+        ? null
+        : context.resolve(defaultStateMachineId);
+  }
+
+  @override
+  void defaultStateMachineIdChanged(int from, int to) {
+    defaultStateMachine = to == Core.missingId ? null : context.resolve(to);
   }
 }

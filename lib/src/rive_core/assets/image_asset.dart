@@ -17,11 +17,19 @@ class ImageAsset extends ImageAssetBase {
   @visibleForTesting
   ImageAsset.fromTestImage(this._image);
 
+  set image(ui.Image? image) {
+    if (_image == image) {
+      return;
+    }
+
+    _image = image;
+  }
+
   @override
   Future<void> decode(Uint8List bytes) {
-    var completer = Completer<void>();
+    final completer = Completer<void>();
     ui.decodeImageFromList(bytes, (value) {
-      _image = value;
+      image = value;
       completer.complete();
     });
     return completer.future;

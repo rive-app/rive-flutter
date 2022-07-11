@@ -34,7 +34,7 @@ class Rive extends LeafRenderObjectWidget {
   /// Alignment for the rendering artboard
   final Alignment alignment;
 
-  /// Enables/disables anitalising
+  /// Enables/disables antialiasing
   final bool antialiasing;
 
   const Rive({
@@ -112,6 +112,7 @@ class RiveRenderObject extends RiveRenderBox {
 
   @override
   void draw(Canvas canvas, Mat2D viewTransform) {
+    canvas.transform(viewTransform.mat4);
     artboard.draw(canvas);
   }
 }

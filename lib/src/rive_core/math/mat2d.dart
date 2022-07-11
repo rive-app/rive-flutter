@@ -53,16 +53,29 @@ class Mat2D {
 
   Mat2D.fromTranslation(Vec2D translation)
       : _buffer = Float32List.fromList(
-            [1.0, 0.0, 0.0, 1.0, translation[0], translation[1]]);
+            [1.0, 0.0, 0.0, 1.0, translation.x, translation.y]);
+
+  Mat2D.fromTranslate(double x, double y)
+      : _buffer = Float32List.fromList([1.0, 0.0, 0.0, 1.0, x, y]);
 
   Mat2D.fromScaling(Vec2D scaling)
-      : _buffer = Float32List.fromList([scaling[0], 0, 0, scaling[1], 0, 0]);
+      : _buffer = Float32List.fromList([scaling.x, 0, 0, scaling.y, 0, 0]);
+
+  Mat2D.fromScale(double x, double y)
+      : _buffer = Float32List.fromList([x, 0, 0, y, 0, 0]);
 
   Mat2D.fromMat4(Float64List mat4)
       : _buffer = Float32List.fromList(
             [mat4[0], mat4[1], mat4[4], mat4[5], mat4[12], mat4[13]]);
 
   Mat2D.clone(Mat2D copy) : _buffer = Float32List.fromList(copy.values);
+
+  Vec2D mapXY(double x, double y) {
+    return Vec2D.fromValues(x * _buffer[0] + y * _buffer[2] + _buffer[4],
+        x * _buffer[1] + y * _buffer[3] + _buffer[5]);
+  }
+
+  Vec2D operator *(Vec2D v) => mapXY(v.x, v.y);
 
   static Mat2D fromRotation(Mat2D o, double rad) {
     double s = sin(rad);
@@ -95,18 +108,11 @@ class Mat2D {
   }
 
   static void scale(Mat2D o, Mat2D a, Vec2D v) {
-    double a0 = a[0],
-        a1 = a[1],
-        a2 = a[2],
-        a3 = a[3],
-        a4 = a[4],
-        a5 = a[5],
-        v0 = v[0],
-        v1 = v[1];
-    o[0] = a0 * v0;
-    o[1] = a1 * v0;
-    o[2] = a2 * v1;
-    o[3] = a3 * v1;
+    double a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
+    o[0] = a0 * v.x;
+    o[1] = a1 * v.x;
+    o[2] = a2 * v.y;
+    o[3] = a3 * v.y;
     o[4] = a4;
     o[5] = a5;
   }
@@ -165,8 +171,8 @@ class Mat2D {
     o[1] = a[1];
     o[2] = a[2];
     o[3] = a[3];
-    o[4] = a[4] + b[0];
-    o[5] = a[5] + b[1];
+    o[4] = a[4] + b.x;
+    o[5] = a[5] + b.y;
     return o;
   }
 
@@ -191,16 +197,16 @@ class Mat2D {
   static void getScale(Mat2D m, Vec2D s) {
     double x = m[0];
     double y = m[1];
-    s[0] = x.sign * sqrt(x * x + y * y);
+    s.x = x.sign * sqrt(x * x + y * y);
 
     x = m[2];
     y = m[3];
-    s[1] = y.sign * sqrt(x * x + y * y);
+    s.y = y.sign * sqrt(x * x + y * y);
   }
 
   static Vec2D getTranslation(Mat2D m, Vec2D t) {
-    t[0] = m[4];
-    t[1] = m[5];
+    t.x = m[4];
+    t.y = m[5];
     return t;
   }
 
@@ -212,6 +218,14 @@ class Mat2D {
     mat[4] = 0.0;
     mat[5] = 0.0;
   }
+
+  bool get isIdentity =>
+      _buffer[0] == 1.0 &&
+      _buffer[1] == 0.0 &&
+      _buffer[2] == 0.0 &&
+      _buffer[3] == 1.0 &&
+      _buffer[4] == 0.0 &&
+      _buffer[5] == 0.0;
 
   static void decompose(Mat2D m, TransformComponents result) {
     double m0 = m[0], m1 = m[1], m2 = m[2], m3 = m[3];

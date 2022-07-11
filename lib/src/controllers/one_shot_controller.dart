@@ -1,7 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:rive/src/controllers/simple_controller.dart';
 
-/// Controller tailered for managing one-shot animations
+/// This allows a value of type T or T?
+/// to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become
+/// non-nullable can still be used with `!` and `?`
+/// to support older versions of the API as well.
+T? _ambiguate<T>(T? value) => value;
+
+/// Controller tailored for managing one-shot animations
 class OneShotAnimation extends SimpleAnimation {
   /// Fires when the animation stops being active
   final VoidCallback? onStop;
@@ -37,6 +45,7 @@ class OneShotAnimation extends SimpleAnimation {
     isActive
         ? onStart?.call()
         // onStop can fire while widgets are still drawing
-        : WidgetsBinding.instance?.addPostFrameCallback((_) => onStop?.call());
+        : _ambiguate(WidgetsBinding.instance)
+            ?.addPostFrameCallback((_) => onStop?.call());
   }
 }

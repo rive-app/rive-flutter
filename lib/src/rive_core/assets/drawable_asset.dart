@@ -1,9 +1,9 @@
 import 'package:rive/src/generated/assets/drawable_asset_base.dart';
+
 export 'package:rive/src/generated/assets/drawable_asset_base.dart';
 
 abstract class DrawableAsset extends DrawableAssetBase {
-  @override
-  bool get isUsable => width != 0 && height != 0;
+  DrawableAsset();
 
   @override
   void heightChanged(double from, double to) {}
