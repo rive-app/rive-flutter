@@ -22,6 +22,7 @@ export 'package:rive/src/core/importers/state_machine_importer.dart';
 export 'package:rive/src/core/importers/state_machine_layer_importer.dart';
 export 'package:rive/src/core/importers/state_machine_listener_importer.dart';
 export 'package:rive/src/core/importers/state_transition_importer.dart';
+export 'package:rive/src/event_list.dart';
 export 'package:rive/src/generated/rive_core_context.dart';
 export 'package:rive/src/listener_actions.dart';
 export 'package:rive/src/runtime_artboard.dart';

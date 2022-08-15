@@ -43,7 +43,9 @@ class Image extends ImageBase
     }
     bool clipped = clip(canvas);
 
-    final paint = ui.Paint()..color = ui.Color.fromRGBO(0, 0, 0, renderOpacity);
+    final paint = ui.Paint()
+      ..color = ui.Color.fromRGBO(0, 0, 0, renderOpacity)
+      ..filterQuality = ui.FilterQuality.high;
 
     final width = asset!.width;
     final height = asset!.height;

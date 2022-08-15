@@ -11,6 +11,7 @@ import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
+import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
@@ -76,9 +77,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   List<Drawable> get drawables => _drawables;
 
   final AnimationList _animations = AnimationList();
+  final EventList _events = EventList();
 
   /// List of animations and state machines in the artboard.
   AnimationList get animations => _animations;
+
+  /// List of events in the artboard.
+  EventList get events => _events;
 
   /// List of linear animations in the artboard.
   Iterable<LinearAnimation> get linearAnimations =>
@@ -355,6 +360,25 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// be @internal when it's supported.
   bool internalRemoveAnimation(Animation animation) {
     bool removed = _animations.remove(animation);
+
+    return removed;
+  }
+
+  /// Called by rive_core to add an Event to an Artboard. This should be
+  /// @internal when it's supported.
+  bool internalAddEvent(Event event) {
+    if (_events.contains(event)) {
+      return false;
+    }
+    _events.add(event);
+
+    return true;
+  }
+
+  /// Called by rive_core to remove an Event from an Artboard. This should
+  /// be @internal when it's supported.
+  bool internalRemoveEvent(Event event) {
+    bool removed = _events.remove(event);
 
     return removed;
   }

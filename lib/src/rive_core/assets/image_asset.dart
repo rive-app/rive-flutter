@@ -21,7 +21,6 @@ class ImageAsset extends ImageAssetBase {
     if (_image == image) {
       return;
     }
-
     _image = image;
   }
 
@@ -39,8 +38,10 @@ class ImageAsset extends ImageAssetBase {
     ..asset = this
     ..name = name;
 
-  /// The editor works with images as PNGs, even if their sources may have come
-  /// from other formats.
+  static final imageExtensions = ['png', 'webp', 'jpeg'];
+
   @override
-  String get fileExtension => 'png';
+  String get fileExtension => imageExtensions[format];
+
+  int get format => 0;
 }

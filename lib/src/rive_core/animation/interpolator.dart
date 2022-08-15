@@ -1,5 +1,3 @@
-
-
 abstract class Interpolator {
   int get id;
 
