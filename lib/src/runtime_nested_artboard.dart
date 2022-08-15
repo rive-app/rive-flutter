@@ -72,7 +72,6 @@ class RuntimeNestedLinearAnimationInstance
 
   @override
   bool advance(double elapsedSeconds) {
-    needsApply = true;
     linearAnimation.advance(elapsedSeconds * speed);
     return linearAnimation.keepGoing;
   }
@@ -86,7 +85,6 @@ class RuntimeNestedLinearAnimationInstance
     if (localTime == linearAnimation.time) {
       return;
     }
-    needsApply = true;
     linearAnimation.time = localTime;
   }
 

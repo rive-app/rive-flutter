@@ -1,7 +1,19 @@
-import 'package:flutter/foundation.dart';
+import 'package:rive/src/generated/event_base.dart';
+import 'package:rive/src/rive_core/artboard.dart';
 
-// Just a way to get around the protected notifyListeners so we can use trigger
-// multiple events from a single object.
-class Event extends ChangeNotifier {
-  void notify() => notifyListeners();
+export 'package:rive/src/generated/event_base.dart';
+
+class Event extends EventBase {
+  @override
+  void typeChanged(String from, String to) {}
+
+  @override
+  void update(int dirt) {}
+
+  @override
+  void changeArtboard(Artboard? value) {
+    artboard?.internalRemoveEvent(this);
+    super.changeArtboard(value);
+    artboard?.internalAddEvent(this);
+  }
 }

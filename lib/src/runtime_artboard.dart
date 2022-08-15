@@ -1,7 +1,7 @@
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/event.dart';
+import 'package:rive/src/rive_core/notifier.dart';
 
 /// Adds getters for linear animations and state machines
 extension RuntimeArtboardGetters on RuntimeArtboard {
@@ -18,7 +18,7 @@ extension RuntimeArtboardGetters on RuntimeArtboard {
 /// directly referenced. Use the Artboard type for any direct interactions with
 /// an artboard, and use extension methods to add functionality to Artboard.
 class RuntimeArtboard extends Artboard implements CoreContext {
-  final _redraw = Event();
+  final _redraw = Notifier();
   ChangeNotifier get redraw => _redraw;
 
   /// Note that objects must be nullable as some may not resolve during load due

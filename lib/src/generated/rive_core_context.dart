@@ -87,8 +87,12 @@ import 'package:rive/src/rive_core/constraints/rotation_constraint.dart';
 import 'package:rive/src/rive_core/constraints/scale_constraint.dart';
 import 'package:rive/src/rive_core/constraints/transform_constraint.dart';
 import 'package:rive/src/rive_core/constraints/translation_constraint.dart';
+import 'package:rive/src/rive_core/custom_property_boolean.dart';
+import 'package:rive/src/rive_core/custom_property_number.dart';
+import 'package:rive/src/rive_core/custom_property_string.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
+import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
@@ -121,6 +125,8 @@ class RiveCoreContext {
     switch (typeKey) {
       case DrawTargetBase.typeKey:
         return DrawTarget();
+      case CustomPropertyNumberBase.typeKey:
+        return CustomPropertyNumber();
       case DistanceConstraintBase.typeKey:
         return DistanceConstraint();
       case IKConstraintBase.typeKey:
@@ -263,8 +269,12 @@ class RiveCoreContext {
         return Image();
       case CubicDetachedVertexBase.typeKey:
         return CubicDetachedVertex();
+      case EventBase.typeKey:
+        return Event();
       case DrawRulesBase.typeKey:
         return DrawRules();
+      case CustomPropertyBooleanBase.typeKey:
+        return CustomPropertyBoolean();
       case ArtboardBase.typeKey:
         return Artboard();
       case BackboardBase.typeKey:
@@ -277,6 +287,8 @@ class RiveCoreContext {
         return Skin();
       case TendonBase.typeKey:
         return Tendon();
+      case CustomPropertyStringBase.typeKey:
+        return CustomPropertyString();
       case FolderBase.typeKey:
         return Folder();
       case ImageAssetBase.typeKey:
@@ -308,6 +320,11 @@ class RiveCoreContext {
       case DrawTargetBase.placementValuePropertyKey:
         if (object is DrawTargetBase && value is int) {
           object.placementValue = value;
+        }
+        break;
+      case CustomPropertyNumberBase.propertyValuePropertyKey:
+        if (object is CustomPropertyNumberBase && value is double) {
+          object.propertyValue = value;
         }
         break;
       case ConstraintBase.strengthPropertyKey:
@@ -1005,9 +1022,19 @@ class RiveCoreContext {
           object.outDistance = value;
         }
         break;
+      case EventBase.typePropertyKey:
+        if (object is EventBase && value is String) {
+          object.type = value;
+        }
+        break;
       case DrawRulesBase.drawTargetIdPropertyKey:
         if (object is DrawRulesBase && value is int) {
           object.drawTargetId = value;
+        }
+        break;
+      case CustomPropertyBooleanBase.propertyValuePropertyKey:
+        if (object is CustomPropertyBooleanBase && value is bool) {
+          object.propertyValue = value;
         }
         break;
       case ArtboardBase.clipPropertyKey:
@@ -1130,6 +1157,11 @@ class RiveCoreContext {
           object.ty = value;
         }
         break;
+      case CustomPropertyStringBase.propertyValuePropertyKey:
+        if (object is CustomPropertyStringBase && value is String) {
+          object.propertyValue = value;
+        }
+        break;
       case AssetBase.namePropertyKey:
         if (object is AssetBase && value is String) {
           object.name = value;
@@ -1169,6 +1201,8 @@ class RiveCoreContext {
       case ComponentBase.namePropertyKey:
       case AnimationBase.namePropertyKey:
       case StateMachineComponentBase.namePropertyKey:
+      case EventBase.typePropertyKey:
+      case CustomPropertyStringBase.propertyValuePropertyKey:
       case AssetBase.namePropertyKey:
         return stringType;
       case ComponentBase.parentIdPropertyKey:
@@ -1232,6 +1266,7 @@ class RiveCoreContext {
       case TendonBase.boneIdPropertyKey:
       case FileAssetBase.assetIdPropertyKey:
         return uintType;
+      case CustomPropertyNumberBase.propertyValuePropertyKey:
       case ConstraintBase.strengthPropertyKey:
       case DistanceConstraintBase.distancePropertyKey:
       case TransformComponentConstraintBase.copyFactorPropertyKey:
@@ -1336,6 +1371,7 @@ class RiveCoreContext {
       case PointsPathBase.isClosedPropertyKey:
       case RectangleBase.linkCornerRadiusPropertyKey:
       case ClippingShapeBase.isVisiblePropertyKey:
+      case CustomPropertyBooleanBase.propertyValuePropertyKey:
       case ArtboardBase.clipPropertyKey:
         return boolType;
       case KeyFrameColorBase.valuePropertyKey:
@@ -1358,6 +1394,10 @@ class RiveCoreContext {
         return (object as AnimationBase).name;
       case StateMachineComponentBase.namePropertyKey:
         return (object as StateMachineComponentBase).name;
+      case EventBase.typePropertyKey:
+        return (object as EventBase).type;
+      case CustomPropertyStringBase.propertyValuePropertyKey:
+        return (object as CustomPropertyStringBase).propertyValue;
       case AssetBase.namePropertyKey:
         return (object as AssetBase).name;
     }
@@ -1492,6 +1532,8 @@ class RiveCoreContext {
 
   static double getDouble(Core object, int propertyKey) {
     switch (propertyKey) {
+      case CustomPropertyNumberBase.propertyValuePropertyKey:
+        return (object as CustomPropertyNumberBase).propertyValue;
       case ConstraintBase.strengthPropertyKey:
         return (object as ConstraintBase).strength;
       case DistanceConstraintBase.distancePropertyKey:
@@ -1704,6 +1746,8 @@ class RiveCoreContext {
         return (object as RectangleBase).linkCornerRadius;
       case ClippingShapeBase.isVisiblePropertyKey:
         return (object as ClippingShapeBase).isVisible;
+      case CustomPropertyBooleanBase.propertyValuePropertyKey:
+        return (object as CustomPropertyBooleanBase).propertyValue;
       case ArtboardBase.clipPropertyKey:
         return (object as ArtboardBase).clip;
     }
@@ -1747,6 +1791,16 @@ class RiveCoreContext {
       case StateMachineComponentBase.namePropertyKey:
         if (object is StateMachineComponentBase) {
           object.name = value;
+        }
+        break;
+      case EventBase.typePropertyKey:
+        if (object is EventBase) {
+          object.type = value;
+        }
+        break;
+      case CustomPropertyStringBase.propertyValuePropertyKey:
+        if (object is CustomPropertyStringBase) {
+          object.propertyValue = value;
         }
         break;
       case AssetBase.namePropertyKey:
@@ -2064,6 +2118,11 @@ class RiveCoreContext {
 
   static void setDouble(Core object, int propertyKey, double value) {
     switch (propertyKey) {
+      case CustomPropertyNumberBase.propertyValuePropertyKey:
+        if (object is CustomPropertyNumberBase) {
+          object.propertyValue = value;
+        }
+        break;
       case ConstraintBase.strengthPropertyKey:
         if (object is ConstraintBase) {
           object.strength = value;
@@ -2582,6 +2641,11 @@ class RiveCoreContext {
       case ClippingShapeBase.isVisiblePropertyKey:
         if (object is ClippingShapeBase) {
           object.isVisible = value;
+        }
+        break;
+      case CustomPropertyBooleanBase.propertyValuePropertyKey:
+        if (object is CustomPropertyBooleanBase) {
+          object.propertyValue = value;
         }
         break;
       case ArtboardBase.clipPropertyKey:
