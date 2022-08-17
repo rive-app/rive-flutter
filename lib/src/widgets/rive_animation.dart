@@ -2,11 +2,14 @@ import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
 
+import '../core/core.dart';
+
 /// Specifies whether a source is from an asset bundle or http
 enum _Source {
   asset,
   network,
   file,
+  memory,
 }
 
 /// The callback signature for onInit
@@ -17,7 +20,7 @@ typedef OnInitCallback = void Function(Artboard);
 /// within it are used.
 class RiveAnimation extends StatefulWidget {
   /// The asset name or url
-  final String name;
+  final dynamic sourceData;
 
   /// The type of source used to retrieve the asset
   final _Source src;
@@ -52,7 +55,7 @@ class RiveAnimation extends StatefulWidget {
 
   /// Creates a new RiveAnimation from an asset bundle
   const RiveAnimation.asset(
-    this.name, {
+    String name, {
     this.artboard,
     this.animations = const [],
     this.stateMachines = const [],
@@ -62,10 +65,10 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
-  }) : src = _Source.asset;
+  }) : src = _Source.asset,this.sourceData = name;
 
   const RiveAnimation.network(
-    this.name, {
+    String url, {
     this.artboard,
     this.animations = const [],
     this.stateMachines = const [],
@@ -75,10 +78,10 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
-  }) : src = _Source.network;
+  }) : src = _Source.network,this.sourceData = url;
 
   const RiveAnimation.file(
-    this.name, {
+    String path, {
     this.artboard,
     this.animations = const [],
     this.stateMachines = const [],
@@ -88,7 +91,20 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
-  }) : src = _Source.file;
+  }) : src = _Source.file,this.sourceData = path;
+
+  const RiveAnimation.memory(
+      Uint8List data, {
+        this.artboard,
+        this.animations = const [],
+        this.stateMachines = const [],
+        this.fit,
+        this.alignment,
+        this.placeHolder,
+        this.antialiasing = true,
+        this.controllers = const [],
+        this.onInit,
+      }) : src = _Source.memory,this.sourceData = data;
 
   @override
   _RiveAnimationState createState() => _RiveAnimationState();
@@ -106,11 +122,13 @@ class _RiveAnimationState extends State<RiveAnimation> {
     super.initState();
 
     if (widget.src == _Source.asset) {
-      RiveFile.asset(widget.name).then(_init);
+      RiveFile.asset(widget.sourceData).then(_init);
     } else if (widget.src == _Source.network) {
-      RiveFile.network(widget.name).then(_init);
+      RiveFile.network(widget.sourceData).then(_init);
     } else if (widget.src == _Source.file) {
-      RiveFile.file(widget.name).then(_init);
+      RiveFile.file(widget.sourceData).then(_init);
+    }else if (widget.src == _Source.memory) {
+      RiveFile.memory(widget.sourceData).then(_init);
     }
   }
 
