@@ -7,6 +7,7 @@ enum _Source {
   asset,
   network,
   file,
+  riveFile,
 }
 
 /// The callback signature for onInit
@@ -17,7 +18,10 @@ typedef OnInitCallback = void Function(Artboard);
 /// within it are used.
 class RiveAnimation extends StatefulWidget {
   /// The asset name or url
-  final String name;
+  final String? name;
+
+  /// The Rive File object
+  final RiveFile? file;
 
   /// The type of source used to retrieve the asset
   final _Source src;
@@ -62,7 +66,10 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
-  }) : src = _Source.asset;
+    Key? key,
+  })  : file = null,
+        src = _Source.asset,
+        super(key: key);
 
   const RiveAnimation.network(
     this.name, {
@@ -75,7 +82,10 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
-  }) : src = _Source.network;
+    Key? key,
+  })  : file = null,
+        src = _Source.network,
+        super(key: key);
 
   const RiveAnimation.file(
     this.name, {
@@ -88,7 +98,26 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
-  }) : src = _Source.file;
+    Key? key,
+  })  : file = null,
+        src = _Source.file,
+        super(key: key);
+
+  const RiveAnimation.riveFile(
+    this.file, {
+    this.artboard,
+    this.animations = const [],
+    this.stateMachines = const [],
+    this.fit,
+    this.alignment,
+    this.placeHolder,
+    this.antialiasing = true,
+    this.controllers = const [],
+    this.onInit,
+    Key? key,
+  })  : name = null,
+        src = _Source.riveFile,
+        super(key: key);
 
   @override
   _RiveAnimationState createState() => _RiveAnimationState();
@@ -104,14 +133,38 @@ class _RiveAnimationState extends State<RiveAnimation> {
   @override
   void initState() {
     super.initState();
+    _configure();
+  }
 
+  void _configure() {
     if (widget.src == _Source.asset) {
-      RiveFile.asset(widget.name).then(_init);
+      RiveFile.asset(widget.name!).then(_init);
     } else if (widget.src == _Source.network) {
-      RiveFile.network(widget.name).then(_init);
+      RiveFile.network(widget.name!).then(_init);
     } else if (widget.src == _Source.file) {
-      RiveFile.file(widget.name).then(_init);
+      RiveFile.file(widget.name!).then(_init);
+    } else if (widget.src == _Source.riveFile) {
+      _init(widget.file!);
     }
+  }
+
+  @override
+  void didUpdateWidget(covariant RiveAnimation oldWidget) {
+    if (widget.alignment != oldWidget.alignment ||
+        widget.animations != oldWidget.animations ||
+        widget.antialiasing != oldWidget.antialiasing ||
+        widget.artboard != oldWidget.artboard ||
+        widget.controllers != oldWidget.controllers ||
+        widget.file != oldWidget.file ||
+        widget.fit != oldWidget.fit ||
+        widget.name != oldWidget.name ||
+        widget.onInit != oldWidget.onInit ||
+        widget.placeHolder != oldWidget.placeHolder ||
+        widget.src != oldWidget.src ||
+        widget.stateMachines != oldWidget.stateMachines) {
+      setState(_configure);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   /// Initializes the artboard, animations, state machines and controllers
@@ -156,7 +209,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
       }
     });
 
-    // Add any user-created contollers
+    // Add any user-created controllers
     widget.controllers.forEach(artboard.addController);
 
     setState(() => _artboard = artboard);
