@@ -7,7 +7,7 @@ enum _Source {
   asset,
   network,
   file,
-  riveFile,
+  direct,
 }
 
 /// The callback signature for onInit
@@ -103,7 +103,7 @@ class RiveAnimation extends StatefulWidget {
         src = _Source.file,
         super(key: key);
 
-  const RiveAnimation.riveFile(
+  const RiveAnimation.direct(
     this.file, {
     this.artboard,
     this.animations = const [],
@@ -116,14 +116,15 @@ class RiveAnimation extends StatefulWidget {
     this.onInit,
     Key? key,
   })  : name = null,
-        src = _Source.riveFile,
+        src = _Source.direct,
         super(key: key);
 
   @override
-  _RiveAnimationState createState() => _RiveAnimationState();
+  RiveAnimationState createState() => RiveAnimationState();
 }
 
-class _RiveAnimationState extends State<RiveAnimation> {
+@visibleForTesting
+class RiveAnimationState extends State<RiveAnimation> {
   /// Rive controller
   final _controllers = <RiveAnimationController>[];
 
@@ -143,7 +144,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
       RiveFile.network(widget.name!).then(_init);
     } else if (widget.src == _Source.file) {
       RiveFile.file(widget.name!).then(_init);
-    } else if (widget.src == _Source.riveFile) {
+    } else if (widget.src == _Source.direct) {
       _init(widget.file!);
     }
   }
