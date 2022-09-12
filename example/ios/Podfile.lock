@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - rive (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - rive (from `.symlinks/plugins/rive/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  rive:
+    :path: ".symlinks/plugins/rive/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  rive: ce69781890940f630b90abb5e293c273177955fb
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.11.3
