@@ -23,7 +23,7 @@ class _SimpleStateMachineState extends State<SimpleStateMachine> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Simple Animation'),
+        title: const Text('Simple State Machine'),
       ),
       body: Center(
         child: GestureDetector(
