@@ -79,3 +79,7 @@ ios/rive-cpp
 ios/harfbuzz
 macos/rive-cpp
 macos/harfbuzz
+wasm/bin/
+wasm/Makefile
+wasm/render_font.make
+node_modules

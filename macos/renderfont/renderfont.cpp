@@ -8,10 +8,11 @@
 #define EXPORT extern "C" __attribute__((visibility("default"))) __attribute__((used))
 
 EXPORT
-rive::RenderFont* makeRenderFont(const uint8_t* bytes, int64_t length) {
+rive::RenderFont* makeRenderFont(const uint8_t* bytes, uint64_t length) {
     auto result = HBRenderFont::Decode(rive::Span<const uint8_t>(bytes, length));
     if (result) {
-        return result.release();
+        auto ptr = result.release();
+        return ptr;
     }
     return nullptr;
 }
@@ -38,3 +39,17 @@ GlyphPath makeGlyphPath(rive::RenderFont* renderFont, rive::GlyphID id) {
 }
 
 EXPORT void deleteRawPath(rive::RawPath* rawPath) { delete rawPath; }
+
+EXPORT
+rive::DynamicArray<rive::RenderGlyphRun>*
+shapeText(const uint32_t* text, uint64_t length, rive::RenderTextRun* runs, uint64_t runsLength) {
+    if (runsLength == 0 || length == 0) {
+        return nullptr;
+    }
+    return new rive::DynamicArray<rive::RenderGlyphRun>(
+        runs[0].font->shapeText(rive::Span(text, length), rive::Span(runs, runsLength)));
+}
+
+EXPORT void deleteShapeResult(rive::DynamicArray<rive::RenderGlyphRun>* shapeResult) {
+    delete shapeResult;
+}

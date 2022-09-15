@@ -14,6 +14,8 @@ dependencies:
   ffi: ^2.0.1
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
   graphs: ^2.0.0
   http: ^0.13.3
 
@@ -43,3 +45,9 @@ flutter:
         pluginClass: RivePlugin
       ios:
         pluginClass: RivePlugin
+      web:
+        pluginClass: RivePlugin
+        fileName: rive_web.dart
+  assets:
+    - wasm/build/bin/release/render_font.js
+    - wasm/build/bin/release/render_font.wasm

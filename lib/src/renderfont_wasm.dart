@@ -5,11 +5,14 @@ import 'dart:js' as js;
 import 'dart:typed_data';
 
 import 'package:rive/src/renderfont.dart';
+import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
+import 'package:rive/src/utilities/binary_buffer/binary_writer.dart';
 
 late js.JsFunction _makeRenderFont;
 late js.JsFunction _deleteRenderFont;
 late js.JsFunction _makeGlyphPath;
 late js.JsFunction _deleteGlyphPath;
+late js.JsFunction _shapeText;
 
 class RawPathWasm extends RawPath {
   final int rawPathPtr;
@@ -125,13 +128,80 @@ class RawPathIterator extends Iterator<RawPathCommand> {
   }
 }
 
+class TextShapeResultWasm extends TextShapeResult {
+  final List<RenderGlyphRun> runs;
+
+  TextShapeResultWasm(this.runs);
+  @override
+  void dispose() {}
+
+  @override
+  RenderGlyphRun runAt(int index) => runs[index];
+
+  @override
+  int get runCount => runs.length;
+}
+
+extension ByteDataWasm on ByteData {
+  WasmDynamicArray readDynamicArray(int offset) {
+    return WasmDynamicArray(
+      ByteData.view(buffer, getUint32(offset, Endian.little)),
+      getUint32(
+        offset + 4,
+        Endian.little,
+      ),
+    );
+  }
+}
+
+class WasmDynamicArray {
+  final ByteData data;
+  final int size;
+  WasmDynamicArray(this.data, this.size);
+
+  // int get size => data.getUint32(4);
+}
+
+class RenderGlyphRunWasm extends RenderGlyphRun {
+  final ByteData byteData;
+  final WasmDynamicArray glyphs;
+  final WasmDynamicArray textOffsets;
+  final WasmDynamicArray xPositions;
+
+  RenderGlyphRunWasm(this.byteData)
+      : glyphs = byteData.readDynamicArray(8),
+        textOffsets = byteData.readDynamicArray(16),
+        xPositions = byteData.readDynamicArray(24);
+
+  @override
+  double get fontSize => byteData.getFloat32(4, Endian.little);
+
+  @override
+  int get glyphCount => glyphs.size;
+
+  @override
+  int glyphIdAt(int index) => glyphs.data.getUint16(index * 2, Endian.little);
+
+  @override
+  RenderFont get renderFont =>
+      RenderFontWasm(byteData.getUint32(0, Endian.little));
+
+  @override
+  int textOffsetAt(int index) =>
+      textOffsets.data.getUint32(index * 4, Endian.little);
+
+  @override
+  double xAt(int index) => xPositions.data.getFloat32(index * 4, Endian.little);
+}
+
+/// A RenderFont reference that should not be explicitly disposed by the user.
+/// Returned while shaping.
 class RenderFontWasm extends RenderFont {
   final int renderFontPtr;
   RenderFontWasm(this.renderFontPtr);
 
   @override
-  @override
-  void dispose() => _deleteRenderFont.apply(<dynamic>[renderFontPtr]);
+  void dispose() {}
 
   @override
   RawPath getPath(int glyphId) {
@@ -146,6 +216,61 @@ class RenderFontWasm extends RenderFont {
       points: points,
     );
   }
+
+  static const int sizeOfNativeRenderTextRun = 4 + 4 + 4;
+
+  @override
+  TextShapeResult shape(String text, List<RenderTextRun> runs) {
+    var writer = BinaryWriter(
+      alignment: runs.length * sizeOfNativeRenderTextRun,
+    );
+    for (final run in runs) {
+      writer.writeUint32((run.font as RenderFontWasm).renderFontPtr);
+      writer.writeFloat32(run.fontSize);
+      writer.writeUint32(run.unicharCount);
+    }
+    print(
+        "SIZE OF UNITS: ${Uint32List.fromList(text.codeUnits).length} ${text.codeUnits.length}");
+
+    var result = _shapeText.apply(
+      <dynamic>[
+        Uint32List.fromList(text.codeUnits),
+        writer.uint8Buffer,
+      ],
+    ) as Uint8List;
+
+    var reader = BinaryReader.fromList(result);
+    var dataPointer = reader.readUint32();
+    var dataSize = reader.readUint32();
+    print("RUN COUNTe ${dataSize}");
+    var runList = <RenderGlyphRunWasm>[];
+    for (int i = 0; i < dataSize; i++) {
+      // var data = ByteData.view(result.buffer, dataPointer);
+      // var fontSizeOfRun = data.getFloat32(4, Endian.little);
+      // print("RFS $fontSizeOfRun");
+      runList
+          .add(RenderGlyphRunWasm(ByteData.view(result.buffer, dataPointer)));
+      // print("FONT SIZE: ${run.fontSize}");
+      dataPointer += 4 + 4 + 8 + 8 + 8;
+    }
+    // var view = ByteData.view(
+    //     result.buffer, result.offsetInBytes, result.lengthInBytes);
+    // // size_t is 32 bit (4 bytes) in wasm
+    // var resultRunCount = view.getUint32(4, Endian.little);
+    // var resultRunCount = view.getUint32(4, Endian.little);
+    // for (int i = 0; i < resultRunCount; i++) {}
+
+    return TextShapeResultWasm(runList);
+  }
+}
+
+/// A RenderFont created and owned by Dart code. User is expected to call
+/// dispose to release the font when they are done with it.
+class StrongRenderFontWasm extends RenderFontWasm {
+  StrongRenderFontWasm(int renderFontPtr) : super(renderFontPtr);
+
+  @override
+  void dispose() => _deleteRenderFont.apply(<dynamic>[renderFontPtr]);
 }
 
 RenderFont? decodeRenderFont(Uint8List bytes) {
@@ -153,13 +278,13 @@ RenderFont? decodeRenderFont(Uint8List bytes) {
   if (ptr == 0) {
     return null;
   }
-  return RenderFontWasm(ptr);
+  return StrongRenderFontWasm(ptr);
 }
 
 Future<void> initRenderFont() async {
   var script = html.ScriptElement()
     ..src =
-        'assets/packages/dartbuzz/wasm/build/bin/release/render_font.js' // ignore: unsafe_html
+        'assets/packages/rive/wasm/build/bin/release/render_font.js' // ignore: unsafe_html
     ..type = 'application/javascript'
     ..defer = true;
 
@@ -177,6 +302,7 @@ Future<void> initRenderFont() async {
         _deleteRenderFont = module['deleteRenderFont'] as js.JsFunction;
         _makeGlyphPath = module['makeGlyphPath'] as js.JsFunction;
         _deleteGlyphPath = module['deleteGlyphPath'] as js.JsFunction;
+        _shapeText = module['shapeText'] as js.JsFunction;
         completer.complete();
       }
     ],

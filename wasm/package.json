@@ -1,0 +1,12 @@
+{
+    "name": "wasm-render-font",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "test": "jest --testPathPattern=$PWD/test/"
+    },
+    "devDependencies": {
+        "jest": "^29.0.3"
+    },
+    "keywords": []
+}
