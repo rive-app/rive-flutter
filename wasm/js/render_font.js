@@ -44,8 +44,6 @@ RenderFont["onRuntimeInitialized"] = function () {
   var nativeShapeText = RenderFont["shapeText"];
   RenderFont["shapeText"] = function (codeUnits, runsList) {
     var shapeResult = nativeShapeText(codeUnits, runsList);
-    var runCount = HEAPU32[shapeResult / 4 + 1];
-    console.log("RUN COUNT", runCount, shapeResult);
     return HEAPU8["subarray"](shapeResult);
   };
 };
