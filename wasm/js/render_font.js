@@ -47,14 +47,5 @@ RenderFont["onRuntimeInitialized"] = function () {
     var runCount = HEAPU32[shapeResult / 4 + 1];
     console.log("RUN COUNT", runCount, shapeResult);
     return HEAPU8["subarray"](shapeResult);
-
-    // size_t is 32 bit in wasm
-    // HEAPU8["subarray"](shapeResult, shapeResult + );
-    // console.log(
-    //   "POINT",
-    //   shapeResult,
-    //   HEAPU32[shapeResult / 4],
-    //   HEAPU64[(shapeResult + 4) / 8]
-    // );
   };
 };
