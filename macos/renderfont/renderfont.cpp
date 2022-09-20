@@ -41,15 +41,15 @@ GlyphPath makeGlyphPath(rive::RenderFont* renderFont, rive::GlyphID id) {
 EXPORT void deleteRawPath(rive::RawPath* rawPath) { delete rawPath; }
 
 EXPORT
-rive::DynamicArray<rive::RenderGlyphRun>*
+rive::SimpleArray<rive::RenderGlyphRun>*
 shapeText(const uint32_t* text, uint64_t length, rive::RenderTextRun* runs, uint64_t runsLength) {
     if (runsLength == 0 || length == 0) {
         return nullptr;
     }
-    return new rive::DynamicArray<rive::RenderGlyphRun>(
+    return new rive::SimpleArray<rive::RenderGlyphRun>(
         runs[0].font->shapeText(rive::Span(text, length), rive::Span(runs, runsLength)));
 }
 
-EXPORT void deleteShapeResult(rive::DynamicArray<rive::RenderGlyphRun>* shapeResult) {
+EXPORT void deleteShapeResult(rive::SimpleArray<rive::RenderGlyphRun>* shapeResult) {
     delete shapeResult;
 }
