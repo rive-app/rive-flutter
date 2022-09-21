@@ -163,6 +163,7 @@ class RiveAnimationState extends State<RiveAnimation> {
         widget.placeHolder != oldWidget.placeHolder ||
         widget.src != oldWidget.src ||
         widget.stateMachines != oldWidget.stateMachines) {
+      debugPrint("${widget.artboard}, ${oldWidget.artboard}");
       setState(_configure);
     }
     super.didUpdateWidget(oldWidget);
@@ -235,6 +236,12 @@ class RiveAnimationState extends State<RiveAnimation> {
       (child) {
         if (child is RiveRenderObject) {
           riveRenderer = child;
+        } else if (child is RenderSemanticsGestureHandler) {
+          child.child?.visitChildren((child) {
+            if (child is RiveRenderObject) {
+              riveRenderer = child;
+            }
+          });
         }
       },
     );
@@ -256,9 +263,9 @@ class RiveAnimationState extends State<RiveAnimation> {
     );
 
     if (hasHitTesting) {
-      void hitHelper(PointerEvent event,
+      void hitHelper(Offset localPositionOffset,
           void Function(StateMachineController, Vec2D) callback) {
-        var artboardPosition = _toArtboard(event.localPosition);
+        var artboardPosition = _toArtboard(localPositionOffset);
         if (artboardPosition != null) {
           var stateMachineControllers = _artboard!.animationControllers
               .whereType<StateMachineController>();
@@ -270,26 +277,32 @@ class RiveAnimationState extends State<RiveAnimation> {
 
       return Listener(
         onPointerDown: (details) => hitHelper(
-          details,
+          details.localPosition,
           (controller, artboardPosition) =>
               controller.pointerDown(artboardPosition),
         ),
         onPointerUp: (details) => hitHelper(
-          details,
+          details.localPosition,
           (controller, artboardPosition) =>
               controller.pointerUp(artboardPosition),
         ),
         onPointerHover: (details) => hitHelper(
-          details,
+          details.localPosition,
           (controller, artboardPosition) =>
               controller.pointerMove(artboardPosition),
         ),
         onPointerMove: (details) => hitHelper(
-          details,
+          details.localPosition,
           (controller, artboardPosition) =>
               controller.pointerMove(artboardPosition),
         ),
-        child: child,
+        child: GestureDetector(
+          child: child,
+          onHorizontalDragStart: (details) {},
+          onHorizontalDragUpdate: (details) {},
+          onVerticalDragUpdate: (details) {},
+          onVerticalDragStart: (details) {},
+        ),
       );
     }
 
