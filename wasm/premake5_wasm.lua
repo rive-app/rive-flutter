@@ -12,7 +12,7 @@ targetdir('build/bin/%{cfg.buildcfg}')
 objdir('build/obj/%{cfg.buildcfg}')
 
 defines {
-    'RIVE_TEXT',
+    'WITH_RIVE_TEXT',
     'HAVE_OT',
     'HB_NO_FALLBACK_SHAPE',
     'HB_NO_WIN1256'
@@ -28,7 +28,7 @@ files {
     'renderfont_bindings.cpp',
     source .. 'rive-cpp/src/renderer.cpp',
     source .. 'rive-cpp/src/math/raw_path.cpp',
-    source .. 'rive-cpp/skia/renderer/src/renderfont_hb.cpp',
+    source .. 'rive-cpp/src/text/renderfont_hb.cpp',
     source .. 'harfbuzz/src/hb-aat-layout.cc',
     source .. 'harfbuzz/src/hb-aat-map.cc',
     source .. 'harfbuzz/src/hb-blob.cc',

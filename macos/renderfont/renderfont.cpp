@@ -1,9 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "hb-ot.h"
-#include "hb.h"
-#include "renderfont_hb.hpp"
+#include "rive/text/renderfont_hb.hpp"
 
 #define EXPORT extern "C" __attribute__((visibility("default"))) __attribute__((used))
 

@@ -1,6 +1,6 @@
 #include "hb-ot.h"
 #include "hb.h"
-#include "renderfont_hb.hpp"
+#include "rive/text/renderfont_hb.hpp"
 
 #include <emscripten.h>
 #include <emscripten/bind.h>
