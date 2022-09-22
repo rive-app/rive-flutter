@@ -27,7 +27,7 @@ WasmPtr makeRenderFont(emscripten::val byteArray) {
     return (WasmPtr) nullptr;
 }
 
-void deleteRenderFont(WasmPtr renderFont) { delete reinterpret_cast<HBRenderFont*>(renderFont); }
+void deleteRenderFont(WasmPtr renderFont) { reinterpret_cast<HBRenderFont*>(renderFont)->unref(); }
 
 struct GlyphPath {
     WasmPtr rawPath;
@@ -49,6 +49,10 @@ GlyphPath makeGlyphPath(WasmPtr renderFontPtr, rive::GlyphID id) {
 }
 
 void deleteGlyphPath(WasmPtr rawPath) { delete reinterpret_cast<rive::RawPath*>(rawPath); }
+
+void deleteShapeResult(WasmPtr shaperResult) {
+    delete reinterpret_cast<rive::SimpleArray<rive::RenderGlyphRun>*>(shaperResult);
+}
 
 WasmPtr shapeText(emscripten::val codeUnits, emscripten::val runsList) {
     std::vector<uint8_t> runsBytes(runsList["byteLength"].as<unsigned>());
@@ -88,4 +92,5 @@ EMSCRIPTEN_BINDINGS(RenderFont) {
     function("deleteGlyphPath", &deleteGlyphPath);
 
     function("shapeText", &shapeText);
+    function("deleteShapeResult", &deleteShapeResult);
 }

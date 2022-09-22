@@ -103,7 +103,6 @@ linkoptions {
     '--closure 1',
     '--closure-args="--externs ./js/externs.js"',
     '--bind',
-    '-s ASSERTIONS=0',
     '-s FORCE_FILESYSTEM=0',
     '-s MODULARIZE=1',
     '-s NO_EXIT_RUNTIME=1',
@@ -125,28 +124,40 @@ linkoptions {
 }
 
 filter {'options:single_file'}
-linkoptions {
-    '-o %{cfg.targetdir}/render_font_single.js'
-}
+do
+    linkoptions {
+        '-o %{cfg.targetdir}/render_font_single.js'
+    }
+end
 
 filter {'options:not single_file'}
-linkoptions {
-    '-o %{cfg.targetdir}/render_font.js'
-}
+do
+    linkoptions {
+        '-o %{cfg.targetdir}/render_font.js'
+    }
+end
 
 filter 'options:single_file'
-linkoptions {
-    '-s SINGLE_FILE=1'
-}
+do
+    linkoptions {
+        '-s SINGLE_FILE=1'
+    }
+end
 
 filter 'configurations:debug'
-defines {'DEBUG'}
-symbols 'On'
+do
+    defines {'DEBUG'}
+    symbols 'On'
+    linkoptions {'-s ASSERTIONS=1'}
+end
 
 filter 'configurations:release'
-defines {'RELEASE'}
-defines {'NDEBUG'}
-optimize 'On'
+do
+    defines {'RELEASE'}
+    defines {'NDEBUG'}
+    optimize 'On'
+    linkoptions {'-s ASSERTIONS=0'}
+end
 
 buildoptions {
     '-Oz',

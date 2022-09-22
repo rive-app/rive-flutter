@@ -28,19 +28,19 @@ class GlyphPathStruct extends Struct {
   external int verbCount;
 }
 
-class DynamicUint16Array extends Struct {
+class SimpleUint16Array extends Struct {
   external Pointer<Uint16> data;
   @Uint64()
   external int size;
 }
 
-class DynamicUint32Array extends Struct {
+class SimpleUint32Array extends Struct {
   external Pointer<Uint32> data;
   @Uint64()
   external int size;
 }
 
-class DynamicFloatArray extends Struct {
+class SimpleFloatArray extends Struct {
   external Pointer<Float> data;
   @Uint64()
   external int size;
@@ -59,9 +59,10 @@ class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
   @Float()
   external double size;
 
-  external DynamicUint16Array glyphs;
-  external DynamicUint32Array textOffsets;
-  external DynamicFloatArray xpos;
+  external SimpleUint16Array glyphs;
+  external SimpleUint32Array textOffsets;
+  external SimpleFloatArray xpos;
+  external SimpleUint32Array breaks;
 
   @override
   double get fontSize => size;

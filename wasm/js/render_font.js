@@ -44,6 +44,9 @@ RenderFont["onRuntimeInitialized"] = function () {
   var nativeShapeText = RenderFont["shapeText"];
   RenderFont["shapeText"] = function (codeUnits, runsList) {
     var shapeResult = nativeShapeText(codeUnits, runsList);
-    return HEAPU8["subarray"](shapeResult);
+    return {
+      "rawResult": shapeResult,
+      "results": HEAPU8["subarray"](shapeResult),
+    };
   };
 };

@@ -86,9 +86,7 @@ Future<void> renderFontDemo() async {
       // run.xAt(index)
     }
     glyphRuns.dispose();
-    // var glyph = roboto.getPath(222);
-    // glyph.issueCommands(paintGlyphPath);
-    // glyph.dispose();
+    montserrat.dispose();
     roboto.dispose();
   }
 

@@ -13,6 +13,7 @@ late js.JsFunction _deleteRenderFont;
 late js.JsFunction _makeGlyphPath;
 late js.JsFunction _deleteGlyphPath;
 late js.JsFunction _shapeText;
+late js.JsFunction _deleteShapeResult;
 
 class RawPathWasm extends RawPath {
   final int rawPathPtr;
@@ -129,11 +130,12 @@ class RawPathIterator extends Iterator<RawPathCommand> {
 }
 
 class TextShapeResultWasm extends TextShapeResult {
+  final int rawPathResultsPtr;
   final List<RenderGlyphRun> runs;
 
-  TextShapeResultWasm(this.runs);
+  TextShapeResultWasm(this.rawPathResultsPtr, this.runs);
   @override
-  void dispose() {}
+  void dispose() => _deleteShapeResult.apply(<dynamic>[rawPathResultsPtr]);
 
   @override
   RenderGlyphRun runAt(int index) => runs[index];
@@ -167,11 +169,13 @@ class RenderGlyphRunWasm extends RenderGlyphRun {
   final WasmDynamicArray glyphs;
   final WasmDynamicArray textOffsets;
   final WasmDynamicArray xPositions;
+  final WasmDynamicArray breaks;
 
   RenderGlyphRunWasm(this.byteData)
       : glyphs = byteData.readDynamicArray(8),
         textOffsets = byteData.readDynamicArray(16),
-        xPositions = byteData.readDynamicArray(24);
+        xPositions = byteData.readDynamicArray(24),
+        breaks = byteData.readDynamicArray(32);
 
   @override
   double get fontSize => byteData.getFloat32(4, Endian.little);
@@ -237,30 +241,23 @@ class RenderFontWasm extends RenderFont {
         Uint32List.fromList(text.codeUnits),
         writer.uint8Buffer,
       ],
-    ) as Uint8List;
+    ) as js.JsObject;
 
-    var reader = BinaryReader.fromList(result);
+    var rawResult = result['rawResult'] as int;
+    var results = result['results'] as Uint8List;
+
+    var reader = BinaryReader.fromList(results);
     var dataPointer = reader.readUint32();
     var dataSize = reader.readUint32();
-    print("RUN COUNTe ${dataSize}");
+
     var runList = <RenderGlyphRunWasm>[];
     for (int i = 0; i < dataSize; i++) {
-      // var data = ByteData.view(result.buffer, dataPointer);
-      // var fontSizeOfRun = data.getFloat32(4, Endian.little);
-      // print("RFS $fontSizeOfRun");
       runList
-          .add(RenderGlyphRunWasm(ByteData.view(result.buffer, dataPointer)));
-      // print("FONT SIZE: ${run.fontSize}");
-      dataPointer += 4 + 4 + 8 + 8 + 8;
+          .add(RenderGlyphRunWasm(ByteData.view(results.buffer, dataPointer)));
+      dataPointer += 4 + 4 + 8 + 8 + 8 + 8;
     }
-    // var view = ByteData.view(
-    //     result.buffer, result.offsetInBytes, result.lengthInBytes);
-    // // size_t is 32 bit (4 bytes) in wasm
-    // var resultRunCount = view.getUint32(4, Endian.little);
-    // var resultRunCount = view.getUint32(4, Endian.little);
-    // for (int i = 0; i < resultRunCount; i++) {}
 
-    return TextShapeResultWasm(runList);
+    return TextShapeResultWasm(rawResult, runList);
   }
 }
 
@@ -303,6 +300,7 @@ Future<void> initRenderFont() async {
         _makeGlyphPath = module['makeGlyphPath'] as js.JsFunction;
         _deleteGlyphPath = module['deleteGlyphPath'] as js.JsFunction;
         _shapeText = module['shapeText'] as js.JsFunction;
+        _deleteShapeResult = module['deleteShapeResult'] as js.JsFunction;
         completer.complete();
       }
     ],
