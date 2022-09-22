@@ -28,6 +28,48 @@ class GlyphPathStruct extends Struct {
   external int verbCount;
 }
 
+class RenderGlyphLineFFI extends Struct implements TextLine {
+  @override
+  @Uint32()
+  external int startRun;
+
+  @override
+  @Uint32()
+  external int startIndex;
+
+  @override
+  @Uint32()
+  external int endRun;
+
+  @override
+  @Uint32()
+  external int endIndex;
+
+  @override
+  @Float()
+  external double startX;
+
+  @override
+  @Float()
+  external double top;
+
+  @override
+  @Float()
+  external double baseline;
+
+  @override
+  @Float()
+  external double bottom;
+}
+
+class LinesResultStruct extends Struct {
+  external Pointer<Void> result;
+  external Pointer<RenderGlyphLineFFI> lines;
+
+  @Uint32()
+  external int lineCount;
+}
+
 class SimpleUint16Array extends Struct {
   external Pointer<Uint16> data;
   @Uint64()
@@ -93,14 +135,36 @@ class TextShapeResultFFI extends TextShapeResult {
   final Pointer<DynamicRenderTextRunArray> nativeResult;
   TextShapeResultFFI(this.nativeResult);
 
+  LinesResultStruct? _lineBreakResult;
+
   @override
-  void dispose() => deleteShapeResult(nativeResult);
+  void dispose() {
+    if (_lineBreakResult != null) {
+      deleteBreakLinesResult(_lineBreakResult!.result);
+      _lineBreakResult = null;
+    }
+    deleteShapeResult(nativeResult);
+  }
 
   @override
   RenderGlyphRun runAt(int index) => nativeResult.ref.data.elementAt(index).ref;
 
   @override
   int get runCount => nativeResult.ref.size;
+
+  @override
+  void breakLines(double width, TextAlign alignment) {
+    if (_lineBreakResult != null) {
+      deleteBreakLinesResult(_lineBreakResult!.result);
+    }
+    _lineBreakResult = breakLinesNative(nativeResult, width, alignment.index);
+  }
+
+  @override
+  TextLine lineAt(int index) => _lineBreakResult!.lines.elementAt(index).ref;
+
+  @override
+  int get lineCount => _lineBreakResult?.lineCount ?? 0;
 }
 
 final Pointer<DynamicRenderTextRunArray> Function(Pointer<Uint32> text,
@@ -117,6 +181,20 @@ final void Function(
         renderFont) deleteShapeResult = nativeLib
     .lookup<NativeFunction<Void Function(Pointer<DynamicRenderTextRunArray>)>>(
         'deleteShapeResult')
+    .asFunction();
+
+final LinesResultStruct Function(
+        Pointer<DynamicRenderTextRunArray>, double width, int align)
+    breakLinesNative = nativeLib
+        .lookup<
+            NativeFunction<
+                LinesResultStruct Function(Pointer<DynamicRenderTextRunArray>,
+                    Float, Uint8)>>('breakLines')
+        .asFunction();
+
+final void Function(Pointer<Void>) deleteBreakLinesResult = nativeLib
+    .lookup<NativeFunction<Void Function(Pointer<Void>)>>(
+        'deleteBreakLinesResult')
     .asFunction();
 
 final Pointer<Void> Function(Pointer<Uint8> bytes, int count) makeRenderFont =

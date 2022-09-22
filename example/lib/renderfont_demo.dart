@@ -65,26 +65,58 @@ Future<void> renderFontDemo() async {
         ),
       ],
     );
-    for (int i = 0; i < glyphRuns.runCount; i++) {
-      var run = glyphRuns.runAt(i);
-      for (int j = 0; j < run.glyphCount; j++) {
-        var path = ui.Path();
 
-        var glyph = run.renderFont.getPath(run.glyphIdAt(j));
-        glyph.issueCommands(path);
-        glyph.dispose();
+    print("PRE BROKE IT ${glyphRuns.lineCount}");
+    glyphRuns.breakLines(350, TextAlign.center);
+    print(" BROKE IT ${glyphRuns.lineCount}");
 
-        // auto trans = rive::Mat2D::fromTranslate(origin.x + run.xpos[i], origin.y);
-        // auto rawpath = font->getPath(run.glyphs[i]);
-        // rawpath.transformInPlace(trans * scale);
+    for (int i = 0; i < glyphRuns.lineCount; i++) {
+      var line = glyphRuns.lineAt(i);
+
+      var x0 = glyphRuns.runAt(line.startRun).xAt(line.startIndex);
+      int startGlyphIndex = line.startIndex;
+      print("LINE ${line.startRun} ${line.endRun}");
+      for (int runIndex = line.startRun; runIndex <= line.endRun; runIndex++) {
+        var run = glyphRuns.runAt(runIndex);
+        int endGlyphIndex =
+            runIndex == line.endRun ? line.endIndex : run.glyphCount;
+
+        var font = run.renderFont;
         var scale = Mat2D.fromScale(run.fontSize, run.fontSize);
-        var translation = Mat2D.fromTranslate(run.xAt(j), 0);
-        var transform = Mat2D.multiply(Mat2D(), translation, scale);
-        paintGlyphPath.addPath(path, ui.Offset.zero, matrix4: transform.mat4);
+        for (int j = startGlyphIndex; j < endGlyphIndex; j++) {
+          var path = ui.Path();
+          var glyph = font.getPath(run.glyphIdAt(j));
+          glyph.issueCommands(path);
+          glyph.dispose();
+
+          var translation = Mat2D.fromTranslate(
+              -x0 + line.startX + run.xAt(j), line.baseline);
+          var transform = Mat2D.multiply(Mat2D(), translation, scale);
+          paintGlyphPath.addPath(path, ui.Offset.zero, matrix4: transform.mat4);
+          startGlyphIndex = 0;
+        }
       }
-      // run.fontSize
-      // run.xAt(index)
     }
+    // for (int i = 0; i < glyphRuns.runCount; i++) {
+    //   var run = glyphRuns.runAt(i);
+    //   for (int j = 0; j < run.glyphCount; j++) {
+    //     var path = ui.Path();
+
+    //     var glyph = run.renderFont.getPath(run.glyphIdAt(j));
+    //     glyph.issueCommands(path);
+    //     glyph.dispose();
+
+    //     // auto trans = rive::Mat2D::fromTranslate(origin.x + run.xpos[i], origin.y);
+    //     // auto rawpath = font->getPath(run.glyphs[i]);
+    //     // rawpath.transformInPlace(trans * scale);
+    //     var scale = Mat2D.fromScale(run.fontSize, run.fontSize);
+    //     var translation = Mat2D.fromTranslate(run.xAt(j), 0);
+    //     var transform = Mat2D.multiply(Mat2D(), translation, scale);
+    //     paintGlyphPath.addPath(path, ui.Offset.zero, matrix4: transform.mat4);
+    //   }
+    //   // run.fontSize
+    //   // run.xAt(index)
+    // }
     glyphRuns.dispose();
     montserrat.dispose();
     roboto.dispose();
@@ -124,7 +156,7 @@ class PathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, ui.Size size) {
     canvas.save();
-    canvas.translate(-500, 0);
+    canvas.translate(-300, -200);
     //canvas.scale(100, 100);
     canvas.drawPath(
       path,

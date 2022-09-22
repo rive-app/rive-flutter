@@ -61,10 +61,27 @@ abstract class RenderGlyphRun {
   double xAt(int index);
 }
 
+enum TextAlign { left, right, center }
+
+abstract class TextLine {
+  int get startRun;
+  int get startIndex;
+  int get endRun;
+  int get endIndex;
+  double get startX;
+  double get top;
+  double get baseline;
+  double get bottom;
+}
+
 abstract class TextShapeResult {
   int get runCount;
   RenderGlyphRun runAt(int index);
   void dispose();
+
+  void breakLines(double width, TextAlign alignment);
+  int get lineCount;
+  TextLine lineAt(int index);
 }
 
 // A representation of a styled section of text in the

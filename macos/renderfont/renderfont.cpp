@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "rive/text/renderfont_hb.hpp"
+#include "rive/text/line_breaker.hpp"
 
 #define EXPORT extern "C" __attribute__((visibility("default"))) __attribute__((used))
 
@@ -51,3 +52,19 @@ shapeText(const uint32_t* text, uint64_t length, rive::RenderTextRun* runs, uint
 EXPORT void deleteShapeResult(rive::SimpleArray<rive::RenderGlyphRun>* shapeResult) {
     delete shapeResult;
 }
+
+struct LinesResult {
+    std::vector<rive::RenderGlyphLine>* result;
+    rive::RenderGlyphLine* lines;
+    uint32_t lineCount;
+};
+
+EXPORT LinesResult breakLines(rive::SimpleArray<rive::RenderGlyphRun>* runs,
+                              float width,
+                              uint8_t align) {
+    auto result = new std::vector<rive::RenderGlyphLine>(
+        rive::RenderGlyphLine::BreakLines(*runs, width, (rive::RenderTextAlign)align));
+    return {result, result->data(), (uint32_t)result->size()};
+}
+
+EXPORT void deleteBreakLinesResult(std::vector<rive::RenderGlyphLine>* result) { delete result; }
