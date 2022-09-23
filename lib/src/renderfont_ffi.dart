@@ -94,6 +94,8 @@ class RenderTextRunNative extends Struct {
   external double size;
   @Uint32()
   external int unicharCount;
+  @Uint32()
+  external int styleId;
 }
 
 class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
@@ -101,8 +103,12 @@ class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
   @Float()
   external double size;
 
+  @override
+  @Uint32()
+  external int styleId;
+
   external SimpleUint16Array glyphs;
-  external SimpleUint32Array textOffsets;
+  external SimpleUint32Array textIndices;
   external SimpleFloatArray xpos;
   external SimpleUint32Array breaks;
 
@@ -119,7 +125,7 @@ class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
   RenderFont get renderFont => RenderFontFFI(font);
 
   @override
-  int textOffsetAt(int index) => textOffsets.data.elementAt(index).value;
+  int textOffsetAt(int index) => textIndices.data.elementAt(index).value;
 
   @override
   double xAt(int index) => xpos.data.elementAt(index).value;
@@ -359,7 +365,8 @@ class RenderFontFFI extends RenderFont {
       runsMemory[runIndex++]
         ..font = (run.font as RenderFontFFI).renderFontPtr
         ..size = run.fontSize
-        ..unicharCount = run.unicharCount;
+        ..unicharCount = run.unicharCount
+        ..styleId = run.styleId;
     }
 
     // Allocate and copy to text buffer.

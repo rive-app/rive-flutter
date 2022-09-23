@@ -52,22 +52,25 @@ Future<void> renderFontDemo() async {
           font: roboto,
           fontSize: 32.0,
           unicharCount: text1.length,
+          styleId: 2,
         ),
         RenderTextRun(
           font: montserrat,
           fontSize: 54.0,
           unicharCount: text2.length,
+          styleId: 1,
         ),
         RenderTextRun(
           font: roboto,
           fontSize: 32.0,
           unicharCount: text3.length,
+          styleId: 4,
         ),
       ],
     );
 
     print("PRE BROKE IT ${glyphRuns.lineCount}");
-    glyphRuns.breakLines(350, TextAlign.center);
+    glyphRuns.breakLines(200, TextAlign.right);
     print(" BROKE IT ${glyphRuns.lineCount}");
 
     for (int i = 0; i < glyphRuns.lineCount; i++) {
@@ -78,6 +81,7 @@ Future<void> renderFontDemo() async {
       print("LINE ${line.startRun} ${line.endRun}");
       for (int runIndex = line.startRun; runIndex <= line.endRun; runIndex++) {
         var run = glyphRuns.runAt(runIndex);
+        print("RUN STYLE: ${run.styleId}");
         int endGlyphIndex =
             runIndex == line.endRun ? line.endIndex : run.glyphCount;
 

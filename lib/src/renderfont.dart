@@ -55,6 +55,7 @@ abstract class RawPath with IterableMixin<RawPathCommand> {
 abstract class RenderGlyphRun {
   RenderFont get renderFont;
   double get fontSize;
+  int get styleId;
   int get glyphCount;
   int glyphIdAt(int index);
   int textOffsetAt(int index);
@@ -84,16 +85,18 @@ abstract class TextShapeResult {
   TextLine lineAt(int index);
 }
 
-// A representation of a styled section of text in the
+/// A representation of a styled section of text in Rive.
 class RenderTextRun {
   final RenderFont font;
   final double fontSize;
+  final int styleId;
   final int unicharCount;
 
   RenderTextRun({
     required this.font,
     required this.fontSize,
     required this.unicharCount,
+    this.styleId = 0,
   });
 }
 

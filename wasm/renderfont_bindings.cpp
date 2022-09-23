@@ -69,7 +69,7 @@ WasmPtr shapeText(emscripten::val codeUnits, emscripten::val runsList) {
         memoryView.call<void>("set", codeUnits);
     }
 
-    auto runCount = runsBytes.size() / (4 + 4 + 4);
+    auto runCount = runsBytes.size() / (4 + 4 + 4 + 4);
     rive::RenderTextRun* runs = reinterpret_cast<rive::RenderTextRun*>(runsBytes.data());
 
     if (runCount > 0) {

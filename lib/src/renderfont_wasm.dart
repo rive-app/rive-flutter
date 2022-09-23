@@ -246,18 +246,21 @@ class WasmDynamicArray {
 class RenderGlyphRunWasm extends RenderGlyphRun {
   final ByteData byteData;
   final WasmDynamicArray glyphs;
-  final WasmDynamicArray textOffsets;
+  final WasmDynamicArray textIndices;
   final WasmDynamicArray xPositions;
   final WasmDynamicArray breaks;
 
   RenderGlyphRunWasm(this.byteData)
-      : glyphs = byteData.readDynamicArray(8),
-        textOffsets = byteData.readDynamicArray(16),
-        xPositions = byteData.readDynamicArray(24),
-        breaks = byteData.readDynamicArray(32);
+      : glyphs = byteData.readDynamicArray(12),
+        textIndices = byteData.readDynamicArray(20),
+        xPositions = byteData.readDynamicArray(28),
+        breaks = byteData.readDynamicArray(36);
 
   @override
   double get fontSize => byteData.getFloat32(4, Endian.little);
+
+  @override
+  int get styleId => byteData.getUint32(8, Endian.little);
 
   @override
   int get glyphCount => glyphs.size;
@@ -271,7 +274,7 @@ class RenderGlyphRunWasm extends RenderGlyphRun {
 
   @override
   int textOffsetAt(int index) =>
-      textOffsets.data.getUint32(index * 4, Endian.little);
+      textIndices.data.getUint32(index * 4, Endian.little);
 
   @override
   double xAt(int index) => xPositions.data.getFloat32(index * 4, Endian.little);
@@ -300,7 +303,7 @@ class RenderFontWasm extends RenderFont {
     );
   }
 
-  static const int sizeOfNativeRenderTextRun = 4 + 4 + 4;
+  static const int sizeOfNativeRenderTextRun = 4 + 4 + 4 + 4;
 
   @override
   TextShapeResult shape(String text, List<RenderTextRun> runs) {
@@ -311,6 +314,7 @@ class RenderFontWasm extends RenderFont {
       writer.writeUint32((run.font as RenderFontWasm).renderFontPtr);
       writer.writeFloat32(run.fontSize);
       writer.writeUint32(run.unicharCount);
+      writer.writeUint32(run.styleId);
     }
 
     var result = _shapeText.apply(
@@ -331,7 +335,7 @@ class RenderFontWasm extends RenderFont {
     for (int i = 0; i < dataSize; i++) {
       runList
           .add(RenderGlyphRunWasm(ByteData.view(results.buffer, dataPointer)));
-      dataPointer += 4 + 4 + 8 + 8 + 8 + 8;
+      dataPointer += 4 + 4 + 4 + 8 + 8 + 8 + 8;
     }
 
     return TextShapeResultWasm(rawResult, runList);
