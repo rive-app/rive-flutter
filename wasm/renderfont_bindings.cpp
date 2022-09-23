@@ -1,6 +1,7 @@
 #include "hb-ot.h"
 #include "hb.h"
 #include "rive/text/renderfont_hb.hpp"
+#include "rive/text/line_breaker.hpp"
 
 #include <emscripten.h>
 #include <emscripten/bind.h>
@@ -78,6 +79,23 @@ WasmPtr shapeText(emscripten::val codeUnits, emscripten::val runsList) {
     return (WasmPtr) nullptr;
 }
 
+struct LinesResult {
+    WasmPtr result;
+    WasmPtr lines;
+    uint32_t lineCount;
+};
+
+LinesResult breakLines(WasmPtr runsPtr, float width, uint8_t align) {
+    auto runs = reinterpret_cast<rive::SimpleArray<rive::RenderGlyphRun>*>(runsPtr);
+    auto result = new std::vector<rive::RenderGlyphLine>(
+        rive::RenderGlyphLine::BreakLines(*runs, width, (rive::RenderTextAlign)align));
+    return {(WasmPtr)result, (WasmPtr)result->data(), (uint32_t)result->size()};
+}
+
+void deleteBreakLinesResult(WasmPtr breakLinesResult) {
+    delete reinterpret_cast<std::vector<rive::RenderGlyphLine>*>(breakLinesResult);
+}
+
 EMSCRIPTEN_BINDINGS(RenderFont) {
     function("makeRenderFont", &makeRenderFont, allow_raw_pointers());
     function("deleteRenderFont", &deleteRenderFont);
@@ -93,4 +111,11 @@ EMSCRIPTEN_BINDINGS(RenderFont) {
 
     function("shapeText", &shapeText);
     function("deleteShapeResult", &deleteShapeResult);
+
+    value_array<LinesResult>("LinesResult")
+        .element(&LinesResult::result)
+        .element(&LinesResult::lines)
+        .element(&LinesResult::lineCount);
+    function("breakLines", &breakLines);
+    function("deleteBreakLinesResult", &deleteBreakLinesResult);
 }

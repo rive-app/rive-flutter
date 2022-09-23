@@ -49,4 +49,14 @@ RenderFont["onRuntimeInitialized"] = function () {
       "results": HEAPU8["subarray"](shapeResult),
     };
   };
+
+  var nativeBreakLines = RenderFont["breakLines"];
+  RenderFont["breakLines"] = function (runs, width, align) {
+    var breakResult = nativeBreakLines(runs, width, align);
+    return {
+      "rawResult": breakResult[0],
+      "lines": HEAPU8["subarray"](breakResult[1]),
+      "lineCount": breakResult[2],
+    };
+  };
 };

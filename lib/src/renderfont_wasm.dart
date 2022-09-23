@@ -14,6 +14,8 @@ late js.JsFunction _makeGlyphPath;
 late js.JsFunction _deleteGlyphPath;
 late js.JsFunction _shapeText;
 late js.JsFunction _deleteShapeResult;
+late js.JsFunction _breakLines;
+late js.JsFunction _deleteBreakLinesResult;
 
 class RawPathWasm extends RawPath {
   final int rawPathPtr;
@@ -129,9 +131,47 @@ class RawPathIterator extends Iterator<RawPathCommand> {
   }
 }
 
+class TextLineWasm implements TextLine {
+  @override
+  final double baseline;
+
+  @override
+  final double bottom;
+
+  @override
+  final int endIndex;
+
+  @override
+  final int endRun;
+
+  @override
+  final int startIndex;
+
+  @override
+  final int startRun;
+
+  @override
+  final double startX;
+
+  @override
+  final double top;
+
+  TextLineWasm({
+    required this.baseline,
+    required this.bottom,
+    required this.endIndex,
+    required this.endRun,
+    required this.startIndex,
+    required this.startRun,
+    required this.startX,
+    required this.top,
+  });
+}
+
 class TextShapeResultWasm extends TextShapeResult {
   final int rawPathResultsPtr;
   final List<RenderGlyphRun> runs;
+  final List<TextLineWasm> lines = [];
 
   TextShapeResultWasm(this.rawPathResultsPtr, this.runs);
   @override
@@ -142,6 +182,45 @@ class TextShapeResultWasm extends TextShapeResult {
 
   @override
   int get runCount => runs.length;
+
+  @override
+  void breakLines(double width, TextAlign alignment) {
+    var result = _breakLines.apply(
+      <dynamic>[
+        rawPathResultsPtr,
+        width,
+        alignment.index,
+      ],
+    ) as js.JsObject;
+
+    var rawResult = result['rawResult'] as int;
+    var linesBuffer = result['lines'] as Uint8List;
+    var lineCount = result['lineCount'] as int;
+    lines.clear();
+
+    var reader = BinaryReader.fromList(linesBuffer);
+    for (int i = 0; i < lineCount; i++) {
+      lines.add(
+        TextLineWasm(
+          startRun: reader.readUint32(),
+          startIndex: reader.readUint32(),
+          endRun: reader.readUint32(),
+          endIndex: reader.readUint32(),
+          startX: reader.readFloat32(),
+          top: reader.readFloat32(),
+          baseline: reader.readFloat32(),
+          bottom: reader.readFloat32(),
+        ),
+      );
+    }
+    _deleteBreakLinesResult.apply(<dynamic>[rawResult]);
+  }
+
+  @override
+  TextLine lineAt(int index) => lines[index];
+
+  @override
+  int get lineCount => lines.length;
 }
 
 extension ByteDataWasm on ByteData {
@@ -233,8 +312,6 @@ class RenderFontWasm extends RenderFont {
       writer.writeFloat32(run.fontSize);
       writer.writeUint32(run.unicharCount);
     }
-    print(
-        "SIZE OF UNITS: ${Uint32List.fromList(text.codeUnits).length} ${text.codeUnits.length}");
 
     var result = _shapeText.apply(
       <dynamic>[
@@ -301,6 +378,9 @@ Future<void> initRenderFont() async {
         _deleteGlyphPath = module['deleteGlyphPath'] as js.JsFunction;
         _shapeText = module['shapeText'] as js.JsFunction;
         _deleteShapeResult = module['deleteShapeResult'] as js.JsFunction;
+        _breakLines = module['breakLines'] as js.JsFunction;
+        _deleteBreakLinesResult =
+            module['deleteBreakLinesResult'] as js.JsFunction;
         completer.complete();
       }
     ],

@@ -29,6 +29,7 @@ files {
     source .. 'rive-cpp/src/renderer.cpp',
     source .. 'rive-cpp/src/math/raw_path.cpp',
     source .. 'rive-cpp/src/text/renderfont_hb.cpp',
+    source .. 'rive-cpp/src/text/line_breaker.cpp',
     source .. 'harfbuzz/src/hb-aat-layout.cc',
     source .. 'harfbuzz/src/hb-aat-map.cc',
     source .. 'harfbuzz/src/hb-blob.cc',
