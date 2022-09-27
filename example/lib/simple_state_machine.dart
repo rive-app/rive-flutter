@@ -9,16 +9,6 @@ class SimpleStateMachine extends StatefulWidget {
 }
 
 class _SimpleStateMachineState extends State<SimpleStateMachine> {
-  SMITrigger? _bump;
-
-  void _onRiveInit(Artboard artboard) {
-    final controller = StateMachineController.fromArtboard(artboard, 'bumpy');
-    artboard.addController(controller!);
-    _bump = controller.findInput<bool>('bump') as SMITrigger;
-  }
-
-  void _hitBump() => _bump?.fire();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,13 +16,19 @@ class _SimpleStateMachineState extends State<SimpleStateMachine> {
         title: const Text('Simple Animation'),
       ),
       body: Center(
-        child: GestureDetector(
-          child: RiveAnimation.network(
-            'https://cdn.rive.app/animations/vehicles.riv',
-            fit: BoxFit.cover,
-            onInit: _onRiveInit,
-          ),
-          onTap: _hitBump,
+        child: ListView(
+          children: const [
+            SizedBox(
+              width: 500,
+              height: 500,
+              child: RiveAnimation.asset(
+                'assets/simple.riv',
+                stateMachines: ["State Machine 1"],
+              ),
+            ),
+            SizedBox(height: 2000, width: 500, child: Text("hi")),
+            SizedBox(height: 2000, width: 500, child: Text("bye"))
+          ],
         ),
       ),
     );

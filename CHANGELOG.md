@@ -1,3 +1,7 @@
+## 0.9.2
+
+- Prevents scroll views from scrolling when dragging listeners. 
+
 ## 0.9.1
 
 - Support for Nested Inputs.

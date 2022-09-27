@@ -272,7 +272,7 @@ class RiveAnimationState extends State<RiveAnimation> {
         onPointerDown: (details) => hitHelper(
           details,
           (controller, artboardPosition) =>
-              controller.pointerDown(artboardPosition),
+              controller.pointerDown(artboardPosition, details),
         ),
         onPointerUp: (details) => hitHelper(
           details,

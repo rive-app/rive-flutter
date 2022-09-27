@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/nested_state_machine_base.dart';
 import 'package:rive/src/rive_core/math/vec2d.dart';
@@ -14,7 +15,7 @@ abstract class NestedStateMachineInstance {
 
   void pointerMove(Vec2D position);
 
-  void pointerDown(Vec2D position);
+  void pointerDown(Vec2D position, PointerDownEvent event);
 
   void pointerUp(Vec2D position);
 
@@ -57,8 +58,8 @@ class NestedStateMachine extends NestedStateMachineBase {
   void pointerMove(Vec2D position) =>
       _stateMachineInstance?.pointerMove(position);
 
-  void pointerDown(Vec2D position) =>
-      _stateMachineInstance?.pointerDown(position);
+  void pointerDown(Vec2D position, PointerDownEvent event) =>
+      _stateMachineInstance?.pointerDown(position, event);
 
   void pointerUp(Vec2D position) => _stateMachineInstance?.pointerUp(position);
 
