@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
@@ -256,6 +257,8 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
   late CoreContext core;
 
+  final _recognizer = ImmediateMultiDragGestureRecognizer();
+
   @override
   bool init(CoreContext core) {
     this.core = core;
@@ -344,10 +347,14 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     isActive = keepGoing;
   }
 
-  void _processEvent(Vec2D position, {ListenerType? hitEvent}) {
+  bool _processEvent(
+    Vec2D position, {
+    PointerEvent? pointerEvent,
+    ListenerType? hitEvent,
+  }) {
     var artboard = this.artboard;
     if (artboard == null) {
-      return;
+      return false;
     }
     if (artboard.frameOrigin) {
       // ignore: parameter_assignments
@@ -365,6 +372,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
       (position.y + hitRadius).round(),
     );
 
+    bool hitSomething = false;
     for (final hitShape in hitShapes) {
       // for (final hitShape in event.shapes) {
       var shape = hitShape.shape;
@@ -384,6 +392,9 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
 
         // Just use bounds for now
         isOver = hitTester.test();
+        if (isOver) {
+          hitSomething = true;
+        }
       }
 
       bool hoverChange = hitShape.isHovered != isOver;
@@ -418,7 +429,10 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
           in nestedArtboard.animations.whereType<NestedStateMachine>()) {
         switch (hitEvent) {
           case ListenerType.down:
-            nestedStateMachine.pointerDown(nestedPosition);
+            nestedStateMachine.pointerDown(
+              nestedPosition,
+              pointerEvent as PointerDownEvent,
+            );
             break;
           case ListenerType.up:
             nestedStateMachine.pointerUp(nestedPosition);
@@ -429,6 +443,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         }
       }
     }
+    return hitSomething;
   }
 
   void pointerMove(Vec2D position) => _processEvent(
@@ -436,10 +451,15 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         hitEvent: ListenerType.move,
       );
 
-  void pointerDown(Vec2D position) => _processEvent(
-        position,
-        hitEvent: ListenerType.down,
-      );
+  void pointerDown(Vec2D position, PointerDownEvent event) {
+    if (_processEvent(
+      position,
+      hitEvent: ListenerType.down,
+      pointerEvent: event,
+    )) {
+      _recognizer.addPointer(event);
+    }
+  }
 
   void pointerUp(Vec2D position) => _processEvent(
         position,
