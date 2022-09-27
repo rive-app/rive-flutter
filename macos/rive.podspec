@@ -18,6 +18,7 @@ Rive 2 Flutter Runtime. This package provides runtime functionality for playing 
     "rive-cpp/src/rive_counter.cpp",
     "rive-cpp/src/renderer.cpp",
     "rive-cpp/src/text/renderfont_hb.cpp",
+    "rive-cpp/src/text/line_breaker.cpp",
     "harfbuzz/src/hb-aat-layout.cc",
     "harfbuzz/src/hb-aat-map.cc",
     "harfbuzz/src/hb-blob.cc",

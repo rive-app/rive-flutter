@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
+import 'package:rive/math.dart';
 import 'package:rive/src/renderfont.dart';
 
 final DynamicLibrary nativeLib = Platform.isAndroid
@@ -125,7 +126,7 @@ class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
   RenderFont get renderFont => RenderFontFFI(font);
 
   @override
-  int textOffsetAt(int index) => textIndices.data.elementAt(index).value;
+  int textIndexAt(int index) => textIndices.data.elementAt(index).value;
 
   @override
   double xAt(int index) => xpos.data.elementAt(index).value;
@@ -236,7 +237,7 @@ class RawPathCommandWasm extends RawPathCommand {
   @override
   Vec2D point(int index) {
     var ref = _points.elementAt(index).ref;
-    return Vec2D(ref.x, ref.y);
+    return Vec2D.fromValues(ref.x, ref.y);
   }
 }
 

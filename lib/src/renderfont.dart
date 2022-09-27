@@ -2,14 +2,9 @@ import 'dart:collection';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:rive/math.dart';
+
 import 'renderfont_ffi.dart' if (dart.library.html) 'renderfont_wasm.dart';
-
-class Vec2D {
-  final double x;
-  final double y;
-
-  Vec2D(this.x, this.y);
-}
 
 enum RawPathVerb { move, line, quad, cubic, close }
 
@@ -58,7 +53,7 @@ abstract class RenderGlyphRun {
   int get styleId;
   int get glyphCount;
   int glyphIdAt(int index);
-  int textOffsetAt(int index);
+  int textIndexAt(int index);
   double xAt(int index);
 }
 

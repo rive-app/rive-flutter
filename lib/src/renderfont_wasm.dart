@@ -273,7 +273,7 @@ class RenderGlyphRunWasm extends RenderGlyphRun {
       RenderFontWasm(byteData.getUint32(0, Endian.little));
 
   @override
-  int textOffsetAt(int index) =>
+  int textIndexAt(int index) =>
       textIndices.data.getUint32(index * 4, Endian.little);
 
   @override
