@@ -393,8 +393,10 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         // user-selectable value in the inspector?
 
         // Just use bounds for now
-        foundTarget = true;
         isOver = hitTester.test();
+        if (isOver) {
+          foundTarget = true;
+        }
       }
 
       bool hoverChange = hitShape.isHovered != isOver;
