@@ -317,6 +317,7 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
   @override
   void dispose() {
     _clearLayerControllers();
+    _recognizer.dispose();
     super.dispose();
   }
 
