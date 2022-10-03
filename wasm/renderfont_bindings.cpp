@@ -55,7 +55,7 @@ void deleteShapeResult(WasmPtr shaperResult) {
     delete reinterpret_cast<rive::SimpleArray<rive::RenderGlyphRun>*>(shaperResult);
 }
 
-WasmPtr shapeText(emscripten::val codeUnits, emscripten::val runsList) {
+rive::ShapedText shapeText(emscripten::val codeUnits, emscripten::val runsList) {
     std::vector<uint8_t> runsBytes(runsList["byteLength"].as<unsigned>());
     {
         emscripten::val memoryView{
@@ -73,10 +73,9 @@ WasmPtr shapeText(emscripten::val codeUnits, emscripten::val runsList) {
     rive::RenderTextRun* runs = reinterpret_cast<rive::RenderTextRun*>(runsBytes.data());
 
     if (runCount > 0) {
-        return (WasmPtr) new rive::SimpleArray<rive::RenderGlyphRun>(
-            runs[0].font->shapeText(codeUnitArray, rive::Span(runs, runCount)));
+        return runs[0].font->shapeText(codeUnitArray, rive::Span(runs, runCount));
     }
-    return (WasmPtr) nullptr;
+    return {};
 }
 
 struct LinesResult {

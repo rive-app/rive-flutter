@@ -43,29 +43,28 @@ function installRiveCpp {
         echo "Cloning rive-cpp."
         git clone https://github.com/rive-app/rive-cpp
     fi
+    # install dependencies from rive-cpp
+    pushd rive-cpp/dependencies/macosx
+    source config_directories.sh
+    ./get_harfbuzz.sh
+    ./get_fribidi.sh
+    ./get_sheenbidi.sh
+    popd
 }
 
 pushd macos
 installRiveCpp
-if [ $FORCE == "true" ] || [ ! -d harfbuzz ]; then
-    rm -fR harfbuzz
-    echo "Cloning Harfbuzz."
-    git clone https://github.com/harfbuzz/harfbuzz
-    pushd harfbuzz
-    git checkout 858570b1d9912a1b746ab39fbe62a646c4f7a5b1 .
-    popd
-fi
+# if [ $FORCE == "true" ] || [ ! -d harfbuzz ]; then
+#     rm -fR harfbuzz
+#     echo "Cloning Harfbuzz."
+#     git clone https://github.com/harfbuzz/harfbuzz
+#     pushd harfbuzz
+#     git checkout 858570b1d9912a1b746ab39fbe62a646c4f7a5b1 .
+#     popd
+# fi
 installRiveCpp
 popd
 
-pushd ios
-if [ $FORCE == "true" ] || [ ! -d harfbuzz ]; then
-    rm -fR harfbuzz
-    echo "Cloning Harfbuzz."
-    git clone https://github.com/harfbuzz/harfbuzz
-    pushd harfbuzz
-    git checkout 858570b1d9912a1b746ab39fbe62a646c4f7a5b1 .
-    popd
-fi
-installRiveCpp
-popd
+# pushd ios
+# installRiveCpp
+# popd

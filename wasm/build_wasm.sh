@@ -52,3 +52,5 @@ for var in "$@"; do
 done
 
 AR=emar CC=emcc CXX=em++ make config=$CONFIG -j$(($(sysctl -n hw.physicalcpu) + 1))
+
+du -hs build/bin/$CONFIG/render_font.wasm
