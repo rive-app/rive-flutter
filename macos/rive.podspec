@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name = "rive"
   s.version = "0.0.1"
-  s.summary = "Rive font abstraction."
+  s.summary = "Rive text abstraction."
   s.description = <<-DESC
 Rive 2 Flutter Runtime. This package provides runtime functionality for playing back and interacting with animations built with the Rive editor available at https://rive.app.
                        DESC
@@ -12,13 +12,14 @@ Rive 2 Flutter Runtime. This package provides runtime functionality for playing 
   s.source = { :path => "." }
   s.source_files = [
     "Classes/**/*",
-    "renderfont/**/*.{cpp,hpp,c,h}",
+    "rive_text/**/*.{cpp,hpp,c,h}",
     "rive-cpp/src/math/raw_path.cpp",
     "rive-cpp/src/math/mat2d.cpp",
     "rive-cpp/src/rive_counter.cpp",
     "rive-cpp/src/renderer.cpp",
-    "rive-cpp/src/text/renderfont_hb.cpp",
+    "rive-cpp/src/text/font_hb.cpp",
     "rive-cpp/src/text/line_breaker.cpp",
+
     "harfbuzz/src/hb-aat-layout.cc",
     "harfbuzz/src/hb-aat-map.cc",
     "harfbuzz/src/hb-blob.cc",
@@ -73,15 +74,18 @@ Rive 2 Flutter Runtime. This package provides runtime functionality for playing 
     "harfbuzz/src/hb-subset.cc",
     "harfbuzz/src/hb-ucd.cc",
     "harfbuzz/src/hb-unicode.cc",
+
+    "SheenBidi/Headers/*.h",
+    "SheenBidi/Source/SheenBidi.c",
   ]
   s.dependency "FlutterMacOS"
 
   s.platform = :osx, "10.11"
   s.pod_target_xcconfig = {
     "DEFINES_MODULE" => "YES",
-    "OTHER_CFLAGS" => "-DWITH_RIVE_TEXT -DHAVE_OT -DHB_NO_FALLBACK_SHAPE -DHB_NO_WIN1256 -Wno-documentation -Wno-comma -Wno-unreachable-code  -Wno-shorten-64-to-32",
+    "OTHER_CFLAGS" => "-DSB_CONFIG_UNITY -DWITH_RIVE_TEXT -DHAVE_OT -DHB_NO_FALLBACK_SHAPE -DHB_NO_WIN1256 -Wno-documentation -Wno-comma -Wno-unreachable-code  -Wno-shorten-64-to-32",
     "OTHER_CPLUSPLUSFLAGS" => "-DWITH_RIVE_TEXT -DHAVE_OT -DHB_NO_FALLBACK_SHAPE -DHB_NO_WIN1256 -Wno-documentation -Wno-comma -Wno-unreachable-code -Wno-shorten-64-to-32 -std=c++17",
-    "USER_HEADER_SEARCH_PATHS" => '"$(PODS_TARGET_SRCROOT)/harfbuzz/src" "$(PODS_TARGET_SRCROOT)/rive-cpp/include" "$(PODS_TARGET_SRCROOT)/rive-cpp/skia/renderer/include"',
+    "USER_HEADER_SEARCH_PATHS" => '"$(PODS_TARGET_SRCROOT)/SheenBidi/Headers" "$(PODS_TARGET_SRCROOT)/harfbuzz/src" "$(PODS_TARGET_SRCROOT)/rive-cpp/include" "$(PODS_TARGET_SRCROOT)/rive-cpp/skia/renderer/include"',
     "OTHER_CPLUSPLUSFLAGS[config=Release]" => "-DNDEBUG",
   }
   s.swift_version = "5.0"

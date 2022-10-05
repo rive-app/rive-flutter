@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:rive/math.dart';
 
-import 'renderfont_ffi.dart' if (dart.library.html) 'renderfont_wasm.dart';
+import 'rive_text_ffi.dart' if (dart.library.html) 'rive_text_wasm.dart';
 
 enum RawPathVerb { move, line, quad, cubic, close }
 
@@ -47,8 +47,8 @@ abstract class RawPath with IterableMixin<RawPathCommand> {
   }
 }
 
-abstract class RenderGlyphRun {
-  RenderFont get renderFont;
+abstract class GlyphRun {
+  Font get font;
   double get fontSize;
   int get styleId;
   int get glyphCount;
@@ -72,7 +72,7 @@ abstract class TextLine {
 
 abstract class TextShapeResult {
   int get runCount;
-  RenderGlyphRun runAt(int index);
+  GlyphRun runAt(int index);
   void dispose();
 
   void breakLines(double width, TextAlign alignment);
@@ -81,13 +81,13 @@ abstract class TextShapeResult {
 }
 
 /// A representation of a styled section of text in Rive.
-class RenderTextRun {
-  final RenderFont font;
+class TextRun {
+  final Font font;
   final double fontSize;
   final int styleId;
   final int unicharCount;
 
-  RenderTextRun({
+  TextRun({
     required this.font,
     required this.fontSize,
     required this.unicharCount,
@@ -95,11 +95,11 @@ class RenderTextRun {
   });
 }
 
-abstract class RenderFont {
-  static Future<void> initialize() => initRenderFont();
-  static RenderFont? decode(Uint8List bytes) => decodeRenderFont(bytes);
+abstract class Font {
+  static Future<void> initialize() => initFont();
+  static Font? decode(Uint8List bytes) => decodeFont(bytes);
   RawPath getPath(int glyphId);
   void dispose();
 
-  TextShapeResult shape(String text, List<RenderTextRun> runs);
+  TextShapeResult shape(String text, List<TextRun> runs);
 }

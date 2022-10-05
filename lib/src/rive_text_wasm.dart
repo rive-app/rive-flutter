@@ -4,12 +4,13 @@ import 'dart:html' as html;
 import 'dart:js' as js;
 import 'dart:typed_data';
 
-import 'package:rive/src/renderfont.dart';
+import 'package:rive/math.dart';
+import 'package:rive/src/rive_text.dart';
 import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
 import 'package:rive/src/utilities/binary_buffer/binary_writer.dart';
 
-late js.JsFunction _makeRenderFont;
-late js.JsFunction _deleteRenderFont;
+late js.JsFunction _makeFont;
+late js.JsFunction _deleteFont;
 late js.JsFunction _makeGlyphPath;
 late js.JsFunction _deleteGlyphPath;
 late js.JsFunction _shapeText;
@@ -48,7 +49,7 @@ class RawPathCommandWasm extends RawPathCommand {
   @override
   Vec2D point(int index) {
     var base = _pointsOffset + index * 2;
-    return Vec2D(_points[base], _points[base + 1]);
+    return Vec2D.fromValues(_points[base], _points[base + 1]);
   }
 }
 
@@ -170,7 +171,7 @@ class TextLineWasm implements TextLine {
 
 class TextShapeResultWasm extends TextShapeResult {
   final int rawPathResultsPtr;
-  final List<RenderGlyphRun> runs;
+  final List<GlyphRun> runs;
   final List<TextLineWasm> lines = [];
 
   TextShapeResultWasm(this.rawPathResultsPtr, this.runs);
@@ -178,7 +179,7 @@ class TextShapeResultWasm extends TextShapeResult {
   void dispose() => _deleteShapeResult.apply(<dynamic>[rawPathResultsPtr]);
 
   @override
-  RenderGlyphRun runAt(int index) => runs[index];
+  GlyphRun runAt(int index) => runs[index];
 
   @override
   int get runCount => runs.length;
@@ -243,14 +244,14 @@ class WasmDynamicArray {
   // int get size => data.getUint32(4);
 }
 
-class RenderGlyphRunWasm extends RenderGlyphRun {
+class GlyphRunWasm extends GlyphRun {
   final ByteData byteData;
   final WasmDynamicArray glyphs;
   final WasmDynamicArray textIndices;
   final WasmDynamicArray xPositions;
   final WasmDynamicArray breaks;
 
-  RenderGlyphRunWasm(this.byteData)
+  GlyphRunWasm(this.byteData)
       : glyphs = byteData.readDynamicArray(12),
         textIndices = byteData.readDynamicArray(20),
         xPositions = byteData.readDynamicArray(28),
@@ -269,8 +270,7 @@ class RenderGlyphRunWasm extends RenderGlyphRun {
   int glyphIdAt(int index) => glyphs.data.getUint16(index * 2, Endian.little);
 
   @override
-  RenderFont get renderFont =>
-      RenderFontWasm(byteData.getUint32(0, Endian.little));
+  Font get font => FontWasm(byteData.getUint32(0, Endian.little));
 
   @override
   int textIndexAt(int index) =>
@@ -280,11 +280,11 @@ class RenderGlyphRunWasm extends RenderGlyphRun {
   double xAt(int index) => xPositions.data.getFloat32(index * 4, Endian.little);
 }
 
-/// A RenderFont reference that should not be explicitly disposed by the user.
+/// A Font reference that should not be explicitly disposed by the user.
 /// Returned while shaping.
-class RenderFontWasm extends RenderFont {
-  final int renderFontPtr;
-  RenderFontWasm(this.renderFontPtr);
+class FontWasm extends Font {
+  final int fontPtr;
+  FontWasm(this.fontPtr);
 
   @override
   void dispose() {}
@@ -292,7 +292,7 @@ class RenderFontWasm extends RenderFont {
   @override
   RawPath getPath(int glyphId) {
     var object =
-        _makeGlyphPath.apply(<dynamic>[renderFontPtr, glyphId]) as js.JsObject;
+        _makeGlyphPath.apply(<dynamic>[fontPtr, glyphId]) as js.JsObject;
     var rawPathPtr = object['rawPath'] as int;
     var verbs = object['verbs'] as Uint8List;
     var points = object['points'] as Float32List;
@@ -303,15 +303,15 @@ class RenderFontWasm extends RenderFont {
     );
   }
 
-  static const int sizeOfNativeRenderTextRun = 4 + 4 + 4 + 4;
+  static const int sizeOfNativeTextRun = 4 + 4 + 4 + 4;
 
   @override
-  TextShapeResult shape(String text, List<RenderTextRun> runs) {
+  TextShapeResult shape(String text, List<TextRun> runs) {
     var writer = BinaryWriter(
-      alignment: runs.length * sizeOfNativeRenderTextRun,
+      alignment: runs.length * sizeOfNativeTextRun,
     );
     for (final run in runs) {
-      writer.writeUint32((run.font as RenderFontWasm).renderFontPtr);
+      writer.writeUint32((run.font as FontWasm).fontPtr);
       writer.writeFloat32(run.fontSize);
       writer.writeUint32(run.unicharCount);
       writer.writeUint32(run.styleId);
@@ -331,10 +331,9 @@ class RenderFontWasm extends RenderFont {
     var dataPointer = reader.readUint32();
     var dataSize = reader.readUint32();
 
-    var runList = <RenderGlyphRunWasm>[];
+    var runList = <GlyphRunWasm>[];
     for (int i = 0; i < dataSize; i++) {
-      runList
-          .add(RenderGlyphRunWasm(ByteData.view(results.buffer, dataPointer)));
+      runList.add(GlyphRunWasm(ByteData.view(results.buffer, dataPointer)));
       dataPointer += 4 + 4 + 4 + 8 + 8 + 8 + 8;
     }
 
@@ -342,42 +341,42 @@ class RenderFontWasm extends RenderFont {
   }
 }
 
-/// A RenderFont created and owned by Dart code. User is expected to call
+/// A Font created and owned by Dart code. User is expected to call
 /// dispose to release the font when they are done with it.
-class StrongRenderFontWasm extends RenderFontWasm {
-  StrongRenderFontWasm(int renderFontPtr) : super(renderFontPtr);
+class StrongFontWasm extends FontWasm {
+  StrongFontWasm(int fontPtr) : super(fontPtr);
 
   @override
-  void dispose() => _deleteRenderFont.apply(<dynamic>[renderFontPtr]);
+  void dispose() => _deleteFont.apply(<dynamic>[fontPtr]);
 }
 
-RenderFont? decodeRenderFont(Uint8List bytes) {
-  int ptr = _makeRenderFont.apply(<dynamic>[bytes]) as int;
+Font? decodeFont(Uint8List bytes) {
+  int ptr = _makeFont.apply(<dynamic>[bytes]) as int;
   if (ptr == 0) {
     return null;
   }
-  return StrongRenderFontWasm(ptr);
+  return StrongFontWasm(ptr);
 }
 
-Future<void> initRenderFont() async {
+Future<void> initFont() async {
   var script = html.ScriptElement()
     ..src =
-        'assets/packages/rive/wasm/build/bin/release/render_font.js' // ignore: unsafe_html
+        'assets/packages/rive/wasm/build/bin/release/rive_text.js' // ignore: unsafe_html
     ..type = 'application/javascript'
     ..defer = true;
 
   html.document.body!.append(script);
   await script.onLoad.first;
 
-  var init = js.context['RenderFont'] as js.JsFunction;
+  var init = js.context['Font'] as js.JsFunction;
   var promise = init.apply(<dynamic>[]) as js.JsObject;
   var thenFunction = promise['then'] as js.JsFunction;
   var completer = Completer<void>();
   thenFunction.apply(
     <dynamic>[
       (js.JsObject module) {
-        _makeRenderFont = module['makeRenderFont'] as js.JsFunction;
-        _deleteRenderFont = module['deleteRenderFont'] as js.JsFunction;
+        _makeFont = module['makeFont'] as js.JsFunction;
+        _deleteFont = module['deleteFont'] as js.JsFunction;
         _makeGlyphPath = module['makeGlyphPath'] as js.JsFunction;
         _deleteGlyphPath = module['deleteGlyphPath'] as js.JsFunction;
         _shapeText = module['shapeText'] as js.JsFunction;

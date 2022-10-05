@@ -1,1 +1,1 @@
-var RenderFont = {};
+var RiveText = {};

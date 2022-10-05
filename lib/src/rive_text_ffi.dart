@@ -4,10 +4,10 @@ import 'dart:typed_data';
 
 import 'package:ffi/ffi.dart';
 import 'package:rive/math.dart';
-import 'package:rive/src/renderfont.dart';
+import 'package:rive/src/rive_text.dart';
 
 final DynamicLibrary nativeLib = Platform.isAndroid
-    ? DynamicLibrary.open('librenderfont.so')
+    ? DynamicLibrary.open('librive_text.so')
     : DynamicLibrary.process();
 
 class PathPoint extends Struct {
@@ -29,7 +29,7 @@ class GlyphPathStruct extends Struct {
   external int verbCount;
 }
 
-class RenderGlyphLineFFI extends Struct implements TextLine {
+class GlyphLineFFI extends Struct implements TextLine {
   @override
   @Uint32()
   external int startRun;
@@ -65,7 +65,7 @@ class RenderGlyphLineFFI extends Struct implements TextLine {
 
 class LinesResultStruct extends Struct {
   external Pointer<Void> result;
-  external Pointer<RenderGlyphLineFFI> lines;
+  external Pointer<GlyphLineFFI> lines;
 
   @Uint32()
   external int lineCount;
@@ -89,7 +89,7 @@ class SimpleFloatArray extends Struct {
   external int size;
 }
 
-class RenderTextRunNative extends Struct {
+class TextRunNative extends Struct {
   external Pointer<Void> font;
   @Float()
   external double size;
@@ -99,8 +99,8 @@ class RenderTextRunNative extends Struct {
   external int styleId;
 }
 
-class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
-  external Pointer<Void> font;
+class GlyphRunNative extends Struct implements GlyphRun {
+  external Pointer<Void> fontPtr;
   @Float()
   external double size;
 
@@ -123,7 +123,7 @@ class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
   int glyphIdAt(int index) => glyphs.data.elementAt(index).value;
 
   @override
-  RenderFont get renderFont => RenderFontFFI(font);
+  Font get font => FontFFI(fontPtr);
 
   @override
   int textIndexAt(int index) => textIndices.data.elementAt(index).value;
@@ -132,14 +132,14 @@ class RenderGlyphRunNative extends Struct implements RenderGlyphRun {
   double xAt(int index) => xpos.data.elementAt(index).value;
 }
 
-class DynamicRenderTextRunArray extends Struct {
-  external Pointer<RenderGlyphRunNative> data;
+class DynamicTextRunArray extends Struct {
+  external Pointer<GlyphRunNative> data;
   @Uint64()
   external int size;
 }
 
 class TextShapeResultFFI extends TextShapeResult {
-  final Pointer<DynamicRenderTextRunArray> nativeResult;
+  final Pointer<DynamicTextRunArray> nativeResult;
   TextShapeResultFFI(this.nativeResult);
 
   LinesResultStruct? _lineBreakResult;
@@ -154,7 +154,7 @@ class TextShapeResultFFI extends TextShapeResult {
   }
 
   @override
-  RenderGlyphRun runAt(int index) => nativeResult.ref.data.elementAt(index).ref;
+  GlyphRun runAt(int index) => nativeResult.ref.data.elementAt(index).ref;
 
   @override
   int get runCount => nativeResult.ref.size;
@@ -174,29 +174,28 @@ class TextShapeResultFFI extends TextShapeResult {
   int get lineCount => _lineBreakResult?.lineCount ?? 0;
 }
 
-final Pointer<DynamicRenderTextRunArray> Function(Pointer<Uint32> text,
-        int textLength, Pointer<RenderTextRunNative> runs, int runsLength)
-    shapeText = nativeLib
+final Pointer<DynamicTextRunArray> Function(Pointer<Uint32> text,
+        int textLength, Pointer<TextRunNative> runs, int runsLength) shapeText =
+    nativeLib
         .lookup<
             NativeFunction<
-                Pointer<DynamicRenderTextRunArray> Function(Pointer<Uint32>,
-                    Uint64, Pointer<RenderTextRunNative>, Uint64)>>('shapeText')
+                Pointer<DynamicTextRunArray> Function(Pointer<Uint32>, Uint64,
+                    Pointer<TextRunNative>, Uint64)>>('shapeText')
         .asFunction();
 
-final void Function(
-    Pointer<DynamicRenderTextRunArray>
-        renderFont) deleteShapeResult = nativeLib
-    .lookup<NativeFunction<Void Function(Pointer<DynamicRenderTextRunArray>)>>(
-        'deleteShapeResult')
-    .asFunction();
+final void Function(Pointer<DynamicTextRunArray> font) deleteShapeResult =
+    nativeLib
+        .lookup<NativeFunction<Void Function(Pointer<DynamicTextRunArray>)>>(
+            'deleteShapeResult')
+        .asFunction();
 
 final LinesResultStruct Function(
-        Pointer<DynamicRenderTextRunArray>, double width, int align)
+        Pointer<DynamicTextRunArray>, double width, int align)
     breakLinesNative = nativeLib
         .lookup<
             NativeFunction<
-                LinesResultStruct Function(Pointer<DynamicRenderTextRunArray>,
-                    Float, Uint8)>>('breakLines')
+                LinesResultStruct Function(
+                    Pointer<DynamicTextRunArray>, Float, Uint8)>>('breakLines')
         .asFunction();
 
 final void Function(Pointer<Void>) deleteBreakLinesResult = nativeLib
@@ -204,25 +203,25 @@ final void Function(Pointer<Void>) deleteBreakLinesResult = nativeLib
         'deleteBreakLinesResult')
     .asFunction();
 
-final Pointer<Void> Function(Pointer<Uint8> bytes, int count) makeRenderFont =
+final Pointer<Void> Function(Pointer<Uint8> bytes, int count) makeFont =
     nativeLib
         .lookup<NativeFunction<Pointer<Void> Function(Pointer<Uint8>, Uint64)>>(
-            'makeRenderFont')
+            'makeFont')
         .asFunction();
 
-final void Function(Pointer<Void> renderFont) deleteRenderFont = nativeLib
-    .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteRenderFont')
+final void Function(Pointer<Void> font) deleteFont = nativeLib
+    .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteFont')
     .asFunction();
 
 final GlyphPathStruct Function(
-    Pointer<Void> renderFont,
+    Pointer<Void> font,
     int
         glyphId) makeGlyphPath = nativeLib
     .lookup<NativeFunction<GlyphPathStruct Function(Pointer<Void>, Uint16)>>(
         'makeGlyphPath')
     .asFunction();
 
-final void Function(Pointer<Void> renderFont) deleteRawPath = nativeLib
+final void Function(Pointer<Void> font) deleteRawPath = nativeLib
     .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteRawPath')
     .asFunction();
 
@@ -329,25 +328,25 @@ class RawPathFFI extends RawPath {
   void dispose() => deleteRawPath(_native.rawPath);
 }
 
-/// A RenderFont created and owned by Dart code. User is expected to call
+/// A Font created and owned by Dart code. User is expected to call
 /// dispose to release the font when they are done with it.
-class StrongRenderFontFFI extends RenderFontFFI {
-  StrongRenderFontFFI(Pointer<Void> ptr) : super(ptr);
+class StrongFontFFI extends FontFFI {
+  StrongFontFFI(Pointer<Void> ptr) : super(ptr);
 
   @override
-  void dispose() => deleteRenderFont(renderFontPtr);
+  void dispose() => deleteFont(fontPtr);
 }
 
-/// A RenderFont reference that should not be explicitly disposed by the user.
+/// A Font reference that should not be explicitly disposed by the user.
 /// Returned while shaping.
-class RenderFontFFI extends RenderFont {
-  Pointer<Void> renderFontPtr;
+class FontFFI extends Font {
+  Pointer<Void> fontPtr;
 
-  RenderFontFFI(this.renderFontPtr);
+  FontFFI(this.fontPtr);
 
   @override
   RawPath getPath(int glyphId) {
-    var glyphPath = makeGlyphPath(renderFontPtr, glyphId);
+    var glyphPath = makeGlyphPath(fontPtr, glyphId);
     return RawPathFFI._(glyphPath);
   }
 
@@ -355,16 +354,16 @@ class RenderFontFFI extends RenderFont {
   void dispose() {}
 
   @override
-  TextShapeResult shape(String text, List<RenderTextRun> runs) {
+  TextShapeResult shape(String text, List<TextRun> runs) {
     var textUni = text.codeUnits;
 
     // Allocate and copy to runs memory.
-    var runsMemory = calloc.allocate<RenderTextRunNative>(
-        runs.length * sizeOf<RenderTextRunNative>());
+    var runsMemory =
+        calloc.allocate<TextRunNative>(runs.length * sizeOf<TextRunNative>());
     int runIndex = 0;
     for (final run in runs) {
       runsMemory[runIndex++]
-        ..font = (run.font as RenderFontFFI).renderFontPtr
+        ..font = (run.font as FontFFI).fontPtr
         ..size = run.fontSize
         ..unicharCount = run.unicharCount
         ..styleId = run.styleId;
@@ -387,7 +386,7 @@ class RenderFontFFI extends RenderFont {
   }
 }
 
-RenderFont? decodeRenderFont(Uint8List bytes) {
+Font? decodeFont(Uint8List bytes) {
   // Copy them to the native heap.
   var pointer = calloc.allocate<Uint8>(bytes.length);
   for (int i = 0; i < bytes.length; i++) {
@@ -395,15 +394,15 @@ RenderFont? decodeRenderFont(Uint8List bytes) {
   }
 
   // Pass the pointer in to a native method.
-  var result = makeRenderFont(pointer, bytes.length);
+  var result = makeFont(pointer, bytes.length);
   calloc.free(pointer);
 
   // var text = "hi I'm some text";
   // var textUni = text.codeUnits;
-  // // print("ALLOC SOME RENDERTEXTRUNS");
+  // // print("ALLOC SOME TEXTRUNS");
 
   // var runs =
-  //     calloc.allocate<RenderTextRunNative>(1 * sizeOf<RenderTextRunNative>());
+  //     calloc.allocate<TextRunNative>(1 * sizeOf<TextRunNative>());
   // runs[0]
   //   ..font = result
   //   ..size = 32.0
@@ -418,7 +417,7 @@ RenderFont? decodeRenderFont(Uint8List bytes) {
   // calloc.free(textBuffer);
   // calloc.free(runs);
 
-  return RenderFontFFI(result);
+  return FontFFI(result);
 }
 
-Future<void> initRenderFont() async {}
+Future<void> initFont() async {}

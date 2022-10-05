@@ -1,14 +1,14 @@
-RenderFont["onRuntimeInitialized"] = function () {
-  var HEAPU8 = RenderFont["HEAPU8"];
-  var HEAPU32 = RenderFont["HEAPU32"];
-  var HEAPF32 = RenderFont["HEAPF32"];
-  var nativeMakeGlyphPath = RenderFont["makeGlyphPath"];
+RiveText["onRuntimeInitialized"] = function () {
+  var HEAPU8 = RiveText["HEAPU8"];
+  var HEAPU32 = RiveText["HEAPU32"];
+  var HEAPF32 = RiveText["HEAPF32"];
+  var nativeMakeGlyphPath = RiveText["makeGlyphPath"];
   var move = 0;
   var line = 1;
   var quad = 2;
   var cubic = 4;
   var close = 5;
-  RenderFont["makeGlyphPath"] = function (font, glyphId) {
+  RiveText["makeGlyphPath"] = function (font, glyphId) {
     var glyph = nativeMakeGlyphPath(font, glyphId);
     var verbCount = glyph[3];
     var ptsPtr = glyph[1];
@@ -41,8 +41,8 @@ RenderFont["onRuntimeInitialized"] = function () {
     };
   };
 
-  var nativeShapeText = RenderFont["shapeText"];
-  RenderFont["shapeText"] = function (codeUnits, runsList) {
+  var nativeShapeText = RiveText["shapeText"];
+  RiveText["shapeText"] = function (codeUnits, runsList) {
     var shapeResult = nativeShapeText(codeUnits, runsList);
     return {
       "rawResult": shapeResult,
@@ -50,8 +50,8 @@ RenderFont["onRuntimeInitialized"] = function () {
     };
   };
 
-  var nativeBreakLines = RenderFont["breakLines"];
-  RenderFont["breakLines"] = function (runs, width, align) {
+  var nativeBreakLines = RiveText["breakLines"];
+  RiveText["breakLines"] = function (runs, width, align) {
     var breakResult = nativeBreakLines(runs, width, align);
     return {
       "rawResult": breakResult[0],

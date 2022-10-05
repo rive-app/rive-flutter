@@ -18,38 +18,58 @@ for var in "$@"; do
 done
 
 function installRiveCpp {
-    if [ $FORCE != "true" ] && [ -d rive-cpp ]; then
-        return
-    fi
-    rm -fR rive-cpp
-    if [ -d ../../../packages/runtime ]; then
-        echo "Getting rive-cpp from current repo."
-        export INSTALL_TO=$PWD
-        mkdir -p rive-cpp
-        # cp -fR ../../../packages/runtime rive-cpp
-        # git clone machine1:/path/to/project machine2:/target/path
-        pushd ../../../packages/runtime
+    if [ $FORCE == "true" ] || [ ! -d rive-cpp ]; then
+        rm -fR rive-cpp
+        if [ -d ../../../packages/runtime ]; then
+            echo "Getting rive-cpp from current repo."
+            export INSTALL_TO=$PWD
+            mkdir -p rive-cpp
+            # cp -fR ../../../packages/runtime rive-cpp
+            # git clone machine1:/path/to/project machine2:/target/path
+            pushd ../../../packages/runtime
 
-        function copyRepoFile {
-            mkdir -p $(dirname $INSTALL_TO/rive-cpp/$1)
-            cp $1 $INSTALL_TO/rive-cpp/$1
-            echo -en "\r\033[K$1"
-        }
-        export -f copyRepoFile
-        git ls-files | xargs -n1 bash -c 'copyRepoFile "$@"' _
-        echo -en "\r\033[K"
-        popd
-    else
-        echo "Cloning rive-cpp."
-        git clone https://github.com/rive-app/rive-cpp
+            function copyRepoFile {
+                mkdir -p $(dirname $INSTALL_TO/rive-cpp/$1)
+                cp $1 $INSTALL_TO/rive-cpp/$1
+                echo -en "\r\033[K$1"
+            }
+            export -f copyRepoFile
+            git ls-files | xargs -n1 bash -c 'copyRepoFile "$@"' _
+            echo -en "\r\033[K"
+            popd
+        else
+            echo "Cloning rive-cpp."
+            git clone https://github.com/rive-app/rive-cpp
+        fi
+        # TODO: Fix this so we build the rive.podspec file based on paths determined
+        # here (for harfbuzz and sheenbidi)
+        #
+        # install dependencies from rive-cpp
+        # pushd rive-cpp/dependencies/macosx
+        # source config_directories.sh
+        # popd
+        # pushd rive-cpp
+        # ./build.sh
+        # popd
     fi
-    # install dependencies from rive-cpp
-    pushd rive-cpp/dependencies/macosx
-    source config_directories.sh
-    ./get_harfbuzz.sh
-    ./get_fribidi.sh
-    ./get_sheenbidi.sh
-    popd
+
+    # For now just manually install the deps.
+    if [ $FORCE == "true" ] || [ ! -d harfbuzz ]; then
+        rm -fR harfbuzz
+        echo "Cloning Harfbuzz."
+        git clone https://github.com/harfbuzz/harfbuzz
+        pushd harfbuzz
+        git checkout 858570b1d9912a1b746ab39fbe62a646c4f7a5b1 .
+        popd
+    fi
+    if [ $FORCE == "true" ] || [ ! -d SheenBidi ]; then
+        rm -fR SheenBidi
+        echo "Cloning Harfbuzz."
+        git clone https://github.com/Tehreer/SheenBidi.git
+        pushd SheenBidi
+        git checkout v2.6 .
+        popd
+    fi
 }
 
 pushd macos
