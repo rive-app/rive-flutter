@@ -1,5 +1,6 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:async';
+import 'dart:collection';
 import 'dart:html' as html;
 import 'dart:js' as js;
 import 'dart:typed_data';
@@ -16,21 +17,19 @@ late js.JsFunction _deleteGlyphPath;
 late js.JsFunction _shapeText;
 late js.JsFunction _deleteShapeResult;
 late js.JsFunction _breakLines;
-late js.JsFunction _deleteBreakLinesResult;
+late js.JsFunction _deleteLines;
 
 class RawPathWasm extends RawPath {
-  final int rawPathPtr;
   final Uint8List verbs;
   final Float32List points;
 
   RawPathWasm({
-    required this.rawPathPtr,
     required this.verbs,
     required this.points,
   });
 
   @override
-  void dispose() => _deleteGlyphPath.apply(<dynamic>[rawPathPtr]);
+  void dispose() {}
 
   @override
   Iterator<RawPathCommand> get iterator => RawPathIterator._(verbs, points);
@@ -132,24 +131,18 @@ class RawPathIterator extends Iterator<RawPathCommand> {
   }
 }
 
-class TextLineWasm implements TextLine {
+class GlyphLineWasm extends GlyphLine {
   @override
-  final double baseline;
-
-  @override
-  final double bottom;
-
-  @override
-  final int endIndex;
-
-  @override
-  final int endRun;
+  final int startRun;
 
   @override
   final int startIndex;
 
   @override
-  final int startRun;
+  final int endRun;
+
+  @override
+  final int endIndex;
 
   @override
   final double startX;
@@ -157,71 +150,82 @@ class TextLineWasm implements TextLine {
   @override
   final double top;
 
-  TextLineWasm({
-    required this.baseline,
-    required this.bottom,
-    required this.endIndex,
-    required this.endRun,
-    required this.startIndex,
-    required this.startRun,
-    required this.startX,
-    required this.top,
-  });
+  @override
+  final double baseline;
+
+  @override
+  final double bottom;
+
+  GlyphLineWasm(ByteData data)
+      : startRun = data.getUint32(0, Endian.little),
+        startIndex = data.getUint32(4, Endian.little),
+        endRun = data.getUint32(8, Endian.little),
+        endIndex = data.getUint32(12, Endian.little),
+        startX = data.getFloat32(16, Endian.little),
+        top = data.getFloat32(20, Endian.little),
+        baseline = data.getFloat32(24, Endian.little),
+        bottom = data.getFloat32(28, Endian.little);
+
+  @override
+  String toString() {
+    return "GlyphLineWasm $startRun $startIndex $endRun $endIndex $startX $top $baseline $bottom";
+  }
 }
 
 class TextShapeResultWasm extends TextShapeResult {
-  final int rawPathResultsPtr;
-  final List<GlyphRun> runs;
-  final List<TextLineWasm> lines = [];
-
-  TextShapeResultWasm(this.rawPathResultsPtr, this.runs);
+  final int shapeResultPtr;
   @override
-  void dispose() => _deleteShapeResult.apply(<dynamic>[rawPathResultsPtr]);
+  final List<ParagraphWasm> paragraphs;
 
+  TextShapeResultWasm(this.shapeResultPtr, this.paragraphs);
   @override
-  GlyphRun runAt(int index) => runs[index];
+  void dispose() => _deleteShapeResult.apply(<dynamic>[shapeResultPtr]);
 
   @override
-  int get runCount => runs.length;
-
-  @override
-  void breakLines(double width, TextAlign alignment) {
+  List<List<GlyphLine>> breakLines(double width, TextAlign alignment) {
     var result = _breakLines.apply(
       <dynamic>[
-        rawPathResultsPtr,
+        shapeResultPtr,
         width,
         alignment.index,
       ],
     ) as js.JsObject;
 
     var rawResult = result['rawResult'] as int;
-    var linesBuffer = result['lines'] as Uint8List;
-    var lineCount = result['lineCount'] as int;
-    lines.clear();
+    var results = result['results'] as Uint8List;
 
-    var reader = BinaryReader.fromList(linesBuffer);
-    for (int i = 0; i < lineCount; i++) {
-      lines.add(
-        TextLineWasm(
-          startRun: reader.readUint32(),
-          startIndex: reader.readUint32(),
-          endRun: reader.readUint32(),
-          endIndex: reader.readUint32(),
-          startX: reader.readFloat32(),
-          top: reader.readFloat32(),
-          baseline: reader.readFloat32(),
-          bottom: reader.readFloat32(),
-        ),
-      );
+    const lineSize = 32;
+    var paragraphsList = ByteData.view(results.buffer, results.offsetInBytes)
+        .readDynamicArray(0);
+    var paragraphsLines = <List<GlyphLine>>[];
+    var pointerEnd = paragraphsList.size * 8;
+    for (var pointer = 0; pointer < pointerEnd; pointer += 8) {
+      var sublist = paragraphsList.data.readDynamicArray(pointer);
+      var lines = <GlyphLine>[];
+
+      var end = sublist.data.offsetInBytes + sublist.size * lineSize;
+      for (var lineOffset = sublist.data.offsetInBytes;
+          lineOffset < end;
+          lineOffset += lineSize) {
+        lines.add(
+          GlyphLineWasm(
+            ByteData.view(
+              sublist.data.buffer,
+              lineOffset,
+            ),
+          ),
+        );
+      }
+      paragraphsLines.add(lines);
     }
-    _deleteBreakLinesResult.apply(<dynamic>[rawResult]);
+    _deleteLines.apply(
+      <dynamic>[
+        rawResult,
+      ],
+    );
+
+    return paragraphsLines;
   }
-
-  @override
-  TextLine lineAt(int index) => lines[index];
-
-  @override
-  int get lineCount => lines.length;
 }
 
 extension ByteDataWasm on ByteData {
@@ -234,50 +238,144 @@ extension ByteDataWasm on ByteData {
       ),
     );
   }
+
+  Uint16List readUint16List(int offset, {bool clone = true}) {
+    var array = readDynamicArray(offset);
+    var list =
+        array.data.buffer.asUint16List(array.data.offsetInBytes, array.size);
+    if (clone) {
+      return Uint16List.fromList(list);
+    }
+    return list;
+  }
+
+  Uint32List readUint32List(int offset, {bool clone = true}) {
+    var array = readDynamicArray(offset);
+    var list =
+        array.data.buffer.asUint32List(array.data.offsetInBytes, array.size);
+    if (clone) {
+      return Uint32List.fromList(list);
+    }
+    return list;
+  }
+
+  Float32List readFloat32List(int offset, {bool clone = true}) {
+    var array = readDynamicArray(offset);
+    var list =
+        array.data.buffer.asFloat32List(array.data.offsetInBytes, array.size);
+
+    if (clone) {
+      return Float32List.fromList(list);
+    }
+    return list;
+  }
 }
 
 class WasmDynamicArray {
   final ByteData data;
   final int size;
   WasmDynamicArray(this.data, this.size);
+}
 
-  // int get size => data.getUint32(4);
+class LinesWasm extends ListBase<GlyphLineWasm> {
+  final WasmDynamicArray wasmDynamicArray;
+
+  LinesWasm(this.wasmDynamicArray);
+
+  @override
+  int get length => wasmDynamicArray.size;
+
+  @override
+  GlyphLineWasm operator [](int index) {
+    const lineSize = 4 + //startRun
+        4 + // startIndex
+        4 + // endRun
+        4 + // endIndex
+        4 + // startX
+        4 + // top
+        4 + // baseline
+        4; // bottom
+    var data = wasmDynamicArray.data;
+    return GlyphLineWasm(
+      ByteData.view(
+        data.buffer,
+        data.offsetInBytes + index * lineSize,
+      ),
+    );
+  }
+
+  @override
+  void operator []=(int index, GlyphLineWasm value) {
+    throw UnsupportedError('Cannot set Line on LinesWasm array');
+  }
+
+  @override
+  set length(int newLength) {
+    throw UnsupportedError('Cannot set Line count on LinesWasm array');
+  }
+}
+
+class ParagraphWasm extends Paragraph {
+  final ByteData data;
+  @override
+  final TextDirection direction;
+
+  @override
+  final List<GlyphRunWasm> runs = [];
+
+  ParagraphWasm(this.data)
+      : direction = TextDirection.values[data.getUint8(8)] {
+    const runSize =
+        52; // see rive_text_bindings.cpp assertSomeAssumptions for explanation
+    var runsPointer = data.getUint32(0, Endian.little);
+    var runsCount = data.getUint32(4, Endian.little);
+
+    for (int i = 0, runPointer = runsPointer;
+        i < runsCount;
+        i++, runPointer += runSize) {
+      runs.add(GlyphRunWasm(ByteData.view(data.buffer, runPointer)));
+    }
+  }
 }
 
 class GlyphRunWasm extends GlyphRun {
   final ByteData byteData;
-  final WasmDynamicArray glyphs;
-  final WasmDynamicArray textIndices;
-  final WasmDynamicArray xPositions;
-  final WasmDynamicArray breaks;
+  final Uint16List glyphs;
+  final Uint32List textIndices;
+  final Float32List xPositions;
+
+  @override
+  final TextDirection direction;
+
+  @override
+  final int styleId;
+
+  @override
+  final Font font;
+
+  @override
+  final double fontSize;
 
   GlyphRunWasm(this.byteData)
-      : glyphs = byteData.readDynamicArray(12),
-        textIndices = byteData.readDynamicArray(20),
-        xPositions = byteData.readDynamicArray(28),
-        breaks = byteData.readDynamicArray(36);
+      : font = FontWasm(byteData.getUint32(0, Endian.little)),
+        fontSize = byteData.getFloat32(4, Endian.little),
+        glyphs = byteData.readUint16List(8),
+        textIndices = byteData.readUint32List(16),
+        xPositions = byteData.readFloat32List(24),
+        styleId = byteData.getUint16(48, Endian.little),
+        direction = TextDirection.values[byteData.getUint8(50)];
 
   @override
-  double get fontSize => byteData.getFloat32(4, Endian.little);
+  int get glyphCount => glyphs.length;
 
   @override
-  int get styleId => byteData.getUint32(8, Endian.little);
+  int glyphIdAt(int index) => glyphs[index];
 
   @override
-  int get glyphCount => glyphs.size;
+  int textIndexAt(int index) => textIndices[index];
 
   @override
-  int glyphIdAt(int index) => glyphs.data.getUint16(index * 2, Endian.little);
-
-  @override
-  Font get font => FontWasm(byteData.getUint32(0, Endian.little));
-
-  @override
-  int textIndexAt(int index) =>
-      textIndices.data.getUint32(index * 4, Endian.little);
-
-  @override
-  double xAt(int index) => xPositions.data.getFloat32(index * 4, Endian.little);
+  double advanceAt(int index) => xPositions[index];
 }
 
 /// A Font reference that should not be explicitly disposed by the user.
@@ -287,6 +385,11 @@ class FontWasm extends Font {
   FontWasm(this.fontPtr);
 
   @override
+  String toString() {
+    return 'FontWasm $fontPtr';
+  }
+
+  @override
   void dispose() {}
 
   @override
@@ -294,16 +397,24 @@ class FontWasm extends Font {
     var object =
         _makeGlyphPath.apply(<dynamic>[fontPtr, glyphId]) as js.JsObject;
     var rawPathPtr = object['rawPath'] as int;
+
+    // The buffer for these share the WASM heap buffer, which is efficient but
+    // could also be lost in-between calls to WASM.
     var verbs = object['verbs'] as Uint8List;
     var points = object['points'] as Float32List;
-    return RawPathWasm(
-      rawPathPtr: rawPathPtr,
-      verbs: verbs,
-      points: points,
+
+    // We copy the verb and points structures so we don't have to worry about
+    // the references being lost if the WASM heap is re-allocated.
+    var rawPath = RawPathWasm(
+      verbs: Uint8List.fromList(verbs),
+      points: Float32List.fromList(points),
     );
+    // Immediately delete the native glyph's raw path.
+    _deleteGlyphPath.apply(<dynamic>[rawPathPtr]);
+    return rawPath;
   }
 
-  static const int sizeOfNativeTextRun = 4 + 4 + 4 + 4;
+  static const int sizeOfNativeTextRun = 20;
 
   @override
   TextShapeResult shape(String text, List<TextRun> runs) {
@@ -314,7 +425,10 @@ class FontWasm extends Font {
       writer.writeUint32((run.font as FontWasm).fontPtr);
       writer.writeFloat32(run.fontSize);
       writer.writeUint32(run.unicharCount);
-      writer.writeUint32(run.styleId);
+      writer.writeUint32(0); // script (unknown at this point)
+      writer.writeUint16(run.styleId);
+      writer.writeUint8(0); // dir (unknown at this point)
+      writer.writeUint8(0); // padding to word align struct
     }
 
     var result = _shapeText.apply(
@@ -328,16 +442,20 @@ class FontWasm extends Font {
     var results = result['results'] as Uint8List;
 
     var reader = BinaryReader.fromList(results);
-    var dataPointer = reader.readUint32();
-    var dataSize = reader.readUint32();
+    var paragraphsPointer = reader.readUint32();
+    var paragraphsSize = reader.readUint32();
 
-    var runList = <GlyphRunWasm>[];
-    for (int i = 0; i < dataSize; i++) {
-      runList.add(GlyphRunWasm(ByteData.view(results.buffer, dataPointer)));
-      dataPointer += 4 + 4 + 4 + 8 + 8 + 8 + 8;
+    var paragraphList = <ParagraphWasm>[];
+    const paragraphSize = 12; // runs = 8, direction = 1, padding = 3
+
+    for (int i = 0;
+        i < paragraphsSize;
+        i++, paragraphsPointer += paragraphSize) {
+      paragraphList
+          .add(ParagraphWasm(ByteData.view(results.buffer, paragraphsPointer)));
     }
 
-    return TextShapeResultWasm(rawResult, runList);
+    return TextShapeResultWasm(rawResult, paragraphList);
   }
 }
 
@@ -361,14 +479,14 @@ Font? decodeFont(Uint8List bytes) {
 Future<void> initFont() async {
   var script = html.ScriptElement()
     ..src =
-        'assets/packages/rive/wasm/build/bin/release/rive_text.js' // ignore: unsafe_html
+        'assets/packages/rive/wasm/build/bin/debug/rive_text.js' // ignore: unsafe_html
     ..type = 'application/javascript'
     ..defer = true;
 
   html.document.body!.append(script);
   await script.onLoad.first;
 
-  var init = js.context['Font'] as js.JsFunction;
+  var init = js.context['RiveText'] as js.JsFunction;
   var promise = init.apply(<dynamic>[]) as js.JsObject;
   var thenFunction = promise['then'] as js.JsFunction;
   var completer = Completer<void>();
@@ -382,8 +500,7 @@ Future<void> initFont() async {
         _shapeText = module['shapeText'] as js.JsFunction;
         _deleteShapeResult = module['deleteShapeResult'] as js.JsFunction;
         _breakLines = module['breakLines'] as js.JsFunction;
-        _deleteBreakLinesResult =
-            module['deleteBreakLinesResult'] as js.JsFunction;
+        _deleteLines = module['deleteLines'] as js.JsFunction;
         completer.complete();
       }
     ],

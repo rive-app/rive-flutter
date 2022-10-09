@@ -47,19 +47,56 @@ abstract class RawPath with IterableMixin<RawPathCommand> {
   }
 }
 
+enum TextDirection { ltr, rtl }
+
+enum TextAlign { left, right, center }
+
+abstract class Paragraph {
+  TextDirection get direction;
+  List<GlyphRun> get runs;
+}
+
 abstract class GlyphRun {
   Font get font;
   double get fontSize;
   int get styleId;
   int get glyphCount;
+  TextDirection get direction;
   int glyphIdAt(int index);
   int textIndexAt(int index);
-  double xAt(int index);
+  double advanceAt(int index);
 }
 
-enum TextAlign { left, right, center }
+class LineRunGlyph {
+  final GlyphRun run;
+  final int index;
 
-abstract class TextLine {
+  LineRunGlyph(this.run, this.index);
+
+  Float64List renderTransform(double x, double y) {
+    var scale = run.fontSize;
+    return Float64List.fromList([
+      scale,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      scale,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      x,
+      y,
+      0.0,
+      1.0
+    ]);
+  }
+}
+
+abstract class GlyphLine {
   int get startRun;
   int get startIndex;
   int get endRun;
@@ -68,24 +105,60 @@ abstract class TextLine {
   double get top;
   double get baseline;
   double get bottom;
+
+  /// Returns an iterator that traverses the glyphs in a line in visual order
+  /// taking into account both the paragraph's runs bidi order and the
+  /// individual glyphs bidi order within a run.
+  Iterable<LineRunGlyph> glyphs(Paragraph paragraph) sync* {
+    var glyphRuns = paragraph.runs;
+    int runIndex, bidiEndRun, runInc;
+    if (paragraph.direction == TextDirection.rtl) {
+      runIndex = endRun;
+      bidiEndRun = startRun - 1;
+      runInc = -1;
+    } else {
+      runIndex = startRun;
+      bidiEndRun = endRun + 1;
+      runInc = 1;
+    }
+    while (runIndex != bidiEndRun) {
+      var run = glyphRuns[runIndex];
+      int startGIndex = runIndex == startRun ? startIndex : 0;
+      int endGIndex = runIndex == endRun ? endIndex : run.glyphCount;
+
+      int j, end, inc;
+      if (run.direction == TextDirection.rtl) {
+        j = endGIndex - 1;
+        end = startGIndex - 1;
+        inc = -1;
+      } else {
+        j = startGIndex;
+        end = endGIndex;
+        inc = 1;
+      }
+
+      while (j != end) {
+        yield LineRunGlyph(run, j);
+        startGIndex = 0;
+        j += inc;
+      }
+      runIndex += runInc;
+    }
+  }
 }
 
 abstract class TextShapeResult {
-  int get runCount;
-  GlyphRun runAt(int index);
+  List<Paragraph> get paragraphs;
   void dispose();
-
-  void breakLines(double width, TextAlign alignment);
-  int get lineCount;
-  TextLine lineAt(int index);
+  List<List<GlyphLine>> breakLines(double width, TextAlign alignment);
 }
 
 /// A representation of a styled section of text in Rive.
 class TextRun {
   final Font font;
   final double fontSize;
-  final int styleId;
   final int unicharCount;
+  final int styleId;
 
   TextRun({
     required this.font,

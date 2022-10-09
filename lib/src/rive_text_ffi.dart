@@ -147,7 +147,7 @@ class TextShapeResultFFI extends TextShapeResult {
   @override
   void dispose() {
     if (_lineBreakResult != null) {
-      deleteBreakLinesResult(_lineBreakResult!.result);
+      deleteLines(_lineBreakResult!.result);
       _lineBreakResult = null;
     }
     deleteShapeResult(nativeResult);
@@ -162,7 +162,7 @@ class TextShapeResultFFI extends TextShapeResult {
   @override
   void breakLines(double width, TextAlign alignment) {
     if (_lineBreakResult != null) {
-      deleteBreakLinesResult(_lineBreakResult!.result);
+      deleteLines(_lineBreakResult!.result);
     }
     _lineBreakResult = breakLinesNative(nativeResult, width, alignment.index);
   }
@@ -198,9 +198,8 @@ final LinesResultStruct Function(
                     Pointer<DynamicTextRunArray>, Float, Uint8)>>('breakLines')
         .asFunction();
 
-final void Function(Pointer<Void>) deleteBreakLinesResult = nativeLib
-    .lookup<NativeFunction<Void Function(Pointer<Void>)>>(
-        'deleteBreakLinesResult')
+final void Function(Pointer<Void>) deleteLines = nativeLib
+    .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteLines')
     .asFunction();
 
 final Pointer<Void> Function(Pointer<Uint8> bytes, int count) makeFont =
@@ -221,8 +220,8 @@ final GlyphPathStruct Function(
         'makeGlyphPath')
     .asFunction();
 
-final void Function(Pointer<Void> font) deleteRawPath = nativeLib
-    .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteRawPath')
+final void Function(Pointer<Void> font) deleteGlyphPath = nativeLib
+    .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteGlyphPath')
     .asFunction();
 
 class RawPathCommandWasm extends RawPathCommand {
@@ -325,7 +324,7 @@ class RawPathFFI extends RawPath {
   Iterator<RawPathCommand> get iterator => RawPathIterator._(_native);
 
   @override
-  void dispose() => deleteRawPath(_native.rawPath);
+  void dispose() => deleteGlyphPath(_native.rawPath);
 }
 
 /// A Font created and owned by Dart code. User is expected to call

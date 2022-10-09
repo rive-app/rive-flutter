@@ -49,5 +49,5 @@ flutter:
         pluginClass: RivePlugin
         fileName: rive_web.dart
   assets:
-    - wasm/build/bin/release/rive_text.js
-    - wasm/build/bin/release/rive_text.wasm
+    - wasm/build/bin/debug/rive_text.js
+    - wasm/build/bin/debug/rive_text.wasm

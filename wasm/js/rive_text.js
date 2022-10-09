@@ -51,12 +51,11 @@ RiveText["onRuntimeInitialized"] = function () {
   };
 
   var nativeBreakLines = RiveText["breakLines"];
-  RiveText["breakLines"] = function (runs, width, align) {
-    var breakResult = nativeBreakLines(runs, width, align);
+  RiveText["breakLines"] = function (shape, width, align) {
+    var breakResult = nativeBreakLines(shape, width, align);
     return {
-      "rawResult": breakResult[0],
-      "lines": HEAPU8["subarray"](breakResult[1]),
-      "lineCount": breakResult[2],
+      "rawResult": breakResult,
+      "results": HEAPU8["subarray"](breakResult),
     };
   };
 };

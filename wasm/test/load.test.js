@@ -1,12 +1,12 @@
 const fs = require("fs");
-const initRenderFont = require("../build/bin/debug/render_font.js");
+const initRiveText = require("../build/bin/debug/rive_text.js");
 
 test("load render font", async () => {
-  const renderFont = await initRenderFont();
+  const riveText = await initRiveText();
   const fontBytes = fs.readFileSync("../example/assets/RobotoFlex.ttf");
-  const font = renderFont.makeRenderFont(fontBytes);
+  const font = riveText.makeFont(fontBytes);
   expect(font).not.toBe(0);
-  renderFont.deleteRenderFont(font);
+  riveText.deleteFont(font);
 });
 
 const move = 0;
@@ -47,13 +47,18 @@ const close = 5;
 //   };
 // }
 
-test("load glyph from font", async () => {
-  const renderFont = await initRenderFont();
-  const fontBytes = fs.readFileSync("../example/assets/RobotoFlex.ttf");
-  const font = renderFont.makeRenderFont(fontBytes);
+test("sanity checks", async () => {
+  const riveText = await initRiveText();
+  riveText.assertSomeAssumptions();
+});
 
-  const glyph = renderFont.makeGlyphPath(font, 222);
-  // const glyphBuffer = toGlyphBuffer(renderFont, glyph);
+test("load glyph from font", async () => {
+  const riveText = await initRiveText();
+  const fontBytes = fs.readFileSync("../example/assets/RobotoFlex.ttf");
+  const font = riveText.makeFont(fontBytes);
+
+  const glyph = riveText.makeGlyphPath(font, 222);
+  // const glyphBuffer = toGlyphBuffer(riveText, glyph);
 
   const expectedVerbs = new Uint8Array([
     move,
@@ -143,6 +148,6 @@ test("load glyph from font", async () => {
     -0.71484375, 0.404296875, -0.7412109375,
   ]);
   expect(glyph.points).toStrictEqual(expectedPoints);
-  renderFont.deleteGlyphPath(glyph.rawPath);
-  renderFont.deleteRenderFont(font);
+  riveText.deleteGlyphPath(glyph.rawPath);
+  riveText.deleteFont(font);
 });

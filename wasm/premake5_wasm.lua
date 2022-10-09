@@ -6,7 +6,8 @@ sheenbidi = dependency.github('Tehreer/SheenBidi', 'v2.6')
 workspace 'rive_text'
 configurations {'debug', 'release'}
 
-source = '../macos/'
+source = os.isdir('../../../packages/runtime') and '../../../packages/runtime' or '../macos/rive-cpp'
+
 project 'rive_sheenbidi'
 do
     kind 'StaticLib'
@@ -115,18 +116,18 @@ do
     }
 
     includedirs {
-        source .. 'rive-cpp/include',
-        source .. 'rive-cpp/skia/renderer/include',
+        source .. '/include',
+        source .. '/skia/renderer/include',
         harfbuzz .. '/src/',
         sheenbidi .. '/Headers'
     }
 
     files {
         'rive_text_bindings.cpp',
-        source .. 'rive-cpp/src/renderer.cpp',
-        source .. 'rive-cpp/src/math/raw_path.cpp',
-        source .. 'rive-cpp/src/text/font_hb.cpp',
-        source .. 'rive-cpp/src/text/line_breaker.cpp',
+        source .. '/src/renderer.cpp',
+        source .. '/src/math/raw_path.cpp',
+        source .. '/src/text/font_hb.cpp',
+        source .. '/src/text/line_breaker.cpp',
         harfbuzz .. '/src/hb-aat-layout.cc',
         harfbuzz .. '/src/hb-aat-map.cc',
         harfbuzz .. '/src/hb-blob.cc',
