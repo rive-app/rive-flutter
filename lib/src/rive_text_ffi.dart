@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
@@ -29,46 +30,72 @@ class GlyphPathStruct extends Struct {
   external int verbCount;
 }
 
-class GlyphLineFFI extends Struct implements TextLine {
-  @override
+class GlyphLineNative extends Struct {
   @Uint32()
   external int startRun;
 
-  @override
   @Uint32()
   external int startIndex;
 
-  @override
   @Uint32()
   external int endRun;
 
-  @override
   @Uint32()
   external int endIndex;
 
-  @override
   @Float()
   external double startX;
 
-  @override
   @Float()
   external double top;
 
-  @override
   @Float()
   external double baseline;
 
-  @override
   @Float()
   external double bottom;
 }
 
-class LinesResultStruct extends Struct {
-  external Pointer<Void> result;
-  external Pointer<GlyphLineFFI> lines;
+class GlyphLineFFI extends GlyphLine {
+  final GlyphLineNative nativeLine;
 
-  @Uint32()
-  external int lineCount;
+  GlyphLineFFI(this.nativeLine);
+
+  @override
+  double get baseline => nativeLine.baseline;
+
+  @override
+  double get bottom => nativeLine.bottom;
+
+  @override
+  int get endIndex => nativeLine.endIndex;
+
+  @override
+  int get endRun => nativeLine.endRun;
+
+  @override
+  int get startIndex => nativeLine.startIndex;
+
+  @override
+  int get startRun => nativeLine.startRun;
+
+  @override
+  double get startX => nativeLine.startX;
+
+  @override
+  double get top => nativeLine.top;
+}
+
+class SimpleLineList extends Struct {
+  external Pointer<GlyphLineNative> data;
+  @Uint64()
+  external int size;
+}
+
+class SimpleLineDoubleList extends Struct {
+  external Pointer<SimpleLineList> data;
+  @Uint64()
+  external int size;
 }
 
 class SimpleUint16Array extends Struct {
@@ -96,22 +123,33 @@ class TextRunNative extends Struct {
   @Uint32()
   external int unicharCount;
   @Uint32()
+  external int script;
+  @Uint16()
   external int styleId;
+  @Uint8()
+  external int dir;
+}
+
+class SimpleGlyphRunArray extends Struct {
+  external Pointer<GlyphRunNative> data;
+  @Uint64()
+  external int size;
 }
 
 class GlyphRunNative extends Struct implements GlyphRun {
   external Pointer<Void> fontPtr;
   @Float()
   external double size;
-
-  @override
-  @Uint32()
-  external int styleId;
-
   external SimpleUint16Array glyphs;
   external SimpleUint32Array textIndices;
+  external SimpleFloatArray advances;
   external SimpleFloatArray xpos;
   external SimpleUint32Array breaks;
+  @override
+  @Uint16()
+  external int styleId;
+  @Uint8()
+  external int dir;
 
   @override
   double get fontSize => size;
@@ -129,7 +167,10 @@ class GlyphRunNative extends Struct implements GlyphRun {
   int textIndexAt(int index) => textIndices.data.elementAt(index).value;
 
   @override
-  double xAt(int index) => xpos.data.elementAt(index).value;
+  double advanceAt(int index) => advances.data.elementAt(index).value;
+
+  @override
+  TextDirection get direction => TextDirection.values[dir];
 }
 
 class DynamicTextRunArray extends Struct {
@@ -138,68 +179,169 @@ class DynamicTextRunArray extends Struct {
   external int size;
 }
 
-class TextShapeResultFFI extends TextShapeResult {
-  final Pointer<DynamicTextRunArray> nativeResult;
-  TextShapeResultFFI(this.nativeResult);
+class ParagraphNative extends Struct {
+  external SimpleGlyphRunArray runs;
+  @Uint8()
+  external int direction;
+}
 
-  LinesResultStruct? _lineBreakResult;
+class SimpleParagraphArray extends Struct {
+  external Pointer<ParagraphNative> data;
+  @Uint64()
+  external int size;
+}
+
+class RunsListFFI extends ListBase<GlyphRunNative> {
+  final SimpleGlyphRunArray nativeList;
+  @override
+  int get length => nativeList.size;
+
+  RunsListFFI(this.nativeList);
+
+  @override
+  GlyphRunNative operator [](int index) => nativeList.data.elementAt(index).ref;
+
+  @override
+  void operator []=(int index, GlyphRunNative value) {
+    throw UnsupportedError('Cannot set Run on RunsList');
+  }
+
+  @override
+  set length(int newLength) {
+    throw UnsupportedError('Cannot set length on RunsList');
+  }
+}
+
+class ParagraphFFI extends Paragraph {
+  final ParagraphNative nativeParagraph;
+  @override
+  TextDirection get direction =>
+      TextDirection.values[nativeParagraph.direction];
+
+  @override
+  List<GlyphRun> get runs => RunsListFFI(nativeParagraph.runs);
+
+  ParagraphFFI(this.nativeParagraph);
+}
+
+class ParagraphsListFFI extends ListBase<ParagraphFFI> {
+  final SimpleParagraphArray nativeList;
+  @override
+  int get length => nativeList.size;
+
+  ParagraphsListFFI._(this.nativeList);
+
+  @override
+  ParagraphFFI operator [](int index) =>
+      ParagraphFFI(nativeList.data.elementAt(index).ref);
+
+  @override
+  void operator []=(int index, ParagraphFFI value) {
+    throw UnsupportedError('Cannot set Paragraph on ParagraphList');
+  }
+
+  @override
+  set length(int newLength) {
+    throw UnsupportedError('Cannot set length on ParagraphList');
+  }
+}
+
+class LineList extends ListBase<GlyphLine> {
+  final SimpleLineList nativeList;
+
+  LineList(this.nativeList);
+  @override
+  int get length => nativeList.size;
+
+  @override
+  GlyphLine operator [](int index) =>
+      GlyphLineFFI(nativeList.data.elementAt(index).ref);
+
+  @override
+  void operator []=(int index, GlyphLine value) {
+    throw UnsupportedError('Cannot set glyphline on LineList');
+  }
+
+  @override
+  set length(int newLength) {
+    throw UnsupportedError('Cannot set length on LineList');
+  }
+}
+
+class LineDoubleList extends BreakLinesResult {
+  final Pointer<SimpleLineDoubleList> nativeDoubleListPtr;
+  final SimpleLineDoubleList nativeDoubleList;
+
+  @override
+  int get length => nativeDoubleList.size;
+
+  LineDoubleList(this.nativeDoubleListPtr)
+      : nativeDoubleList = nativeDoubleListPtr.ref;
+
+  @override
+  List<GlyphLine> operator [](int index) =>
+      LineList(nativeDoubleList.data.elementAt(index).ref);
+
+  @override
+  void operator []=(int index, List<GlyphLine> value) {
+    throw UnsupportedError('Cannot set list on LineDoubleList');
+  }
+
+  @override
+  set length(int newLength) {
+    throw UnsupportedError('Cannot set length on LineDoubleList');
+  }
+
+  @override
+  void dispose() => deleteLines(nativeDoubleListPtr);
+}
+
+class TextShapeResultFFI extends TextShapeResult {
+  final Pointer<SimpleParagraphArray> nativeResult;
+  TextShapeResultFFI(this.nativeResult);
 
   @override
   void dispose() {
-    if (_lineBreakResult != null) {
-      deleteLines(_lineBreakResult!.result);
-      _lineBreakResult = null;
-    }
     deleteShapeResult(nativeResult);
   }
 
   @override
-  GlyphRun runAt(int index) => nativeResult.ref.data.elementAt(index).ref;
-
-  @override
-  int get runCount => nativeResult.ref.size;
-
-  @override
-  void breakLines(double width, TextAlign alignment) {
-    if (_lineBreakResult != null) {
-      deleteLines(_lineBreakResult!.result);
-    }
-    _lineBreakResult = breakLinesNative(nativeResult, width, alignment.index);
+  BreakLinesResult breakLines(double width, TextAlign alignment) {
+    return LineDoubleList(
+        breakLinesNative(nativeResult, width, alignment.index));
   }
 
   @override
-  TextLine lineAt(int index) => _lineBreakResult!.lines.elementAt(index).ref;
-
-  @override
-  int get lineCount => _lineBreakResult?.lineCount ?? 0;
+  List<Paragraph> get paragraphs => ParagraphsListFFI._(nativeResult.ref);
 }
 
-final Pointer<DynamicTextRunArray> Function(Pointer<Uint32> text,
+final Pointer<SimpleParagraphArray> Function(Pointer<Uint32> text,
         int textLength, Pointer<TextRunNative> runs, int runsLength) shapeText =
     nativeLib
         .lookup<
             NativeFunction<
-                Pointer<DynamicTextRunArray> Function(Pointer<Uint32>, Uint64,
+                Pointer<SimpleParagraphArray> Function(Pointer<Uint32>, Uint64,
                     Pointer<TextRunNative>, Uint64)>>('shapeText')
         .asFunction();
 
-final void Function(Pointer<DynamicTextRunArray> font) deleteShapeResult =
+final void Function(Pointer<SimpleParagraphArray> font) deleteShapeResult =
     nativeLib
-        .lookup<NativeFunction<Void Function(Pointer<DynamicTextRunArray>)>>(
+        .lookup<NativeFunction<Void Function(Pointer<SimpleParagraphArray>)>>(
             'deleteShapeResult')
         .asFunction();
 
-final LinesResultStruct Function(
-        Pointer<DynamicTextRunArray>, double width, int align)
+final Pointer<SimpleLineDoubleList> Function(
+        Pointer<SimpleParagraphArray>, double width, int align)
     breakLinesNative = nativeLib
         .lookup<
             NativeFunction<
-                LinesResultStruct Function(
-                    Pointer<DynamicTextRunArray>, Float, Uint8)>>('breakLines')
+                Pointer<SimpleLineDoubleList> Function(
+                    Pointer<SimpleParagraphArray>, Float, Uint8)>>('breakLines')
         .asFunction();
 
-final void Function(Pointer<Void>) deleteLines = nativeLib
-    .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteLines')
+final void Function(Pointer<SimpleLineDoubleList>) deleteLines = nativeLib
+    .lookup<NativeFunction<Void Function(Pointer<SimpleLineDoubleList>)>>(
+        'deleteLines')
     .asFunction();
 
 final Pointer<Void> Function(Pointer<Uint8> bytes, int count) makeFont =
@@ -364,8 +506,10 @@ class FontFFI extends Font {
       runsMemory[runIndex++]
         ..font = (run.font as FontFFI).fontPtr
         ..size = run.fontSize
+        ..script = 0
         ..unicharCount = run.unicharCount
-        ..styleId = run.styleId;
+        ..styleId = run.styleId
+        ..dir = 0;
     }
 
     // Allocate and copy to text buffer.

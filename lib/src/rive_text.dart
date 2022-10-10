@@ -147,10 +147,14 @@ abstract class GlyphLine {
   }
 }
 
+abstract class BreakLinesResult extends ListBase<List<GlyphLine>> {
+  void dispose();
+}
+
 abstract class TextShapeResult {
   List<Paragraph> get paragraphs;
   void dispose();
-  List<List<GlyphLine>> breakLines(double width, TextAlign alignment);
+  BreakLinesResult breakLines(double width, TextAlign alignment);
 }
 
 /// A representation of a styled section of text in Rive.

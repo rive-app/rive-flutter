@@ -54,7 +54,7 @@ shapeText(const uint32_t* text, uint64_t length, rive::TextRun* runs, uint64_t r
         runs[0].font->shapeText(rive::Span(text, length), rive::Span(runs, runsLength)));
 }
 
-EXPORT void deleteShapeResult(rive::SimpleArray<rive::GlyphRun>* shapeResult)
+EXPORT void deleteShapeResult(rive::SimpleArray<rive::Paragraph>* shapeResult)
 {
     delete shapeResult;
 }

@@ -172,6 +172,25 @@ class GlyphLineWasm extends GlyphLine {
   }
 }
 
+class BreakLinesResultFFI extends BreakLinesResult {
+  final List<List<GlyphLine>> list;
+  BreakLinesResultFFI(this.list);
+  @override
+  int get length => list.length;
+
+  @override
+  set length(int value) => list.length = value;
+
+  @override
+  List<GlyphLine> operator [](int index) => list[index];
+
+  @override
+  void operator []=(int index, List<GlyphLine> value) => list[index] = value;
+
+  @override
+  void dispose() {}
+}
+
 class TextShapeResultWasm extends TextShapeResult {
   final int shapeResultPtr;
   @override
@@ -182,7 +201,7 @@ class TextShapeResultWasm extends TextShapeResult {
   void dispose() => _deleteShapeResult.apply(<dynamic>[shapeResultPtr]);
 
   @override
-  List<List<GlyphLine>> breakLines(double width, TextAlign alignment) {
+  BreakLinesResult breakLines(double width, TextAlign alignment) {
     var result = _breakLines.apply(
       <dynamic>[
         shapeResultPtr,
@@ -224,7 +243,7 @@ class TextShapeResultWasm extends TextShapeResult {
       ],
     );
 
-    return paragraphsLines;
+    return BreakLinesResultFFI(paragraphsLines);
   }
 }
 
@@ -479,7 +498,7 @@ Font? decodeFont(Uint8List bytes) {
 Future<void> initFont() async {
   var script = html.ScriptElement()
     ..src =
-        'assets/packages/rive/wasm/build/bin/debug/rive_text.js' // ignore: unsafe_html
+        'assets/packages/rive/wasm/build/bin/release/rive_text.js' // ignore: unsafe_html
     ..type = 'application/javascript'
     ..defer = true;
 

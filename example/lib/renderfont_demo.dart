@@ -113,6 +113,7 @@ Future<void> renderFontDemo() async {
       }
       y += 20;
     }
+    paragraphsLines.dispose();
     shape.dispose();
     montserrat.dispose();
     roboto.dispose();

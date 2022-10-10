@@ -65,6 +65,8 @@ WasmPtr breakLines(WasmPtr paragraphsPtr, float width, uint8_t align)
     auto paragraphs = reinterpret_cast<rive::SimpleArray<rive::Paragraph>*>(paragraphsPtr);
     float paragraphWidth = width;
 
+    rive::SimpleArrayBuilder<uint16_t> paragraphLines;
+
     rive::SimpleArray<rive::SimpleArray<rive::GlyphLine>>* lines =
         new rive::SimpleArray<rive::SimpleArray<rive::GlyphLine>>(paragraphs->size());
     rive::SimpleArray<rive::SimpleArray<rive::GlyphLine>>& linesRef = *lines;
