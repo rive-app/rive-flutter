@@ -234,6 +234,12 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   @override
   void draw(ui.Canvas canvas) {
+    // canvas.draw(path, ui.Paint()..color = ui.Color(0xFFFF0000));
+    // canvas.drawCircle(
+    //     ui.Offset.zero, 15, ui.Paint()..color = ui.Color(0xFFFF0000));
+    // shader = ui.Gradient.radial(ui.Offset.zero, 15.0,
+    //     [ui.Color(0xFFFF0000), ui.Color(0x00FF0000)], [0.0, 1.0]));
+    // return;
     bool clipped = clip(canvas);
     var path = pathComposer.fillPath;
     if (!_fillInWorld) {
@@ -243,6 +249,7 @@ class Shape extends ShapeBase with ShapePaintContainer {
     for (final fill in fills) {
       fill.draw(canvas, path);
     }
+
     if (!_fillInWorld) {
       canvas.restore();
     }

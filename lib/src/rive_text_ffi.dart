@@ -134,6 +134,14 @@ class SimpleGlyphRunArray extends Struct {
   external Pointer<GlyphRunNative> data;
   @Uint64()
   external int size;
+
+  List<GlyphRunNative> toList() {
+    var list = <GlyphRunNative>[];
+    for (int i = 0; i < size; i++) {
+      list.add(data.elementAt(i).ref);
+    }
+    return list;
+  }
 }
 
 class GlyphRunNative extends Struct implements GlyphRun {
@@ -189,6 +197,14 @@ class SimpleParagraphArray extends Struct {
   external Pointer<ParagraphNative> data;
   @Uint64()
   external int size;
+
+  List<Paragraph> toList() {
+    var list = <Paragraph>[];
+    for (int i = 0; i < size; i++) {
+      list.add(ParagraphFFI(data.elementAt(i).ref));
+    }
+    return list;
+  }
 }
 
 class RunsListFFI extends ListBase<GlyphRunNative> {
@@ -219,9 +235,9 @@ class ParagraphFFI extends Paragraph {
       TextDirection.values[nativeParagraph.direction];
 
   @override
-  List<GlyphRun> get runs => RunsListFFI(nativeParagraph.runs);
+  final List<GlyphRun> runs;
 
-  ParagraphFFI(this.nativeParagraph);
+  ParagraphFFI(this.nativeParagraph) : runs = nativeParagraph.runs.toList();
 }
 
 class ParagraphsListFFI extends ListBase<ParagraphFFI> {
@@ -298,7 +314,8 @@ class LineDoubleList extends BreakLinesResult {
 
 class TextShapeResultFFI extends TextShapeResult {
   final Pointer<SimpleParagraphArray> nativeResult;
-  TextShapeResultFFI(this.nativeResult);
+  TextShapeResultFFI(this.nativeResult)
+      : paragraphs = nativeResult.ref.toList();
 
   @override
   void dispose() {
@@ -312,7 +329,7 @@ class TextShapeResultFFI extends TextShapeResult {
   }
 
   @override
-  List<Paragraph> get paragraphs => ParagraphsListFFI._(nativeResult.ref);
+  final List<Paragraph> paragraphs;
 }
 
 final Pointer<SimpleParagraphArray> Function(Pointer<Uint32> text,

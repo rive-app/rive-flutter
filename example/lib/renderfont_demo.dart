@@ -41,41 +41,42 @@ Future<void> renderFontDemo() async {
   var montserrat = Font.decode(montserratData.buffer.asUint8List());
   var sansArabic = Font.decode(sansArabicData.buffer.asUint8List());
   if (roboto != null && montserrat != null && sansArabic != null) {
-    // var text1 = "no one ever left alive in ";
-    // var text2 = "nineteen hundred";
-    // var text3 = " and eighty five";
-    // var text = text1 + text2 + text3;
+    var arabicText = "لمفاتيح ABC DEF\n";
+    var text1 = "no one ever left alive in ";
+    var text2 = "nineteen hundred";
+    var text3 = " and eighty five";
+    var text = arabicText + text1 + text2 + text3;
     // print("CODE UNITS ${text.codeUnits}");
     // print("RUN LEN ${text1.length} ${text2.length} ${text3.length}");
     // print(text);
-    var text = "لمفاتيح ABC DEF";
+
     var shape = roboto.shape(
       text,
       [
         TextRun(
           font: sansArabic,
           fontSize: 32.0,
-          unicharCount: text.length,
+          unicharCount: arabicText.length,
           styleId: 2,
         ),
-        // TextRun(
-        //   font: roboto,
-        //   fontSize: 32.0,
-        //   unicharCount: text1.length,
-        //   styleId: 2,
-        // ),
-        // TextRun(
-        //   font: montserrat,
-        //   fontSize: 54.0,
-        //   unicharCount: text2.length,
-        //   styleId: 1,
-        // ),
-        // TextRun(
-        //   font: roboto,
-        //   fontSize: 32.0,
-        //   unicharCount: text3.length,
-        //   styleId: 4,
-        // ),
+        TextRun(
+          font: roboto,
+          fontSize: 32.0,
+          unicharCount: text1.length,
+          styleId: 2,
+        ),
+        TextRun(
+          font: montserrat,
+          fontSize: 54.0,
+          unicharCount: text2.length,
+          styleId: 1,
+        ),
+        TextRun(
+          font: roboto,
+          fontSize: 32.0,
+          unicharCount: text3.length,
+          styleId: 4,
+        ),
       ],
     );
 

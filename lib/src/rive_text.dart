@@ -54,6 +54,35 @@ enum TextAlign { left, right, center }
 abstract class Paragraph {
   TextDirection get direction;
   List<GlyphRun> get runs;
+  List<GlyphRun> get logicalRuns => runs;
+
+  List<GlyphRun> orderVisually(List<GlyphRun> glyphRuns) {
+    if (direction == TextDirection.ltr) {
+      return glyphRuns;
+    }
+    var visualOrder = <GlyphRun>[];
+    if (glyphRuns.isNotEmpty) {
+      var reversed = glyphRuns.reversed;
+      GlyphRun previous = reversed.first;
+      visualOrder.add(previous);
+      int ltrIndex = 0;
+      for (final run in reversed.skip(1)) {
+        if (run.direction == TextDirection.ltr &&
+            previous.direction == run.direction) {
+          visualOrder.insert(ltrIndex, run);
+        } else {
+          if (run.direction == TextDirection.ltr) {
+            ltrIndex = visualOrder.length;
+          }
+          visualOrder.add(run);
+        }
+        previous = run;
+      }
+    }
+    return visualOrder;
+  }
+
+  List<GlyphRun> get visualRuns => orderVisually(runs);
 }
 
 abstract class GlyphRun {
@@ -94,6 +123,10 @@ class LineRunGlyph {
       1.0
     ]);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is LineRunGlyph && other.run == run && other.index == index;
 }
 
 abstract class GlyphLine {
@@ -110,21 +143,49 @@ abstract class GlyphLine {
   /// taking into account both the paragraph's runs bidi order and the
   /// individual glyphs bidi order within a run.
   Iterable<LineRunGlyph> glyphs(Paragraph paragraph) sync* {
+    var displayRuns = <GlyphRun>[];
     var glyphRuns = paragraph.runs;
     int runIndex, bidiEndRun, runInc;
-    if (paragraph.direction == TextDirection.rtl) {
-      runIndex = endRun;
-      bidiEndRun = startRun - 1;
-      runInc = -1;
-    } else {
-      runIndex = startRun;
-      bidiEndRun = endRun + 1;
-      runInc = 1;
-    }
+    // if (paragraph.direction == TextDirection.rtl) {
+    //   runIndex = endRun;
+    //   bidiEndRun = startRun - 1;
+    //   runInc = -1;
+    // } else {
+    runIndex = startRun;
+    bidiEndRun = endRun + 1;
+    runInc = 1;
+    // }
     while (runIndex != bidiEndRun) {
       var run = glyphRuns[runIndex];
-      int startGIndex = runIndex == startRun ? startIndex : 0;
-      int endGIndex = runIndex == endRun ? endIndex : run.glyphCount;
+      displayRuns.add(run);
+      // int startGIndex = runIndex == startRun ? startIndex : 0;
+      // int endGIndex = runIndex == endRun ? endIndex : run.glyphCount;
+
+      // int j, end, inc;
+      // if (run.direction == TextDirection.rtl) {
+      //   j = endGIndex - 1;
+      //   end = startGIndex - 1;
+      //   inc = -1;
+      // } else {
+      //   j = startGIndex;
+      //   end = endGIndex;
+      //   inc = 1;
+      // }
+
+      // while (j != end) {
+      //   yield LineRunGlyph(run, j);
+      //   startGIndex = 0;
+      //   j += inc;
+      // }
+      runIndex += runInc;
+    }
+
+    var startRunRef = displayRuns.first;
+    var endRunRef = displayRuns.last;
+
+    for (final run in paragraph.orderVisually(displayRuns)) {
+      int startGIndex = startRunRef == run ? startIndex : 0;
+      int endGIndex = endRunRef == run ? endIndex : run.glyphCount;
 
       int j, end, inc;
       if (run.direction == TextDirection.rtl) {
@@ -142,8 +203,42 @@ abstract class GlyphLine {
         startGIndex = 0;
         j += inc;
       }
-      runIndex += runInc;
     }
+
+    // var glyphRuns = paragraph.visualRuns;
+    // int runIndex, bidiEndRun, runInc;
+    // if (paragraph.direction == TextDirection.rtl) {
+    //   runIndex = endRun;
+    //   bidiEndRun = startRun - 1;
+    //   runInc = -1;
+    // } else {
+    //   runIndex = startRun;
+    //   bidiEndRun = endRun + 1;
+    //   runInc = 1;
+    // }
+    // while (runIndex != bidiEndRun) {
+    //   var run = glyphRuns[runIndex];
+    //   int startGIndex = runIndex == startRun ? startIndex : 0;
+    //   int endGIndex = runIndex == endRun ? endIndex : run.glyphCount;
+
+    //   int j, end, inc;
+    //   if (run.direction == TextDirection.rtl) {
+    //     j = endGIndex - 1;
+    //     end = startGIndex - 1;
+    //     inc = -1;
+    //   } else {
+    //     j = startGIndex;
+    //     end = endGIndex;
+    //     inc = 1;
+    //   }
+
+    //   while (j != end) {
+    //     yield LineRunGlyph(run, j);
+    //     startGIndex = 0;
+    //     j += inc;
+    //   }
+    //   runIndex += runInc;
+    // }
   }
 }
 
@@ -170,6 +265,16 @@ class TextRun {
     required this.unicharCount,
     this.styleId = 0,
   });
+
+  TextRun copy({required int copyUnicharCount}) => TextRun(
+        font: font,
+        fontSize: fontSize,
+        unicharCount: copyUnicharCount,
+        styleId: styleId,
+      );
+
+  @override
+  toString() => 'TextRun($fontSize:$unicharCount:$styleId)';
 }
 
 abstract class Font {
