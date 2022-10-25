@@ -20,7 +20,7 @@ do
         sheenbidi .. '/Headers'
     }
 
-    filter {'options:wasm'}
+    filter {'options:arch=wasm'}
     do
         targetdir 'wasm/build/bin/%{cfg.buildcfg}/'
         objdir 'wasm/build/obj/%{cfg.buildcfg}/'
@@ -72,7 +72,7 @@ do
         '-Wno-deprecated-builtins'
     }
 
-    filter {'options:wasm'}
+    filter {'options:arch=wasm'}
     do
         buildoptions {
             '-s STRICT=1',
@@ -103,6 +103,16 @@ do
             '-g0',
             '-flto'
         }
+    end
+    filter {'system:macosx', 'options:arch=arm64'}
+    do
+        buildoptions {'-target arm64-apple-macos11'}
+        linkoptions {'-target arm64-apple-macos11'}
+    end
+    filter {'system:macosx', 'options:arch=x86_64'}
+    do
+        buildoptions {'-target x86_64-apple-macos10.12'}
+        linkoptions {'-target x86_64-apple-macos10.12'}
     end
 end
 
@@ -209,7 +219,14 @@ do
         '-DANSI_DECLARATORS'
     }
 
-    filter {'options:wasm'}
+    filter {'system:macosx'}
+    do
+        files {
+            'macos/rive_text/rive_text.cpp'
+        }
+    end
+
+    filter {'options:arch=wasm'}
     do
         targetdir 'wasm/build/bin/%{cfg.buildcfg}/'
         objdir 'wasm/build/obj/%{cfg.buildcfg}/'
@@ -249,7 +266,7 @@ do
         '-fno-unwind-tables'
     }
 
-    filter {'options:wasm', 'options:single_file'}
+    filter {'options:arch=wasm', 'options:single_file'}
     do
         linkoptions {
             '-o %{cfg.targetdir}/rive_text_single.js',
@@ -257,7 +274,7 @@ do
         }
     end
 
-    filter {'options:wasm', 'options:not single_file'}
+    filter {'options:arch=wasm', 'options:not single_file'}
     do
         linkoptions {
             '-o %{cfg.targetdir}/rive_text.js'
@@ -270,7 +287,7 @@ do
         symbols 'On'
     end
 
-    filter {'configurations:debug', 'options:wasm'}
+    filter {'configurations:debug', 'options:arch=wasm'}
     do
         linkoptions {'-s ASSERTIONS=1'}
     end
@@ -280,24 +297,35 @@ do
         defines {'RELEASE'}
         defines {'NDEBUG'}
         optimize 'On'
+
+        buildoptions {
+            '-Oz',
+            '-g0',
+            '-flto'
+        }
+
+        linkoptions {
+            '-Oz',
+            '-g0',
+            '-flto'
+        }
     end
 
-    filter {'configurations:release', 'options:wasm'}
+    filter {'configurations:release', 'options:arch=wasm'}
     do
         linkoptions {'-s ASSERTIONS=0'}
     end
 
-    buildoptions {
-        '-Oz',
-        '-g0',
-        '-flto'
-    }
-
-    linkoptions {
-        '-Oz',
-        '-g0',
-        '-flto'
-    }
+    filter {'system:macosx', 'options:arch=arm64'}
+    do
+        buildoptions {'-target arm64-apple-macos11'}
+        linkoptions {'-target arm64-apple-macos11'}
+    end
+    filter {'system:macosx', 'options:arch=x86_64'}
+    do
+        buildoptions {'-target x86_64-apple-macos10.12'}
+        linkoptions {'-target x86_64-apple-macos10.12'}
+    end
 end
 
 newoption {
@@ -306,6 +334,7 @@ newoption {
 }
 
 newoption {
-    trigger = 'wasm',
-    description = 'Set when the wasm should be packed in with the js code.'
+    trigger = 'arch',
+    description = 'Architectures we can target',
+    allowed = {{'x86_64'}, {'arm64'}, {'wasm'}}
 }

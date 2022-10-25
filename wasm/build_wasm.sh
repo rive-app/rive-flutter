@@ -42,7 +42,7 @@ source ./bin/emsdk/emsdk_env.sh
 
 export PREMAKE=bin/premake5
 
-$PREMAKE --scripts=../macos/rive-cpp/build --file=../premake5_rive_plugin.lua gmake2 $SINGLE --wasm
+$PREMAKE --scripts=../macos/rive-cpp/build --file=../premake5_rive_plugin.lua gmake2 $SINGLE --arch=wasm
 
 for var in "$@"; do
     if [[ $var = "clean" ]]; then

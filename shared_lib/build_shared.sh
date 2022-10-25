@@ -27,7 +27,7 @@ fi
 
 export PREMAKE=bin/premake5
 
-$PREMAKE --scripts=../macos/rive-cpp/build --file=../premake5_rive_plugin.lua gmake2
+$PREMAKE --scripts=../macos/rive-cpp/build --file=../premake5_rive_plugin.lua gmake2 --arch=x86_64
 
 cd ..
 for var in "$@"; do
