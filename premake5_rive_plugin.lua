@@ -6,19 +6,25 @@ sheenbidi = dependency.github('Tehreer/SheenBidi', 'v2.6')
 workspace 'rive_text'
 configurations {'debug', 'release'}
 
-source = os.isdir('../../../packages/runtime') and '../../../packages/runtime' or '../macos/rive-cpp'
+source = os.isdir('../../packages/runtime') and '../../packages/runtime' or 'macos/rive-cpp'
 
 project 'rive_sheenbidi'
 do
     kind 'StaticLib'
     language 'C'
     toolset 'clang'
-    targetdir 'build/bin/%{cfg.buildcfg}/'
-    objdir 'build/obj/%{cfg.buildcfg}/'
+    targetdir 'shared_lib/build/bin/%{cfg.buildcfg}/'
+    objdir 'shared_lib/build/obj/%{cfg.buildcfg}/'
 
     includedirs {
         sheenbidi .. '/Headers'
     }
+
+    filter {'options:wasm'}
+    do
+        targetdir 'wasm/build/bin/%{cfg.buildcfg}/'
+        objdir 'wasm/build/obj/%{cfg.buildcfg}/'
+    end
 
     filter 'configurations:debug'
     do
@@ -54,22 +60,27 @@ do
     buildoptions {
         '-Wall',
         '-ansi',
-        '-pedantic'
+        '-pedantic',
+        '-DANSI_DECLARATORS'
     }
 
     buildoptions {
-        '-s STRICT=1',
-        '-s DISABLE_EXCEPTION_CATCHING=1',
-        '-DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0',
-        '-DSINGLE',
-        '-DANSI_DECLARATORS',
         '-Wno-c++17-extensions',
         '-fno-exceptions',
         '-fno-rtti',
         '-fno-unwind-tables',
-        '--no-entry',
         '-Wno-deprecated-builtins'
     }
+
+    filter {'options:wasm'}
+    do
+        buildoptions {
+            '-s STRICT=1',
+            '-s DISABLE_EXCEPTION_CATCHING=1',
+            '-DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0',
+            '--no-entry'
+        }
+    end
 
     filter 'configurations:debug'
     do
@@ -97,12 +108,12 @@ end
 
 project 'rive_text'
 do
-    kind 'ConsoleApp'
+    kind 'SharedLib'
     language 'C++'
     cppdialect 'C++17'
     toolset 'clang'
-    targetdir('build/bin/%{cfg.buildcfg}')
-    objdir('build/obj/%{cfg.buildcfg}')
+    targetdir('shared_lib/build/bin/%{cfg.buildcfg}')
+    objdir('shared_lib/build/obj/%{cfg.buildcfg}')
 
     dependson {
         'rive_sheenbidi'
@@ -123,8 +134,9 @@ do
     }
 
     files {
-        'rive_text_bindings.cpp',
         source .. '/src/renderer.cpp',
+        source .. '/src/rive_counter.cpp',
+        source .. '/src/math/mat2d.cpp',
         source .. '/src/math/raw_path.cpp',
         source .. '/src/text/font_hb.cpp',
         source .. '/src/text/line_breaker.cpp',
@@ -189,61 +201,66 @@ do
     }
 
     buildoptions {
-        '-s STRICT=1',
-        '-s DISABLE_EXCEPTION_CATCHING=1',
-        '-DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0',
-        '-DSINGLE',
-        '-DANSI_DECLARATORS',
         '-Wno-c++17-extensions',
         '-fno-exceptions',
         '-fno-rtti',
         '-fno-unwind-tables',
-        '--no-entry',
-        '-Wno-deprecated-builtins'
+        '-Wno-deprecated-builtins',
+        '-DANSI_DECLARATORS'
     }
 
-    linkoptions {
-        '--closure 1',
-        '--closure-args="--externs ./js/externs.js"',
-        '--bind',
-        '-s FORCE_FILESYSTEM=0',
-        '-s MODULARIZE=1',
-        '-s NO_EXIT_RUNTIME=1',
-        '-s STRICT=1',
-        '-s ALLOW_MEMORY_GROWTH=1',
-        '-s DISABLE_EXCEPTION_CATCHING=1',
-        '-s WASM=1',
-        -- "-s EXPORT_ES6=1",
-        '-s USE_ES6_IMPORT_META=0',
-        '-s EXPORT_NAME="RiveText"',
-        '-DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0',
-        '-DANSI_DECLARATORS',
-        '-Wno-c++17-extensions',
-        '-fno-exceptions',
-        '-fno-rtti',
-        '-fno-unwind-tables',
-        '--no-entry',
-        '--pre-js ./js/rive_text.js'
-    }
-
-    filter {'options:single_file'}
+    filter {'options:wasm'}
     do
+        targetdir 'wasm/build/bin/%{cfg.buildcfg}/'
+        objdir 'wasm/build/obj/%{cfg.buildcfg}/'
+        kind 'ConsoleApp'
+        files {
+            'wasm/rive_text_bindings.cpp'
+        }
+        buildoptions {
+            '-s STRICT=1',
+            '-s DISABLE_EXCEPTION_CATCHING=1',
+            '-DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0',
+            '--no-entry'
+        }
         linkoptions {
-            '-o %{cfg.targetdir}/rive_text_single.js'
+            '--closure 1',
+            '--closure-args="--externs ./wasm/js/externs.js"',
+            '--bind',
+            '-s FORCE_FILESYSTEM=0',
+            '-s MODULARIZE=1',
+            '-s NO_EXIT_RUNTIME=1',
+            '-s STRICT=1',
+            '-s ALLOW_MEMORY_GROWTH=1',
+            '-s DISABLE_EXCEPTION_CATCHING=1',
+            '-s WASM=1',
+            '-s USE_ES6_IMPORT_META=0',
+            '-s EXPORT_NAME="RiveText"',
+            '-DEMSCRIPTEN_HAS_UNBOUND_TYPE_NAMES=0',
+            '--no-entry',
+            '--pre-js ./wasm/js/rive_text.js'
         }
     end
 
-    filter {'options:not single_file'}
+    linkoptions {
+        '-Wno-c++17-extensions',
+        '-fno-exceptions',
+        '-fno-rtti',
+        '-fno-unwind-tables'
+    }
+
+    filter {'options:wasm', 'options:single_file'}
+    do
+        linkoptions {
+            '-o %{cfg.targetdir}/rive_text_single.js',
+            '-s SINGLE_FILE=1'
+        }
+    end
+
+    filter {'options:wasm', 'options:not single_file'}
     do
         linkoptions {
             '-o %{cfg.targetdir}/rive_text.js'
-        }
-    end
-
-    filter 'options:single_file'
-    do
-        linkoptions {
-            '-s SINGLE_FILE=1'
         }
     end
 
@@ -251,6 +268,10 @@ do
     do
         defines {'DEBUG'}
         symbols 'On'
+    end
+
+    filter {'configurations:debug', 'options:wasm'}
+    do
         linkoptions {'-s ASSERTIONS=1'}
     end
 
@@ -259,6 +280,10 @@ do
         defines {'RELEASE'}
         defines {'NDEBUG'}
         optimize 'On'
+    end
+
+    filter {'configurations:release', 'options:wasm'}
+    do
         linkoptions {'-s ASSERTIONS=0'}
     end
 
@@ -274,7 +299,13 @@ do
         '-flto'
     }
 end
+
 newoption {
     trigger = 'single_file',
+    description = 'Set when the wasm should be packed in with the js code.'
+}
+
+newoption {
+    trigger = 'wasm',
     description = 'Set when the wasm should be packed in with the js code.'
 }

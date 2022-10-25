@@ -7,9 +7,6 @@ for var in "$@"; do
     if [[ $var = "release" ]]; then
         CONFIG=release
     fi
-    if [[ $var = "single" ]]; then
-        SINGLE=--single_file
-    fi
 done
 
 pushd ../
@@ -28,22 +25,11 @@ if [[ ! -f "bin/premake5" ]]; then
     popd
 fi
 
-if [[ ! -f "bin/emsdk/emsdk_env.sh" ]]; then
-    mkdir -p bin
-    pushd bin
-    git clone https://github.com/emscripten-core/emsdk.git
-    pushd emsdk
-    ./emsdk install latest
-    ./emsdk activate latest
-    popd
-    popd
-fi
-source ./bin/emsdk/emsdk_env.sh
-
 export PREMAKE=bin/premake5
 
-$PREMAKE --scripts=../macos/rive-cpp/build --file=../premake5_rive_plugin.lua gmake2 $SINGLE --wasm
+$PREMAKE --scripts=../macos/rive-cpp/build --file=../premake5_rive_plugin.lua gmake2
 
+cd ..
 for var in "$@"; do
     if [[ $var = "clean" ]]; then
         make clean
@@ -51,7 +37,4 @@ for var in "$@"; do
     fi
 done
 
-cd ..
-AR=emar CC=emcc CXX=em++ make config=$CONFIG -j$(($(sysctl -n hw.physicalcpu) + 1))
-
-du -hs wasm/build/bin/$CONFIG/rive_text.wasm
+make config=$CONFIG -j$(($(sysctl -n hw.physicalcpu) + 1))
