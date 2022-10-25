@@ -83,3 +83,7 @@ wasm/bin/
 wasm/Makefile
 wasm/render_font.make
 node_modules
+wasm/*.make
+wasm/dependencies
+shared_lib/dependencies
+shared_lib/bin
