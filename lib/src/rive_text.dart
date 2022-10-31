@@ -275,6 +275,17 @@ class TextRun {
 
   @override
   String toString() => 'TextRun($fontSize:$unicharCount:$styleId)';
+
+  @override
+  bool operator ==(Object other) =>
+      other is TextRun &&
+      other.font == font &&
+      other.fontSize == fontSize &&
+      other.unicharCount == unicharCount &&
+      other.styleId == styleId;
+
+  @override
+  int get hashCode => Object.hash(font, fontSize, unicharCount, styleId);
 }
 
 abstract class Font {
