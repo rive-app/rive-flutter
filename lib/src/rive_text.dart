@@ -274,14 +274,31 @@ class TextRun {
       );
 
   @override
-  toString() => 'TextRun($fontSize:$unicharCount:$styleId)';
+  String toString() => 'TextRun($fontSize:$unicharCount:$styleId)';
 }
 
 abstract class Font {
   static Future<void> initialize() => initFont();
-  static Font? decode(Uint8List bytes) => decodeFont(bytes);
+  static Font? decode(Uint8List bytes) {
+    return decodeFont(bytes);
+  }
+
   RawPath getPath(int glyphId);
   void dispose();
 
   TextShapeResult shape(String text, List<TextRun> runs);
+
+  final HashMap<int, ui.Path> _glyphPaths = HashMap<int, ui.Path>();
+  ui.Path getUiPath(int glyphId) {
+    var glyphPath = _glyphPaths[glyphId];
+    if (glyphPath != null) {
+      return glyphPath;
+    }
+    var path = ui.Path();
+    var rawPath = getPath(glyphId);
+    rawPath.issueCommands(path);
+    rawPath.dispose();
+    _glyphPaths[glyphId] = path;
+    return path;
+  }
 }
