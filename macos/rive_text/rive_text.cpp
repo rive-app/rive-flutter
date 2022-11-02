@@ -118,8 +118,6 @@ static rive::rcp<rive::Font> pickFallbackFont(rive::Span<const rive::Unichar> mi
         HBFont* font = static_cast<HBFont*>(fallbackFonts[i]);
         if (i == length - 1 || font->hasGlyph(missing))
         {
-            fprintf(stderr, "FONT COUNT IS: %d\n", font->debugging_refcnt());
-
             rive::rcp<rive::Font> rcFont = rive::rcp<rive::Font>(font);
             // because the font was released at load time, we need to give it an
             // extra ref whenever we bump it to a reference counted pointer.

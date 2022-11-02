@@ -99,6 +99,41 @@ void deleteLines(WasmPtr lines)
     delete reinterpret_cast<rive::SimpleArray<rive::SimpleArray<rive::GlyphLine>>*>(lines);
 }
 
+std::vector<rive::Font*> fallbackFonts;
+
+void setFallbackFonts(emscripten::val fontsList)
+{
+    std::vector<int> fonts(fontsList["length"].as<unsigned>());
+    {
+        emscripten::val memoryView{emscripten::typed_memory_view(fonts.size(), fonts.data())};
+        memoryView.call<void>("set", fontsList);
+    }
+
+    fallbackFonts = std::vector<rive::Font*>();
+    for (auto fontPtr : fonts)
+    {
+        fallbackFonts.push_back(reinterpret_cast<rive::Font*>(fontPtr));
+    }
+}
+
+static rive::rcp<rive::Font> pickFallbackFont(rive::Span<const rive::Unichar> missing)
+{
+    size_t length = fallbackFonts.size();
+    for (size_t i = 0; i < length; i++)
+    {
+        HBFont* font = static_cast<HBFont*>(fallbackFonts[i]);
+        if (i == length - 1 || font->hasGlyph(missing))
+        {
+            rive::rcp<rive::Font> rcFont = rive::rcp<rive::Font>(font);
+            // because the font was released at load time, we need to give it an
+            // extra ref whenever we bump it to a reference counted pointer.
+            rcFont->ref();
+            return rcFont;
+        }
+    }
+    return nullptr;
+}
+
 WasmPtr shapeText(emscripten::val codeUnits, emscripten::val runsList)
 {
     std::vector<uint8_t> runsBytes(runsList["byteLength"].as<unsigned>());
@@ -121,10 +156,15 @@ WasmPtr shapeText(emscripten::val codeUnits, emscripten::val runsList)
     {
         auto result = (WasmPtr) new rive::SimpleArray<rive::Paragraph>(
             runs[0].font->shapeText(codeUnitArray, rive::Span(runs, runCount)));
-
         return result;
     }
     return {};
+}
+
+void init()
+{
+    fallbackFonts.clear();
+    HBFont::gFallbackProc = pickFallbackFont;
 }
 
 #ifdef DEBUG
@@ -177,10 +217,12 @@ EMSCRIPTEN_BINDINGS(RiveText)
     function("deleteGlyphPath", &deleteGlyphPath);
 
     function("shapeText", &shapeText);
+    function("setFallbackFonts", &setFallbackFonts);
     function("deleteShapeResult", &deleteShapeResult);
 
     function("breakLines", &breakLines);
     function("deleteLines", &deleteLines);
+    function("init", &init);
 
 #ifdef DEBUG
     function("assertSomeAssumptions", &assertSomeAssumptions);

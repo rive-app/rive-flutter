@@ -15,6 +15,7 @@ late js.JsFunction _deleteFont;
 late js.JsFunction _makeGlyphPath;
 late js.JsFunction _deleteGlyphPath;
 late js.JsFunction _shapeText;
+late js.JsFunction _setFallbackFonts;
 late js.JsFunction _deleteShapeResult;
 late js.JsFunction _breakLines;
 late js.JsFunction _deleteLines;
@@ -505,18 +506,21 @@ Future<void> initFont() async {
   html.document.body!.append(script);
   await script.onLoad.first;
 
-  var init = js.context['RiveText'] as js.JsFunction;
-  var promise = init.apply(<dynamic>[]) as js.JsObject;
+  var initWasm = js.context['RiveText'] as js.JsFunction;
+  var promise = initWasm.apply(<dynamic>[]) as js.JsObject;
   var thenFunction = promise['then'] as js.JsFunction;
   var completer = Completer<void>();
   thenFunction.apply(
     <dynamic>[
       (js.JsObject module) {
+        var init = module['init'] as js.JsFunction;
+        init.apply(<dynamic>[]);
         _makeFont = module['makeFont'] as js.JsFunction;
         _deleteFont = module['deleteFont'] as js.JsFunction;
         _makeGlyphPath = module['makeGlyphPath'] as js.JsFunction;
         _deleteGlyphPath = module['deleteGlyphPath'] as js.JsFunction;
         _shapeText = module['shapeText'] as js.JsFunction;
+        _setFallbackFonts = module['setFallbackFonts'] as js.JsFunction;
         _deleteShapeResult = module['deleteShapeResult'] as js.JsFunction;
         _breakLines = module['breakLines'] as js.JsFunction;
         _deleteLines = module['deleteLines'] as js.JsFunction;
@@ -526,4 +530,17 @@ Future<void> initFont() async {
     thisArg: promise,
   );
   return completer.future;
+}
+
+void setFallbackFonts(List<Font> fonts) {
+  _setFallbackFonts.apply(
+    <dynamic>[
+      Uint32List.fromList(
+        fonts
+            .cast<FontWasm>()
+            .map((font) => font.fontPtr)
+            .toList(growable: false),
+      ),
+    ],
+  );
 }

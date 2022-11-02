@@ -219,7 +219,7 @@ do
         '-DANSI_DECLARATORS'
     }
 
-    filter {'system:macosx'}
+    filter {'not options:arch=wasm', 'system:macosx'}
     do
         files {
             'macos/rive_text/rive_text.cpp'

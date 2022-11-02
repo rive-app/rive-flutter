@@ -1,7 +1,4 @@
 RiveText["onRuntimeInitialized"] = function () {
-  var HEAPU8 = RiveText["HEAPU8"];
-  var HEAPU32 = RiveText["HEAPU32"];
-  var HEAPF32 = RiveText["HEAPF32"];
   var nativeMakeGlyphPath = RiveText["makeGlyphPath"];
   var move = 0;
   var line = 1;
@@ -13,7 +10,7 @@ RiveText["onRuntimeInitialized"] = function () {
     var verbCount = glyph[3];
     var ptsPtr = glyph[1];
     var verbPtr = glyph[2];
-    var verbs = HEAPU8["subarray"](verbPtr, verbPtr + verbCount);
+    var verbs = RiveText["HEAPU8"]["subarray"](verbPtr, verbPtr + verbCount);
 
     let pointCount = 0;
     for (var verb of verbs) {
@@ -37,7 +34,10 @@ RiveText["onRuntimeInitialized"] = function () {
     return {
       "rawPath": glyph[0],
       "verbs": verbs,
-      "points": HEAPF32["subarray"](ptsStart, ptsStart + pointCount * 2),
+      "points": RiveText["HEAPF32"]["subarray"](
+        ptsStart,
+        ptsStart + pointCount * 2
+      ),
     };
   };
 
@@ -46,7 +46,7 @@ RiveText["onRuntimeInitialized"] = function () {
     var shapeResult = nativeShapeText(codeUnits, runsList);
     return {
       "rawResult": shapeResult,
-      "results": HEAPU8["subarray"](shapeResult),
+      "results": RiveText["HEAPU8"]["subarray"](shapeResult),
     };
   };
 
@@ -55,7 +55,7 @@ RiveText["onRuntimeInitialized"] = function () {
     var breakResult = nativeBreakLines(shape, width, align);
     return {
       "rawResult": breakResult,
-      "results": HEAPU8["subarray"](breakResult),
+      "results": RiveText["HEAPU8"]["subarray"](breakResult),
     };
   };
 };
