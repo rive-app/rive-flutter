@@ -294,6 +294,10 @@ abstract class Font {
     return decodeFont(bytes);
   }
 
+  static void setFallbacks(List<Font> fonts) {
+    setFallbackFonts(fonts);
+  }
+
   RawPath getPath(int glyphId);
   void dispose();
 

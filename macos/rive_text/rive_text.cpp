@@ -96,3 +96,42 @@ EXPORT void deleteLines(rive::SimpleArray<rive::SimpleArray<rive::GlyphLine>>* r
 {
     delete result;
 }
+
+std::vector<rive::Font*> fallbackFonts;
+
+EXPORT
+void setFallbackFonts(rive::Font** fonts, uint64_t fontsLength)
+{
+    if (fontsLength == 0)
+    {
+        fallbackFonts = std::vector<rive::Font*>();
+        return;
+    }
+    fallbackFonts = std::vector<rive::Font*>(fonts, fonts + fontsLength);
+}
+
+static rive::rcp<rive::Font> pickFallbackFont(rive::Span<const rive::Unichar> missing)
+{
+    size_t length = fallbackFonts.size();
+    for (size_t i = 0; i < length; i++)
+    {
+        HBFont* font = static_cast<HBFont*>(fallbackFonts[i]);
+        if (i == length - 1 || font->hasGlyph(missing))
+        {
+            fprintf(stderr, "FONT COUNT IS: %d\n", font->debugging_refcnt());
+
+            rive::rcp<rive::Font> rcFont = rive::rcp<rive::Font>(font);
+            // because the font was released at load time, we need to give it an
+            // extra ref whenever we bump it to a reference counted pointer.
+            rcFont->ref();
+            return rcFont;
+        }
+    }
+    return nullptr;
+}
+EXPORT
+void init()
+{
+    fallbackFonts.clear();
+    HBFont::gFallbackProc = pickFallbackFont;
+}

@@ -207,26 +207,26 @@ class SimpleParagraphArray extends Struct {
   }
 }
 
-class RunsListFFI extends ListBase<GlyphRunNative> {
-  final SimpleGlyphRunArray nativeList;
-  @override
-  int get length => nativeList.size;
+// class RunsListFFI extends ListBase<GlyphRunNative> {
+//   final SimpleGlyphRunArray nativeList;
+//   @override
+//   int get length => nativeList.size;
 
-  RunsListFFI(this.nativeList);
+//   RunsListFFI(this.nativeList);
 
-  @override
-  GlyphRunNative operator [](int index) => nativeList.data.elementAt(index).ref;
+//   @override
+//   GlyphRunNative operator [](int index) => nativeList.data.elementAt(index).ref;
 
-  @override
-  void operator []=(int index, GlyphRunNative value) {
-    throw UnsupportedError('Cannot set Run on RunsList');
-  }
+//   @override
+//   void operator []=(int index, GlyphRunNative value) {
+//     throw UnsupportedError('Cannot set Run on RunsList');
+//   }
 
-  @override
-  set length(int newLength) {
-    throw UnsupportedError('Cannot set length on RunsList');
-  }
-}
+//   @override
+//   set length(int newLength) {
+//     throw UnsupportedError('Cannot set length on RunsList');
+//   }
+// }
 
 class ParagraphFFI extends Paragraph {
   final ParagraphNative nativeParagraph;
@@ -382,6 +382,18 @@ final GlyphPathStruct Function(
 final void Function(Pointer<Void> font) deleteGlyphPath = nativeLib
     .lookup<NativeFunction<Void Function(Pointer<Void>)>>('deleteGlyphPath')
     .asFunction();
+
+final void Function() init =
+    nativeLib.lookup<NativeFunction<Void Function()>>('init').asFunction();
+
+final Pointer<SimpleParagraphArray> Function(
+        Pointer<Pointer<Void>> fonts, int fontsLength) setFallbackFontsNative =
+    nativeLib
+        .lookup<
+            NativeFunction<
+                Pointer<SimpleParagraphArray> Function(
+                    Pointer<Pointer<Void>>, Uint64)>>('setFallbackFonts')
+        .asFunction();
 
 class RawPathCommandWasm extends RawPathCommand {
   final Pointer<PathPoint> _points;
@@ -580,4 +592,21 @@ Font? decodeFont(Uint8List bytes) {
   return FontFFI(result);
 }
 
-Future<void> initFont() async {}
+Future<void> initFont() async {
+  init();
+}
+
+void setFallbackFonts(List<Font> fonts) {
+  // Allocate and copy to fonts list memory.
+  var fontListMemory =
+      calloc.allocate<Pointer<Void>>(fonts.length * sizeOf<Pointer<Void>>());
+  int fontIndex = 0;
+  for (final font in fonts) {
+    fontListMemory[fontIndex++] = (font as FontFFI).fontPtr;
+  }
+
+  setFallbackFontsNative(fontListMemory, fonts.length);
+
+  // Free memory for structs passed into native that we no longer need.
+  calloc.free(fontListMemory);
+}
