@@ -9,7 +9,7 @@ Runtime docs are available in [Rive's help center](https://help.rive.app/runtime
 
 [Rive](https://rive.app/) is a real-time interactive design and animation tool. Use our collaborative editor to create motion graphics that respond to different states and user inputs. Then load your animations into apps, games, and websites with our lightweight open-source runtimes.
 
-## Add to pubspec.yaml
+## Add dependency to pubspec.yaml
 
 ```yaml
 dependencies:
