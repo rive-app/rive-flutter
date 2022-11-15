@@ -16,6 +16,9 @@ dependencies:
   rive: ^0.9.0
 ```
 
+## Platform Considerations
+Read some [platform specific considerations](platform_considerations.md) with regards to the Rive Flutter package.
+
 ## Quick Start
 
 Play an animation from a Rive file over HTTP:
