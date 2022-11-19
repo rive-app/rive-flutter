@@ -2,10 +2,9 @@ import 'dart:math';
 
 import 'package:rive/src/generated/constraints/rotation_constraint_base.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/math/transform_components.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 import 'package:rive/src/rive_core/transform_space.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/constraints/rotation_constraint_base.dart';
 

@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_unsupported_version_exception.dart';
-import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
+import 'package:rive_common/utilities.dart';
 
 /// Stores the minor and major version of Rive. Versions with the same major
 /// value are backwards and forwards compatible.

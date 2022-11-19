@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
-import 'package:rive/src/rive_core/math/vec2d.dart';
+import 'package:rive_common/math.dart';
 
 /// Specifies whether a source is from an asset bundle or http
 enum _Source {

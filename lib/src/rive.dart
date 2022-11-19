@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:rive/src/rive_core/artboard.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_render_box.dart';
 import 'package:rive/src/runtime_artboard.dart';
+import 'package:rive_common/math.dart';
 
 class Rive extends LeafRenderObjectWidget {
   /// Artboard used for drawing

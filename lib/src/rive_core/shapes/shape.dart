@@ -3,15 +3,13 @@ import 'dart:ui' as ui;
 import 'package:collection/collection.dart';
 import 'package:rive/src/generated/shapes/shape_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/hit_test.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/shapes/paint/linear_gradient.dart' as core;
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive/src/rive_core/shapes/path.dart';
 import 'package:rive/src/rive_core/shapes/path_composer.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/shapes/shape_base.dart';
 

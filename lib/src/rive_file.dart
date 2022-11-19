@@ -32,7 +32,7 @@ import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
-import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
+import 'package:rive_common/utilities.dart';
 
 Core<CoreContext>? _readRuntimeObject(
     BinaryReader reader, HashMap<int, CoreFieldType> propertyToField) {

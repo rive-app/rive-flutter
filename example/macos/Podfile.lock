@@ -1,21 +1,21 @@
 PODS:
   - FlutterMacOS (1.0.0)
-  - rive (0.0.1):
+  - rive_common (0.0.1):
     - FlutterMacOS
 
 DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
-  - rive (from `Flutter/ephemeral/.symlinks/plugins/rive/macos`)
+  - rive_common (from `Flutter/ephemeral/.symlinks/plugins/rive_common/macos`)
 
 EXTERNAL SOURCES:
   FlutterMacOS:
     :path: Flutter/ephemeral
-  rive:
-    :path: Flutter/ephemeral/.symlinks/plugins/rive/macos
+  rive_common:
+    :path: Flutter/ephemeral/.symlinks/plugins/rive_common/macos
 
 SPEC CHECKSUMS:
   FlutterMacOS: ae6af50a8ea7d6103d888583d46bd8328a7e9811
-  rive: 8bf1bb49b46a4c3045424aa7c1243fe8942bb576
+  rive_common: 0ac58617cab300ee9bcf495e710d593578ff328b
 
 PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
 

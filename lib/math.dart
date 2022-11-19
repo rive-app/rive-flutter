@@ -1,2 +1,1 @@
-export 'package:rive/src/rive_core/math/mat2d.dart';
-export 'package:rive/src/rive_core/math/vec2d.dart';
+export 'package:rive_common/math.dart';

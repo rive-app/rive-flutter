@@ -1,7 +1,7 @@
 import 'package:rive/src/generated/shapes/ellipse_base.dart';
-import 'package:rive/src/rive_core/math/circle_constant.dart';
 import 'package:rive/src/rive_core/shapes/cubic_detached_vertex.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/shapes/ellipse_base.dart';
 

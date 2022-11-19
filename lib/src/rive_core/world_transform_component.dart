@@ -1,6 +1,6 @@
 import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/world_transform_component_base.dart';
 

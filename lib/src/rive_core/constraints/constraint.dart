@@ -1,8 +1,8 @@
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/constraints/constraint_base.dart';
 

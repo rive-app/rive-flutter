@@ -5,10 +5,8 @@ import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/animation/nested_linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/artboard.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
+import 'package:rive_common/math.dart';
 
 class RuntimeNestedArtboard extends NestedArtboard {
   Artboard? sourceArtboard;

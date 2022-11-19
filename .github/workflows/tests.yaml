@@ -24,15 +24,5 @@ jobs:
           flutter channel stable
           flutter doctor
 
-      - name: Build WASM
-        run: |
-          cd wasm
-          ./build_wasm.sh release
-
-      - name: Build Shared Lib
-        run: |
-          cd shared_lib
-          ./build_shared.sh
-
       - name: Run tests
         run: flutter test

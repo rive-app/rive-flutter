@@ -5,13 +5,11 @@ import 'package:rive/src/generated/shapes/path_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/component_flags.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/shapes/path_base.dart';
 
@@ -305,13 +303,6 @@ abstract class Path extends PathBase {
 }
 
 enum _PathCommand { moveTo, lineTo, cubicTo, close }
-
-abstract class PathInterface {
-  void moveTo(double x, double y);
-  void lineTo(double x, double y);
-  void cubicTo(double ox, double oy, double ix, double iy, double x, double y);
-  void close();
-}
 
 class RenderPath implements PathInterface {
   final ui.Path _uiPath = ui.Path();

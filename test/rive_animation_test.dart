@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
+
 import 'src/utils.dart';
 
 class TestApp extends StatefulWidget {
@@ -18,6 +19,7 @@ class _TestAppState extends State<TestApp> {
 
   @override
   void initState() {
+    super.initState();
     animation = animations.first;
   }
 

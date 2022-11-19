@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
+import 'package:rive_common/math.dart';
 
 /// The PathComposer builds the desired world and local paths for the shapes and
 /// their fills/strokes. It guarantees that one of local or world path is always

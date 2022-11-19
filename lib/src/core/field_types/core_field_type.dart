@@ -1,4 +1,4 @@
-import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
+import 'package:rive_common/utilities.dart';
 
 // ignore: one_member_abstracts
 abstract class CoreFieldType<T extends Object> {

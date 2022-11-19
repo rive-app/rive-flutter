@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/nested_state_machine_base.dart';
-import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/animation/nested_state_machine_base.dart';
 

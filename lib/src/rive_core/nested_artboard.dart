@@ -8,10 +8,8 @@ import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/math/vec2d.dart';
 import 'package:rive/src/rive_core/nested_animation.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/nested_artboard_base.dart';
 
@@ -62,7 +60,6 @@ class NestedArtboard extends NestedArtboardBase {
 
   @override
   void artboardIdChanged(int from, int to) {}
-
 
   @override
   void childAdded(Component child) {

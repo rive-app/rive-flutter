@@ -2,8 +2,7 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/container_component.dart';
-import 'package:rive/src/utilities/dependency_sorter.dart';
-import 'package:rive/src/utilities/tops.dart';
+import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/component_base.dart';
 

@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_render_box.dart';
+import 'package:rive_common/math.dart';
 
 /// An abstraction for controlling the composition and rendering of a Rive
 /// scene.

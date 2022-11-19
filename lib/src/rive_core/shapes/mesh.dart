@@ -6,13 +6,12 @@ import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/drawable.dart';
-import 'package:rive/src/rive_core/math/aabb.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
 import 'package:rive/src/rive_core/shapes/contour_mesh_vertex.dart';
 import 'package:rive/src/rive_core/shapes/image.dart';
 import 'package:rive/src/rive_core/shapes/mesh_vertex.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
-import 'package:rive/src/utilities/binary_buffer/binary_reader.dart';
+import 'package:rive_common/math.dart';
+import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/shapes/mesh_base.dart';
 

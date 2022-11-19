@@ -1,11 +1,9 @@
 import 'package:meta/meta.dart';
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/math/mat2d.dart';
-import 'package:rive/src/rive_core/math/vec2d.dart';
-
 import 'package:rive/src/rive_core/shapes/paint/fill.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
+import 'package:rive_common/math.dart';
 
 /// An abstraction to give a common interface to any component that can contain
 /// fills and strokes.

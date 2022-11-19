@@ -1,5 +1,5 @@
 import 'package:rive/src/generated/node_base.dart';
-import 'package:rive/src/rive_core/math/vec2d.dart';
+import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/node_base.dart';
 
