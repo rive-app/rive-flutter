@@ -4,6 +4,9 @@ analyzer:
     implicit-dynamic: false
   errors:
     unused_import: error
+  exclude:
+    - ios
+    - macos
 
 linter:
   rules:
