@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:rive/src/generated/constraints/ik_constraint_base.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
+import 'package:rive/src/rive_core/bones/root_bone.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 import 'package:rive_common/math.dart';
@@ -60,11 +61,13 @@ class IKConstraint extends IKConstraintBase {
     var boneCount = parentBoneCount;
     var bone = parent as Bone;
     var bones = <Bone>[bone];
+    var hitRootBone = bone is RootBone;
     // Get the reverse FK chain of bones (from tip up).
-    while (bone.parent is Bone && boneCount > 0) {
+    while (!hitRootBone && bone.parent is Bone && boneCount > 0) {
       boneCount--;
       bone = bone.parent as Bone;
       bones.add(bone);
+      hitRootBone = bone is RootBone;
     }
     // Now put them in FK order (top to bottom).
     for (final bone in bones.reversed) {

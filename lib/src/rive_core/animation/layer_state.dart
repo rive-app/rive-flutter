@@ -26,10 +26,6 @@ abstract class LayerState extends LayerStateBase {
     _transitions.remove(transition);
   }
 
-  @override
-  void onRemoved() {
-    super.onRemoved();
-  }
 
   StateInstance makeInstance();
 

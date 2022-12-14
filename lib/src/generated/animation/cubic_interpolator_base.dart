@@ -5,7 +5,7 @@
 import 'package:rive/src/core/core.dart';
 
 abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
-  static const int typeKey = 28;
+  static const int typeKey = 139;
   @override
   int get coreType => CubicInterpolatorBase.typeKey;
   @override

@@ -23,11 +23,10 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
       double currentTime, KeyFrameDouble nextFrame, double mix) {
     var f = (currentTime - seconds) / (nextFrame.seconds - seconds);
 
-    if (interpolator != null) {
-      f = interpolator!.transform(f);
-    }
+    var frameValue = interpolator?.transformValue(value, nextFrame.value, f) ??
+        value + (nextFrame.value - value) * f;
 
-    _apply(object, propertyKey, mix, value + (nextFrame.value - value) * f);
+    _apply(object, propertyKey, mix, frameValue);
   }
 
   @override

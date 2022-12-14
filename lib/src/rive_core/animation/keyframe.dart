@@ -44,10 +44,6 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
     }
   }
 
-  @override
-  void onRemoved() {
-    super.onRemoved();
-  }
 
   @override
   void frameChanged(int from, int to) {}
@@ -82,4 +78,7 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
 
     return super.import(importStack);
   }
+
+  @override
+  String toString() => '${super.toString()} id: ($id)';
 }

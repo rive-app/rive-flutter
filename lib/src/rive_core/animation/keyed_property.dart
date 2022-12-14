@@ -49,7 +49,9 @@ class KeyFrameList<T extends KeyFrameInterface> {
     return idx;
   }
 
-  void sort() => _keyframes.sort((a, b) => a.frame.compareTo(b.frame));
+  void sort() {
+    _keyframes.sort((a, b) => a.frame.compareTo(b.frame));
+  }
 }
 
 class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
@@ -60,10 +62,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   @override
   void onAddedDirty() {}
 
-  @override
-  void onRemoved() {
-    super.onRemoved();
-  }
 
   /// Called by rive_core to add a KeyFrame to this KeyedProperty. This should
   /// be @internal when it's supported.

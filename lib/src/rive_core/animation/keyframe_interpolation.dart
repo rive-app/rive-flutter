@@ -9,4 +9,8 @@ enum KeyFrameInterpolation {
   /// Cubicly interpolate from incoming to outgoing value based on the
   /// [CubicInterpolator]'s parameters.
   cubic,
+
+  /// Cubicly interpolate from incoming to outgoing value based on the
+  /// [CubicInterpolator]'s parameters.
+  cubicValue,
 }

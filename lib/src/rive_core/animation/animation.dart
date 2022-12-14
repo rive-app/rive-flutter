@@ -11,6 +11,7 @@ class Animation extends AnimationBase<RuntimeArtboard> {
     if (_artboard == value) {
       return;
     }
+
     _artboard?.internalRemoveAnimation(this);
     _artboard = value;
     _artboard?.internalAddAnimation(this);

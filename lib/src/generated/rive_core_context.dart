@@ -7,6 +7,7 @@ import 'package:rive/src/core/field_types/core_field_type.dart';
 import 'package:rive/src/core/field_types/core_string_type.dart';
 import 'package:rive/src/core/field_types/core_uint_type.dart';
 import 'package:rive/src/generated/animation/blend_animation_base.dart';
+import 'package:rive/src/generated/animation/cubic_ease_interpolator_base.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
 import 'package:rive/src/generated/animation/listener_input_change_base.dart';
@@ -40,7 +41,8 @@ import 'package:rive/src/rive_core/animation/blend_animation_direct.dart';
 import 'package:rive/src/rive_core/animation/blend_state_1d.dart';
 import 'package:rive/src/rive_core/animation/blend_state_direct.dart';
 import 'package:rive/src/rive_core/animation/blend_state_transition.dart';
-import 'package:rive/src/rive_core/animation/cubic_interpolator.dart';
+import 'package:rive/src/rive_core/animation/cubic_ease_interpolator.dart';
+import 'package:rive/src/rive_core/animation/cubic_value_interpolator.dart';
 import 'package:rive/src/rive_core/animation/entry_state.dart';
 import 'package:rive/src/rive_core/animation/exit_state.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
@@ -159,6 +161,8 @@ class RiveCoreContext {
         return BlendAnimationDirect();
       case StateMachineNumberBase.typeKey:
         return StateMachineNumber();
+      case CubicValueInterpolatorBase.typeKey:
+        return CubicValueInterpolator();
       case TransitionTriggerConditionBase.typeKey:
         return TransitionTriggerCondition();
       case KeyedPropertyBase.typeKey:
@@ -181,8 +185,8 @@ class RiveCoreContext {
         return StateMachineLayer();
       case ListenerNumberChangeBase.typeKey:
         return ListenerNumberChange();
-      case CubicInterpolatorBase.typeKey:
-        return CubicInterpolator();
+      case CubicEaseInterpolatorBase.typeKey:
+        return CubicEaseInterpolator();
       case StateTransitionBase.typeKey:
         return StateTransition();
       case NestedBoolBase.typeKey:
@@ -582,6 +586,26 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
+      case CubicInterpolatorBase.x1PropertyKey:
+        if (object is CubicInterpolatorBase && value is double) {
+          object.x1 = value;
+        }
+        break;
+      case CubicInterpolatorBase.y1PropertyKey:
+        if (object is CubicInterpolatorBase && value is double) {
+          object.y1 = value;
+        }
+        break;
+      case CubicInterpolatorBase.x2PropertyKey:
+        if (object is CubicInterpolatorBase && value is double) {
+          object.x2 = value;
+        }
+        break;
+      case CubicInterpolatorBase.y2PropertyKey:
+        if (object is CubicInterpolatorBase && value is double) {
+          object.y2 = value;
+        }
+        break;
       case TransitionConditionBase.inputIdPropertyKey:
         if (object is TransitionConditionBase && value is int) {
           object.inputId = value;
@@ -650,26 +674,6 @@ class RiveCoreContext {
       case ListenerNumberChangeBase.valuePropertyKey:
         if (object is ListenerNumberChangeBase && value is double) {
           object.value = value;
-        }
-        break;
-      case CubicInterpolatorBase.x1PropertyKey:
-        if (object is CubicInterpolatorBase && value is double) {
-          object.x1 = value;
-        }
-        break;
-      case CubicInterpolatorBase.y1PropertyKey:
-        if (object is CubicInterpolatorBase && value is double) {
-          object.y1 = value;
-        }
-        break;
-      case CubicInterpolatorBase.x2PropertyKey:
-        if (object is CubicInterpolatorBase && value is double) {
-          object.x2 = value;
-        }
-        break;
-      case CubicInterpolatorBase.y2PropertyKey:
-        if (object is CubicInterpolatorBase && value is double) {
-          object.y2 = value;
         }
         break;
       case StateTransitionBase.stateToIdPropertyKey:
@@ -1285,12 +1289,12 @@ class RiveCoreContext {
       case NestedLinearAnimationBase.mixPropertyKey:
       case NestedSimpleAnimationBase.speedPropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
-      case TransitionNumberConditionBase.valuePropertyKey:
-      case ListenerNumberChangeBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
       case CubicInterpolatorBase.y1PropertyKey:
       case CubicInterpolatorBase.x2PropertyKey:
       case CubicInterpolatorBase.y2PropertyKey:
+      case TransitionNumberConditionBase.valuePropertyKey:
+      case ListenerNumberChangeBase.valuePropertyKey:
       case KeyFrameDoubleBase.valuePropertyKey:
       case NestedNumberBase.nestedValuePropertyKey:
       case BlendAnimation1DBase.valuePropertyKey:
@@ -1570,10 +1574,6 @@ class RiveCoreContext {
         return (object as NestedSimpleAnimationBase).speed;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
-      case TransitionNumberConditionBase.valuePropertyKey:
-        return (object as TransitionNumberConditionBase).value;
-      case ListenerNumberChangeBase.valuePropertyKey:
-        return (object as ListenerNumberChangeBase).value;
       case CubicInterpolatorBase.x1PropertyKey:
         return (object as CubicInterpolatorBase).x1;
       case CubicInterpolatorBase.y1PropertyKey:
@@ -1582,6 +1582,10 @@ class RiveCoreContext {
         return (object as CubicInterpolatorBase).x2;
       case CubicInterpolatorBase.y2PropertyKey:
         return (object as CubicInterpolatorBase).y2;
+      case TransitionNumberConditionBase.valuePropertyKey:
+        return (object as TransitionNumberConditionBase).value;
+      case ListenerNumberChangeBase.valuePropertyKey:
+        return (object as ListenerNumberChangeBase).value;
       case KeyFrameDoubleBase.valuePropertyKey:
         return (object as KeyFrameDoubleBase).value;
       case NestedNumberBase.nestedValuePropertyKey:
@@ -2213,16 +2217,6 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
-      case TransitionNumberConditionBase.valuePropertyKey:
-        if (object is TransitionNumberConditionBase) {
-          object.value = value;
-        }
-        break;
-      case ListenerNumberChangeBase.valuePropertyKey:
-        if (object is ListenerNumberChangeBase) {
-          object.value = value;
-        }
-        break;
       case CubicInterpolatorBase.x1PropertyKey:
         if (object is CubicInterpolatorBase) {
           object.x1 = value;
@@ -2241,6 +2235,16 @@ class RiveCoreContext {
       case CubicInterpolatorBase.y2PropertyKey:
         if (object is CubicInterpolatorBase) {
           object.y2 = value;
+        }
+        break;
+      case TransitionNumberConditionBase.valuePropertyKey:
+        if (object is TransitionNumberConditionBase) {
+          object.value = value;
+        }
+        break;
+      case ListenerNumberChangeBase.valuePropertyKey:
+        if (object is ListenerNumberChangeBase) {
+          object.value = value;
         }
         break;
       case KeyFrameDoubleBase.valuePropertyKey:

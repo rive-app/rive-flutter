@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/shapes/vertex_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';

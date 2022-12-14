@@ -3,6 +3,8 @@ import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 
+export 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
+
 const int newtonIterations = 4;
 
 // Implements https://github.com/gre/bezier-easing/blob/master/src/index.js
@@ -12,23 +14,10 @@ const int splineTableSize = 11;
 const int subdivisionMaxIterations = 10;
 
 const double subdivisionPrecision = 0.0000001;
-double _calcBezier(double aT, double aA1, double aA2) {
-  return (((1.0 - 3.0 * aA2 + 3.0 * aA1) * aT + (3.0 * aA2 - 6.0 * aA1)) * aT +
-          (3.0 * aA1)) *
-      aT;
-}
-
-// Returns x(t) given t, x1, and x2, or y(t) given t, y1, and y2.
-double _getSlope(double aT, double aA1, double aA2) {
-  return 3.0 * (1.0 - 3.0 * aA2 + 3.0 * aA1) * aT * aT +
-      2.0 * (3.0 * aA2 - 6.0 * aA1) * aT +
-      (3.0 * aA1);
-}
 
 // Returns dx/dt given t, x1, and x2, or dy/dt given t, y1, and y2.
-class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
-  _CubicEase _ease = _CubicEase.make(0.42, 0, 0.58, 1);
-
+abstract class CubicInterpolator extends CubicInterpolatorBase
+    implements Interpolator {
   @override
   bool equalParameters(Interpolator other) {
     if (other is CubicInterpolator) {
@@ -41,28 +30,31 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
   }
 
   @override
-  void onAdded() => _updateStoredCubic();
+  void onAdded() => updateStoredCubic();
 
   @override
   void onAddedDirty() {}
 
   @override
-  double transform(double value) => _ease.transform(value);
+  double transform(double value);
 
   @override
-  void x1Changed(double from, double to) => _updateStoredCubic();
+  double transformValue(double from, double to, double value);
 
   @override
-  void x2Changed(double from, double to) => _updateStoredCubic();
+  void x1Changed(double from, double to) => updateStoredCubic();
 
   @override
-  void y1Changed(double from, double to) => _updateStoredCubic();
+  void x2Changed(double from, double to) => updateStoredCubic();
 
   @override
-  void y2Changed(double from, double to) => _updateStoredCubic();
-  void _updateStoredCubic() {
-    _ease = _CubicEase.make(x1, y1, x2, y2);
-  }
+  void y1Changed(double from, double to) => updateStoredCubic();
+
+  @override
+  void y2Changed(double from, double to) => updateStoredCubic();
+
+  @protected
+  void updateStoredCubic() {}
 
   @override
   bool import(ImportStack stack) {
@@ -76,13 +68,15 @@ class CubicInterpolator extends CubicInterpolatorBase implements Interpolator {
   }
 }
 
-class _Cubic extends _CubicEase {
+// Helper to convert a factor in cubic space to t value. We use this to compute
+// the t value to use to evaluate the y cubic for animation values.
+class InterpolatorCubicFactor {
   final Float64List _values = Float64List(splineTableSize);
-  final double x1, y1, x2, y2;
-  _Cubic(this.x1, this.y1, this.x2, this.y2) {
+  final double x1, x2;
+  InterpolatorCubicFactor(this.x1, this.x2) {
     // Precompute values table
     for (int i = 0; i < splineTableSize; ++i) {
-      _values[i] = _calcBezier(i * sampleStepSize, x1, x2);
+      _values[i] = calcBezier(i * sampleStepSize, x1, x2);
     }
   }
 
@@ -103,14 +97,14 @@ class _Cubic extends _CubicEase {
         (_values[currentSample + 1] - _values[currentSample]);
     var guessForT = intervalStart + dist * sampleStepSize;
 
-    var initialSlope = _getSlope(guessForT, x1, x2);
+    var initialSlope = getSlope(guessForT, x1, x2);
     if (initialSlope >= newtonMinSlope) {
       for (int i = 0; i < newtonIterations; ++i) {
-        double currentSlope = _getSlope(guessForT, x1, x2);
+        double currentSlope = getSlope(guessForT, x1, x2);
         if (currentSlope == 0.0) {
           return guessForT;
         }
-        double currentX = _calcBezier(guessForT, x1, x2) - x;
+        double currentX = calcBezier(guessForT, x1, x2) - x;
         guessForT -= currentX / currentSlope;
       }
       return guessForT;
@@ -122,7 +116,7 @@ class _Cubic extends _CubicEase {
       int i = 0;
       do {
         currentT = intervalStart + (aB - intervalStart) / 2.0;
-        currentX = _calcBezier(currentT, x1, x2) - x;
+        currentX = calcBezier(currentT, x1, x2) - x;
         if (currentX > 0.0) {
           aB = currentT;
         } else {
@@ -134,27 +128,17 @@ class _Cubic extends _CubicEase {
     }
   }
 
-  @override
-  double transform(double mix) {
-    return _calcBezier(getT(mix), y1, y2);
+  static double calcBezier(double aT, double aA1, double aA2) {
+    return (((1.0 - 3.0 * aA2 + 3.0 * aA1) * aT + (3.0 * aA2 - 6.0 * aA1)) *
+                aT +
+            (3.0 * aA1)) *
+        aT;
   }
-}
 
-abstract class _CubicEase {
-  double transform(double t);
-
-  static _CubicEase make(double x1, double y1, double x2, double y2) {
-    if (x1 == y1 && x2 == y2) {
-      return _LinearCubicEase();
-    } else {
-      return _Cubic(x1, y1, x2, y2);
-    }
-  }
-}
-
-class _LinearCubicEase extends _CubicEase {
-  @override
-  double transform(double t) {
-    return t;
+// Returns x(t) given t, x1, and x2, or y(t) given t, y1, and y2.
+  static double getSlope(double aT, double aA1, double aA2) {
+    return 3.0 * (1.0 - 3.0 * aA2 + 3.0 * aA1) * aT * aT +
+        2.0 * (3.0 * aA2 - 6.0 * aA1) * aT +
+        (3.0 * aA1);
   }
 }

@@ -20,10 +20,6 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   @override
   void onAdded() {}
 
-  @override
-  void onRemoved() {
-    super.onRemoved();
-  }
 
   bool isValidKeyedProperty(KeyedProperty property) {
     var value = _keyedProperties[property.propertyKey];
