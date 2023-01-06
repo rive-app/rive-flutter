@@ -152,20 +152,27 @@ class RiveAnimationState extends State<RiveAnimation> {
   @override
   void didUpdateWidget(covariant RiveAnimation oldWidget) {
     if (widget.alignment != oldWidget.alignment ||
-        widget.animations != oldWidget.animations ||
+        !_compareList(widget.animations, oldWidget.animations) ||
         widget.antialiasing != oldWidget.antialiasing ||
         widget.artboard != oldWidget.artboard ||
-        widget.controllers != oldWidget.controllers ||
+        !_compareList(widget.controllers, oldWidget.controllers) ||
         widget.file != oldWidget.file ||
         widget.fit != oldWidget.fit ||
         widget.name != oldWidget.name ||
-        widget.onInit != oldWidget.onInit ||
         widget.placeHolder != oldWidget.placeHolder ||
         widget.src != oldWidget.src ||
-        widget.stateMachines != oldWidget.stateMachines) {
+        !_compareList(widget.stateMachines, oldWidget.stateMachines)) {
       setState(_configure);
     }
     super.didUpdateWidget(oldWidget);
+  }
+
+  /// Compare whether the contents of two Lists are the same.
+  bool _compareList(List a, List b) {
+    if (a.length != b.length) {
+      return false;
+    }
+    return a.every((dynamic element) => b.contains(element));
   }
 
   /// Initializes the artboard, animations, state machines and controllers
