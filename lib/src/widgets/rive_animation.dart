@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 import 'package:rive_common/math.dart';
@@ -51,12 +52,17 @@ class RiveAnimation extends StatefulWidget {
   /// to directly control animation states instead of passing names.
   final List<RiveAnimationController> controllers;
 
-  /// Callback fired when Riveanimation has initialized
+  /// Callback fired when [RiveAnimation] has initialized
   final OnInitCallback? onInit;
 
-  /// Creates a new RiveAnimation from an asset bundle
+  /// Creates a new [RiveAnimation] from an asset bundle.
+  ///
+  /// *Example:*
+  /// ```dart
+  /// return RiveAnimation.asset('assets/truck.riv');
+  /// ```
   const RiveAnimation.asset(
-    this.name, {
+    String asset, {
     this.artboard,
     this.animations = const [],
     this.stateMachines = const [],
@@ -67,12 +73,19 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     Key? key,
-  })  : file = null,
+  })  : name = asset,
+        file = null,
         src = _Source.asset,
         super(key: key);
 
+  /// Creates a new [RiveAnimation] from a URL over HTTP
+  ///
+  /// *Example:*
+  /// ```dart
+  /// return RiveAnimation.network('https://cdn.rive.app/animations/vehicles.riv');
+  /// ```
   const RiveAnimation.network(
-    this.name, {
+    String url, {
     this.artboard,
     this.animations = const [],
     this.stateMachines = const [],
@@ -83,12 +96,19 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     Key? key,
-  })  : file = null,
+  })  : name = url,
+        file = null,
         src = _Source.network,
         super(key: key);
 
+  /// Creates a new [RiveAnimation] from a local .riv file
+  ///
+  /// *Example:*
+  /// ```dart
+  /// return RiveAnimation.file('path/to/local/file.riv');
+  /// ```
   const RiveAnimation.file(
-    this.name, {
+    String path, {
     this.artboard,
     this.animations = const [],
     this.stateMachines = const [],
@@ -99,12 +119,21 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     Key? key,
-  })  : file = null,
+  })  : name = path,
+        file = null,
         src = _Source.file,
         super(key: key);
 
+  /// Creates a new [RiveAnimation] from a direct [RiveFile] object
+  ///
+  /// *Example:*
+  /// ```dart
+  /// final riveFile = await RiveFile.asset('assets/truck.riv');
+  /// ...
+  /// return RiveAnimation.direct(riveFile);
+  /// ```
   const RiveAnimation.direct(
-    this.file, {
+    RiveFile this.file, {
     this.artboard,
     this.animations = const [],
     this.stateMachines = const [],
@@ -131,51 +160,78 @@ class RiveAnimationState extends State<RiveAnimation> {
   /// Active artboard
   Artboard? _artboard;
 
+  /// Active Rive file loaded in memory.
+  RiveFile? _riveFile;
+
   @override
   void initState() {
     super.initState();
     _configure();
   }
 
-  void _configure() {
-    if (widget.src == _Source.asset) {
-      RiveFile.asset(widget.name!).then(_init);
-    } else if (widget.src == _Source.network) {
-      RiveFile.network(widget.name!).then(_init);
-    } else if (widget.src == _Source.file) {
-      RiveFile.file(widget.name!).then(_init);
-    } else if (widget.src == _Source.direct) {
-      _init(widget.file!);
+  /// Loads [RiveFile] and calls [_init]
+  Future<void> _configure() async {
+    if (!mounted) return;
+
+    _init(await _loadRiveFile());
+  }
+
+  /// Loads the correct Rive file depending on [widget.src]
+  Future<RiveFile> _loadRiveFile() {
+    switch (widget.src) {
+      case _Source.asset:
+        return RiveFile.asset(widget.name!);
+      case _Source.network:
+        return RiveFile.network(widget.name!);
+      case _Source.file:
+        return RiveFile.file(widget.name!);
+      case _Source.direct:
+        return Future.value(widget.file!);
     }
   }
 
   @override
   void didUpdateWidget(covariant RiveAnimation oldWidget) {
-    if (widget.alignment != oldWidget.alignment ||
-        widget.animations != oldWidget.animations ||
-        widget.antialiasing != oldWidget.antialiasing ||
-        widget.artboard != oldWidget.artboard ||
-        widget.controllers != oldWidget.controllers ||
-        widget.file != oldWidget.file ||
-        widget.fit != oldWidget.fit ||
-        widget.name != oldWidget.name ||
-        widget.onInit != oldWidget.onInit ||
-        widget.placeHolder != oldWidget.placeHolder ||
-        widget.src != oldWidget.src ||
-        widget.stateMachines != oldWidget.stateMachines) {
-      setState(_configure);
-    }
     super.didUpdateWidget(oldWidget);
+
+    if (widget.name != oldWidget.name ||
+        widget.file != oldWidget.file ||
+        widget.src != oldWidget.src) {
+      _configure(); // Rife file has changed
+    } else if (_requiresInit(oldWidget)) {
+      if (_riveFile == null) {
+        _configure(); // Rife file not yet loaded
+      } else {
+        _init(_riveFile!);
+      }
+    }
   }
+
+  /// Determines if new parameters provided to the widget requires
+  /// re-initialization of the Rive artboard
+  bool _requiresInit(RiveAnimation oldWidget) =>
+      widget.artboard != oldWidget.artboard ||
+      !listEquals(widget.animations, oldWidget.animations) ||
+      !listEquals(widget.controllers, oldWidget.controllers) ||
+      !listEquals(widget.stateMachines, oldWidget.stateMachines);
 
   /// Initializes the artboard, animations, state machines and controllers
   void _init(RiveFile file) {
+    _riveFile = file;
+
     if (!mounted) {
       /// _init is usually called asynchronously, so this is a good time to
       /// check if the widget is still mounted. If it's not we can get out of
       /// here early.
       return;
     }
+
+    // Clear current local controllers.
+    _controllers.forEach((c) {
+      c.dispose();
+    });
+    _controllers.clear();
+
     final artboard = (widget.artboard != null
             ? file.artboardByName(widget.artboard!)
             : file.mainArtboard)
@@ -188,7 +244,7 @@ class RiveAnimationState extends State<RiveAnimation> {
       throw FormatException('No animations in artboard ${artboard.name}');
     }
 
-    // Create animations If there are no animations, state machines, or
+    // Create animations. If there are no animations, state machines, or
     // controller specified, select a default animation
     final animationNames = widget.animations.isEmpty &&
             widget.stateMachines.isEmpty &&

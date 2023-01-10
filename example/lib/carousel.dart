@@ -10,16 +10,34 @@ class AnimationCarousel extends StatefulWidget {
 }
 
 class _AnimationCarouselState extends State<AnimationCarousel> {
-  final riveFiles = [
-    'assets/liquid_download.riv',
-    'assets/little_machine.riv',
-    'assets/off_road_car.riv',
-    'assets/rocket.riv',
-    'assets/skills.riv',
+  final riveAnimations = [
+    const RiveCustomAnimationData(
+      name: 'assets/liquid_download.riv',
+    ),
+    const RiveCustomAnimationData(
+      name: 'assets/little_machine.riv',
+      stateMachines: ['State Machine 1'],
+    ),
+    const RiveCustomAnimationData(
+      name: 'assets/off_road_car.riv',
+    ),
+    const RiveCustomAnimationData(
+      name: 'assets/rocket.riv',
+      stateMachines: ['Button'],
+      animations: ['Roll_over'],
+    ),
+    const RiveCustomAnimationData(
+      name: 'assets/skills.riv',
+      stateMachines: ['Designer\'s Test'],
+    ),
     // not a pretty out of the box example
-    'assets/light_switch.riv',
+    const RiveCustomAnimationData(
+      name: 'assets/light_switch.riv',
+      stateMachines: ['Switch'],
+    ),
     // v6.0 file,
     // 'assets/teeny_tiny.riv',
+    // const RiveCustomAnimationData(name: 'assets/teeny_tiny.riv'),
   ];
 
   var _index = 0;
@@ -37,28 +55,46 @@ class _AnimationCarouselState extends State<AnimationCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final _indexToShow = _index % riveAnimations.length;
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text('Animation Carousel'),
       ),
       body: Center(
-          child: Row(children: [
-        GestureDetector(
-            onTap: previous,
-            child: const Icon(
-              Icons.arrow_back,
-            )),
-        Expanded(
-            child: RiveAnimation.asset(
-          riveFiles[_index % riveFiles.length],
-        )),
-        GestureDetector(
-            onTap: next,
-            child: const Icon(
-              Icons.arrow_forward,
-            )),
-      ])),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: previous,
+              child: const Icon(Icons.arrow_back),
+            ),
+            Expanded(
+              child: RiveAnimation.asset(
+                riveAnimations[_indexToShow].name,
+                animations: riveAnimations[_indexToShow].animations,
+                stateMachines: riveAnimations[_indexToShow].stateMachines,
+              ),
+            ),
+            GestureDetector(
+              onTap: next,
+              child: const Icon(Icons.arrow_forward),
+            ),
+          ],
+        ),
+      ),
     );
   }
+}
+
+@immutable
+class RiveCustomAnimationData {
+  final String name;
+  final List<String> animations;
+  final List<String> stateMachines;
+
+  const RiveCustomAnimationData({
+    required this.name,
+    this.animations = const [],
+    this.stateMachines = const [],
+  });
 }

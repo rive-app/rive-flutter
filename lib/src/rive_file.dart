@@ -273,7 +273,7 @@ class RiveFile {
     return RiveFile.import(bytes, assetResolver: _LocalAssetResolver(basePath));
   }
 
-  /// Imports a Rive file from a url over http. Provide an [assetResolver] if
+  /// Imports a Rive file from a URL over HTTP. Provide an [assetResolver] if
   /// your file contains images that needed to be loaded with separate network
   /// requests.
   static Future<RiveFile> network(String url,
