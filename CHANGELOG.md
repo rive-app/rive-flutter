@@ -1,7 +1,9 @@
-## UPCOMING
+## 0.10.1
+
 - Fix [[277](https://github.com/rive-app/rive-flutter/issues/277)] and [[278](https://github.com/rive-app/rive-flutter/issues/278)] that resuled in `onInit` being called with each `setState` - thank you [xuelongqy](https://github.com/xuelongqy).
 
 ## 0.10.0
+
 - Text support
 - Initialise `RiveAnimation` directly: `RiveAnimation.direct(riveFile)`
 
