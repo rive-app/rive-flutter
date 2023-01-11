@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
+/// An example demonstrating a simple state machine.
+///
+/// The "bumpy" state machine will be activated on tap of the vehicle.
 class SimpleStateMachine extends StatefulWidget {
   const SimpleStateMachine({Key? key}) : super(key: key);
 
   @override
-  _SimpleStateMachineState createState() => _SimpleStateMachineState();
+  State<SimpleStateMachine> createState() => _SimpleStateMachineState();
 }
 
 class _SimpleStateMachineState extends State<SimpleStateMachine> {
@@ -23,17 +26,31 @@ class _SimpleStateMachineState extends State<SimpleStateMachine> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Simple Animation'),
+        title: const Text('Simple State Machine'),
       ),
-      body: Center(
-        child: GestureDetector(
-          child: RiveAnimation.network(
-            'https://cdn.rive.app/animations/vehicles.riv',
-            fit: BoxFit.cover,
-            onInit: _onRiveInit,
+      body: Stack(
+        children: [
+          Center(
+            child: GestureDetector(
+              onTap: _hitBump,
+              child: RiveAnimation.asset(
+                'assets/vehicles.riv',
+                fit: BoxFit.cover,
+                onInit: _onRiveInit,
+              ),
+            ),
           ),
-          onTap: _hitBump,
-        ),
+          const Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Bump the van!',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

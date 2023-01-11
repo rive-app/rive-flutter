@@ -7,7 +7,7 @@ class StateMachineSkills extends StatefulWidget {
   const StateMachineSkills({Key? key}) : super(key: key);
 
   @override
-  _StateMachineSkillsState createState() => _StateMachineSkillsState();
+  State<StateMachineSkills> createState() => _StateMachineSkillsState();
 }
 
 class _StateMachineSkillsState extends State<StateMachineSkills> {
@@ -46,7 +46,6 @@ class _StateMachineSkillsState extends State<StateMachineSkills> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text('Skills Machine'),
       ),
@@ -58,10 +57,11 @@ class _StateMachineSkillsState extends State<StateMachineSkills> {
                   Positioned.fill(
                     child: Rive(
                       artboard: _riveArtboard!,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   Positioned.fill(
-                    bottom: 100,
+                    bottom: 32,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,

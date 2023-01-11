@@ -1,13 +1,12 @@
-/// Demonstrates playing a one-shot animation on demand
-
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
+/// Demonstrates playing a one-shot animation on demand
 class PlayOneShotAnimation extends StatefulWidget {
   const PlayOneShotAnimation({Key? key}) : super(key: key);
 
   @override
-  _PlayOneShotAnimationState createState() => _PlayOneShotAnimationState();
+  State<PlayOneShotAnimation> createState() => _PlayOneShotAnimationState();
 }
 
 class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
@@ -35,9 +34,10 @@ class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
         title: const Text('One-Shot Example'),
       ),
       body: Center(
-        child: RiveAnimation.network(
-          'https://cdn.rive.app/animations/vehicles.riv',
+        child: RiveAnimation.asset(
+          'assets/vehicles.riv',
           animations: const ['idle', 'curves'],
+          fit: BoxFit.cover,
           controllers: [_controller],
         ),
       ),

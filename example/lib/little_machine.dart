@@ -7,7 +7,7 @@ class LittleMachine extends StatefulWidget {
   const LittleMachine({Key? key}) : super(key: key);
 
   @override
-  _LittleMachineState createState() => _LittleMachineState();
+  State<LittleMachine> createState() => _LittleMachineState();
 }
 
 class _LittleMachineState extends State<LittleMachine> {
@@ -58,36 +58,40 @@ class _LittleMachineState extends State<LittleMachine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
-      appBar: AppBar(
-        title: const Text('Little Machine'),
-      ),
-      body: Center(
-        child: _riveArtboard == null
-            ? const SizedBox()
-            : GestureDetector(
-                onTapDown: (_) => _trigger?.value = true,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Press to activate!',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: Rive(
-                        artboard: _riveArtboard!,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text('$stateChangeMessage'),
-                    const SizedBox(height: 10),
-                  ],
+      appBar: AppBar(title: const Text('Little Machine')),
+      body: Stack(
+        children: [
+          _riveArtboard == null
+              ? const SizedBox()
+              : GestureDetector(
+                  onTapDown: (_) => _trigger?.value = true,
+                  child: Rive(
+                    artboard: _riveArtboard!,
+                    fit: BoxFit.cover,
+                  ),
                 ),
+          const Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Press to activate!',
+                style: TextStyle(fontSize: 18, color: Colors.black),
               ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                stateChangeMessage,
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

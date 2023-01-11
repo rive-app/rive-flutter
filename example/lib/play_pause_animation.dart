@@ -7,7 +7,7 @@ class PlayPauseAnimation extends StatefulWidget {
   const PlayPauseAnimation({Key? key}) : super(key: key);
 
   @override
-  _PlayPauseAnimationState createState() => _PlayPauseAnimationState();
+  State<PlayPauseAnimation> createState() => _PlayPauseAnimationState();
 }
 
 class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
@@ -33,13 +33,12 @@ class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
       appBar: AppBar(
         title: const Text('Animation Example'),
       ),
-      body: Center(
-        child: RiveAnimation.network(
-          'https://cdn.rive.app/animations/vehicles.riv',
-          controllers: [_controller],
-          // Update the play state when the widget's initialized
-          onInit: (_) => setState(() {}),
-        ),
+      body: RiveAnimation.asset(
+        'assets/off_road_car.riv',
+        fit: BoxFit.cover,
+        controllers: [_controller],
+        // Update the play state when the widget's initialized
+        onInit: (_) => setState(() {}),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _togglePlay,

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
-class SimpleAnimation extends StatelessWidget {
-  const SimpleAnimation({Key? key}) : super(key: key);
+/// Basic example playing a Rive animation from a packaged asset.
+class SimpleAssetAnimation extends StatelessWidget {
+  const SimpleAssetAnimation({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +12,8 @@ class SimpleAnimation extends StatelessWidget {
         title: const Text('Simple Animation'),
       ),
       body: const Center(
-        child: RiveAnimation.network(
-          'https://cdn.rive.app/animations/vehicles.riv',
+        child: RiveAnimation.asset(
+          'assets/off_road_car.riv',
           fit: BoxFit.cover,
         ),
       ),

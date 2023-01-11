@@ -7,7 +7,7 @@ class ExampleStateMachine extends StatefulWidget {
   const ExampleStateMachine({Key? key}) : super(key: key);
 
   @override
-  _ExampleStateMachineState createState() => _ExampleStateMachineState();
+  State<ExampleStateMachine> createState() => _ExampleStateMachineState();
 }
 
 class _ExampleStateMachineState extends State<ExampleStateMachine> {
@@ -48,30 +48,40 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
-      appBar: AppBar(
-        title: const Text('Button State Machine'),
-      ),
-      body: Center(
-        child: _riveArtboard == null
-            ? const SizedBox()
-            : MouseRegion(
-                onEnter: (_) => _hoverInput?.value = true,
-                onExit: (_) => _hoverInput?.value = false,
-                child: GestureDetector(
-                  onTapDown: (_) => _pressInput?.value = true,
-                  onTapCancel: () => _pressInput?.value = false,
-                  onTapUp: (_) => _pressInput?.value = false,
-                  child: SizedBox(
-                    width: 250,
-                    height: 250,
-                    child: Rive(
+      appBar: AppBar(title: const Text('Button State Machine')),
+      body: _riveArtboard == null
+          ? const SizedBox()
+          : MouseRegion(
+              onEnter: (_) => _hoverInput?.value = true,
+              onExit: (_) => _hoverInput?.value = false,
+              child: GestureDetector(
+                onTapDown: (_) => _pressInput?.value = true,
+                onTapCancel: () => _pressInput?.value = false,
+                onTapUp: (_) => _pressInput?.value = false,
+                child: Stack(
+                  children: [
+                    Rive(
+                      fit: BoxFit.cover,
                       artboard: _riveArtboard!,
                     ),
-                  ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Text(
+                          'Try pressing the button...',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
-      ),
+            ),
     );
   }
 }

@@ -3,25 +3,58 @@
 ![Discord badge](https://img.shields.io/discord/532365473602600965)
 ![Twitter handle](https://img.shields.io/twitter/follow/rive_app.svg?style=social&label=Follow)
 
-# Rive
+# Rive Flutter
 
-Runtime docs are available in [Rive's help center](https://help.rive.app/runtimes/quick-start).
+![Rive hero image](https://rive-app.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fff44ed5f-1eea-4154-81ef-84547e61c3fd%2Frive_notion.png?table=block&id=f198cab2-c0bc-4ce8-970c-42220379bcf3&spaceId=9c949665-9ad9-445f-b9c4-5ee204f8b60c&width=2000&userId=&cache=v2)
 
-[Rive](https://rive.app/) is a real-time interactive design and animation tool. Use our collaborative editor to create motion graphics that respond to different states and user inputs. Then load your animations into apps, games, and websites with our lightweight open-source runtimes.
+Rive Flutter is a runtime library for [Rive](https://rive.app), a real-time interactive design and animation tool.
 
-## Add dependency to pubspec.yaml
+This library allows you to fully control Rive files with a high-level API for simple interactions and animations, as well as a low-level API for creating custom render loops for multiple artboards, animations, and state machines in a single canvas.
 
-```yaml
-dependencies:
-  rive: ^0.9.0
-```
+## Table of contents
 
-## Platform Considerations
-Read some [platform specific considerations](platform_considerations.md) with regards to the Rive Flutter package.
+- :star: [Rive Overview](#rive-overview)
+- 🚀 [Getting Started & API docs](#getting-started)
+- :mag: [Supported Platforms](#supported-platforms)
+- :books: [Examples](#examples)
+- 👨‍💻 [Contributing](#contributing)
+- :question: [Issues](#issues)
 
-## Quick Start
+## Overview of Rive
 
-Play an animation from a Rive file over HTTP:
+[Rive](https://rive.app) is a powerful tool that helps teams create and run interactive animations for apps, games, and websites. Designers and developers can use the collaborative editor to create motion graphics that respond to different states and user inputs, and then use the lightweight open-source runtime libraries, like Rive Flutter, to load their animations into their projects.
+
+For more information, check out the following resources:
+
+:house_with_garden: [Homepage](https://rive.app/)
+
+:blue_book: [General help docs](https://help.rive.app/)
+
+🛠 [Learning Rive](https://rive.app/learn-rive)
+
+## Getting Started
+
+To get started with Rive Flutter, check out the following resources:
+- [Getting Started with Rive in Flutter](https://help.rive.app/runtimes/overview/flutter)
+
+- [Alternative Widget Setup](https://help.rive.app/runtimes/overview/flutter/alternative-widget-setup)
+
+For additional help, see the Runtime sections of the Rive help documentation, such as:
+- [Animation Playback](https://help.rive.app/runtimes/playback)
+- [State Machines](https://help.rive.app/runtimes/state-machines)
+
+## Supported Platforms
+
+Be sure to read the [platform specific considerations](platform_considerations.md) for the Rive Flutter package.
+
+## Examples
+
+To see some examples of what you can do with Rive Flutter, check out the following projects:
+
+- [Demo app](https://github.com/rive-app/rive-flutter/tree/master/example)
+- [Find the Dog (game)](https://github.com/rive-app/find-the-dog)
+
+Here is an example of how to play an animation from a Rive file retrieved over HTTP:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -171,11 +204,10 @@ class _PlayOneShotAnimationState extends State<PlayOneShotAnimation> {
 }
 ```
 
-## Antialiasing
+## Contributing
 
-If you want to disable antialiasing (usually for performance reasons), you can set `antialiasing` to `false` on the `Rive` and `RiveAnimation` widgets.
+We love contributions and all are welcome! 💙
 
-## API Documentation
+## Issues
 
-Check out our more extensive API documentation on pub.dev:
-https://pub.dev/documentation/rive/latest/
+Have an issue with using the runtime, or want to suggest a feature/API to help make your development life better? Log an issue in our [issues](https://github.com/rive-app/flutter/issues) tab! You can also browse older issues and discussion threads there to see solutions that may have worked for common problems.

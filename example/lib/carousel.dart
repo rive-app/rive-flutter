@@ -6,7 +6,7 @@ class AnimationCarousel extends StatefulWidget {
   const AnimationCarousel({Key? key}) : super(key: key);
 
   @override
-  _AnimationCarouselState createState() => _AnimationCarouselState();
+  State<AnimationCarousel> createState() => _AnimationCarouselState();
 }
 
 class _AnimationCarouselState extends State<AnimationCarousel> {
@@ -55,9 +55,8 @@ class _AnimationCarouselState extends State<AnimationCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final _indexToShow = _index % riveAnimations.length;
+    final indexToShow = _index % riveAnimations.length;
     return Scaffold(
-      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text('Animation Carousel'),
       ),
@@ -70,9 +69,9 @@ class _AnimationCarouselState extends State<AnimationCarousel> {
             ),
             Expanded(
               child: RiveAnimation.asset(
-                riveAnimations[_indexToShow].name,
-                animations: riveAnimations[_indexToShow].animations,
-                stateMachines: riveAnimations[_indexToShow].stateMachines,
+                riveAnimations[indexToShow].name,
+                animations: riveAnimations[indexToShow].animations,
+                stateMachines: riveAnimations[indexToShow].stateMachines,
               ),
             ),
             GestureDetector(

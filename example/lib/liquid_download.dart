@@ -8,7 +8,7 @@ class LiquidDownload extends StatefulWidget {
   const LiquidDownload({Key? key}) : super(key: key);
 
   @override
-  _LiquidDownloadState createState() => _LiquidDownloadState();
+  State<LiquidDownload> createState() => _LiquidDownloadState();
 }
 
 class _LiquidDownloadState extends State<LiquidDownload> {
@@ -49,7 +49,6 @@ class _LiquidDownloadState extends State<LiquidDownload> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: const Text('Liquid Download'),
       ),
@@ -72,11 +71,9 @@ class _LiquidDownloadState extends State<LiquidDownload> {
                       min: 0,
                       max: 100,
                       label: _progress!.value.round().toString(),
-                      onChanged: (double value) {
-                        setState(() {
-                          _progress!.value = value;
-                        });
-                      },
+                      onChanged: (double value) => setState(() {
+                        _progress!.value = value;
+                      }),
                     ),
                     const SizedBox(height: 10),
                     Expanded(

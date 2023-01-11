@@ -5,7 +5,7 @@ class StateMachineListener extends StatefulWidget {
   const StateMachineListener({Key? key}) : super(key: key);
 
   @override
-  _StateMachineListenerState createState() => _StateMachineListenerState();
+  State<StateMachineListener> createState() => _StateMachineListenerState();
 }
 
 class _StateMachineListenerState extends State<StateMachineListener> {

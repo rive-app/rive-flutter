@@ -14,8 +14,8 @@ class SpeedyAnimation extends StatelessWidget {
         title: const Text('Custom Controller'),
       ),
       body: Center(
-        child: RiveAnimation.network(
-          'https://cdn.rive.app/animations/vehicles.riv',
+        child: RiveAnimation.asset(
+          'assets/vehicles.riv',
           fit: BoxFit.cover,
           animations: const ['idle'],
           controllers: [SpeedController('curves', speedMultiplier: 3)],
