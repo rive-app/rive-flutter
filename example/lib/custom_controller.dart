@@ -11,7 +11,7 @@ class SpeedyAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Custom Controller'),
+        title: const Text('Custom Controller - Speed'),
       ),
       body: Center(
         child: RiveAnimation.asset(

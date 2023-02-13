@@ -10,6 +10,7 @@ import 'package:rive_example/simple_animation.dart';
 import 'package:rive_example/simple_animation_network.dart';
 import 'package:rive_example/simple_machine_listener.dart';
 import 'package:rive_example/simple_state_machine.dart';
+import 'package:rive_example/skinning_demo.dart';
 import 'package:rive_example/state_machine_skills.dart';
 
 void main() => runApp(
@@ -48,6 +49,7 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     const _Page('Custom Controller - Speed', SpeedyAnimation()),
     const _Page('Simple State Machine', SimpleStateMachine()),
     const _Page('State Machine with Listener', StateMachineListener()),
+    const _Page('Skinning Demo', SkinningDemo()),
     const _Page('Animation Carousel', AnimationCarousel()),
   ];
 

@@ -24,7 +24,7 @@ import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive_common/math.dart';
 
-/// Callback signature for satate machine state changes
+/// Callback signature for state machine state changes
 typedef OnStateChange = void Function(String, String);
 
 /// Callback signature for layer state changes
