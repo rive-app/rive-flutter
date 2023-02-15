@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';

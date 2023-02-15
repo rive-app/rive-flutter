@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/paint/fill.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';

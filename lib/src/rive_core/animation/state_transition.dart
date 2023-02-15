@@ -37,7 +37,6 @@ class StateTransition extends StateTransitionBase {
   @override
   void onAddedDirty() {}
 
-
   bool get isDisabled => (flags & StateTransitionFlags.disabled) != 0;
   bool get pauseOnExit => (flags & StateTransitionFlags.pauseOnExit) != 0;
   bool get enableExitTime => (flags & StateTransitionFlags.enableExitTime) != 0;

@@ -1,6 +1,9 @@
-## Upcoming
+## 0.10.2
+
 - Performance improvement: No longer drawing components with an opacity of 0.
 - Updated example, see "Skinning Demo".
+- Support for negative speeds on linear animations when played back in state machines.
+- Support for overriding speed on animation states.
 
 ## 0.10.1
 

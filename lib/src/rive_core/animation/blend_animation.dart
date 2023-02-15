@@ -18,7 +18,6 @@ abstract class BlendAnimation extends BlendAnimationBase {
   @override
   void onAdded() {}
 
-
   @override
   void onAddedDirty() {}
 

@@ -62,7 +62,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   @override
   void onAddedDirty() {}
 
-
   /// Called by rive_core to add a KeyFrame to this KeyedProperty. This should
   /// be @internal when it's supported.
   bool internalAddKeyFrame(KeyFrame frame) {

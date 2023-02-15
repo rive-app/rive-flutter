@@ -46,5 +46,4 @@ class ComponentFlags {
   /// End of TransformComponentConstraint
   ///
   /// ----------
-
 }

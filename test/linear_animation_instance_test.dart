@@ -14,7 +14,7 @@ void main() {
   test('LinearAnimationInstance exposes direction is either +/-1', () {
     final artboard = riveFile.mainArtboard;
 
-    expect(artboard.hasAnimations, isTrue);
+    expect(artboard.animations, isNotEmpty);
     LinearAnimationInstance instance =
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);
 
@@ -29,7 +29,7 @@ void main() {
   test('LinearAnimationInstance has a valid start and end time', () {
     final artboard = riveFile.mainArtboard;
 
-    expect(artboard.hasAnimations, isTrue);
+    expect(artboard.animations, isNotEmpty);
     LinearAnimationInstance instance =
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);
 
@@ -49,7 +49,7 @@ void main() {
   test('LinearAnimationInstance can be reset', () {
     final artboard = riveFile.mainArtboard;
 
-    expect(artboard.hasAnimations, isTrue);
+    expect(artboard.animations, isNotEmpty);
     LinearAnimationInstance instance =
         LinearAnimationInstance(artboard.animations.first as LinearAnimation);
 

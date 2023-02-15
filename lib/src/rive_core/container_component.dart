@@ -4,6 +4,8 @@ import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 
+export 'package:rive/src/core/core.dart';
+
 typedef bool DescentCallback(Component component);
 
 abstract class ContainerComponent extends ContainerComponentBase {

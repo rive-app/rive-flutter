@@ -20,7 +20,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   /// this container.
   final List<GradientStop> gradientStops = [];
 
-  bool _paintsInWorldSpace = true;
+  bool _paintsInWorldSpace = false;
   bool get paintsInWorldSpace => _paintsInWorldSpace;
   set paintsInWorldSpace(bool value) {
     if (_paintsInWorldSpace == value) {
@@ -65,11 +65,17 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
 
   /// Mark the gradient stops as changed. This will re-sort the stops and
   /// rebuild the necessary gradients in the next update cycle.
-  void markStopsDirty() => addDirt(ComponentDirt.stops | ComponentDirt.paint);
+  void markStopsDirty() {
+    addDirt(ComponentDirt.stops | ComponentDirt.paint);
+    markPaintDirty();
+  }
 
   /// Mark the gradient as needing to be rebuilt. This is a more efficient
   /// version of markStopsDirty as it won't re-sort the stops.
-  void markGradientDirty() => addDirt(ComponentDirt.paint);
+  void markGradientDirty() {
+    addDirt(ComponentDirt.paint);
+    markPaintDirty();
+  }
 
   @override
   void update(int dirt) {
@@ -120,22 +126,28 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
   @override
   void startXChanged(double from, double to) {
     addDirt(ComponentDirt.transform);
+    markPaintDirty();
   }
 
   @override
   void startYChanged(double from, double to) {
     addDirt(ComponentDirt.transform);
+    markPaintDirty();
   }
 
   @override
   void endXChanged(double from, double to) {
     addDirt(ComponentDirt.transform);
+    markPaintDirty();
   }
 
   @override
   void endYChanged(double from, double to) {
     addDirt(ComponentDirt.transform);
+    markPaintDirty();
   }
+
+  void markPaintDirty() => shapePaintContainer?.addDirt(ComponentDirt.paint);
 
   @override
   void onAdded() {
@@ -148,7 +160,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
     syncColor();
     // We don't need to rebuild anything, just let our shape know we should
     // repaint.
-    shapePaintContainer!.addDirt(ComponentDirt.paint);
+    markPaintDirty();
   }
 
   @override

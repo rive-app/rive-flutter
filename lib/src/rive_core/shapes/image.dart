@@ -6,6 +6,7 @@ import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/bones/skinnable.dart';
 import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/mesh.dart';
 import 'package:rive/src/rive_core/shapes/mesh_vertex.dart';
 import 'package:rive_common/math.dart';
@@ -44,7 +45,8 @@ class Image extends ImageBase
 
     final paint = ui.Paint()
       ..color = ui.Color.fromRGBO(0, 0, 0, renderOpacity)
-      ..filterQuality = ui.FilterQuality.high;
+      ..filterQuality = ui.FilterQuality.high
+      ..blendMode = blendMode;
 
     final width = asset!.width;
     final height = asset!.height;

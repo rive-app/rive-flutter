@@ -1,5 +1,7 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
+import 'package:rive/src/rive_core/animation/cubic_interpolator.dart';
+import 'package:rive/src/rive_core/animation/cubic_value_interpolator.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/keyframe_interpolation.dart';
@@ -42,8 +44,27 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
     if (interpolatorId != Core.missingId) {
       interpolator = context.resolve(interpolatorId);
     }
-  }
 
+    // Ensure interpolation types are valid, correct them if not.
+    switch (interpolation) {
+      case KeyFrameInterpolation.cubicValue:
+        if (interpolator is! CubicValueInterpolator) {
+          interpolation = canInterpolate
+              ? KeyFrameInterpolation.linear
+              : KeyFrameInterpolation.hold;
+        }
+        break;
+      case KeyFrameInterpolation.cubic:
+        if (interpolator is! CubicInterpolator) {
+          interpolation = canInterpolate
+              ? KeyFrameInterpolation.linear
+              : KeyFrameInterpolation.hold;
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   @override
   void frameChanged(int from, int to) {}

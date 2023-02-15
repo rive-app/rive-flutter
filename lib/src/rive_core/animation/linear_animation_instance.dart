@@ -6,7 +6,6 @@ class LinearAnimationInstance {
   final LinearAnimation animation;
 
   double _time = 0;
-  double _lastTime = 0;
   double _totalTime = 0;
   double _lastTotalTime = 0;
   int _direction = 1;
@@ -21,9 +20,7 @@ class LinearAnimationInstance {
   LinearAnimationInstance(this.animation)
       : _time =
             (animation.enableWorkArea ? animation.workStart : 0).toDouble() /
-                animation.fps {
-    _lastTime = _time;
-  }
+                animation.fps;
 
   /// Note that when time is set, the direction will be changed to 1
   set time(double value) {
@@ -33,16 +30,13 @@ class LinearAnimationInstance {
     // Make sure to keep last and total in relative lockstep so state machines
     // can track change even when setting time.
     var diff = _totalTime - _lastTotalTime;
-    _lastTime = _time = _totalTime = value;
+    _time = _totalTime = value;
     _lastTotalTime = _totalTime - diff;
     _direction = 1;
   }
 
   /// Returns the current time position of the animation in seconds
   double get time => _time;
-
-  /// Returns the time the position was at when the previous advance was called.
-  double get lastTime => _lastTime;
 
   /// Direction should only be +1 or -1
   set direction(int value) => _direction = value == -1 ? -1 : 1;
@@ -70,7 +64,6 @@ class LinearAnimationInstance {
     var deltaSeconds = elapsedSeconds * animation.speed * _direction;
     _lastTotalTime = _totalTime;
     _totalTime += deltaSeconds;
-    _lastTime = _time;
     _time += deltaSeconds;
 
     double frames = _time * animation.fps;
@@ -84,21 +77,34 @@ class LinearAnimationInstance {
     _didLoop = false;
     _spilledTime = 0;
 
+    int direction = animation.speed < 0 ? -_direction : _direction;
     switch (animation.loop) {
       case Loop.oneShot:
-        if (frames > end) {
+        if (direction == 1 && frames > end) {
           keepGoing = false;
           _spilledTime = (frames - end) / fps;
           frames = end.toDouble();
           _time = frames / fps;
           _didLoop = true;
+        } else if (direction == -1 && frames < start) {
+          keepGoing = false;
+          _spilledTime = (start - frames) / fps;
+          frames = start.toDouble();
+          _time = frames / fps;
+          _didLoop = true;
         }
         break;
       case Loop.loop:
-        if (frames >= end) {
+        if (direction == 1 && frames >= end) {
           _spilledTime = (frames - end) / fps;
           frames = _time * fps;
           frames = start + (frames - start) % range;
+          _time = frames / fps;
+          _didLoop = true;
+        } else if (direction == -1 && frames <= start) {
+          _spilledTime = (start - frames) / fps;
+          frames = _time * fps;
+          frames = end - (start - frames) % range;
           _time = frames / fps;
           _didLoop = true;
         }
@@ -106,18 +112,12 @@ class LinearAnimationInstance {
       case Loop.pingPong:
         // ignore: literal_only_boolean_expressions
         while (true) {
-          if (_direction == 1 && frames >= end) {
+          if (direction == 1 && frames >= end) {
             _spilledTime = (frames - end) / animation.fps;
-            _direction = -1;
             frames = end + (end - frames);
-            _time = frames / animation.fps;
-            _didLoop = true;
-          } else if (_direction == -1 && frames < start) {
+          } else if (direction == -1 && frames < start) {
             _spilledTime = (start - frames) / animation.fps;
-            _direction = 1;
             frames = start + (start - frames);
-            _time = frames / animation.fps;
-            _didLoop = true;
           } else {
             // we're within the range, we can stop fixing. We do this in a
             // loop to fix conditions when time has advanced so far that we've
@@ -126,7 +126,10 @@ class LinearAnimationInstance {
             // advanced on regular intervals.
             break;
           }
-          _lastTime = _time;
+          _time = frames / animation.fps;
+          _direction *= -1;
+          direction *= -1;
+          _didLoop = true;
         }
         break;
     }

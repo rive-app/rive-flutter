@@ -34,7 +34,7 @@ class Fill extends FillBase {
 
   @override
   void draw(Canvas canvas, Path path) {
-    if (!isVisible) {
+    if (!isVisible || renderOpacity == 0) {
       return;
     }
     path.fillType = fillType;

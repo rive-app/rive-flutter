@@ -10,6 +10,7 @@ import 'package:rive/src/generated/animation/blend_animation_base.dart';
 import 'package:rive/src/generated/animation/cubic_ease_interpolator_base.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
+import 'package:rive/src/generated/animation/keyframe_string_base.dart';
 import 'package:rive/src/generated/animation/listener_input_change_base.dart';
 import 'package:rive/src/generated/animation/nested_input_base.dart';
 import 'package:rive/src/generated/animation/nested_linear_animation_base.dart';
@@ -51,6 +52,7 @@ import 'package:rive/src/rive_core/animation/keyframe_bool.dart';
 import 'package:rive/src/rive_core/animation/keyframe_color.dart';
 import 'package:rive/src/rive_core/animation/keyframe_double.dart';
 import 'package:rive/src/rive_core/animation/keyframe_id.dart';
+import 'package:rive/src/rive_core/animation/keyframe_string.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/listener_align_target.dart';
 import 'package:rive/src/rive_core/animation/listener_bool_change.dart';
@@ -75,6 +77,7 @@ import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 import 'package:rive/src/rive_core/assets/folder.dart';
+import 'package:rive/src/rive_core/assets/font_asset.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
@@ -94,7 +97,6 @@ import 'package:rive/src/rive_core/custom_property_number.dart';
 import 'package:rive/src/rive_core/custom_property_string.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
-import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
@@ -120,6 +122,10 @@ import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/star.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/rive_core/shapes/triangle.dart';
+import 'package:rive/src/rive_core/text/text.dart';
+import 'package:rive/src/rive_core/text/text_style.dart';
+import 'package:rive/src/rive_core/text/text_style_axis.dart';
+import 'package:rive/src/rive_core/text/text_value_run.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class RiveCoreContext {
@@ -183,6 +189,8 @@ class RiveCoreContext {
         return AnyState();
       case StateMachineLayerBase.typeKey:
         return StateMachineLayer();
+      case KeyFrameStringBase.typeKey:
+        return KeyFrameString();
       case ListenerNumberChangeBase.typeKey:
         return ListenerNumberChange();
       case CubicEaseInterpolatorBase.typeKey:
@@ -273,8 +281,6 @@ class RiveCoreContext {
         return Image();
       case CubicDetachedVertexBase.typeKey:
         return CubicDetachedVertex();
-      case EventBase.typeKey:
-        return Event();
       case DrawRulesBase.typeKey:
         return DrawRules();
       case CustomPropertyBooleanBase.typeKey:
@@ -291,12 +297,22 @@ class RiveCoreContext {
         return Skin();
       case TendonBase.typeKey:
         return Tendon();
+      case TextStyleBase.typeKey:
+        return TextStyle();
+      case TextStyleAxisBase.typeKey:
+        return TextStyleAxis();
+      case TextBase.typeKey:
+        return Text();
+      case TextValueRunBase.typeKey:
+        return TextValueRun();
       case CustomPropertyStringBase.typeKey:
         return CustomPropertyString();
       case FolderBase.typeKey:
         return Folder();
       case ImageAssetBase.typeKey:
         return ImageAsset();
+      case FontAssetBase.typeKey:
+        return FontAsset();
       case FileAssetContentsBase.typeKey:
         return FileAssetContents();
       default:
@@ -671,6 +687,11 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
+      case KeyFrameStringBase.valuePropertyKey:
+        if (object is KeyFrameStringBase && value is String) {
+          object.value = value;
+        }
+        break;
       case ListenerNumberChangeBase.valuePropertyKey:
         if (object is ListenerNumberChangeBase && value is double) {
           object.value = value;
@@ -1026,11 +1047,6 @@ class RiveCoreContext {
           object.outDistance = value;
         }
         break;
-      case EventBase.typePropertyKey:
-        if (object is EventBase && value is String) {
-          object.type = value;
-        }
-        break;
       case DrawRulesBase.drawTargetIdPropertyKey:
         if (object is DrawRulesBase && value is int) {
           object.drawTargetId = value;
@@ -1161,6 +1177,61 @@ class RiveCoreContext {
           object.ty = value;
         }
         break;
+      case TextStyleBase.fontSizePropertyKey:
+        if (object is TextStyleBase && value is double) {
+          object.fontSize = value;
+        }
+        break;
+      case TextStyleBase.fontAssetIdPropertyKey:
+        if (object is TextStyleBase && value is int) {
+          object.fontAssetId = value;
+        }
+        break;
+      case TextStyleAxisBase.tagPropertyKey:
+        if (object is TextStyleAxisBase && value is int) {
+          object.tag = value;
+        }
+        break;
+      case TextStyleAxisBase.axisValuePropertyKey:
+        if (object is TextStyleAxisBase && value is double) {
+          object.axisValue = value;
+        }
+        break;
+      case TextBase.alignValuePropertyKey:
+        if (object is TextBase && value is int) {
+          object.alignValue = value;
+        }
+        break;
+      case TextBase.sizingValuePropertyKey:
+        if (object is TextBase && value is int) {
+          object.sizingValue = value;
+        }
+        break;
+      case TextBase.overflowValuePropertyKey:
+        if (object is TextBase && value is int) {
+          object.overflowValue = value;
+        }
+        break;
+      case TextBase.widthPropertyKey:
+        if (object is TextBase && value is double) {
+          object.width = value;
+        }
+        break;
+      case TextBase.heightPropertyKey:
+        if (object is TextBase && value is double) {
+          object.height = value;
+        }
+        break;
+      case TextValueRunBase.styleIdPropertyKey:
+        if (object is TextValueRunBase && value is int) {
+          object.styleId = value;
+        }
+        break;
+      case TextValueRunBase.textPropertyKey:
+        if (object is TextValueRunBase && value is String) {
+          object.text = value;
+        }
+        break;
       case CustomPropertyStringBase.propertyValuePropertyKey:
         if (object is CustomPropertyStringBase && value is String) {
           object.propertyValue = value;
@@ -1205,7 +1276,8 @@ class RiveCoreContext {
       case ComponentBase.namePropertyKey:
       case AnimationBase.namePropertyKey:
       case StateMachineComponentBase.namePropertyKey:
-      case EventBase.typePropertyKey:
+      case KeyFrameStringBase.valuePropertyKey:
+      case TextValueRunBase.textPropertyKey:
       case CustomPropertyStringBase.propertyValuePropertyKey:
       case AssetBase.namePropertyKey:
         return stringType;
@@ -1268,6 +1340,12 @@ class RiveCoreContext {
       case DrawRulesBase.drawTargetIdPropertyKey:
       case ArtboardBase.defaultStateMachineIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
+      case TextStyleBase.fontAssetIdPropertyKey:
+      case TextStyleAxisBase.tagPropertyKey:
+      case TextBase.alignValuePropertyKey:
+      case TextBase.sizingValuePropertyKey:
+      case TextBase.overflowValuePropertyKey:
+      case TextValueRunBase.styleIdPropertyKey:
       case FileAssetBase.assetIdPropertyKey:
         return uintType;
       case CustomPropertyNumberBase.propertyValuePropertyKey:
@@ -1354,6 +1432,10 @@ class RiveCoreContext {
       case TendonBase.yyPropertyKey:
       case TendonBase.txPropertyKey:
       case TendonBase.tyPropertyKey:
+      case TextStyleBase.fontSizePropertyKey:
+      case TextStyleAxisBase.axisValuePropertyKey:
+      case TextBase.widthPropertyKey:
+      case TextBase.heightPropertyKey:
       case DrawableAssetBase.heightPropertyKey:
       case DrawableAssetBase.widthPropertyKey:
         return doubleType;
@@ -1398,8 +1480,10 @@ class RiveCoreContext {
         return (object as AnimationBase).name;
       case StateMachineComponentBase.namePropertyKey:
         return (object as StateMachineComponentBase).name;
-      case EventBase.typePropertyKey:
-        return (object as EventBase).type;
+      case KeyFrameStringBase.valuePropertyKey:
+        return (object as KeyFrameStringBase).value;
+      case TextValueRunBase.textPropertyKey:
+        return (object as TextValueRunBase).text;
       case CustomPropertyStringBase.propertyValuePropertyKey:
         return (object as CustomPropertyStringBase).propertyValue;
       case AssetBase.namePropertyKey:
@@ -1528,6 +1612,18 @@ class RiveCoreContext {
         return (object as ArtboardBase).defaultStateMachineId;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
+      case TextStyleBase.fontAssetIdPropertyKey:
+        return (object as TextStyleBase).fontAssetId;
+      case TextStyleAxisBase.tagPropertyKey:
+        return (object as TextStyleAxisBase).tag;
+      case TextBase.alignValuePropertyKey:
+        return (object as TextBase).alignValue;
+      case TextBase.sizingValuePropertyKey:
+        return (object as TextBase).sizingValue;
+      case TextBase.overflowValuePropertyKey:
+        return (object as TextBase).overflowValue;
+      case TextValueRunBase.styleIdPropertyKey:
+        return (object as TextValueRunBase).styleId;
       case FileAssetBase.assetIdPropertyKey:
         return (object as FileAssetBase).assetId;
     }
@@ -1704,6 +1800,14 @@ class RiveCoreContext {
         return (object as TendonBase).tx;
       case TendonBase.tyPropertyKey:
         return (object as TendonBase).ty;
+      case TextStyleBase.fontSizePropertyKey:
+        return (object as TextStyleBase).fontSize;
+      case TextStyleAxisBase.axisValuePropertyKey:
+        return (object as TextStyleAxisBase).axisValue;
+      case TextBase.widthPropertyKey:
+        return (object as TextBase).width;
+      case TextBase.heightPropertyKey:
+        return (object as TextBase).height;
       case DrawableAssetBase.heightPropertyKey:
         return (object as DrawableAssetBase).height;
       case DrawableAssetBase.widthPropertyKey:
@@ -1797,9 +1901,14 @@ class RiveCoreContext {
           object.name = value;
         }
         break;
-      case EventBase.typePropertyKey:
-        if (object is EventBase) {
-          object.type = value;
+      case KeyFrameStringBase.valuePropertyKey:
+        if (object is KeyFrameStringBase) {
+          object.value = value;
+        }
+        break;
+      case TextValueRunBase.textPropertyKey:
+        if (object is TextValueRunBase) {
+          object.text = value;
         }
         break;
       case CustomPropertyStringBase.propertyValuePropertyKey:
@@ -2110,6 +2219,36 @@ class RiveCoreContext {
       case TendonBase.boneIdPropertyKey:
         if (object is TendonBase) {
           object.boneId = value;
+        }
+        break;
+      case TextStyleBase.fontAssetIdPropertyKey:
+        if (object is TextStyleBase) {
+          object.fontAssetId = value;
+        }
+        break;
+      case TextStyleAxisBase.tagPropertyKey:
+        if (object is TextStyleAxisBase) {
+          object.tag = value;
+        }
+        break;
+      case TextBase.alignValuePropertyKey:
+        if (object is TextBase) {
+          object.alignValue = value;
+        }
+        break;
+      case TextBase.sizingValuePropertyKey:
+        if (object is TextBase) {
+          object.sizingValue = value;
+        }
+        break;
+      case TextBase.overflowValuePropertyKey:
+        if (object is TextBase) {
+          object.overflowValue = value;
+        }
+        break;
+      case TextValueRunBase.styleIdPropertyKey:
+        if (object is TextValueRunBase) {
+          object.styleId = value;
         }
         break;
       case FileAssetBase.assetIdPropertyKey:
@@ -2540,6 +2679,26 @@ class RiveCoreContext {
       case TendonBase.tyPropertyKey:
         if (object is TendonBase) {
           object.ty = value;
+        }
+        break;
+      case TextStyleBase.fontSizePropertyKey:
+        if (object is TextStyleBase) {
+          object.fontSize = value;
+        }
+        break;
+      case TextStyleAxisBase.axisValuePropertyKey:
+        if (object is TextStyleAxisBase) {
+          object.axisValue = value;
+        }
+        break;
+      case TextBase.widthPropertyKey:
+        if (object is TextBase) {
+          object.width = value;
+        }
+        break;
+      case TextBase.heightPropertyKey:
+        if (object is TextBase) {
+          object.height = value;
         }
         break;
       case DrawableAssetBase.heightPropertyKey:

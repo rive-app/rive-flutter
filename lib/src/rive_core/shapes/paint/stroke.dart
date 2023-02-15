@@ -84,7 +84,7 @@ class Stroke extends StrokeBase {
 
   @override
   void draw(Canvas canvas, Path path) {
-    if (!isVisible) {
+    if (!isVisible || renderOpacity == 0) {
       return;
     }
 

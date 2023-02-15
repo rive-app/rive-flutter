@@ -93,9 +93,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   Iterable<StateMachine> get stateMachines =>
       _animations.whereType<StateMachine>();
 
-  /// Does this artboard have animations?
-  bool get hasAnimations => _animations.isNotEmpty;
-
   int _dirtDepth = 0;
 
   /// Iterate each component and call callback for it.
@@ -327,7 +324,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     for (var drawable = _firstDrawable;
         drawable != null;
         drawable = drawable.prev) {
-      if (drawable.isHidden) {
+      if (drawable.isHidden || drawable.renderOpacity == 0) {
         continue;
       }
       drawable.draw(canvas);
