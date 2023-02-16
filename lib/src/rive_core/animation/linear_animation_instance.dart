@@ -62,22 +62,31 @@ class LinearAnimationInstance {
 
   bool advance(double elapsedSeconds) {
     var deltaSeconds = elapsedSeconds * animation.speed * _direction;
+
+    if (deltaSeconds == 0) {
+      // we say keep going, if you advance by 0.
+      // could argue that any further advances by 0 result in nothing so you should not keep going
+      // could argue its saying, we are not at the end of the animation yet, so keep going
+      // our runtimes currently expect the latter, so we say keep going!
+      _didLoop = false;
+      return true;
+    }
     _lastTotalTime = _totalTime;
-    _totalTime += deltaSeconds;
+    _totalTime += deltaSeconds.abs();
     _time += deltaSeconds;
 
-    double frames = _time * animation.fps;
     var fps = animation.fps;
+    double frames = _time * fps;
 
     var start = animation.enableWorkArea ? animation.workStart : 0;
     var end = animation.enableWorkArea ? animation.workEnd : animation.duration;
     var range = end - start;
 
     bool keepGoing = true;
-    _didLoop = false;
+    bool didLoop = false;
     _spilledTime = 0;
 
-    int direction = animation.speed < 0 ? -_direction : _direction;
+    int direction = deltaSeconds < 0 ? -1 : 1;
     switch (animation.loop) {
       case Loop.oneShot:
         if (direction == 1 && frames > end) {
@@ -85,13 +94,13 @@ class LinearAnimationInstance {
           _spilledTime = (frames - end) / fps;
           frames = end.toDouble();
           _time = frames / fps;
-          _didLoop = true;
+          didLoop = true;
         } else if (direction == -1 && frames < start) {
           keepGoing = false;
           _spilledTime = (start - frames) / fps;
           frames = start.toDouble();
           _time = frames / fps;
-          _didLoop = true;
+          didLoop = true;
         }
         break;
       case Loop.loop:
@@ -100,13 +109,13 @@ class LinearAnimationInstance {
           frames = _time * fps;
           frames = start + (frames - start) % range;
           _time = frames / fps;
-          _didLoop = true;
+          didLoop = true;
         } else if (direction == -1 && frames <= start) {
           _spilledTime = (start - frames) / fps;
           frames = _time * fps;
           frames = end - (start - frames) % range;
           _time = frames / fps;
-          _didLoop = true;
+          didLoop = true;
         }
         break;
       case Loop.pingPong:
@@ -129,10 +138,11 @@ class LinearAnimationInstance {
           _time = frames / animation.fps;
           _direction *= -1;
           direction *= -1;
-          _didLoop = true;
+          didLoop = true;
         }
         break;
     }
+    _didLoop = didLoop;
     return keepGoing;
   }
 }
