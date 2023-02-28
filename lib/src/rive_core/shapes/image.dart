@@ -1,6 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/shapes/image_base.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';

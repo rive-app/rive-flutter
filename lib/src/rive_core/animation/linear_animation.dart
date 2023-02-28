@@ -38,10 +38,21 @@ class LinearAnimation extends LinearAnimationBase {
     return true;
   }
 
+  /// Returns the seconds where the animiation work area starts
   double get startSeconds => (enableWorkArea ? workStart : 0).toDouble() / fps;
+
+  /// Returns the seconds where the animiation work area ends
   double get endSeconds =>
       (enableWorkArea ? workEnd : duration).toDouble() / fps;
+
+  /// Returns the length of the animation
   double get durationSeconds => endSeconds - startSeconds;
+
+  /// Returns the end time of the animation in seconds, considering speed
+  double get endTime => (speed >= 0) ? endSeconds : startSeconds;
+
+  /// Returns the start time of the animation in seconds, considering speed
+  double get startTime => (speed >= 0) ? startSeconds : endSeconds;
 
   /// Pass in a different [core] context if you want to apply the animation to a
   /// different instance. This isn't meant to be used yet but left as mostly a
@@ -78,12 +89,6 @@ class LinearAnimation extends LinearAnimationBase {
 
   @override
   void workStartChanged(int from, int to) {}
-
-  /// Returns the end time of the animation in seconds
-  double get endTime => (enableWorkArea ? workEnd : duration).toDouble() / fps;
-
-  /// Returns the start time of the animation in seconds
-  double get startTime => (enableWorkArea ? workStart : 0).toDouble() / fps;
 
   /// Convert a global clock to local seconds (takes into consideration work
   /// area start/end, speed, looping).

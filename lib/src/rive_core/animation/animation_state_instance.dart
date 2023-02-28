@@ -5,16 +5,20 @@ import 'package:rive/src/rive_core/animation/state_instance.dart';
 
 /// Simple wrapper around [LinearAnimationInstance] making it compatible with
 /// the [StateMachine]'s [StateInstance] interface.
-class AnimationStateInstance extends StateInstance {
+class AnimationStateInstance extends StateInstance<AnimationState> {
   final LinearAnimationInstance animationInstance;
 
   AnimationStateInstance(AnimationState state)
       : assert(state.animation != null),
-        animationInstance = LinearAnimationInstance(state.animation!),
+        animationInstance = LinearAnimationInstance(
+          state.animation!,
+          speedMultiplier: state.speed,
+        ),
         super(state);
 
   @override
-  void advance(double seconds, _) => animationInstance.advance(seconds);
+  void advance(double seconds, _) =>
+      animationInstance.advance(seconds * state.speed);
 
   @override
   void apply(CoreContext core, double mix) => animationInstance.animation
@@ -22,4 +26,7 @@ class AnimationStateInstance extends StateInstance {
 
   @override
   bool get keepGoing => animationInstance.keepGoing;
+
+  @override
+  void clearSpilledTime() => animationInstance.clearSpilledTime();
 }

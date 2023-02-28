@@ -8,7 +8,7 @@ class LinearAnimationInstance {
   double _time = 0;
   double _totalTime = 0;
   double _lastTotalTime = 0;
-  int _direction = 1;
+  double _direction = 1;
   bool _didLoop = false;
   bool get didLoop => _didLoop;
   double _spilledTime = 0;
@@ -17,21 +17,23 @@ class LinearAnimationInstance {
   double get totalTime => _totalTime;
   double get lastTotalTime => _lastTotalTime;
 
-  LinearAnimationInstance(this.animation)
+  LinearAnimationInstance(this.animation, {double speedMultiplier = 1.0})
       : _time =
-            (animation.enableWorkArea ? animation.workStart : 0).toDouble() /
-                animation.fps;
+            (speedMultiplier >= 0) ? animation.startTime : animation.endTime;
 
-  /// Note that when time is set, the direction will be changed to 1
+  /// NOTE: that when time is set, the direction will be changed to 1
   set time(double value) {
     if (_time == value) {
       return;
     }
+
     // Make sure to keep last and total in relative lockstep so state machines
     // can track change even when setting time.
     var diff = _totalTime - _lastTotalTime;
     _time = _totalTime = value;
     _lastTotalTime = _totalTime - diff;
+
+    // NOTE: will cause ping-pongs to get reset if "seeking"
     _direction = 1;
   }
 
@@ -39,16 +41,18 @@ class LinearAnimationInstance {
   double get time => _time;
 
   /// Direction should only be +1 or -1
-  set direction(int value) => _direction = value == -1 ? -1 : 1;
+  set direction(double value) => _direction = value == -1 ? -1 : 1;
 
   /// Returns the animation's play direction: 1 for forwards, -1 for backwards
-  int get direction => _direction;
+  double get direction => _direction;
 
   double get progress =>
-      (_time - animation.startTime) / (animation.endTime - animation.startTime);
+      (_time - animation.startTime).abs() /
+      (animation.endTime - animation.startTime).abs();
 
   /// Resets the animation to the starting frame
-  void reset() => _time = animation.startTime;
+  void reset({double speedMultiplier = 1}) =>
+      _time = (speedMultiplier >= 0) ? animation.startTime : animation.endTime;
 
   /// Whether the controller driving this animation should keep requesting
   /// frames be drawn.
@@ -60,14 +64,20 @@ class LinearAnimationInstance {
     animation.apply(time, coreContext: core, mix: mix);
   }
 
+  void clearSpilledTime() {
+    _spilledTime = 0;
+  }
+
   bool advance(double elapsedSeconds) {
     var deltaSeconds = elapsedSeconds * animation.speed * _direction;
 
     if (deltaSeconds == 0) {
       // we say keep going, if you advance by 0.
-      // could argue that any further advances by 0 result in nothing so you should not keep going
-      // could argue its saying, we are not at the end of the animation yet, so keep going
-      // our runtimes currently expect the latter, so we say keep going!
+      // could argue that any further advances by 0 result in nothing so you
+      // should not keep going
+      // could argue its saying, we are not at the end of the animation yet,
+      // so keep going our runtimes currently expect the latter, so we say keep
+      // going!
       _didLoop = false;
       return true;
     }

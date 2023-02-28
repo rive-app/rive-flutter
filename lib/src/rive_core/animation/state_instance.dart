@@ -6,8 +6,8 @@ import 'package:rive/src/rive_core/state_machine_controller.dart';
 /// [LayerController] of a [StateMachineController]. Abstract representation of
 /// an Animation (for [AnimationState]) or set of Animations in the case of a
 /// [BlendState].
-abstract class StateInstance {
-  final LayerState state;
+abstract class StateInstance<T extends LayerState> {
+  final T state;
 
   StateInstance(this.state);
 
@@ -17,6 +17,7 @@ abstract class StateInstance {
   bool get keepGoing;
 
   void dispose() {}
+  void clearSpilledTime() {}
 }
 
 /// A single one of these is created per Layer which just represents/wraps the

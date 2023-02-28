@@ -578,4 +578,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void defaultStateMachineIdChanged(int from, int to) {
     defaultStateMachine = to == Core.missingId ? null : context.resolve(to);
   }
+
+  @override
+  void selectedAnimationsChanged(List<int> from, List<int> to) {
+    // If the selection is different, we might have a different Editing Animation
+  }
 }

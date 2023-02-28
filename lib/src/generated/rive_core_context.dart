@@ -6,6 +6,7 @@ import 'package:rive/src/core/field_types/core_double_type.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
 import 'package:rive/src/core/field_types/core_string_type.dart';
 import 'package:rive/src/core/field_types/core_uint_type.dart';
+import 'package:rive/src/generated/animation/advanceable_state_base.dart';
 import 'package:rive/src/generated/animation/blend_animation_base.dart';
 import 'package:rive/src/generated/animation/cubic_ease_interpolator_base.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
@@ -565,6 +566,11 @@ class RiveCoreContext {
       case ListenerInputChangeBase.inputIdPropertyKey:
         if (object is ListenerInputChangeBase && value is int) {
           object.inputId = value;
+        }
+        break;
+      case AdvanceableStateBase.speedPropertyKey:
+        if (object is AdvanceableStateBase && value is double) {
+          object.speed = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -1366,6 +1372,7 @@ class RiveCoreContext {
       case LinearAnimationBase.speedPropertyKey:
       case NestedLinearAnimationBase.mixPropertyKey:
       case NestedSimpleAnimationBase.speedPropertyKey:
+      case AdvanceableStateBase.speedPropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
       case CubicInterpolatorBase.y1PropertyKey:
@@ -1668,6 +1675,8 @@ class RiveCoreContext {
         return (object as NestedLinearAnimationBase).mix;
       case NestedSimpleAnimationBase.speedPropertyKey:
         return (object as NestedSimpleAnimationBase).speed;
+      case AdvanceableStateBase.speedPropertyKey:
+        return (object as AdvanceableStateBase).speed;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
       case CubicInterpolatorBase.x1PropertyKey:
@@ -2348,6 +2357,11 @@ class RiveCoreContext {
         break;
       case NestedSimpleAnimationBase.speedPropertyKey:
         if (object is NestedSimpleAnimationBase) {
+          object.speed = value;
+        }
+        break;
+      case AdvanceableStateBase.speedPropertyKey:
+        if (object is AdvanceableStateBase) {
           object.speed = value;
         }
         break;
