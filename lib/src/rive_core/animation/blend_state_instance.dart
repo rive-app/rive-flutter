@@ -27,18 +27,20 @@ abstract class BlendStateInstance<T extends BlendState<K>,
             .toList(growable: false),
         super(state);
 
-  bool _keepGoing = true;
   @override
-  bool get keepGoing => _keepGoing;
+  bool get keepGoing => true;
 
   @mustCallSuper
   @override
   void advance(double seconds, StateMachineController controller) {
-    _keepGoing = false;
     // Advance all the animations in the blend state
+    // NOTE: we are intentionally ignoring the animationInstances' keepGoing
+    // return value.
+    // Blend states need to keep blending forever, as even if the animation
+    // does not change the mix values may
     for (final animation in animationInstances) {
-      if (animation.animationInstance.advance(seconds) && !keepGoing) {
-        _keepGoing = true;
+      if (animation.animationInstance.keepGoing) {
+        animation.animationInstance.advance(seconds);
       }
     }
   }
