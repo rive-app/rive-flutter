@@ -104,17 +104,20 @@ class TextStyle extends TextStyleBase
     _variationHelper?.buildDependencies();
   }
 
+  void removeVariations() => _variations.toSet().forEach(context.removeObject);
+
   @override
   set asset(FontAsset? value) {
     if (asset == value) {
       return;
     }
-    _variations.toSet().forEach(context.removeObject);
+
     super.asset = value;
     if (asset?.whenDecoded(_fontDecoded, notifyAlreadyDecoded: false) ??
         false) {
       // Already decoded.
       _markShapeDirty();
+      _variationHelper?.addDirt(ComponentDirt.textShape);
     }
   }
 

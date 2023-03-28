@@ -329,6 +329,14 @@ class Text extends TextBase with TextStyleContainer {
         computeShape();
       }
     }
+    if (dirt & ComponentDirt.worldTransform != 0) {
+      for (final style in styles) {
+        for (final paint in style.shapePaints) {
+          paint.renderOpacity = renderOpacity;
+        }
+      }
+      markPaintDirty();
+    }
   }
 
   @override

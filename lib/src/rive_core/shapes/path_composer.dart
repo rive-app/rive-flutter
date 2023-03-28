@@ -85,4 +85,18 @@ class PathComposer extends Component {
       _recomputePath();
     }
   }
+
+  void syncCollapse() {
+    var collapsed = (dirt & ComponentDirt.collapsed) != 0;
+    if (collapsed == shape.isCollapsed) {
+      return;
+    }
+    if (collapsed) {
+      dirt |= ComponentDirt.collapsed;
+    } else {
+      dirt &= ~ComponentDirt.collapsed;
+    }
+    onDirty(dirt);
+    artboard?.onComponentDirty(this);
+  }
 }

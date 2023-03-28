@@ -46,6 +46,12 @@ class Shape extends ShapeBase with ShapePaintContainer {
     _worldBounds = _localBounds = null;
   }
 
+  @override
+  void onDirty(int mask) {
+    pathComposer.syncCollapse();
+    super.onDirty(mask);
+  }
+
   bool addPath(Path path) {
     paintChanged();
     var added = paths.add(path);

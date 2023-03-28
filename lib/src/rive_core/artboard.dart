@@ -138,10 +138,12 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           Component component = _dependencyOrder[i];
           _dirtDepth = i;
           int d = component.dirt;
-          if (d == 0) {
+
+          if (d == 0 || (d & ComponentDirt.collapsed) != 0) {
             continue;
           }
-          component.dirt = 0;
+
+          component.dirt &= ComponentDirt.collapsed;
           component.update(d);
           if (_dirtDepth < i) {
             break;

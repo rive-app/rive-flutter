@@ -123,6 +123,7 @@ import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/star.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/rive_core/shapes/triangle.dart';
+import 'package:rive/src/rive_core/solo.dart';
 import 'package:rive/src/rive_core/text/text.dart';
 import 'package:rive/src/rive_core/text/text_style.dart';
 import 'package:rive/src/rive_core/text/text_style_axis.dart';
@@ -152,6 +153,8 @@ class RiveCoreContext {
         return Node();
       case NestedArtboardBase.typeKey:
         return NestedArtboard();
+      case SoloBase.typeKey:
+        return Solo();
       case AnimationBase.typeKey:
         return Animation();
       case LinearAnimationBase.typeKey:
@@ -506,6 +509,11 @@ class RiveCoreContext {
       case NestedAnimationBase.animationIdPropertyKey:
         if (object is NestedAnimationBase && value is int) {
           object.animationId = value;
+        }
+        break;
+      case SoloBase.activeComponentIdPropertyKey:
+        if (object is SoloBase && value is int) {
+          object.activeComponentId = value;
         }
         break;
       case AnimationBase.namePropertyKey:
@@ -1300,6 +1308,7 @@ class RiveCoreContext {
       case DrawableBase.drawableFlagsPropertyKey:
       case NestedArtboardBase.artboardIdPropertyKey:
       case NestedAnimationBase.animationIdPropertyKey:
+      case SoloBase.activeComponentIdPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
       case LinearAnimationBase.loopValuePropertyKey:
@@ -1527,6 +1536,8 @@ class RiveCoreContext {
         return (object as NestedArtboardBase).artboardId;
       case NestedAnimationBase.animationIdPropertyKey:
         return (object as NestedAnimationBase).animationId;
+      case SoloBase.activeComponentIdPropertyKey:
+        return (object as SoloBase).activeComponentId;
       case LinearAnimationBase.fpsPropertyKey:
         return (object as LinearAnimationBase).fps;
       case LinearAnimationBase.durationPropertyKey:
@@ -1998,6 +2009,11 @@ class RiveCoreContext {
       case NestedAnimationBase.animationIdPropertyKey:
         if (object is NestedAnimationBase) {
           object.animationId = value;
+        }
+        break;
+      case SoloBase.activeComponentIdPropertyKey:
+        if (object is SoloBase) {
+          object.activeComponentId = value;
         }
         break;
       case LinearAnimationBase.fpsPropertyKey:

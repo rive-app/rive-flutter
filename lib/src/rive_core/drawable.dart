@@ -85,5 +85,7 @@ abstract class Drawable extends DrawableBase {
   @override
   void drawableFlagsChanged(int from, int to) => addDirt(ComponentDirt.paint);
 
-  bool get isHidden => (drawableFlags & ComponentFlags.hidden) != 0;
+  bool get isHidden =>
+      (drawableFlags & ComponentFlags.hidden) != 0 ||
+      (dirt & ComponentDirt.collapsed) != 0;
 }
