@@ -23,7 +23,7 @@ abstract class ContainerComponent extends ContainerComponentBase {
 
   @mustCallSuper
   void childAdded(Component child) {
-    _propagateCollapseToChildren(isCollapsed);
+    propagateCollapseToChildren(isCollapsed);
   }
 
   void childRemoved(Component child) {}
@@ -74,7 +74,8 @@ abstract class ContainerComponent extends ContainerComponentBase {
     }
   }
 
-  void _propagateCollapseToChildren(bool collapse) {
+  @protected
+  void propagateCollapseToChildren(bool collapse) {
     for (final child in children) {
       child.propagateCollapse(collapse);
     }
@@ -85,7 +86,7 @@ abstract class ContainerComponent extends ContainerComponentBase {
     if (!super.propagateCollapse(collapse)) {
       return false;
     }
-    _propagateCollapseToChildren(collapse);
+    propagateCollapseToChildren(collapse);
     return true;
   }
 }

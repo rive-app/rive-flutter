@@ -1,8 +1,12 @@
+## 0.10.4
+
+- Support for Solos.
+
 ## 0.10.3
 
-- Fixes animations with negative speed to play from the end with ping pong and one shot animations. 
-- Update runtime to consider speed on animation states when playing state machines. 
-- Fix edge case with spilled time, by clearing spilled time after an advance cycle. 
+- Fixes animations with negative speed to play from the end with ping pong and one shot animations.
+- Update runtime to consider speed on animation states when playing state machines.
+- Fix edge case with spilled time, by clearing spilled time after an advance cycle.
 
 ## 0.10.2
 

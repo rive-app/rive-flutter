@@ -18,29 +18,26 @@ class Solo extends SoloBase {
     }
     _activeComponent = value;
     activeComponentId = value?.id ?? Core.missingId;
-    _updateCollapse();
+    propagateCollapseToChildren(isCollapsed);
   }
 
-  void _updateCollapse() {
+  @override
+  void propagateCollapseToChildren(bool collapse) {
     for (final child in children) {
-      if (child == _activeComponent) {
-        child.propagateCollapse(false);
-      } else {
-        child.propagateCollapse(true);
-      }
+      child.propagateCollapse(collapse || child != _activeComponent);
     }
   }
 
   @override
   void childRemoved(Component child) {
     super.childRemoved(child);
-    _updateCollapse();
+    propagateCollapseToChildren(isCollapsed);
   }
 
   @override
   void childAdded(Component child) {
     super.childAdded(child);
-    _updateCollapse();
+    propagateCollapseToChildren(isCollapsed);
   }
 
   @override
@@ -49,5 +46,11 @@ class Solo extends SoloBase {
     if (activeComponentId != Core.missingId) {
       activeComponent = context.resolve(activeComponentId);
     }
+  }
+
+  @override
+  void onAdded() {
+    super.onAdded();
+    propagateCollapseToChildren(isCollapsed);
   }
 }
