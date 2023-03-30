@@ -606,6 +606,16 @@ class RiveCoreContext {
           object.inputId = value;
         }
         break;
+      case BlendAnimationDirectBase.mixValuePropertyKey:
+        if (object is BlendAnimationDirectBase && value is double) {
+          object.mixValue = value;
+        }
+        break;
+      case BlendAnimationDirectBase.blendSourcePropertyKey:
+        if (object is BlendAnimationDirectBase && value is int) {
+          object.blendSource = value;
+        }
+        break;
       case StateMachineComponentBase.namePropertyKey:
         if (object is StateMachineComponentBase && value is String) {
           object.name = value;
@@ -1320,6 +1330,7 @@ class RiveCoreContext {
       case KeyedObjectBase.objectIdPropertyKey:
       case BlendAnimationBase.animationIdPropertyKey:
       case BlendAnimationDirectBase.inputIdPropertyKey:
+      case BlendAnimationDirectBase.blendSourcePropertyKey:
       case TransitionConditionBase.inputIdPropertyKey:
       case KeyedPropertyBase.propertyKeyPropertyKey:
       case StateMachineListenerBase.targetIdPropertyKey:
@@ -1382,6 +1393,7 @@ class RiveCoreContext {
       case NestedLinearAnimationBase.mixPropertyKey:
       case NestedSimpleAnimationBase.speedPropertyKey:
       case AdvanceableStateBase.speedPropertyKey:
+      case BlendAnimationDirectBase.mixValuePropertyKey:
       case StateMachineNumberBase.valuePropertyKey:
       case CubicInterpolatorBase.x1PropertyKey:
       case CubicInterpolatorBase.y1PropertyKey:
@@ -1560,6 +1572,8 @@ class RiveCoreContext {
         return (object as BlendAnimationBase).animationId;
       case BlendAnimationDirectBase.inputIdPropertyKey:
         return (object as BlendAnimationDirectBase).inputId;
+      case BlendAnimationDirectBase.blendSourcePropertyKey:
+        return (object as BlendAnimationDirectBase).blendSource;
       case TransitionConditionBase.inputIdPropertyKey:
         return (object as TransitionConditionBase).inputId;
       case KeyedPropertyBase.propertyKeyPropertyKey:
@@ -1688,6 +1702,8 @@ class RiveCoreContext {
         return (object as NestedSimpleAnimationBase).speed;
       case AdvanceableStateBase.speedPropertyKey:
         return (object as AdvanceableStateBase).speed;
+      case BlendAnimationDirectBase.mixValuePropertyKey:
+        return (object as BlendAnimationDirectBase).mixValue;
       case StateMachineNumberBase.valuePropertyKey:
         return (object as StateMachineNumberBase).value;
       case CubicInterpolatorBase.x1PropertyKey:
@@ -2071,6 +2087,11 @@ class RiveCoreContext {
           object.inputId = value;
         }
         break;
+      case BlendAnimationDirectBase.blendSourcePropertyKey:
+        if (object is BlendAnimationDirectBase) {
+          object.blendSource = value;
+        }
+        break;
       case TransitionConditionBase.inputIdPropertyKey:
         if (object is TransitionConditionBase) {
           object.inputId = value;
@@ -2379,6 +2400,11 @@ class RiveCoreContext {
       case AdvanceableStateBase.speedPropertyKey:
         if (object is AdvanceableStateBase) {
           object.speed = value;
+        }
+        break;
+      case BlendAnimationDirectBase.mixValuePropertyKey:
+        if (object is BlendAnimationDirectBase) {
+          object.mixValue = value;
         }
         break;
       case StateMachineNumberBase.valuePropertyKey:

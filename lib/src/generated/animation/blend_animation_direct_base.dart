@@ -36,9 +36,61 @@ abstract class BlendAnimationDirectBase extends BlendAnimation {
 
   void inputIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// MixValue field with key 297.
+  static const double mixValueInitialValue = 1;
+  double _mixValue = mixValueInitialValue;
+  static const int mixValuePropertyKey = 297;
+
+  /// Direct mix value for this animation.
+  double get mixValue => _mixValue;
+
+  /// Change the [_mixValue] field value.
+  /// [mixValueChanged] will be invoked only if the field's value has changed.
+  set mixValue(double value) {
+    if (_mixValue == value) {
+      return;
+    }
+    double from = _mixValue;
+    _mixValue = value;
+    if (hasValidated) {
+      mixValueChanged(from, value);
+    }
+  }
+
+  void mixValueChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// BlendSource field with key 298.
+  static const int blendSourceInitialValue = 0;
+  int _blendSource = blendSourceInitialValue;
+  static const int blendSourcePropertyKey = 298;
+
+  /// Source to use when establishing the mix value for the animation. 0 means
+  /// look at the input, 1 look at the mixValue.
+  int get blendSource => _blendSource;
+
+  /// Change the [_blendSource] field value.
+  /// [blendSourceChanged] will be invoked only if the field's value has
+  /// changed.
+  set blendSource(int value) {
+    if (_blendSource == value) {
+      return;
+    }
+    int from = _blendSource;
+    _blendSource = value;
+    if (hasValidated) {
+      blendSourceChanged(from, value);
+    }
+  }
+
+  void blendSourceChanged(int from, int to);
+
   @override
   void copy(covariant BlendAnimationDirectBase source) {
     super.copy(source);
     _inputId = source._inputId;
+    _mixValue = source._mixValue;
+    _blendSource = source._blendSource;
   }
 }

@@ -13,6 +13,23 @@ class CubicAsymmetricVertex extends CubicAsymmetricVertexBase {
     InternalCoreHelper.markValid(this);
   }
 
+  CubicAsymmetricVertex.fromValues({
+    required double x,
+    required double y,
+    double? inX,
+    double? inY,
+    double? outX,
+    double? outY,
+    Vec2D? inPoint,
+    Vec2D? outPoint,
+  }) {
+    InternalCoreHelper.markValid(this);
+    this.x = x;
+    this.y = y;
+    this.inPoint = Vec2D.fromValues(inX ?? inPoint!.x, inY ?? inPoint!.y);
+    this.outPoint = Vec2D.fromValues(outX ?? outPoint!.x, outY ?? outPoint!.y);
+  }
+
   Vec2D? _inPoint;
   Vec2D? _outPoint;
 

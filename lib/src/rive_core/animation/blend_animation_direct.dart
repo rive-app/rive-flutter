@@ -5,6 +5,8 @@ import 'package:rive/src/rive_core/animation/state_machine_number.dart';
 
 export 'package:rive/src/generated/animation/blend_animation_direct_base.dart';
 
+enum DirectBlendSource { inputId, mixValue }
+
 class BlendAnimationDirect extends BlendAnimationDirectBase {
   StateMachineNumber? _input;
   StateMachineNumber? get input => _input;
@@ -28,4 +30,10 @@ class BlendAnimationDirect extends BlendAnimationDirectBase {
 
     return super.import(stack);
   }
+
+  @override
+  void blendSourceChanged(int from, int to) {}
+
+  @override
+  void mixValueChanged(double from, double to) {}
 }
