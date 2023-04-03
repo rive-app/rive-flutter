@@ -38,7 +38,7 @@ abstract class BlendAnimationDirectBase extends BlendAnimation {
 
   /// --------------------------------------------------------------------------
   /// MixValue field with key 297.
-  static const double mixValueInitialValue = 1;
+  static const double mixValueInitialValue = 100;
   double _mixValue = mixValueInitialValue;
   static const int mixValuePropertyKey = 297;
 
