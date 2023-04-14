@@ -8,7 +8,8 @@ abstract class NestedInput extends NestedInputBase {
   @override
   void inputIdChanged(int from, int to) {}
 
-  NestedStateMachine? get nestedStateMachine => parent as NestedStateMachine?;
+  NestedStateMachine? get nestedStateMachine =>
+      parent is NestedStateMachine ? parent as NestedStateMachine : null;
 
   @override
   bool validate() => super.validate() && nestedStateMachine != null;

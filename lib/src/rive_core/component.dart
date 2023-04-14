@@ -130,7 +130,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     if (_parent == value) {
       return;
     }
-    dirt &= ~ComponentDirt.collapsed;
+    propagateCollapse(false);
     var old = _parent;
     _parent = value;
     parentId = value?.id ?? Core.missingId;
