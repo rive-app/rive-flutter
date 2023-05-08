@@ -194,4 +194,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
     return super.import(stack);
   }
+
+  @override
+  List<Core<CoreContext>> get referees => keyframes.toList();
 }

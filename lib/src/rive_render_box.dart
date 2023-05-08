@@ -217,17 +217,17 @@ abstract class RiveRenderBox extends RenderBox {
         offset.dx, offset.dy, offset.dx + size.width, offset.dy + size.height);
     AABB content = aabb;
 
-    double contentWidth = content[2] - content[0];
-    double contentHeight = content[3] - content[1];
+    double contentWidth = content.width;
+    double contentHeight = content.height;
 
     if (contentWidth == 0 || contentHeight == 0) {
       return Mat2D();
     }
 
-    double x = -1 * content[0] -
+    double x = -1 * content.left -
         contentWidth / 2.0 -
         (_alignment.x * contentWidth / 2.0);
-    double y = -1 * content[1] -
+    double y = -1 * content.top -
         contentHeight / 2.0 -
         (_alignment.y * contentHeight / 2.0);
 

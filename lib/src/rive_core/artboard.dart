@@ -116,6 +116,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return Vec2D.fromValues(x + width * originX, y + height * originY);
   }
 
+  Vec2D get origin => Vec2D.fromValues(width * originX, height * originY);
+
   /// Walk the dependency tree and update components in order. Returns true if
   /// any component updated.
   bool updateComponents() {
