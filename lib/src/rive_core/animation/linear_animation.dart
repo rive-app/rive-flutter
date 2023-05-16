@@ -38,6 +38,22 @@ class LinearAnimation extends LinearAnimationBase {
     return true;
   }
 
+  bool isObjectKeyed(Core object) => _keyedObjects.containsKey(object.id);
+  bool removeObjectKeys(Core object) {
+    var value = _keyedObjects[object.id];
+    if (value == null) {
+      return false;
+    }
+    bool found = false;
+    for (final kp in value.keyedProperties) {
+      for (final kf in kp.keyframes.toList()) {
+        kf.remove();
+        found = true;
+      }
+    }
+    return found;
+  }
+
   /// Returns the seconds where the animiation work area starts
   double get startSeconds => (enableWorkArea ? workStart : 0).toDouble() / fps;
 

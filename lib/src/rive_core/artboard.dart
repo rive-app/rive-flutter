@@ -12,6 +12,7 @@ import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/event.dart';
+import 'package:rive/src/rive_core/joystick.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
@@ -161,6 +162,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   final Set<NestedArtboard> _activeNestedArtboards = {};
   Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
+  final List<Joystick> _joysticks = [];
+
+  void applyJoysticks() {
+    for (final joystick in _joysticks) {
+      joystick.apply(context);
+    }
+  }
+
   /// Update any dirty components in this artboard.
   bool advance(double elapsedSeconds, {bool nested = false}) {
     bool didUpdate = false;
@@ -170,6 +179,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         didUpdate = true;
       }
     }
+    applyJoysticks();
     if (updateComponents() || didUpdate) {
       didUpdate = true;
     }
@@ -274,8 +284,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     if (!_components.add(component)) {
       return;
     }
-    if (component is NestedArtboard) {
-      _activeNestedArtboards.add(component);
+    switch (component.coreType) {
+      case NestedArtboardBase.typeKey:
+        _activeNestedArtboards.add(component as NestedArtboard);
+        break;
+      case JoystickBase.typeKey:
+        _joysticks.add(component as Joystick);
+        break;
     }
   }
 
@@ -283,8 +298,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// components.
   void removeComponent(Component component) {
     _components.remove(component);
-    if (component is NestedArtboard) {
-      _activeNestedArtboards.remove(component);
+    switch (component.coreType) {
+      case NestedArtboardBase.typeKey:
+        _activeNestedArtboards.remove(component as NestedArtboard);
+        break;
+      case JoystickBase.typeKey:
+        _joysticks.remove(component as Joystick);
+        break;
     }
   }
 

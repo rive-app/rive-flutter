@@ -1,3 +1,8 @@
+## 0.11.0
+
+- Joysticks!
+- Bumping to latest rive_common with some changes to AABB math api.
+
 ## 0.10.4
 
 - Support for Solos.

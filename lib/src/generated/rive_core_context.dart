@@ -98,6 +98,7 @@ import 'package:rive/src/rive_core/custom_property_number.dart';
 import 'package:rive/src/rive_core/custom_property_string.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
+import 'package:rive/src/rive_core/joystick.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
@@ -291,6 +292,8 @@ class RiveCoreContext {
         return CustomPropertyBoolean();
       case ArtboardBase.typeKey:
         return Artboard();
+      case JoystickBase.typeKey:
+        return Joystick();
       case BackboardBase.typeKey:
         return Backboard();
       case BoneBase.typeKey:
@@ -1121,6 +1124,26 @@ class RiveCoreContext {
           object.defaultStateMachineId = value;
         }
         break;
+      case JoystickBase.xPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.x = value;
+        }
+        break;
+      case JoystickBase.yPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.y = value;
+        }
+        break;
+      case JoystickBase.xIdPropertyKey:
+        if (object is JoystickBase && value is int) {
+          object.xId = value;
+        }
+        break;
+      case JoystickBase.yIdPropertyKey:
+        if (object is JoystickBase && value is int) {
+          object.yId = value;
+        }
+        break;
       case BoneBase.lengthPropertyKey:
         if (object is BoneBase && value is double) {
           object.length = value;
@@ -1365,6 +1388,8 @@ class RiveCoreContext {
       case ImageBase.assetIdPropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
       case ArtboardBase.defaultStateMachineIdPropertyKey:
+      case JoystickBase.xIdPropertyKey:
+      case JoystickBase.yIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
       case TextStyleBase.fontAssetIdPropertyKey:
       case TextStyleAxisBase.tagPropertyKey:
@@ -1445,6 +1470,8 @@ class RiveCoreContext {
       case ArtboardBase.yPropertyKey:
       case ArtboardBase.originXPropertyKey:
       case ArtboardBase.originYPropertyKey:
+      case JoystickBase.xPropertyKey:
+      case JoystickBase.yPropertyKey:
       case BoneBase.lengthPropertyKey:
       case RootBoneBase.xPropertyKey:
       case RootBoneBase.yPropertyKey:
@@ -1642,6 +1669,10 @@ class RiveCoreContext {
         return (object as DrawRulesBase).drawTargetId;
       case ArtboardBase.defaultStateMachineIdPropertyKey:
         return (object as ArtboardBase).defaultStateMachineId;
+      case JoystickBase.xIdPropertyKey:
+        return (object as JoystickBase).xId;
+      case JoystickBase.yIdPropertyKey:
+        return (object as JoystickBase).yId;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
       case TextStyleBase.fontAssetIdPropertyKey:
@@ -1806,6 +1837,10 @@ class RiveCoreContext {
         return (object as ArtboardBase).originX;
       case ArtboardBase.originYPropertyKey:
         return (object as ArtboardBase).originY;
+      case JoystickBase.xPropertyKey:
+        return (object as JoystickBase).x;
+      case JoystickBase.yPropertyKey:
+        return (object as JoystickBase).y;
       case BoneBase.lengthPropertyKey:
         return (object as BoneBase).length;
       case RootBoneBase.xPropertyKey:
@@ -2262,6 +2297,16 @@ class RiveCoreContext {
           object.defaultStateMachineId = value;
         }
         break;
+      case JoystickBase.xIdPropertyKey:
+        if (object is JoystickBase) {
+          object.xId = value;
+        }
+        break;
+      case JoystickBase.yIdPropertyKey:
+        if (object is JoystickBase) {
+          object.yId = value;
+        }
+        break;
       case TendonBase.boneIdPropertyKey:
         if (object is TendonBase) {
           object.boneId = value;
@@ -2660,6 +2705,16 @@ class RiveCoreContext {
       case ArtboardBase.originYPropertyKey:
         if (object is ArtboardBase) {
           object.originY = value;
+        }
+        break;
+      case JoystickBase.xPropertyKey:
+        if (object is JoystickBase) {
+          object.x = value;
+        }
+        break;
+      case JoystickBase.yPropertyKey:
+        if (object is JoystickBase) {
+          object.y = value;
         }
         break;
       case BoneBase.lengthPropertyKey:
