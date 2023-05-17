@@ -277,8 +277,8 @@ class RiveFile {
   /// your file contains images that needed to be loaded with separate network
   /// requests.
   static Future<RiveFile> network(String url,
-      {FileAssetResolver? assetResolver}) async {
-    final res = await http.get(Uri.parse(url));
+      {FileAssetResolver? assetResolver, Map<String, String>? headers}) async {
+    final res = await http.get(Uri.parse(url), headers: headers);
     final bytes = ByteData.view(res.bodyBytes.buffer);
     return RiveFile.import(bytes, assetResolver: assetResolver);
   }

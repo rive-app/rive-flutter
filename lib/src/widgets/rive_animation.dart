@@ -55,6 +55,9 @@ class RiveAnimation extends StatefulWidget {
   /// Callback fired when [RiveAnimation] has initialized
   final OnInitCallback? onInit;
 
+  /// Headers for network requests
+  final Map<String, String>? headers;
+
   /// Creates a new [RiveAnimation] from an asset bundle.
   ///
   /// *Example:*
@@ -75,6 +78,7 @@ class RiveAnimation extends StatefulWidget {
     Key? key,
   })  : name = asset,
         file = null,
+        headers = null,
         src = _Source.asset,
         super(key: key);
 
@@ -95,6 +99,7 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
+    this.headers,
     Key? key,
   })  : name = url,
         file = null,
@@ -121,6 +126,7 @@ class RiveAnimation extends StatefulWidget {
     Key? key,
   })  : name = path,
         file = null,
+        headers = null,
         src = _Source.file,
         super(key: key);
 
@@ -143,6 +149,7 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
+    this.headers,
     Key? key,
   })  : name = null,
         src = _Source.direct,
@@ -182,7 +189,7 @@ class RiveAnimationState extends State<RiveAnimation> {
       case _Source.asset:
         return RiveFile.asset(widget.name!);
       case _Source.network:
-        return RiveFile.network(widget.name!);
+        return RiveFile.network(widget.name!, headers: widget.headers);
       case _Source.file:
         return RiveFile.file(widget.name!);
       case _Source.direct:
