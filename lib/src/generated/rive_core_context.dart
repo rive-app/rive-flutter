@@ -1139,9 +1139,19 @@ class RiveCoreContext {
           object.xId = value;
         }
         break;
+      case JoystickBase.xInvertPropertyKey:
+        if (object is JoystickBase && value is bool) {
+          object.xInvert = value;
+        }
+        break;
       case JoystickBase.yIdPropertyKey:
         if (object is JoystickBase && value is int) {
           object.yId = value;
+        }
+        break;
+      case JoystickBase.yInvertPropertyKey:
+        if (object is JoystickBase && value is bool) {
+          object.yInvert = value;
         }
         break;
       case BoneBase.lengthPropertyKey:
@@ -1514,6 +1524,8 @@ class RiveCoreContext {
       case ClippingShapeBase.isVisiblePropertyKey:
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
       case ArtboardBase.clipPropertyKey:
+      case JoystickBase.xInvertPropertyKey:
+      case JoystickBase.yInvertPropertyKey:
         return boolType;
       case KeyFrameColorBase.valuePropertyKey:
       case SolidColorBase.colorValuePropertyKey:
@@ -1929,6 +1941,10 @@ class RiveCoreContext {
         return (object as CustomPropertyBooleanBase).propertyValue;
       case ArtboardBase.clipPropertyKey:
         return (object as ArtboardBase).clip;
+      case JoystickBase.xInvertPropertyKey:
+        return (object as JoystickBase).xInvert;
+      case JoystickBase.yInvertPropertyKey:
+        return (object as JoystickBase).yInvert;
     }
     return false;
   }
@@ -2925,6 +2941,16 @@ class RiveCoreContext {
       case ArtboardBase.clipPropertyKey:
         if (object is ArtboardBase) {
           object.clip = value;
+        }
+        break;
+      case JoystickBase.xInvertPropertyKey:
+        if (object is JoystickBase) {
+          object.xInvert = value;
+        }
+        break;
+      case JoystickBase.yInvertPropertyKey:
+        if (object is JoystickBase) {
+          object.yInvert = value;
         }
         break;
     }

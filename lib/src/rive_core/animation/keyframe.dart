@@ -102,7 +102,4 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
 
   @override
   String toString() => '${super.toString()} id: ($id)';
-
-  @override
-  List<Core<CoreContext>> get referees => [];
 }

@@ -13,16 +13,19 @@ class Joystick extends JoystickBase {
 
   void apply(CoreContext context) {
     var animation = _xAnimation;
+
     if (animation != null) {
+      var value = xInvert ? -x : x;
       animation.apply(
-        (x + 1) / 2 * animation.durationSeconds,
+        (value + 1) / 2 * animation.durationSeconds,
         coreContext: context,
       );
     }
     animation = _yAnimation;
     if (animation != null) {
+      var value = yInvert ? -y : y;
       animation.apply(
-        (y + 1) / 2 * animation.durationSeconds,
+        (value + 1) / 2 * animation.durationSeconds,
         coreContext: context,
       );
     }
@@ -85,5 +88,15 @@ class Joystick extends JoystickBase {
         yAnimation = found;
       }
     }
+  }
+
+  @override
+  void xInvertChanged(bool from, bool to) {
+    context.markNeedsAdvance();
+  }
+
+  @override
+  void yInvertChanged(bool from, bool to) {
+    context.markNeedsAdvance();
   }
 }

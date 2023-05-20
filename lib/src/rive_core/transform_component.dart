@@ -51,13 +51,9 @@ abstract class TransformComponent extends TransformComponentBase {
   Vec2D get worldTranslation =>
       Vec2D.fromValues(worldTransform[4], worldTransform[5]);
 
-  @override
   double get x;
-  @override
   double get y;
-  @override
   set x(double value);
-  @override
   set y(double value);
 
   @override

@@ -2,6 +2,7 @@
 
 - Joysticks!
 - Bumping to latest rive_common with some changes to AABB math api.
+- Bumping Dart SDK requirements.
 
 ## 0.10.4
 

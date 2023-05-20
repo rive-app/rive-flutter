@@ -85,7 +85,4 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
 
     return super.import(stack);
   }
-
-  @override
-  List<Core<CoreContext>> get referees => keyedProperties.toList();
 }

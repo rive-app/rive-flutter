@@ -80,6 +80,30 @@ abstract class JoystickBase extends Component {
   void xIdChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
+  /// XInvert field with key 310.
+  static const bool xInvertInitialValue = false;
+  bool _xInvert = xInvertInitialValue;
+  static const int xInvertPropertyKey = 310;
+
+  /// Whether to invert the application of the x axis.
+  bool get xInvert => _xInvert;
+
+  /// Change the [_xInvert] field value.
+  /// [xInvertChanged] will be invoked only if the field's value has changed.
+  set xInvert(bool value) {
+    if (_xInvert == value) {
+      return;
+    }
+    bool from = _xInvert;
+    _xInvert = value;
+    if (hasValidated) {
+      xInvertChanged(from, value);
+    }
+  }
+
+  void xInvertChanged(bool from, bool to);
+
+  /// --------------------------------------------------------------------------
   /// YId field with key 302.
   static const int yIdInitialValue = -1;
   int _yId = yIdInitialValue;
@@ -104,12 +128,38 @@ abstract class JoystickBase extends Component {
 
   void yIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// YInvert field with key 311.
+  static const bool yInvertInitialValue = false;
+  bool _yInvert = yInvertInitialValue;
+  static const int yInvertPropertyKey = 311;
+
+  /// Whether to invert the application of the y axis.
+  bool get yInvert => _yInvert;
+
+  /// Change the [_yInvert] field value.
+  /// [yInvertChanged] will be invoked only if the field's value has changed.
+  set yInvert(bool value) {
+    if (_yInvert == value) {
+      return;
+    }
+    bool from = _yInvert;
+    _yInvert = value;
+    if (hasValidated) {
+      yInvertChanged(from, value);
+    }
+  }
+
+  void yInvertChanged(bool from, bool to);
+
   @override
   void copy(covariant JoystickBase source) {
     super.copy(source);
     _x = source._x;
     _y = source._y;
     _xId = source._xId;
+    _xInvert = source._xInvert;
     _yId = source._yId;
+    _yInvert = source._yInvert;
   }
 }

@@ -181,6 +181,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
       // no context, or already dirty.
       return;
     }
+
     for (final dependent in _dependents) {
       dependent.markRebuildDependencies();
     }
