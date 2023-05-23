@@ -38,6 +38,9 @@ class LinearAnimation extends LinearAnimationBase {
     return true;
   }
 
+  bool isAnyObjectKeyed(Iterable<Core> objects) =>
+      objects.any((element) => _keyedObjects.containsKey(element.id));
+
   bool isObjectKeyed(Core object) => _keyedObjects.containsKey(object.id);
   bool removeObjectKeys(Core object) {
     var value = _keyedObjects[object.id];

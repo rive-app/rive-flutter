@@ -5,22 +5,16 @@ import 'package:rive/rive.dart';
 class SimpleAssetAnimation extends StatelessWidget {
   const SimpleAssetAnimation({Key? key}) : super(key: key);
 
-  void _onRiveInit(Artboard artboard) {
-    final controller = StateMachineController.fromArtboard(artboard, 'Coyote');
-    artboard.addController(controller!);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Simple Animation'),
       ),
-      body: Center(
+      body: const Center(
         child: RiveAnimation.asset(
-          'assets/coyote.riv',
+          'assets/off_road_car.riv',
           fit: BoxFit.cover,
-          onInit: _onRiveInit,
         ),
       ),
     );

@@ -1,3 +1,7 @@
+## 0.11.1
+
+- Joysticks with custom handle sources.
+
 ## 0.11.0
 
 - Joysticks!

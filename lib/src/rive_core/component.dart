@@ -158,6 +158,20 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @override
   Set<Component> get dependents => _dependents;
 
+  Set<Component> get dependencies {
+    Set<Component> components = {};
+    allDependencies(components);
+    return components;
+  }
+
+  void allDependencies(Set<Component> dependencies) {
+    for (final dependency in _dependsOn) {
+      if (dependencies.add(dependency)) {
+        dependency.allDependencies(dependencies);
+      }
+    }
+  }
+
   /// Mark [dependent] as a component which must update after this. Provide
   /// [via] as the Component registering the dependency when it is not
   /// [dependent] itself. At edit time this allows the editor to rebuild both

@@ -55,6 +55,142 @@ abstract class JoystickBase extends Component {
   void yChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
+  /// PosX field with key 303.
+  static const double posXInitialValue = 0;
+  double _posX = posXInitialValue;
+  static const int posXPropertyKey = 303;
+  double get posX => _posX;
+
+  /// Change the [_posX] field value.
+  /// [posXChanged] will be invoked only if the field's value has changed.
+  set posX(double value) {
+    if (_posX == value) {
+      return;
+    }
+    double from = _posX;
+    _posX = value;
+    if (hasValidated) {
+      posXChanged(from, value);
+    }
+  }
+
+  void posXChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// PosY field with key 304.
+  static const double posYInitialValue = 0;
+  double _posY = posYInitialValue;
+  static const int posYPropertyKey = 304;
+  double get posY => _posY;
+
+  /// Change the [_posY] field value.
+  /// [posYChanged] will be invoked only if the field's value has changed.
+  set posY(double value) {
+    if (_posY == value) {
+      return;
+    }
+    double from = _posY;
+    _posY = value;
+    if (hasValidated) {
+      posYChanged(from, value);
+    }
+  }
+
+  void posYChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// OriginX field with key 307.
+  static const double originXInitialValue = 0.5;
+  double _originX = originXInitialValue;
+  static const int originXPropertyKey = 307;
+
+  /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
+  double get originX => _originX;
+
+  /// Change the [_originX] field value.
+  /// [originXChanged] will be invoked only if the field's value has changed.
+  set originX(double value) {
+    if (_originX == value) {
+      return;
+    }
+    double from = _originX;
+    _originX = value;
+    if (hasValidated) {
+      originXChanged(from, value);
+    }
+  }
+
+  void originXChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// OriginY field with key 308.
+  static const double originYInitialValue = 0.5;
+  double _originY = originYInitialValue;
+  static const int originYPropertyKey = 308;
+
+  /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
+  double get originY => _originY;
+
+  /// Change the [_originY] field value.
+  /// [originYChanged] will be invoked only if the field's value has changed.
+  set originY(double value) {
+    if (_originY == value) {
+      return;
+    }
+    double from = _originY;
+    _originY = value;
+    if (hasValidated) {
+      originYChanged(from, value);
+    }
+  }
+
+  void originYChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// Width field with key 305.
+  static const double widthInitialValue = 100;
+  double _width = widthInitialValue;
+  static const int widthPropertyKey = 305;
+  double get width => _width;
+
+  /// Change the [_width] field value.
+  /// [widthChanged] will be invoked only if the field's value has changed.
+  set width(double value) {
+    if (_width == value) {
+      return;
+    }
+    double from = _width;
+    _width = value;
+    if (hasValidated) {
+      widthChanged(from, value);
+    }
+  }
+
+  void widthChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// Height field with key 306.
+  static const double heightInitialValue = 100;
+  double _height = heightInitialValue;
+  static const int heightPropertyKey = 306;
+  double get height => _height;
+
+  /// Change the [_height] field value.
+  /// [heightChanged] will be invoked only if the field's value has changed.
+  set height(double value) {
+    if (_height == value) {
+      return;
+    }
+    double from = _height;
+    _height = value;
+    if (hasValidated) {
+      heightChanged(from, value);
+    }
+  }
+
+  void heightChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
   /// XId field with key 301.
   static const int xIdInitialValue = -1;
   int _xId = xIdInitialValue;
@@ -78,30 +214,6 @@ abstract class JoystickBase extends Component {
   }
 
   void xIdChanged(int from, int to);
-
-  /// --------------------------------------------------------------------------
-  /// XInvert field with key 310.
-  static const bool xInvertInitialValue = false;
-  bool _xInvert = xInvertInitialValue;
-  static const int xInvertPropertyKey = 310;
-
-  /// Whether to invert the application of the x axis.
-  bool get xInvert => _xInvert;
-
-  /// Change the [_xInvert] field value.
-  /// [xInvertChanged] will be invoked only if the field's value has changed.
-  set xInvert(bool value) {
-    if (_xInvert == value) {
-      return;
-    }
-    bool from = _xInvert;
-    _xInvert = value;
-    if (hasValidated) {
-      xInvertChanged(from, value);
-    }
-  }
-
-  void xInvertChanged(bool from, bool to);
 
   /// --------------------------------------------------------------------------
   /// YId field with key 302.
@@ -129,37 +241,67 @@ abstract class JoystickBase extends Component {
   void yIdChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
-  /// YInvert field with key 311.
-  static const bool yInvertInitialValue = false;
-  bool _yInvert = yInvertInitialValue;
-  static const int yInvertPropertyKey = 311;
+  /// JoystickFlags field with key 312.
+  static const int joystickFlagsInitialValue = 0;
+  int _joystickFlags = joystickFlagsInitialValue;
+  static const int joystickFlagsPropertyKey = 312;
+  int get joystickFlags => _joystickFlags;
 
-  /// Whether to invert the application of the y axis.
-  bool get yInvert => _yInvert;
-
-  /// Change the [_yInvert] field value.
-  /// [yInvertChanged] will be invoked only if the field's value has changed.
-  set yInvert(bool value) {
-    if (_yInvert == value) {
+  /// Change the [_joystickFlags] field value.
+  /// [joystickFlagsChanged] will be invoked only if the field's value has
+  /// changed.
+  set joystickFlags(int value) {
+    if (_joystickFlags == value) {
       return;
     }
-    bool from = _yInvert;
-    _yInvert = value;
+    int from = _joystickFlags;
+    _joystickFlags = value;
     if (hasValidated) {
-      yInvertChanged(from, value);
+      joystickFlagsChanged(from, value);
     }
   }
 
-  void yInvertChanged(bool from, bool to);
+  void joystickFlagsChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// HandleSourceId field with key 313.
+  static const int handleSourceIdInitialValue = -1;
+  int _handleSourceId = handleSourceIdInitialValue;
+  static const int handleSourceIdPropertyKey = 313;
+
+  /// Identifier used to track the custom handle source of the joystick.
+  int get handleSourceId => _handleSourceId;
+
+  /// Change the [_handleSourceId] field value.
+  /// [handleSourceIdChanged] will be invoked only if the field's value has
+  /// changed.
+  set handleSourceId(int value) {
+    if (_handleSourceId == value) {
+      return;
+    }
+    int from = _handleSourceId;
+    _handleSourceId = value;
+    if (hasValidated) {
+      handleSourceIdChanged(from, value);
+    }
+  }
+
+  void handleSourceIdChanged(int from, int to);
 
   @override
   void copy(covariant JoystickBase source) {
     super.copy(source);
     _x = source._x;
     _y = source._y;
+    _posX = source._posX;
+    _posY = source._posY;
+    _originX = source._originX;
+    _originY = source._originY;
+    _width = source._width;
+    _height = source._height;
     _xId = source._xId;
-    _xInvert = source._xInvert;
     _yId = source._yId;
-    _yInvert = source._yInvert;
+    _joystickFlags = source._joystickFlags;
+    _handleSourceId = source._handleSourceId;
   }
 }

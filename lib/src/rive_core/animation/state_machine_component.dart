@@ -36,8 +36,12 @@ abstract class StateMachineComponent
   void onAddedDirty() {}
 
   @override
+  void onAdded() {}
+
+  @override
   void onRemoved() {
     super.onRemoved();
+
     stateMachine = null;
   }
 

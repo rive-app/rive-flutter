@@ -41,6 +41,8 @@ class FontAsset extends FontAssetBase {
     font = null;
   }
 
+  // 'otf' supported as well. This getter isn't being used for fontAssets so
+  // fine just being ttf for now.
   @override
   String get fileExtension => 'ttf';
 }

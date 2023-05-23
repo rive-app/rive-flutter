@@ -163,11 +163,29 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   final List<Joystick> _joysticks = [];
+  Iterable<Joystick> get joysticks => _joysticks;
 
-  void applyJoysticks() {
+  bool canPreApplyJoysticks() {
+    if (_joysticks.isEmpty) {
+      return false;
+    }
+    if (_joysticks.any((joystick) => joystick.isComplex)) {
+      return false;
+    }
+    return true;
+  }
+
+  bool applyJoysticks() {
+    if (_joysticks.isEmpty) {
+      return false;
+    }
     for (final joystick in _joysticks) {
+      if (joystick.isComplex) {
+        updateComponents();
+      }
       joystick.apply(context);
     }
+    return true;
   }
 
   /// Update any dirty components in this artboard.
@@ -179,8 +197,24 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         didUpdate = true;
       }
     }
-    applyJoysticks();
+
+    // Joysticks can be applied before updating components if none of the
+    // joysticks have "external" control. If they are controlled/moved by some
+    // other component then they need to apply after the update cycle, which is
+    // less efficient.
+    var canApplyJoysticksEarly = canPreApplyJoysticks();
+    if (canApplyJoysticksEarly) {
+      applyJoysticks();
+    }
+
     if (updateComponents() || didUpdate) {
+      didUpdate = true;
+    }
+
+    // If joysticks applied, run the update again for the animation changes.
+    if (!canApplyJoysticksEarly && applyJoysticks()) {
+      updateComponents();
+
       didUpdate = true;
     }
 
@@ -220,13 +254,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool resolveArtboard() => true;
 
   /// Sort the DAG for resolution in order of dependencies such that dependent
-  /// compnents process after their dependencies.
+  /// components process after their dependencies.
   void sortDependencies() {
-    var optimistic = DependencySorter<Component>();
+    var optimistic = DependencyGraphNodeSorter<Component>();
     var order = optimistic.sort(this);
     if (order.isEmpty) {
       // cycle detected, use a more robust solver
-      var robust = TarjansDependencySorter<Component>();
+      var robust = TarjansDependencyGraphNodeSorter<Component>();
       order = robust.sort(this);
     }
 
@@ -481,7 +515,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
 
-    var sorter = DependencySorter<Component>();
+    var sorter = DependencyGraphNodeSorter<Component>();
 
     _sortedDrawRules = sorter.sort(root).cast<DrawTarget>().skip(1).toList();
 

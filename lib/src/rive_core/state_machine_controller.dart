@@ -290,23 +290,25 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     // Initialize all events.
     HashMap<Shape, _HitShape> hitShapeLookup = HashMap<Shape, _HitShape>();
     for (final event in stateMachine.listeners) {
-      // Resolve target on this artboard instance.
-      var node = core.resolve<Node>(event.targetId);
-      if (node == null) {
-        continue;
-      }
-
-      node.forAll((component) {
-        if (component is Shape) {
-          var hitShape = hitShapeLookup[component];
-          if (hitShape == null) {
-            hitShapeLookup[component] = hitShape = _HitShape(component);
-          }
-          hitShape.events.add(event);
+      if (event is StateMachineListener) {
+        // Resolve target on this artboard instance.
+        var node = core.resolve<Node>(event.targetId);
+        if (node == null) {
+          continue;
         }
-        // Keep iterating so we find all shapes.
-        return true;
-      });
+
+        node.forAll((component) {
+          if (component is Shape) {
+            var hitShape = hitShapeLookup[component];
+            if (hitShape == null) {
+              hitShapeLookup[component] = hitShape = _HitShape(component);
+            }
+            hitShape.events.add(event);
+          }
+          // Keep iterating so we find all shapes.
+          return true;
+        });
+      }
     }
     hitShapes = hitShapeLookup.values.toList();
 

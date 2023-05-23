@@ -1134,14 +1134,39 @@ class RiveCoreContext {
           object.y = value;
         }
         break;
+      case JoystickBase.posXPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.posX = value;
+        }
+        break;
+      case JoystickBase.posYPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.posY = value;
+        }
+        break;
+      case JoystickBase.originXPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.originX = value;
+        }
+        break;
+      case JoystickBase.originYPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.originY = value;
+        }
+        break;
+      case JoystickBase.widthPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.width = value;
+        }
+        break;
+      case JoystickBase.heightPropertyKey:
+        if (object is JoystickBase && value is double) {
+          object.height = value;
+        }
+        break;
       case JoystickBase.xIdPropertyKey:
         if (object is JoystickBase && value is int) {
           object.xId = value;
-        }
-        break;
-      case JoystickBase.xInvertPropertyKey:
-        if (object is JoystickBase && value is bool) {
-          object.xInvert = value;
         }
         break;
       case JoystickBase.yIdPropertyKey:
@@ -1149,9 +1174,14 @@ class RiveCoreContext {
           object.yId = value;
         }
         break;
-      case JoystickBase.yInvertPropertyKey:
-        if (object is JoystickBase && value is bool) {
-          object.yInvert = value;
+      case JoystickBase.joystickFlagsPropertyKey:
+        if (object is JoystickBase && value is int) {
+          object.joystickFlags = value;
+        }
+        break;
+      case JoystickBase.handleSourceIdPropertyKey:
+        if (object is JoystickBase && value is int) {
+          object.handleSourceId = value;
         }
         break;
       case BoneBase.lengthPropertyKey:
@@ -1400,6 +1430,8 @@ class RiveCoreContext {
       case ArtboardBase.defaultStateMachineIdPropertyKey:
       case JoystickBase.xIdPropertyKey:
       case JoystickBase.yIdPropertyKey:
+      case JoystickBase.joystickFlagsPropertyKey:
+      case JoystickBase.handleSourceIdPropertyKey:
       case TendonBase.boneIdPropertyKey:
       case TextStyleBase.fontAssetIdPropertyKey:
       case TextStyleAxisBase.tagPropertyKey:
@@ -1482,6 +1514,12 @@ class RiveCoreContext {
       case ArtboardBase.originYPropertyKey:
       case JoystickBase.xPropertyKey:
       case JoystickBase.yPropertyKey:
+      case JoystickBase.posXPropertyKey:
+      case JoystickBase.posYPropertyKey:
+      case JoystickBase.originXPropertyKey:
+      case JoystickBase.originYPropertyKey:
+      case JoystickBase.widthPropertyKey:
+      case JoystickBase.heightPropertyKey:
       case BoneBase.lengthPropertyKey:
       case RootBoneBase.xPropertyKey:
       case RootBoneBase.yPropertyKey:
@@ -1524,8 +1562,6 @@ class RiveCoreContext {
       case ClippingShapeBase.isVisiblePropertyKey:
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
       case ArtboardBase.clipPropertyKey:
-      case JoystickBase.xInvertPropertyKey:
-      case JoystickBase.yInvertPropertyKey:
         return boolType;
       case KeyFrameColorBase.valuePropertyKey:
       case SolidColorBase.colorValuePropertyKey:
@@ -1685,6 +1721,10 @@ class RiveCoreContext {
         return (object as JoystickBase).xId;
       case JoystickBase.yIdPropertyKey:
         return (object as JoystickBase).yId;
+      case JoystickBase.joystickFlagsPropertyKey:
+        return (object as JoystickBase).joystickFlags;
+      case JoystickBase.handleSourceIdPropertyKey:
+        return (object as JoystickBase).handleSourceId;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
       case TextStyleBase.fontAssetIdPropertyKey:
@@ -1853,6 +1893,18 @@ class RiveCoreContext {
         return (object as JoystickBase).x;
       case JoystickBase.yPropertyKey:
         return (object as JoystickBase).y;
+      case JoystickBase.posXPropertyKey:
+        return (object as JoystickBase).posX;
+      case JoystickBase.posYPropertyKey:
+        return (object as JoystickBase).posY;
+      case JoystickBase.originXPropertyKey:
+        return (object as JoystickBase).originX;
+      case JoystickBase.originYPropertyKey:
+        return (object as JoystickBase).originY;
+      case JoystickBase.widthPropertyKey:
+        return (object as JoystickBase).width;
+      case JoystickBase.heightPropertyKey:
+        return (object as JoystickBase).height;
       case BoneBase.lengthPropertyKey:
         return (object as BoneBase).length;
       case RootBoneBase.xPropertyKey:
@@ -1941,10 +1993,6 @@ class RiveCoreContext {
         return (object as CustomPropertyBooleanBase).propertyValue;
       case ArtboardBase.clipPropertyKey:
         return (object as ArtboardBase).clip;
-      case JoystickBase.xInvertPropertyKey:
-        return (object as JoystickBase).xInvert;
-      case JoystickBase.yInvertPropertyKey:
-        return (object as JoystickBase).yInvert;
     }
     return false;
   }
@@ -2321,6 +2369,16 @@ class RiveCoreContext {
       case JoystickBase.yIdPropertyKey:
         if (object is JoystickBase) {
           object.yId = value;
+        }
+        break;
+      case JoystickBase.joystickFlagsPropertyKey:
+        if (object is JoystickBase) {
+          object.joystickFlags = value;
+        }
+        break;
+      case JoystickBase.handleSourceIdPropertyKey:
+        if (object is JoystickBase) {
+          object.handleSourceId = value;
         }
         break;
       case TendonBase.boneIdPropertyKey:
@@ -2733,6 +2791,36 @@ class RiveCoreContext {
           object.y = value;
         }
         break;
+      case JoystickBase.posXPropertyKey:
+        if (object is JoystickBase) {
+          object.posX = value;
+        }
+        break;
+      case JoystickBase.posYPropertyKey:
+        if (object is JoystickBase) {
+          object.posY = value;
+        }
+        break;
+      case JoystickBase.originXPropertyKey:
+        if (object is JoystickBase) {
+          object.originX = value;
+        }
+        break;
+      case JoystickBase.originYPropertyKey:
+        if (object is JoystickBase) {
+          object.originY = value;
+        }
+        break;
+      case JoystickBase.widthPropertyKey:
+        if (object is JoystickBase) {
+          object.width = value;
+        }
+        break;
+      case JoystickBase.heightPropertyKey:
+        if (object is JoystickBase) {
+          object.height = value;
+        }
+        break;
       case BoneBase.lengthPropertyKey:
         if (object is BoneBase) {
           object.length = value;
@@ -2941,16 +3029,6 @@ class RiveCoreContext {
       case ArtboardBase.clipPropertyKey:
         if (object is ArtboardBase) {
           object.clip = value;
-        }
-        break;
-      case JoystickBase.xInvertPropertyKey:
-        if (object is JoystickBase) {
-          object.xInvert = value;
-        }
-        break;
-      case JoystickBase.yInvertPropertyKey:
-        if (object is JoystickBase) {
-          object.yInvert = value;
         }
         break;
     }
