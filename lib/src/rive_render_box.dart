@@ -135,9 +135,10 @@ abstract class RiveRenderBox extends RenderBox {
         .height;
   }
 
+  // This replaces the old performResize method.
   @override
-  void performResize() {
-    size = constraints.biggest;
+  Size computeDryLayout(BoxConstraints constraints) {
+    return constraints.biggest;
   }
 
   @override
