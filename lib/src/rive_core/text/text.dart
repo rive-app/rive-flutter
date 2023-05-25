@@ -115,7 +115,6 @@ class Text extends TextBase with TextStyleContainer {
     _syncRuns();
   }
 
-
   // We cache the text drawing into a display list so subsequent draws are
   // faster.
   Picture? _textPicture;
@@ -238,7 +237,7 @@ class Text extends TextBase with TextStyleContainer {
             // canvas.save();
             // canvas.transform();
             var renderPath =
-                path.transform(glyphInfo.renderTransform(x, y + line.baseline));
+                path.transform(glyphInfo.pathTransform(x, y + line.baseline));
             var style = styleFromShaperId(run.styleId);
             if (style == null || style.shapePaints.isEmpty) {
               canvas.drawPath(
