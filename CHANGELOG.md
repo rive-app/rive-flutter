@@ -1,3 +1,7 @@
+## 0.11.2
+
+- Add parameter to specifcy headers on RiveAnimation.network widget
+
 ## 0.11.1
 
 - Joysticks with custom handle sources.
