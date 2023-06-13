@@ -1,3 +1,6 @@
+## 0.11.3
+ - Bumps rive_common to add Android namespace to support Gradle 8 (issue [312](https://github.com/rive-app/rive-flutter/issues/312))
+
 ## 0.11.2
 
 - Add parameter to specifcy headers on RiveAnimation.network widget
