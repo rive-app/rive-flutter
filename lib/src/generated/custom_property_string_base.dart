@@ -1,7 +1,3 @@
-/// Core automatically generated
-/// lib/src/generated/custom_property_string_base.dart.
-/// Do not modify manually.
-
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class CustomPropertyStringBase extends Component {

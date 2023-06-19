@@ -1,16 +1,22 @@
 import 'package:rive_common/rive_text.dart';
 import 'package:rive_common/utilities.dart';
 
+/// To allow the text editor to see the cursor placed in a location prior to
+/// text entry (like pressing return) we need to introduce a place-holder last
+/// character.
+const zeroWidthSpace = '\u200B';
+
 class StyledText {
   final String value;
   final List<TextRun> runs;
 
   factory StyledText(String text, List<TextRun> runs) {
     assert(runs.isNotEmpty);
+
     var extendedRuns = runs.take(runs.length - 1).toList();
     extendedRuns
         .add(runs.last.copyWith(unicharCount: runs.last.unicharCount + 1));
-    return StyledText.exact(text + ' ', extendedRuns);
+    return StyledText.exact(text + zeroWidthSpace, extendedRuns);
   }
 
   factory StyledText.empty(TextRun run) => StyledText('', [run]);

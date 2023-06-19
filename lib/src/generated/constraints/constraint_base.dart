@@ -1,7 +1,3 @@
-/// Core automatically generated
-/// lib/src/generated/constraints/constraint_base.dart.
-/// Do not modify manually.
-
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class ConstraintBase extends Component {

@@ -15,9 +15,23 @@ const int subdivisionMaxIterations = 10;
 
 const double subdivisionPrecision = 0.0000001;
 
+abstract class CubicInterface {
+  double get x1;
+  set x1(double value);
+
+  double get x2;
+  set x2(double value);
+
+  double get y1;
+  set y1(double value);
+
+  double get y2;
+  set y2(double value);
+}
+
 // Returns dx/dt given t, x1, and x2, or dy/dt given t, y1, and y2.
 abstract class CubicInterpolator extends CubicInterpolatorBase
-    implements Interpolator {
+    implements Interpolator, CubicInterface {
   @override
   bool equalParameters(Interpolator other) {
     if (other is CubicInterpolator) {

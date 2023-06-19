@@ -22,6 +22,11 @@ import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
+class DrawFlags {
+  static const int foreground = 1 << 0;
+  static const int background = 1 << 1;
+}
+
 class Artboard extends ArtboardBase with ShapePaintContainer {
   bool _frameOrigin = true;
 
@@ -352,7 +357,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   /// Draw the drawable components in this artboard.
-  void draw(Canvas canvas) {
+  void draw(
+    Canvas canvas, [
+    int flags = DrawFlags.foreground | DrawFlags.background,
+  ]) {
     canvas.save();
     if (clip) {
       if (_frameOrigin) {
@@ -375,17 +383,21 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     if (_frameOrigin) {
       canvas.translate(width * originX, height * originY);
     }
-    for (final fill in fills) {
-      fill.draw(canvas, path);
-    }
-
-    for (var drawable = _firstDrawable;
-        drawable != null;
-        drawable = drawable.prev) {
-      if (drawable.isHidden || drawable.renderOpacity == 0) {
-        continue;
+    if (flags & (DrawFlags.background) != 0) {
+      for (final fill in fills) {
+        fill.draw(canvas, path);
       }
-      drawable.draw(canvas);
+    }
+    if (flags & (DrawFlags.foreground) != 0) {
+      for (var drawable = _firstDrawable;
+          drawable != null;
+          drawable = drawable.prev) {
+        if (drawable.isHidden || drawable.renderOpacity == 0) {
+          continue;
+        }
+
+        drawable.draw(canvas);
+      }
     }
     canvas.restore();
   }
@@ -598,7 +610,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   @override
-  void clipChanged(bool from, bool to) => addDirt(ComponentDirt.paint);
+  void clipChanged(bool from, bool to) {
+    addDirt(ComponentDirt.paint);
+  }
 
   @override
   bool import(ImportStack stack) {

@@ -17,6 +17,12 @@ class ComponentDirt {
   /// Path is dirty and needs to be rebuilt.
   static const int path = 1 << 5;
 
+  /// Text modifier coverage is dirty and needs to be rebuilt.
+  static const int textCoverage = 1 << 5;
+
+  /// Interpolator is dirty.
+  static const int interpolator = 1 << 5;
+
   /// Text shape is dirty, the shaper needs to re-run.
   static const int textShape = 1 << 5;
 

@@ -82,6 +82,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       // property. Wait for any other pending changes to complete before
       // checking.
       context.dirty(_checkShouldRemove);
+    } else {
+      markKeyFrameOrderDirty();
     }
 
     return removed;

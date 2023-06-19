@@ -4,6 +4,10 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/state_transition_base.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
+import 'package:rive/src/rive_core/animation/cubic_interpolator.dart';
+import 'package:rive/src/rive_core/animation/entry_state.dart';
+import 'package:rive/src/rive_core/animation/interpolator.dart';
+import 'package:rive/src/rive_core/animation/keyframe_interpolation.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
@@ -20,7 +24,19 @@ enum AllowTransition { no, waitingForExit, yes }
 class StateTransition extends StateTransitionBase {
   final StateTransitionConditions conditions = StateTransitionConditions();
   LayerState? stateTo;
+
   static final StateTransition unknown = StateTransition();
+
+  Interpolator? _interpolator;
+  Interpolator? get interpolator => _interpolator;
+  set interpolator(Interpolator? value) {
+    if (_interpolator == value) {
+      return;
+    }
+
+    _interpolator = value;
+    interpolatorId = value?.id ?? Core.missingId;
+  }
 
   @override
   bool validate() {
@@ -35,7 +51,21 @@ class StateTransition extends StateTransitionBase {
   void onAdded() {}
 
   @override
-  void onAddedDirty() {}
+  void onAddedDirty() {
+    if (interpolatorId != Core.missingId && canInterpolate) {
+      interpolator = context.resolve(interpolatorId);
+    }
+
+    switch (interpolation) {
+      case KeyFrameInterpolation.cubic:
+        if (interpolator is! CubicInterpolator) {
+          interpolation = KeyFrameInterpolation.linear;
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   bool get isDisabled => (flags & StateTransitionFlags.disabled) != 0;
   bool get pauseOnExit => (flags & StateTransitionFlags.pauseOnExit) != 0;
@@ -183,5 +213,24 @@ class StateTransition extends StateTransitionBase {
       return true;
     }
     return useExitTime;
+  }
+
+  // No interpolation on Entry states.
+  bool get canInterpolate => stateTo is! EntryState;
+
+  KeyFrameInterpolation get interpolation =>
+      KeyFrameInterpolation.values[interpolationType];
+  set interpolation(KeyFrameInterpolation value) {
+    if (canInterpolate) {
+      interpolationType = value.index;
+    }
+  }
+
+  @override
+  void interpolationTypeChanged(int from, int to) {}
+
+  @override
+  void interpolatorIdChanged(int from, int to) {
+    interpolator = context.resolve(to);
   }
 }

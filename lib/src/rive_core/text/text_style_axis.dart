@@ -15,8 +15,9 @@ class TextStyleAxis extends TextStyleAxisBase {
   void update(int dirt) {}
 
   @override
-  void axisValueChanged(double from, double to) =>
-      parent?.addDirt(ComponentDirt.textShape);
+  void axisValueChanged(double from, double to) {
+    parent?.addDirt(ComponentDirt.textShape);
+  }
 
   @override
   void tagChanged(int from, int to) => parent?.addDirt(ComponentDirt.textShape);

@@ -1,7 +1,3 @@
-/// Core automatically generated
-/// lib/src/generated/text/text_style_axis_base.dart.
-/// Do not modify manually.
-
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TextStyleAxisBase extends Component {

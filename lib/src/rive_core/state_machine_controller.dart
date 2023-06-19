@@ -99,11 +99,16 @@ class LayerController {
       _holdAnimation!.apply(_holdTime, coreContext: core, mix: _mixFrom);
       _holdAnimation = null;
     }
+
+    final interpolator = _transition?.interpolator;
+
     if (_stateFrom != null && _mix < 1) {
-      _stateFrom!.apply(core, _mixFrom);
+      final _applyMixFrom = interpolator?.transform(_mixFrom) ?? _mixFrom;
+      _stateFrom!.apply(core, _applyMixFrom);
     }
     if (_currentState != null) {
-      _currentState!.apply(core, _mix);
+      final _applyMix = interpolator?.transform(_mix) ?? _mix;
+      _currentState!.apply(core, _applyMix);
     }
   }
 

@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:ui' as ui;
+
 import 'package:rive/src/generated/text/text_style_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
@@ -207,4 +210,58 @@ class TextStyle extends TextStyleBase
 
   @override
   int get assetIdPropertyKey => TextStyleBase.fontAssetIdPropertyKey;
+
+  final ui.Path _renderPath = ui.Path();
+  final HashMap<double, ui.Path> _opacityPaths = HashMap<double, ui.Path>();
+
+  bool _hasContents = false;
+  void resetPath() {
+    _renderPath.reset();
+    _opacityPaths.clear();
+    _hasContents = false;
+  }
+
+  bool addPath(ui.Path path, double opacity) {
+    var hadContents = _hasContents;
+    _hasContents = true;
+    if (opacity == 1) {
+      _renderPath.addPath(path, ui.Offset.zero);
+    } else if (opacity > 0) {
+      var renderPath = _opacityPaths[opacity];
+      if (renderPath == null) {
+        _opacityPaths[opacity] = renderPath = ui.Path();
+      }
+      renderPath.addPath(path, ui.Offset.zero);
+    }
+    return !hadContents;
+  }
+
+  void draw(ui.Canvas canvas) {
+    for (final shapePaint in shapePaints) {
+      if (!shapePaint.isVisible) {
+        continue;
+      }
+      var paint = shapePaint.paint;
+      canvas.drawPath(
+        _renderPath,
+        paint,
+      );
+      if (_opacityPaths.entries.isNotEmpty) {
+        var oldColor = paint.color;
+        for (final entry in _opacityPaths.entries) {
+          paint.color = ui.Color.fromRGBO(
+            oldColor.red,
+            oldColor.green,
+            oldColor.blue,
+            oldColor.opacity * entry.key,
+          );
+          canvas.drawPath(
+            entry.value,
+            paint,
+          );
+        }
+        paint.color = oldColor;
+      }
+    }
+  }
 }

@@ -1,7 +1,3 @@
-/// Core automatically generated
-/// lib/src/generated/animation/listener_align_target_base.dart.
-/// Do not modify manually.
-
 import 'package:rive/src/rive_core/animation/listener_action.dart';
 
 abstract class ListenerAlignTargetBase extends ListenerAction {
