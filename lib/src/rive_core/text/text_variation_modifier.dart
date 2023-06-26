@@ -7,7 +7,7 @@ import 'package:rive_common/rive_text.dart';
 export 'package:rive/src/generated/text/text_variation_modifier_base.dart';
 
 class TextVariationModifier extends TextVariationModifierBase {
-  String get tagName => FontAxis.tagToName(axisTag);
+  String get tagName => FontTag.tagToName(axisTag);
 
   @override
   void axisTagChanged(int from, int to) =>

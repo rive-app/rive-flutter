@@ -9,7 +9,7 @@ class TextStyleAxis extends TextStyleAxisBase {
   @override
   bool validate() => super.validate() && parent is TextStyle;
 
-  String get tagName => FontAxis.tagToName(tag);
+  String get tagName => FontTag.tagToName(tag);
 
   @override
   void update(int dirt) {}

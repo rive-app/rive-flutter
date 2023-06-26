@@ -148,8 +148,10 @@ class TextModifierGroup extends TextModifierGroupBase {
     }
 
     if (axisVariations.isNotEmpty) {
-      var varFont = font.makeVariation(axisVariations.entries
-          .map((entry) => FontAxisCoord(entry.key, entry.value)));
+      var varFont = font.withOptions(
+          axisVariations.entries
+              .map((entry) => FontAxisCoord(entry.key, entry.value)),
+          []);
       if (varFont != null) {
         _cleanupFonts.add(varFont);
         font = varFont;

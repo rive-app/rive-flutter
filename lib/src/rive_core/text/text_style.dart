@@ -65,8 +65,8 @@ class TextStyle extends TextStyleBase
   TextVariationHelper? _variationHelper;
   TextVariationHelper? get variationHelper => _variationHelper;
 
-  Font? _makeVariableFont() => asset?.font?.makeVariation(
-      _variations.map((axis) => FontAxisCoord(axis.tag, axis.axisValue)));
+  Font? _makeVariableFont() => asset?.font?.withOptions(
+      _variations.map((axis) => FontAxisCoord(axis.tag, axis.axisValue)), []);
 
   Font? get font => _variationHelper?.font ?? asset?.font;
 
