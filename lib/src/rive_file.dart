@@ -74,8 +74,7 @@ void _skipProperty(BinaryReader reader, int propertyKey,
     throw UnsupportedError('Unsupported property key $propertyKey. '
         'A new runtime is likely necessary to play this file.');
   }
-  // Desrialize but don't do anything with the contents...
-  field.deserialize(reader);
+  field.skip(reader);
 }
 
 /// Encapsulates a [RiveFile] and provides access to the list of [Artboard]
