@@ -1,3 +1,7 @@
+/// Core automatically generated
+/// lib/src/generated/animation/transition_value_condition_base.dart.
+/// Do not modify manually.
+
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
 
 abstract class TransitionValueConditionBase extends TransitionCondition {

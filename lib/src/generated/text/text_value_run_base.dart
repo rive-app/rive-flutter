@@ -1,3 +1,7 @@
+/// Core automatically generated
+/// lib/src/generated/text/text_value_run_base.dart.
+/// Do not modify manually.
+
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TextValueRunBase extends Component {

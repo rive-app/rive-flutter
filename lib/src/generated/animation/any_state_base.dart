@@ -1,3 +1,7 @@
+/// Core automatically generated
+/// lib/src/generated/animation/any_state_base.dart.
+/// Do not modify manually.
+
 import 'package:rive/src/generated/animation/state_machine_layer_component_base.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 

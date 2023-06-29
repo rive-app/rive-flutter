@@ -4,15 +4,6 @@ import 'package:rive/src/rive_core/assets/asset.dart';
 
 export 'package:rive/src/generated/backboard_base.dart';
 
-class AssetPanelState {
-  static const int collapseImages = 1 << 0;
-  static const int collapselottie = 1 << 1;
-  static const int collapseFonts = 1 << 2;
-  static const int sortImages = 1 << 3;
-  static const int sortLottie = 1 << 4;
-  static const int sortFonts = 1 << 5;
-}
-
 class Backboard extends BackboardBase {
   static final Backboard unknown = Backboard();
 

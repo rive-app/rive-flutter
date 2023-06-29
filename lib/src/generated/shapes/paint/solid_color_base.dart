@@ -1,3 +1,7 @@
+/// Core automatically generated
+/// lib/src/generated/shapes/paint/solid_color_base.dart.
+/// Do not modify manually.
+
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class SolidColorBase extends Component {

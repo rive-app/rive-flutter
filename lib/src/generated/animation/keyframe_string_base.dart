@@ -1,3 +1,7 @@
+/// Core automatically generated
+/// lib/src/generated/animation/keyframe_string_base.dart.
+/// Do not modify manually.
+
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 
 abstract class KeyFrameStringBase extends KeyFrame {

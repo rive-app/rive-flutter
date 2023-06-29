@@ -1,12 +1,13 @@
 import 'dart:collection';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:rive/src/generated/text/text_modifier_group_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/text/text.dart';
 import 'package:rive/src/rive_core/text/text_modifier.dart';
 import 'package:rive/src/rive_core/text/text_modifier_range.dart';
 import 'package:rive/src/rive_core/text/text_shape_modifier.dart';
+import 'package:rive/src/rive_core/text/text_variation_modifier.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/rive_text.dart';
 
@@ -76,11 +77,15 @@ class TextModifierGroup extends TextModifierGroupBase {
     for (final range in _ranges) {
       range.clearRangeMap();
     }
+    addDirt(ComponentDirt.textCoverage);
   }
 
   /// Coverage is ultimately always expressed per unicode codepoint.
   Float32List _coverage = Float32List(1);
   int _textSize = -1;
+
+  @visibleForTesting
+  Float32List get coverageValues => _coverage;
 
   void computeRangeMap(String text, TextShapeResult? shape,
       BreakLinesResult? lines, GlyphLookup glyphLookup) {
@@ -137,6 +142,7 @@ class TextModifierGroup extends TextModifierGroupBase {
     if (font == null) {
       return run;
     }
+
     HashMap<int, double> axisVariations = run.userData is HashMap<int, double>
         ? run.userData as HashMap<int, double>
         : HashMap<int, double>();
@@ -149,9 +155,10 @@ class TextModifierGroup extends TextModifierGroupBase {
 
     if (axisVariations.isNotEmpty) {
       var varFont = font.withOptions(
-          axisVariations.entries
-              .map((entry) => FontAxisCoord(entry.key, entry.value)),
-          []);
+        axisVariations.entries
+            .map((entry) => FontAxisCoord(entry.key, entry.value)),
+        [],
+      );
       if (varFont != null) {
         _cleanupFonts.add(varFont);
         font = varFont;
@@ -189,6 +196,10 @@ class TextModifierGroup extends TextModifierGroupBase {
               TextModifierFlags.modifyScale |
               TextModifierFlags.modifyOrigin)) !=
       0;
+
+  bool modifiesAxes(int tag) => modifiers
+      .whereType<TextVariationModifier>()
+      .any((modifier) => modifier.axisTag == tag);
 
   double computeOpacity(double current, double t) {
     if (opacityInverted) {

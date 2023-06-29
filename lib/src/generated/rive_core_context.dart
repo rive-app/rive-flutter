@@ -131,6 +131,7 @@ import 'package:rive/src/rive_core/text/text_modifier_group.dart';
 import 'package:rive/src/rive_core/text/text_modifier_range.dart';
 import 'package:rive/src/rive_core/text/text_style.dart';
 import 'package:rive/src/rive_core/text/text_style_axis.dart';
+import 'package:rive/src/rive_core/text/text_style_feature.dart';
 import 'package:rive/src/rive_core/text/text_value_run.dart';
 import 'package:rive/src/rive_core/text/text_variation_modifier.dart';
 
@@ -312,6 +313,8 @@ class RiveCoreContext {
         return Tendon();
       case TextModifierRangeBase.typeKey:
         return TextModifierRange();
+      case TextStyleFeatureBase.typeKey:
+        return TextStyleFeature();
       case TextVariationModifierBase.typeKey:
         return TextVariationModifier();
       case TextModifierGroupBase.typeKey:
@@ -1356,6 +1359,16 @@ class RiveCoreContext {
           object.offset = value;
         }
         break;
+      case TextStyleFeatureBase.tagPropertyKey:
+        if (object is TextStyleFeatureBase && value is int) {
+          object.tag = value;
+        }
+        break;
+      case TextStyleFeatureBase.featureValuePropertyKey:
+        if (object is TextStyleFeatureBase && value is int) {
+          object.featureValue = value;
+        }
+        break;
       case TextVariationModifierBase.axisTagPropertyKey:
         if (object is TextVariationModifierBase && value is int) {
           object.axisTag = value;
@@ -1585,6 +1598,8 @@ class RiveCoreContext {
       case TextModifierRangeBase.unitsValuePropertyKey:
       case TextModifierRangeBase.typeValuePropertyKey:
       case TextModifierRangeBase.modeValuePropertyKey:
+      case TextStyleFeatureBase.tagPropertyKey:
+      case TextStyleFeatureBase.featureValuePropertyKey:
       case TextVariationModifierBase.axisTagPropertyKey:
       case TextModifierGroupBase.modifierFlagsPropertyKey:
       case TextStyleBase.fontAssetIdPropertyKey:
@@ -1911,6 +1926,10 @@ class RiveCoreContext {
         return (object as TextModifierRangeBase).typeValue;
       case TextModifierRangeBase.modeValuePropertyKey:
         return (object as TextModifierRangeBase).modeValue;
+      case TextStyleFeatureBase.tagPropertyKey:
+        return (object as TextStyleFeatureBase).tag;
+      case TextStyleFeatureBase.featureValuePropertyKey:
+        return (object as TextStyleFeatureBase).featureValue;
       case TextVariationModifierBase.axisTagPropertyKey:
         return (object as TextVariationModifierBase).axisTag;
       case TextModifierGroupBase.modifierFlagsPropertyKey:
@@ -2637,6 +2656,16 @@ class RiveCoreContext {
       case TextModifierRangeBase.modeValuePropertyKey:
         if (object is TextModifierRangeBase) {
           object.modeValue = value;
+        }
+        break;
+      case TextStyleFeatureBase.tagPropertyKey:
+        if (object is TextStyleFeatureBase) {
+          object.tag = value;
+        }
+        break;
+      case TextStyleFeatureBase.featureValuePropertyKey:
+        if (object is TextStyleFeatureBase) {
+          object.featureValue = value;
         }
         break;
       case TextVariationModifierBase.axisTagPropertyKey:

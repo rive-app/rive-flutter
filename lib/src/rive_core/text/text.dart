@@ -439,7 +439,6 @@ class Text extends TextBase with TextStyleContainer {
     );
     _unicharCount = styled.value.length;
     _cleanupShapes.add(_shape!);
-
     _lines =
         _shape?.breakLines(sizing == TextSizing.autoWidth ? -1 : width, align);
 
@@ -532,4 +531,7 @@ class Text extends TextBase with TextStyleContainer {
       markShapeDirty();
     }
   }
+
+  @override
+  String toString() => 'Text(id: $id, text: $text)';
 }

@@ -1,3 +1,6 @@
+/// Core automatically generated lib/src/generated/bones/bone_base.dart.
+/// Do not modify manually.
+
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';

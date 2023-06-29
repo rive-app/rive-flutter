@@ -12,6 +12,7 @@ import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive/src/rive_core/text/text.dart';
 import 'package:rive/src/rive_core/text/text_style_axis.dart';
+import 'package:rive/src/rive_core/text/text_style_feature.dart';
 import 'package:rive/src/rive_core/text/text_value_run.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/rive_text.dart';
@@ -34,7 +35,7 @@ class TextVariationHelper extends Component {
   @override
   void update(int dirt) {
     _font?.dispose();
-    _font = style._makeVariableFont();
+    _font = style._makeFontVariation();
   }
 
   void dispose() {
@@ -57,7 +58,9 @@ class TextStyle extends TextStyleBase
   final Set<TextValueRun> _referencers = {};
   Text? get text => parent as Text?;
   final Set<TextStyleAxis> _variations = {};
+  final Set<TextStyleFeature> _features = {};
   Iterable<TextStyleAxis> get variations => _variations;
+  Iterable<TextStyleFeature> get features => _features;
 
   Iterable<FontAxis> get variableAxes => asset?.font?.axes ?? [];
   bool get hasVariableAxes => asset?.font?.axes.isNotEmpty ?? false;
@@ -65,8 +68,22 @@ class TextStyle extends TextStyleBase
   TextVariationHelper? _variationHelper;
   TextVariationHelper? get variationHelper => _variationHelper;
 
-  Font? _makeVariableFont() => asset?.font?.withOptions(
-      _variations.map((axis) => FontAxisCoord(axis.tag, axis.axisValue)), []);
+  Iterable<FontTag> get fontFeatures => asset?.font?.features ?? [];
+
+  Font? _makeFontVariation() => asset?.font?.withOptions(
+        _variations.map(
+          (axis) => FontAxisCoord(
+            axis.tag,
+            axis.axisValue,
+          ),
+        ),
+        _features.map(
+          (feature) => FontFeature(
+            feature.tag,
+            feature.featureValue,
+          ),
+        ),
+      );
 
   Font? get font => _variationHelper?.font ?? asset?.font;
 
@@ -99,7 +116,8 @@ class TextStyle extends TextStyleBase
   }
 
   @override
-  String toString() => '${super.toString()} -> FontSize($fontSize)';
+  String toString() => 'TextStyle(id: $id, size: $fontSize'
+      ')';
 
   @override
   void buildDependencies() {
@@ -178,19 +196,33 @@ class TextStyle extends TextStyleBase
         _variationHelper ??= TextVariationHelper(this);
         addDirt(ComponentDirt.textShape);
       }
+    } else if (component is TextStyleFeature) {
+      if (_features.add(component)) {
+        _variationHelper ??= TextVariationHelper(this);
+        addDirt(ComponentDirt.textShape);
+      }
     }
   }
 
   @override
   void childRemoved(Component component) {
     super.childRemoved(component);
+    bool changed = false;
     if (component is TextStyleAxis) {
       if (_variations.remove(component)) {
-        addDirt(ComponentDirt.textShape);
-        if (_variations.isEmpty) {
-          _variationHelper?.dispose();
-          _variationHelper = null;
-        }
+        changed = true;
+      }
+    } else if (component is TextStyleFeature) {
+      if (_features.remove(component)) {
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      addDirt(ComponentDirt.textShape);
+      if (_variations.isEmpty && _features.isEmpty) {
+        _variationHelper?.dispose();
+        _variationHelper = null;
       }
     }
   }

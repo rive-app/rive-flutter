@@ -143,8 +143,7 @@ class TextModifierRange extends TextModifierRangeBase {
     _computeRangeMappedCoverage(coverage, _rangeMapper!);
   }
 
-  // void _computeCharacterCoverage(Float32List coverage, TextShapeResult shape)
-  // {
+  // void _computeCharacterCoverage(Float32List coverage, TextShapeResult shape) {
   //   var length = coverage.length;
   //   _indexFrom = length * offsetModifyFrom;
   //   _indexTo = length * offsetModifyTo;
