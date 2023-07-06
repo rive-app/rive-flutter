@@ -11,6 +11,9 @@ abstract class FileAsset extends FileAssetBase {
   @override
   void cdnUuidChanged(Uint8List from, Uint8List to) {}
 
+  @override
+  void cdnBaseUrlChanged(String from, String to) {}
+
   Future<void> decode(Uint8List bytes);
 
   @override

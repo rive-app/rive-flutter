@@ -7,8 +7,7 @@ import 'package:rive/src/utilities/utilities.dart';
 import 'core/importers/file_asset_importer.dart';
 
 class CDNAssetLoader extends FileAssetLoader {
-  final String baseUrl;
-  CDNAssetLoader(this.baseUrl);
+  CDNAssetLoader();
 
   @override
   bool isCompatible(FileAsset asset) => asset.cdnUuid.isNotEmpty;
@@ -16,8 +15,9 @@ class CDNAssetLoader extends FileAssetLoader {
   @override
   Future<bool> load(FileAsset asset) async {
     // do we have a url builder, dart seems to suck a bit for this.
-    var url = baseUrl;
-    if (!baseUrl.endsWith('/')) {
+    var url = asset.cdnBaseUrl;
+
+    if (!url.endsWith('/')) {
       url += '/';
     }
     url += formatUuid(

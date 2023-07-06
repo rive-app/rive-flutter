@@ -214,5 +214,39 @@ void main() {
       expect(asset is ImageAsset, true);
       verify(() => mockHttpClient.openUrl(any(), any())).called(1);
     });
+
+    testWidgets('Loading hosted assets will default to rives public cdn',
+        (WidgetTester tester) async {
+      await HttpOverrides.runZoned(() async {
+        final riveBytes = loadFile('assets/image_asset_prod.riv');
+        RiveFile.import(
+          riveBytes,
+        );
+      }, createHttpClient: (_) => mockHttpClient);
+
+      verify(() => mockHttpClient.openUrl(
+            any(),
+            // ok, hardcoded for the cdn_image.riv file.
+            Uri.parse(
+                'https://public.rive.app/cdn/uuid/69a03ce3-83f0-4fcb-94a5-0d401b8c030e'),
+          )).called(1);
+    });
+
+    testWidgets('Loading hosted assets can have custom cdns set',
+        (WidgetTester tester) async {
+      await HttpOverrides.runZoned(() async {
+        final riveBytes = loadFile('assets/image_asset_uat.riv');
+        RiveFile.import(
+          riveBytes,
+        );
+      }, createHttpClient: (_) => mockHttpClient);
+
+      verify(() => mockHttpClient.openUrl(
+            any(),
+            // ok, hardcoded for the cdn_image.riv file.
+            Uri.parse(
+                'https://public.uat.rive.app/cdn/uuid/69a03ce3-83f0-4fcb-94a5-0d401b8c030e'),
+          )).called(1);
+    });
   });
 }

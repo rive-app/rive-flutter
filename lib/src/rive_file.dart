@@ -278,7 +278,7 @@ class RiveFile {
       FallbackAssetLoader(
         [
           if (assetLoader != null) assetLoader,
-          if (cdn) CDNAssetLoader('https://public.rive.app/cdn/uuid'),
+          if (cdn) CDNAssetLoader(),
         ],
       ),
       importEmbeddedAssets: importEmbeddedAssets,

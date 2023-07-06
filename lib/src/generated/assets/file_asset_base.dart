@@ -59,10 +59,36 @@ abstract class FileAssetBase extends Asset {
 
   void cdnUuidChanged(Uint8List from, Uint8List to);
 
+  /// --------------------------------------------------------------------------
+  /// CdnBaseUrl field with key 362.
+  static const String cdnBaseUrlInitialValue =
+      'https://public.rive.app/cdn/uuid';
+  String _cdnBaseUrl = cdnBaseUrlInitialValue;
+  static const int cdnBaseUrlPropertyKey = 362;
+
+  /// Set the base url of our cdn.
+  String get cdnBaseUrl => _cdnBaseUrl;
+
+  /// Change the [_cdnBaseUrl] field value.
+  /// [cdnBaseUrlChanged] will be invoked only if the field's value has changed.
+  set cdnBaseUrl(String value) {
+    if (_cdnBaseUrl == value) {
+      return;
+    }
+    String from = _cdnBaseUrl;
+    _cdnBaseUrl = value;
+    if (hasValidated) {
+      cdnBaseUrlChanged(from, value);
+    }
+  }
+
+  void cdnBaseUrlChanged(String from, String to);
+
   @override
   void copy(covariant FileAssetBase source) {
     super.copy(source);
     _assetId = source._assetId;
     _cdnUuid = source._cdnUuid;
+    _cdnBaseUrl = source._cdnBaseUrl;
   }
 }

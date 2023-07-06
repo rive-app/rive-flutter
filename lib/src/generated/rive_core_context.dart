@@ -1499,6 +1499,11 @@ class RiveCoreContext {
           object.cdnUuid = value;
         }
         break;
+      case FileAssetBase.cdnBaseUrlPropertyKey:
+        if (object is FileAssetBase && value is String) {
+          object.cdnBaseUrl = value;
+        }
+        break;
       case DrawableAssetBase.heightPropertyKey:
         if (object is DrawableAssetBase && value is double) {
           object.height = value;
@@ -1532,6 +1537,7 @@ class RiveCoreContext {
       case TextValueRunBase.textPropertyKey:
       case CustomPropertyStringBase.propertyValuePropertyKey:
       case AssetBase.namePropertyKey:
+      case FileAssetBase.cdnBaseUrlPropertyKey:
         return stringType;
       case ComponentBase.parentIdPropertyKey:
       case DrawTargetBase.drawableIdPropertyKey:
@@ -1786,6 +1792,8 @@ class RiveCoreContext {
         return (object as CustomPropertyStringBase).propertyValue;
       case AssetBase.namePropertyKey:
         return (object as AssetBase).name;
+      case FileAssetBase.cdnBaseUrlPropertyKey:
+        return (object as FileAssetBase).cdnBaseUrl;
     }
     return '';
   }
@@ -2309,6 +2317,11 @@ class RiveCoreContext {
       case AssetBase.namePropertyKey:
         if (object is AssetBase) {
           object.name = value;
+        }
+        break;
+      case FileAssetBase.cdnBaseUrlPropertyKey:
+        if (object is FileAssetBase) {
+          object.cdnBaseUrl = value;
         }
         break;
     }
