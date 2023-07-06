@@ -12,6 +12,8 @@ export 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 export 'package:rive/src/rive_core/animation/loop.dart';
 export 'package:rive/src/rive_core/animation/state_machine.dart';
 export 'package:rive/src/rive_core/artboard.dart';
+export 'package:rive/src/rive_core/assets/font_asset.dart';
+export 'package:rive/src/rive_core/assets/image_asset.dart';
 export 'package:rive/src/rive_core/rive_animation_controller.dart';
 export 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 export 'package:rive/src/rive_core/runtime/runtime_header.dart'

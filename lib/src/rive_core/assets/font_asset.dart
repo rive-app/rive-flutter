@@ -7,31 +7,47 @@ import 'package:rive_common/rive_text.dart';
 export 'package:rive/src/generated/assets/font_asset_base.dart';
 
 class FontAsset extends FontAssetBase {
-  final Set<VoidCallback> _decodedCallbacks = {};
+  final Set<VoidCallback> _callbacks = {};
 
-  /// Call [callback] when the font is ready. Set [notifyAlreadyDecoded] to
-  /// specify if you want to be called if the font is already decoded.
-  bool whenDecoded(VoidCallback callback, {bool notifyAlreadyDecoded = true}) {
+  /// Call [callback] when the font is ready. Set [notifyAlreadySet] to
+  /// specify if you want to be called if the font is already set.
+  bool setFontCallback(
+    VoidCallback callback, {
+    bool notifyAlreadySet = true,
+  }) {
     if (font != null) {
-      if (notifyAlreadyDecoded) {
+      if (notifyAlreadySet) {
         callback();
       }
       return true;
     }
 
-    _decodedCallbacks.add(callback);
+    _callbacks.add(callback);
     return false;
   }
 
-  Font? font;
-  @override
-  Future<void> decode(Uint8List bytes) async {
-    font = Font.decode(bytes);
-    var callbacks = _decodedCallbacks.toList(growable: false);
-    _decodedCallbacks.clear();
+  Font? _font;
+  Font? get font => _font;
+  set font(Font? font) {
+    if (_font == font) {
+      return;
+    }
+    _font = font;
+
+    var callbacks = _callbacks.toList(growable: false);
+    _callbacks.clear();
     for (final callback in callbacks) {
       callback();
     }
+  }
+
+  @override
+  Future<void> decode(Uint8List bytes) async {
+    font = await parseBytes(bytes);
+  }
+
+  static Future<Font?> parseBytes(Uint8List bytes) async {
+    return Font.decode(bytes);
   }
 
   @override

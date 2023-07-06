@@ -24,12 +24,13 @@ class ImageAsset extends ImageAssetBase {
   }
 
   @override
-  Future<void> decode(Uint8List bytes) {
-    final completer = Completer<void>();
-    ui.decodeImageFromList(bytes, (value) {
-      image = value;
-      completer.complete();
-    });
+  Future<void> decode(Uint8List bytes) async {
+    image = await parseBytes(bytes);
+  }
+
+  static Future<ui.Image?> parseBytes(Uint8List bytes) {
+    final completer = Completer<ui.Image?>();
+    ui.decodeImageFromList(bytes, completer.complete);
     return completer.future;
   }
 

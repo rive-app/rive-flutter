@@ -172,6 +172,7 @@ class Text extends TextBase with TextStyleContainer {
     _syncRuns();
   }
 
+
   final Size _size = Size.zero;
 
   static const double paragraphSpacing = 20;

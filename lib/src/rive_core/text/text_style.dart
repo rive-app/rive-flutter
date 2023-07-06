@@ -135,7 +135,7 @@ class TextStyle extends TextStyleBase
     }
 
     super.asset = value;
-    if (asset?.whenDecoded(_fontDecoded, notifyAlreadyDecoded: false) ??
+    if (asset?.setFontCallback(_fontDecoded, notifyAlreadySet: false) ??
         false) {
       // Already decoded.
       _markShapeDirty();
@@ -155,6 +155,7 @@ class TextStyle extends TextStyleBase
   }
 
   void _fontDecoded() => _markShapeDirty();
+
 
   @override
   void onDirty(int mask) {

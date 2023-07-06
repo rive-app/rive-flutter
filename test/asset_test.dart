@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rive/rive.dart';
-import 'package:rive/src/asset_loader.dart';
-import 'package:rive/src/rive_core/assets/image_asset.dart';
 
 import 'mocks/mocks.dart';
 import 'src/network.dart';
