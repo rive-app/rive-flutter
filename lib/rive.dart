@@ -1,5 +1,7 @@
 library rive;
 
+export 'package:rive/src/asset.dart';
+export 'package:rive/src/asset_loader.dart';
 export 'package:rive/src/controllers/one_shot_controller.dart';
 export 'package:rive/src/controllers/simple_controller.dart';
 export 'package:rive/src/controllers/state_machine_controller.dart';

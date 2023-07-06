@@ -22,12 +22,11 @@ class FileAssetContents extends FileAssetContentsBase {
 
   @override
   bool import(ImportStack stack) {
-    var fileAssetImporter =
-        stack.latest<FileAssetImporter>(FileAssetBase.typeKey);
-    if (fileAssetImporter == null) {
+    var resolver = stack.latest<FileAssetImporter>(FileAssetBase.typeKey);
+    if (resolver == null) {
       return false;
     }
-    fileAssetImporter.loadContents(this);
+    resolver.resolveContents(this);
 
     return super.import(stack);
   }

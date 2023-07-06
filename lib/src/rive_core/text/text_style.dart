@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:ui' as ui;
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/text/text_style_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
@@ -143,17 +144,17 @@ class TextStyle extends TextStyleBase
   }
 
   @override
+  void copy(covariant TextStyle source) {
+    super.copy(source);
+    asset = source.asset;
+  }
+
+  @override
   void fontAssetIdChanged(int from, int to) {
     asset = context.resolve(to);
   }
 
   void _fontDecoded() => _markShapeDirty();
-
-  @override
-  void onAddedDirty() {
-    super.onAddedDirty();
-    asset = context.resolve(fontAssetId);
-  }
 
   @override
   void onDirty(int mask) {
@@ -295,5 +296,13 @@ class TextStyle extends TextStyleBase
         paint.color = oldColor;
       }
     }
+  }
+
+  @override
+  bool import(ImportStack stack) {
+    if (!registerWithImporter(stack)) {
+      return false;
+    }
+    return super.import(stack);
   }
 }

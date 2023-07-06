@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:rive/src/asset_loader.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
 import 'package:rive/src/generated/animation/animation_state_base.dart';
@@ -10,6 +11,7 @@ import 'package:rive/src/generated/animation/any_state_base.dart';
 import 'package:rive/src/generated/animation/blend_state_transition_base.dart';
 import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
+import 'package:rive/src/generated/assets/font_asset_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/local_file_io.dart'
     if (dart.library.html) 'package:rive/src/local_file_web.dart';
@@ -26,12 +28,14 @@ import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
+import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
+
 import 'package:rive_common/utilities.dart';
 
 Core<CoreContext>? _readRuntimeObject(
@@ -85,13 +89,14 @@ class RiveFile {
 
   Backboard _backboard = Backboard.unknown;
   final _artboards = <Artboard>[];
-  final FileAssetResolver? _assetResolver;
+  final FileAssetLoader? _assetLoader;
 
   RiveFile._(
     BinaryReader reader,
     this.header,
-    this._assetResolver,
-  ) {
+    this._assetLoader, {
+    bool importEmbeddedAssets = true,
+  }) {
     /// Property fields table of contents
     final propertyToField = HashMap<int, CoreFieldType>();
 
@@ -123,6 +128,12 @@ class RiveFile {
         if (artboardImporter != null) {
           artboardImporter.addComponent(null);
         }
+        continue;
+      }
+      // two options, either tell the fileAssetImporter,
+      // or simply skip the object. i think we should skip the object.
+      if (!importEmbeddedAssets && object is FileAssetContentsBase) {
+        // suppress importing embedded assets
         continue;
       }
 
@@ -187,7 +198,13 @@ class RiveFile {
             break;
           }
         case ImageAssetBase.typeKey:
-          stackObject = FileAssetImporter(object as FileAsset, _assetResolver);
+        case FontAssetBase.typeKey:
+          // all these stack objects are resolvers. they get resolved.
+          stackObject = FileAssetImporter(
+            object as FileAsset,
+            _assetLoader,
+            importEmbeddedAssets: importEmbeddedAssets,
+          );
           stackType = FileAssetBase.typeKey;
           break;
         default:
@@ -250,42 +267,80 @@ class RiveFile {
   /// [RiveUnsupportedVersionException] if the version is not supported.
   factory RiveFile.import(
     ByteData bytes, {
-    FileAssetResolver? assetResolver,
+    FileAssetLoader? assetLoader,
+    bool cdn = true,
+    bool importEmbeddedAssets = true,
   }) {
     var reader = BinaryReader(bytes);
-    return RiveFile._(reader, RuntimeHeader.read(reader), assetResolver);
+    return RiveFile._(
+      reader,
+      RuntimeHeader.read(reader),
+      FallbackAssetLoader(
+        [
+          if (assetLoader != null) assetLoader,
+          if (cdn) CDNAssetLoader('https://public.rive.app/cdn/uuid'),
+        ],
+      ),
+      importEmbeddedAssets: importEmbeddedAssets,
+    );
   }
 
-  /// Imports a Rive file from an asset bundle. Provide [basePath] if any nested
-  /// Rive asset isn't in the same path as the [bundleKey].
-  static Future<RiveFile> asset(String bundleKey, {String? basePath}) async {
-    final bytes = await rootBundle.load(bundleKey);
-    if (basePath == null) {
-      int index = bundleKey.lastIndexOf('/');
-      if (index != -1) {
-        basePath = bundleKey.substring(0, index + 1);
-      } else {
-        // ignore: parameter_assignments
-        basePath = '';
-      }
-    }
-    return RiveFile.import(bytes, assetResolver: _LocalAssetResolver(basePath));
+  /// Imports a Rive file from an asset bundle.
+  /// By default we will look for out of bound assets next to the [bundleKey] & check
+  /// Rive's CDN for content.
+  static Future<RiveFile> asset(
+    String bundleKey, {
+    FileAssetLoader? assetLoader,
+    bool cdn = true,
+    bool importEmbeddedAssets = true,
+    AssetBundle? bundle,
+  }) async {
+    final bytes = await (bundle ?? rootBundle).load(
+      bundleKey,
+    );
+
+    return RiveFile.import(
+      bytes,
+      assetLoader: assetLoader,
+      cdn: cdn,
+      importEmbeddedAssets: importEmbeddedAssets,
+    );
   }
 
   /// Imports a Rive file from a URL over HTTP. Provide an [assetResolver] if
   /// your file contains images that needed to be loaded with separate network
   /// requests.
-  static Future<RiveFile> network(String url,
-      {FileAssetResolver? assetResolver, Map<String, String>? headers}) async {
+  static Future<RiveFile> network(
+    String url, {
+    FileAssetLoader? assetLoader,
+    Map<String, String>? headers,
+    bool cdn = true,
+    bool importEmbeddedAssets = true,
+  }) async {
     final res = await http.get(Uri.parse(url), headers: headers);
     final bytes = ByteData.view(res.bodyBytes.buffer);
-    return RiveFile.import(bytes, assetResolver: assetResolver);
+    return RiveFile.import(
+      bytes,
+      assetLoader: assetLoader,
+      cdn: cdn,
+      importEmbeddedAssets: importEmbeddedAssets,
+    );
   }
 
   /// Imports a Rive file from local folder
-  static Future<RiveFile> file(String path) async {
+  static Future<RiveFile> file(
+    String path, {
+    FileAssetLoader? assetLoader,
+    bool cdn = true,
+    bool importEmbeddedAssets = true,
+  }) async {
     final bytes = await localFileBytes(path);
-    return RiveFile.import(ByteData.view(bytes!.buffer));
+    return RiveFile.import(
+      ByteData.view(bytes!.buffer),
+      assetLoader: assetLoader,
+      importEmbeddedAssets: importEmbeddedAssets,
+      cdn: cdn,
+    );
   }
 
   /// Returns all artboards in the file
@@ -298,26 +353,4 @@ class RiveFile {
   /// that name exists in the file
   Artboard? artboardByName(String name) =>
       _artboards.firstWhereOrNull((a) => a.name == name);
-}
-
-/// Resolves a Rive asset from the network provided a [baseUrl].
-class NetworkAssetResolver extends FileAssetResolver {
-  final String baseUrl;
-  NetworkAssetResolver(this.baseUrl);
-
-  @override
-  Future<Uint8List> loadContents(FileAsset asset) async {
-    final res = await http.get(Uri.parse(baseUrl + asset.uniqueFilename));
-    return Uint8List.view(res.bodyBytes.buffer);
-  }
-}
-
-class _LocalAssetResolver extends FileAssetResolver {
-  String basePath;
-  _LocalAssetResolver(this.basePath);
-  @override
-  Future<Uint8List> loadContents(FileAsset asset) async {
-    final bytes = await rootBundle.load(basePath + asset.uniqueFilename);
-    return Uint8List.view(bytes.buffer);
-  }
 }

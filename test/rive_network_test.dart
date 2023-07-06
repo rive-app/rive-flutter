@@ -6,15 +6,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rive/rive.dart';
 
 import 'mocks/mocks.dart';
+import 'src/network.dart';
 import 'src/utils.dart';
-
-class MockHttpClient extends Mock implements HttpClient {}
-
-class MockHttpClientRequest extends Mock implements HttpClientRequest {}
-
-class MockHttpClientResponse extends Mock implements HttpClientResponse {}
-
-class MockHttpHeaders extends Mock implements HttpHeaders {}
 
 void main() {
   late MockHttpClient mockHttpClient;
@@ -26,25 +19,9 @@ void main() {
     // Build our app and trigger a frame.
     final riveBytes = loadFile('assets/rive-flutter-test-asset.riv');
     final body = riveBytes.buffer.asUint8List();
-    mockHttpClient = MockHttpClient();
-    request = MockHttpClientRequest();
+    mockHttpClient = getMockHttpClient();
 
-    when(() => request.headers).thenReturn(MockHttpHeaders());
-
-    when(() => mockHttpClient.openUrl(any(), any())).thenAnswer((invocation) {
-      final response = MockHttpClientResponse();
-      when(request.close).thenAnswer((_) => Future.value(response));
-      when(() => request.addStream(any())).thenAnswer((_) async => null);
-      when(() => response.headers).thenReturn(MockHttpHeaders());
-      when(() => response.handleError(any(), test: any(named: 'test')))
-          .thenAnswer((_) => Stream.value(body));
-      when(() => response.statusCode).thenReturn(200);
-      when(() => response.reasonPhrase).thenReturn('OK');
-      when(() => response.contentLength).thenReturn(body.length);
-      when(() => response.isRedirect).thenReturn(false);
-      when(() => response.persistentConnection).thenReturn(false);
-      return Future.value(request);
-    });
+    request = prepMockRequest(mockHttpClient, body);
   });
 
   testWidgets('Using the network, calls the http client without headers',

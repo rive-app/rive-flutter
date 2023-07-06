@@ -1494,6 +1494,11 @@ class RiveCoreContext {
           object.assetId = value;
         }
         break;
+      case FileAssetBase.cdnUuidPropertyKey:
+        if (object is FileAssetBase && value is Uint8List) {
+          object.cdnUuid = value;
+        }
+        break;
       case DrawableAssetBase.heightPropertyKey:
         if (object is DrawableAssetBase && value is double) {
           object.height = value;
@@ -1757,6 +1762,7 @@ class RiveCoreContext {
       case GradientStopBase.colorValuePropertyKey:
         return colorType;
       case MeshBase.triangleIndexBytesPropertyKey:
+      case FileAssetBase.cdnUuidPropertyKey:
       case FileAssetContentsBase.bytesPropertyKey:
         return bytesType;
       default:
@@ -2260,6 +2266,8 @@ class RiveCoreContext {
     switch (propertyKey) {
       case MeshBase.triangleIndexBytesPropertyKey:
         return (object as MeshBase).triangleIndexBytes;
+      case FileAssetBase.cdnUuidPropertyKey:
+        return (object as FileAssetBase).cdnUuid;
       case FileAssetContentsBase.bytesPropertyKey:
         return (object as FileAssetContentsBase).bytes;
     }
@@ -3451,6 +3459,11 @@ class RiveCoreContext {
       case MeshBase.triangleIndexBytesPropertyKey:
         if (object is MeshBase) {
           object.triangleIndexBytes = value;
+        }
+        break;
+      case FileAssetBase.cdnUuidPropertyKey:
+        if (object is FileAssetBase) {
+          object.cdnUuid = value;
         }
         break;
       case FileAssetContentsBase.bytesPropertyKey:

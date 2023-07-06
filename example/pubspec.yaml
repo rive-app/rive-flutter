@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   rive:
     path: ../
+  http:
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +25,4 @@ flutter:
 
   assets:
     - assets/
+    - assets/fonts/

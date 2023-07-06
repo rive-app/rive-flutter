@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
+import 'package:rive/src/core/importers/file_asset_importer.dart';
 import 'package:rive_common/math.dart';
 
 /// Specifies whether a source is from an asset bundle or http
@@ -58,6 +59,14 @@ class RiveAnimation extends StatefulWidget {
   /// Headers for network requests
   final Map<String, String>? headers;
 
+  /// Setting to tell our rive file that it should load embedded assets
+  /// disable this customize assets even when embedded
+  final bool? importEmbeddedAssets;
+
+  /// Specify an assetLoader explicitley, leave this blank to let rive
+  /// chose how to load an asset itself.
+  final FileAssetLoader? assetLoader;
+
   /// Creates a new [RiveAnimation] from an asset bundle.
   ///
   /// *Example:*
@@ -75,6 +84,8 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
+    this.importEmbeddedAssets = true,
+    this.assetLoader,
     Key? key,
   })  : name = asset,
         file = null,
@@ -100,6 +111,8 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     this.headers,
+    this.importEmbeddedAssets = true,
+    this.assetLoader,
     Key? key,
   })  : name = url,
         file = null,
@@ -123,7 +136,9 @@ class RiveAnimation extends StatefulWidget {
     this.antialiasing = true,
     this.controllers = const [],
     this.onInit,
+    this.importEmbeddedAssets = true,
     Key? key,
+    this.assetLoader,
   })  : name = path,
         file = null,
         headers = null,
@@ -152,6 +167,8 @@ class RiveAnimation extends StatefulWidget {
     Key? key,
   })  : name = null,
         headers = null,
+        importEmbeddedAssets = null,
+        assetLoader = null,
         src = _Source.direct,
         super(key: key);
 
@@ -187,13 +204,28 @@ class RiveAnimationState extends State<RiveAnimation> {
   Future<RiveFile> _loadRiveFile() {
     switch (widget.src) {
       case _Source.asset:
-        return RiveFile.asset(widget.name!);
+        return RiveFile.asset(
+          widget.name!,
+          importEmbeddedAssets: widget.importEmbeddedAssets!,
+          assetLoader: widget.assetLoader,
+        );
       case _Source.network:
-        return RiveFile.network(widget.name!, headers: widget.headers);
+        return RiveFile.network(
+          widget.name!,
+          headers: widget.headers,
+          importEmbeddedAssets: widget.importEmbeddedAssets!,
+          assetLoader: widget.assetLoader,
+        );
       case _Source.file:
-        return RiveFile.file(widget.name!);
+        return RiveFile.file(
+          widget.name!,
+          importEmbeddedAssets: widget.importEmbeddedAssets!,
+          assetLoader: widget.assetLoader,
+        );
       case _Source.direct:
-        return Future.value(widget.file!);
+        return Future.value(
+          widget.file!,
+        );
     }
   }
 

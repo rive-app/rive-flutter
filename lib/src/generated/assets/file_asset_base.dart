@@ -1,6 +1,7 @@
 /// Core automatically generated lib/src/generated/assets/file_asset_base.dart.
 /// Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/assets/asset.dart';
 
 abstract class FileAssetBase extends Asset {
@@ -34,9 +35,34 @@ abstract class FileAssetBase extends Asset {
 
   void assetIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// CdnUuid field with key 359.
+  static final Uint8List cdnUuidInitialValue = Uint8List(0);
+  Uint8List _cdnUuid = cdnUuidInitialValue;
+  static const int cdnUuidPropertyKey = 359;
+
+  /// The cdn uuid if it exists
+  Uint8List get cdnUuid => _cdnUuid;
+
+  /// Change the [_cdnUuid] field value.
+  /// [cdnUuidChanged] will be invoked only if the field's value has changed.
+  set cdnUuid(Uint8List value) {
+    if (listEquals(_cdnUuid, value)) {
+      return;
+    }
+    Uint8List from = _cdnUuid;
+    _cdnUuid = value;
+    if (hasValidated) {
+      cdnUuidChanged(from, value);
+    }
+  }
+
+  void cdnUuidChanged(Uint8List from, Uint8List to);
+
   @override
   void copy(covariant FileAssetBase source) {
     super.copy(source);
     _assetId = source._assetId;
+    _cdnUuid = source._cdnUuid;
   }
 }
