@@ -154,7 +154,10 @@ class TextStyle extends TextStyleBase
     asset = context.resolve(to);
   }
 
-  void _fontDecoded() => _markShapeDirty();
+  void _fontDecoded() {
+    _markShapeDirty();
+    _variationHelper?.addDirt(ComponentDirt.textShape);
+  }
 
 
   @override

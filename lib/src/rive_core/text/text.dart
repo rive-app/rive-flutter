@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -173,7 +174,11 @@ class Text extends TextBase with TextStyleContainer {
   }
 
 
-  final Size _size = Size.zero;
+  Mat2D get originTransform => Mat2D.multiply(Mat2D(), worldTransform,
+      Mat2D.fromTranslate(-_size.width * originX, -_size.height * originY));
+
+  Size _size = Size.zero;
+  Size get size => _size;
 
   static const double paragraphSpacing = 20;
 
@@ -343,6 +348,17 @@ class Text extends TextBase with TextStyleContainer {
       }
       y += paragraphSpacing;
     }
+    switch (sizing) {
+      case TextSizing.autoWidth:
+        _size = Size(maxX, max(0, y - paragraphSpacing));
+        break;
+      case TextSizing.autoHeight:
+        _size = Size(width, max(0, y - paragraphSpacing));
+        break;
+      case TextSizing.fixed:
+        _size = Size(width, height);
+        break;
+    }
   }
 
   bool _renderStylesDirty = true;
@@ -361,6 +377,7 @@ class Text extends TextBase with TextStyleContainer {
 
     canvas.save();
     canvas.transform(worldTransform.mat4);
+    canvas.translate(-_size.width * originX, -_size.height * originY);
     if (overflow == TextOverflow.clipped) {
       canvas.clipRect(Offset.zero & _size);
     }
@@ -534,4 +551,14 @@ class Text extends TextBase with TextStyleContainer {
 
   @override
   String toString() => 'Text(id: $id, text: $text)';
+
+  @override
+  void originXChanged(double from, double to) {
+    context.markNeedsAdvance();
+  }
+
+  @override
+  void originYChanged(double from, double to) {
+    context.markNeedsAdvance();
+  }
 }

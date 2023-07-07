@@ -1469,6 +1469,16 @@ class RiveCoreContext {
           object.height = value;
         }
         break;
+      case TextBase.originXPropertyKey:
+        if (object is TextBase && value is double) {
+          object.originX = value;
+        }
+        break;
+      case TextBase.originYPropertyKey:
+        if (object is TextBase && value is double) {
+          object.originY = value;
+        }
+        break;
       case TextValueRunBase.styleIdPropertyKey:
         if (object is TextValueRunBase && value is int) {
           object.styleId = value;
@@ -1738,6 +1748,8 @@ class RiveCoreContext {
       case TextStyleAxisBase.axisValuePropertyKey:
       case TextBase.widthPropertyKey:
       case TextBase.heightPropertyKey:
+      case TextBase.originXPropertyKey:
+      case TextBase.originYPropertyKey:
       case DrawableAssetBase.heightPropertyKey:
       case DrawableAssetBase.widthPropertyKey:
         return doubleType;
@@ -2202,6 +2214,10 @@ class RiveCoreContext {
         return (object as TextBase).width;
       case TextBase.heightPropertyKey:
         return (object as TextBase).height;
+      case TextBase.originXPropertyKey:
+        return (object as TextBase).originX;
+      case TextBase.originYPropertyKey:
+        return (object as TextBase).originY;
       case DrawableAssetBase.heightPropertyKey:
         return (object as DrawableAssetBase).height;
       case DrawableAssetBase.widthPropertyKey:
@@ -3322,6 +3338,16 @@ class RiveCoreContext {
       case TextBase.heightPropertyKey:
         if (object is TextBase) {
           object.height = value;
+        }
+        break;
+      case TextBase.originXPropertyKey:
+        if (object is TextBase) {
+          object.originX = value;
+        }
+        break;
+      case TextBase.originYPropertyKey:
+        if (object is TextBase) {
+          object.originY = value;
         }
         break;
       case DrawableAssetBase.heightPropertyKey:

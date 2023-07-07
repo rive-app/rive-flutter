@@ -141,6 +141,54 @@ abstract class TextBase extends Drawable {
 
   void heightChanged(double from, double to);
 
+  /// --------------------------------------------------------------------------
+  /// OriginX field with key 363.
+  static const double originXInitialValue = 0.0;
+  double _originX = originXInitialValue;
+  static const int originXPropertyKey = 363;
+
+  /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
+  double get originX => _originX;
+
+  /// Change the [_originX] field value.
+  /// [originXChanged] will be invoked only if the field's value has changed.
+  set originX(double value) {
+    if (_originX == value) {
+      return;
+    }
+    double from = _originX;
+    _originX = value;
+    if (hasValidated) {
+      originXChanged(from, value);
+    }
+  }
+
+  void originXChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// OriginY field with key 364.
+  static const double originYInitialValue = 0.0;
+  double _originY = originYInitialValue;
+  static const int originYPropertyKey = 364;
+
+  /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
+  double get originY => _originY;
+
+  /// Change the [_originY] field value.
+  /// [originYChanged] will be invoked only if the field's value has changed.
+  set originY(double value) {
+    if (_originY == value) {
+      return;
+    }
+    double from = _originY;
+    _originY = value;
+    if (hasValidated) {
+      originYChanged(from, value);
+    }
+  }
+
+  void originYChanged(double from, double to);
+
   @override
   void copy(covariant TextBase source) {
     super.copy(source);
@@ -149,5 +197,7 @@ abstract class TextBase extends Drawable {
     _overflowValue = source._overflowValue;
     _width = source._width;
     _height = source._height;
+    _originX = source._originX;
+    _originY = source._originY;
   }
 }
