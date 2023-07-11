@@ -191,7 +191,6 @@ class RiveAnimationState extends State<RiveAnimation> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _configure());
-    _configure();
   }
 
   /// Loads [RiveFile] and calls [_init]
