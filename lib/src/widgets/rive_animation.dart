@@ -63,7 +63,7 @@ class RiveAnimation extends StatefulWidget {
   /// disable this customize assets even when embedded
   final bool? importEmbeddedAssets;
 
-  /// Specify an assetLoader explicitley, leave this blank to let rive
+  /// Specify an assetLoader explicitly, leave this blank to let rive
   /// chose how to load an asset itself.
   final FileAssetLoader? assetLoader;
 
