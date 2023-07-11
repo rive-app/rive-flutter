@@ -293,11 +293,9 @@ class RiveFile {
     FileAssetLoader? assetLoader,
     bool cdn = true,
     bool importEmbeddedAssets = true,
-    AssetBundle? bundle,
+    required AssetBundle bundle,
   }) async {
-    final bytes = await (bundle ?? rootBundle).load(
-      bundleKey,
-    );
+    final bytes = await bundle.load(bundleKey);
 
     return RiveFile.import(
       bytes,
