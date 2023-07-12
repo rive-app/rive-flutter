@@ -143,22 +143,6 @@ class TextModifierRange extends TextModifierRangeBase {
     _computeRangeMappedCoverage(coverage, _rangeMapper!);
   }
 
-  // void _computeCharacterCoverage(Float32List coverage, TextShapeResult shape) {
-  //   var length = coverage.length;
-  //   _indexFrom = length * offsetModifyFrom;
-  //   _indexTo = length * offsetModifyTo;
-  //   _indexFalloffFrom = length * offsetFalloffFrom;
-  //   _indexFalloffTo = length * offsetFalloffTo;
-
-  //   // Since _coverage.length == text.length, we can use this for our length.
-  //   for (int i = 0; i < length; i++) {
-  //     coverage[i] += _characterCoverage(i);
-  //   }
-  // }
-
-  // Coverage of an individual character in the range.
-  // double _characterCoverage(int i) => _coverageAt(i + 0.5);
-
   double _coverageAt(double t) {
     var c = 0.0;
     if (_indexTo >= _indexFrom) {
@@ -250,20 +234,19 @@ class TextModifierRange extends TextModifierRangeBase {
   set mode(TextRangeMode mode) => modeValue = mode.index;
 
   @override
-  void modeValueChanged(int from, int to) => modifierGroup?.rangeTypeChanged();
+  void modeValueChanged(int from, int to) => modifierGroup?.rangeChanged();
 
   TextRangeType get type => TextRangeType.values[typeValue];
   set type(TextRangeType value) => typeValue = value.index;
 
   @override
-  void typeValueChanged(int from, int to) => modifierGroup?.rangeTypeChanged();
+  void typeValueChanged(int from, int to) => modifierGroup?.rangeChanged();
 
   @override
-  void clampChanged(bool from, bool to) => modifierGroup?.rangeTypeChanged();
+  void clampChanged(bool from, bool to) => modifierGroup?.rangeChanged();
 
   @override
-  void strengthChanged(double from, double to) =>
-      modifierGroup?.rangeTypeChanged();
+  void strengthChanged(double from, double to) => modifierGroup?.rangeChanged();
 }
 
 // See word indices and word lengths implementation above, we basically want the
