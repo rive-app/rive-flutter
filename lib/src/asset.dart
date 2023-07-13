@@ -9,8 +9,8 @@ extension FileAssetExtension on FileAsset {
   Type get type => _getType(fileExtension);
 }
 
-Extension _getExtension(String extension) {
-  switch (extension) {
+Extension _getExtension(String ext) {
+  switch (ext) {
     case 'png':
       return Extension.png;
     case 'jpeg':
@@ -25,8 +25,8 @@ Extension _getExtension(String extension) {
   return Extension.unknown;
 }
 
-Type _getType(String extension) {
-  switch (extension) {
+Type _getType(String ext) {
+  switch (ext) {
     case 'png':
     case 'jpeg':
     case 'webp':

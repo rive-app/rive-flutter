@@ -1,12 +1,22 @@
+## UPCOMING
+
+- Resolve assets, such as images and fonts, manually. This allows for swapping out image/font assets at runtime, instead of using the embedded versions. See `RiveFile` and `CallbackAssetLoader`.
+
+Deprecated:
+- `assetResolver` parameter on `RiveFile.network` and `RiveFile.import`. Use `assetLoader` instead - see `CallbackAssetLoader`.
+- `NetworkAssetResolver`, use `CallbackAssetLoader` instead.
+
 ## 0.11.4
- - Adds interpolation on states feature
+
+- Adds interpolation on states feature.
 
 ## 0.11.3
- - Bumps rive_common to add Android namespace to support Gradle 8 (issue [312](https://github.com/rive-app/rive-flutter/issues/312))
+
+- Bumps rive_common to add Android namespace to support Gradle 8 (issue [312](https://github.com/rive-app/rive-flutter/issues/312)).
 
 ## 0.11.2
 
-- Add parameter to specifcy headers on RiveAnimation.network widget
+- Add parameter to specify headers on `RiveAnimation.network` widget, and `RiveFile.network`.
 
 ## 0.11.1
 

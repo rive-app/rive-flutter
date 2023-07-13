@@ -4,8 +4,20 @@ import 'package:rive/src/asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/utilities/utilities.dart';
 
-import 'core/importers/file_asset_importer.dart';
+/// Base class for resolving out of band Rive assets, such as images and fonts.
+///
+/// See [CallbackAssetLoader] and [LocalAssetLoader] for an example of how to
+/// use this.
+abstract class FileAssetLoader {
+  Future<bool> load(FileAsset asset);
+  bool isCompatible(FileAsset asset) => true;
+}
 
+/// Loads assets from Rive's CDN.
+///
+/// This is used internally by Rive to load assets from the CDN. It is not
+/// intended to be used by end users. Instead extend [FileAssetLoader] for
+/// custom asset loading, or use [CallbackAssetLoader].
 class CDNAssetLoader extends FileAssetLoader {
   CDNAssetLoader();
 
@@ -14,7 +26,7 @@ class CDNAssetLoader extends FileAssetLoader {
 
   @override
   Future<bool> load(FileAsset asset) async {
-    // do we have a url builder, dart seems to suck a bit for this.
+    // TODO: Question (Max): Do we have a URL builder? Improve this.
     var url = asset.cdnBaseUrl;
 
     if (!url.endsWith('/')) {
@@ -32,6 +44,11 @@ class CDNAssetLoader extends FileAssetLoader {
   }
 }
 
+/// Convenience class for loading assets from the local file system.
+///
+/// Specify the [fontPath] and [imagePath] to load assets from the asset bundle.
+///
+/// If more control is desired, extend [FileAssetLoader] and override [load].
 class LocalAssetLoader extends FileAssetLoader {
   final String fontPath;
   final String imagePath;
@@ -50,10 +67,10 @@ class LocalAssetLoader extends FileAssetLoader {
       case Type.unknown:
         return false;
       case Type.image:
-        assetPath = imagePath + asset.name;
+        assetPath = imagePath + asset.uniqueFilename;
         break;
       case Type.font:
-        assetPath = fontPath + asset.name;
+        assetPath = fontPath + asset.uniqueFilename;
         break;
     }
 
@@ -63,6 +80,38 @@ class LocalAssetLoader extends FileAssetLoader {
   }
 }
 
+/// Convenience class that extends [FileAssetLoader] and allows you to
+/// register a callback for loading Rive assets.
+///
+/// The callback will be called for each asset that needs to be loaded manually.
+/// See [RiveFile] for additional options. Which assets are embedded are defined
+/// within the Rive editor.
+///
+/// This callback will be triggered for any **referenced** assets.
+///
+/// Set [loadEmbeddedAssets] to false to disable loading embedded assets
+///
+/// Set [loadCdnAssets] to false to disable loading
+/// assets from the Rive CDN.
+///
+/// ### Example usage:
+/// Loading from assets. Here only assets marked as **referenced** will trigger
+/// the callback.
+/// ```dart
+/// final riveFile = await RiveFile.asset(
+///  'assets/asset.riv',
+///  loadEmbeddedAssets: true,
+///  loadCdnAssets: true,
+///  assetLoader: CallbackAssetLoader(
+///    (asset) async {
+///      final res =
+///          await http.get(Uri.parse('https://picsum.photos/1000/1000'));
+///      await asset.decode(Uint8List.view(res.bodyBytes.buffer));
+///      return true;
+///    },
+///  ),
+/// );
+/// ```
 class CallbackAssetLoader extends FileAssetLoader {
   Future<bool> Function(FileAsset) callback;
 
@@ -74,12 +123,15 @@ class CallbackAssetLoader extends FileAssetLoader {
   }
 }
 
-// Just a thought, can load assets from a few sources
-// maybe pointless tbh, if people have a path here, they should sort it out...
-// might be helpful users have a few different setups & simple want to
-// be able to copy pasta their asset loading setup.
+/// Convenience class that extends [FileAssetLoader] and allows you to
+/// register fallbacks for loading Rive assets, such as images and fonts.
+///
+/// For example, you can use this to load assets from the CDN, and if that
+/// fails, load them from the asset bundle.
+///
+/// Alternatively, extend [FileAssetLoader] and override [load] for more
+/// custom control in how assets are resolved.
 class FallbackAssetLoader extends FileAssetLoader {
-  // by default, unless the data was inline we check locally & then on our cdn
   final List<FileAssetLoader> fileAssetLoaders;
 
   FallbackAssetLoader(this.fileAssetLoaders);

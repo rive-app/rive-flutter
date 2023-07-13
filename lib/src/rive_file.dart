@@ -95,7 +95,7 @@ class RiveFile {
     BinaryReader reader,
     this.header,
     this._assetLoader, {
-    bool importEmbeddedAssets = true,
+    bool loadEmbeddedAssets = true,
   }) {
     /// Property fields table of contents
     final propertyToField = HashMap<int, CoreFieldType>();
@@ -130,13 +130,12 @@ class RiveFile {
         }
         continue;
       }
-      // two options, either tell the fileAssetImporter,
-      // or simply skip the object. i think we should skip the object.
-      if (!importEmbeddedAssets && object is FileAssetContentsBase) {
+      // TODO: Question (Max): two options, either tell the fileAssetImporter,
+      // or simply skip the object. I think we should skip the object.
+      if (!loadEmbeddedAssets && object is FileAssetContentsBase) {
         // suppress importing embedded assets
         continue;
       }
-
       ImportStackObject? stackObject;
       var stackType = object.coreType;
       switch (object.coreType) {
@@ -203,7 +202,7 @@ class RiveFile {
           stackObject = FileAssetImporter(
             object as FileAsset,
             _assetLoader,
-            importEmbeddedAssets: importEmbeddedAssets,
+            loadEmbeddedAssets: loadEmbeddedAssets,
           );
           stackType = FileAssetBase.typeKey;
           break;
@@ -262,14 +261,28 @@ class RiveFile {
     }
   }
 
-  /// Imports a Rive file from an array of bytes. Will throw
-  /// [RiveFormatErrorException] if data is malformed. Will throw
+  /// Imports a Rive file from an array of bytes.
+  ///
+  /// {@template rive_file_asset_loader_params}
+  /// Provide an [assetLoader] to load assets from a custom location (out of
+  /// band assets). See [CallbackAssetLoader] for an example.
+  ///
+  /// Set [loadCdnAssets] to `false` to disable loading assets from the CDN.
+  ///
+  /// Set [loadEmbeddedAssets] to `false` to disable loading embedded assets.
+  ///
+  /// Whether an assets is embedded/cdn/referenced is determined by the Rive
+  /// file - as set in the editor.
+  /// {@endtemplate}
+  ///
+  /// Will throw [RiveFormatErrorException] if data is malformed. Will throw
   /// [RiveUnsupportedVersionException] if the version is not supported.
   factory RiveFile.import(
     ByteData bytes, {
+    @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
     FileAssetLoader? assetLoader,
-    bool cdn = true,
-    bool importEmbeddedAssets = true,
+    bool loadCdnAssets = true,
+    bool loadEmbeddedAssets = true,
   }) {
     var reader = BinaryReader(bytes);
     return RiveFile._(
@@ -278,22 +291,28 @@ class RiveFile {
       FallbackAssetLoader(
         [
           if (assetLoader != null) assetLoader,
-          if (cdn) CDNAssetLoader(),
+          if (loadCdnAssets) CDNAssetLoader(),
         ],
       ),
-      importEmbeddedAssets: importEmbeddedAssets,
+      loadEmbeddedAssets: loadEmbeddedAssets,
     );
   }
 
   /// Imports a Rive file from an asset bundle.
-  /// By default we will look for out of bound assets next to the [bundleKey] & check
-  /// Rive's CDN for content.
+  ///
+  /// Default uses [rootBundle] from Flutter. Provide a custom [bundle] to load
+  /// from a different bundle.
+  ///
+  /// {@macro rive_file_asset_loader_params}
+  ///
+  /// Whether an assets is embedded/cdn/referenced is determined by the Rive
+  /// file - as set in the editor.
   static Future<RiveFile> asset(
     String bundleKey, {
-    FileAssetLoader? assetLoader,
-    bool cdn = true,
-    bool importEmbeddedAssets = true,
     AssetBundle? bundle,
+    FileAssetLoader? assetLoader,
+    bool loadCdnAssets = true,
+    bool loadEmbeddedAssets = true,
   }) async {
     final bytes = await (bundle ?? rootBundle).load(
       bundleKey,
@@ -302,44 +321,55 @@ class RiveFile {
     return RiveFile.import(
       bytes,
       assetLoader: assetLoader,
-      cdn: cdn,
-      importEmbeddedAssets: importEmbeddedAssets,
+      loadCdnAssets: loadCdnAssets,
+      loadEmbeddedAssets: loadEmbeddedAssets,
     );
   }
 
-  /// Imports a Rive file from a URL over HTTP. Provide an [assetResolver] if
-  /// your file contains images that needed to be loaded with separate network
-  /// requests.
+  /// Imports a Rive file from a [url] over HTTP.
+  ///
+  /// Provide [headers] to add custom HTTP headers to the request.
+  ///
+  /// {@macro rive_file_asset_loader_params}
+  ///
+  /// Whether an assets is embedded/cdn/referenced is determined by the Rive
+  /// file - as set in the editor.
   static Future<RiveFile> network(
     String url, {
-    FileAssetLoader? assetLoader,
     Map<String, String>? headers,
-    bool cdn = true,
-    bool importEmbeddedAssets = true,
+    @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
+    FileAssetLoader? assetLoader,
+    bool loadCdnAssets = true,
+    bool loadEmbeddedAssets = true,
   }) async {
     final res = await http.get(Uri.parse(url), headers: headers);
     final bytes = ByteData.view(res.bodyBytes.buffer);
     return RiveFile.import(
       bytes,
       assetLoader: assetLoader,
-      cdn: cdn,
-      importEmbeddedAssets: importEmbeddedAssets,
+      loadCdnAssets: loadCdnAssets,
+      loadEmbeddedAssets: loadEmbeddedAssets,
     );
   }
 
-  /// Imports a Rive file from local folder
+  /// Imports a Rive file from local path
+  ///
+  /// {@macro rive_file_asset_loader_params}
+  ///
+  /// Whether an assets is embedded/cdn/referenced is determined by the Rive
+  /// file - as set in the editor.
   static Future<RiveFile> file(
     String path, {
     FileAssetLoader? assetLoader,
-    bool cdn = true,
-    bool importEmbeddedAssets = true,
+    bool loadCdnAssets = true,
+    bool loadEmbeddedAssets = true,
   }) async {
     final bytes = await localFileBytes(path);
     return RiveFile.import(
       ByteData.view(bytes!.buffer),
       assetLoader: assetLoader,
-      importEmbeddedAssets: importEmbeddedAssets,
-      cdn: cdn,
+      loadEmbeddedAssets: loadEmbeddedAssets,
+      loadCdnAssets: loadCdnAssets,
     );
   }
 
@@ -353,4 +383,19 @@ class RiveFile {
   /// that name exists in the file
   Artboard? artboardByName(String name) =>
       _artboards.firstWhereOrNull((a) => a.name == name);
+}
+
+// TODO: remove in v0.13.0
+
+/// Resolves a Rive asset from the network provided a [baseUrl].
+@Deprecated('Use `CallbackAssetLoader` instead. Will be removed in v0.13.0')
+class NetworkAssetResolver extends FileAssetResolver {
+  final String baseUrl;
+  NetworkAssetResolver(this.baseUrl);
+
+  @override
+  Future<Uint8List> loadContents(FileAsset asset) async {
+    final res = await http.get(Uri.parse(baseUrl + asset.uniqueFilename));
+    return Uint8List.view(res.bodyBytes.buffer);
+  }
 }
