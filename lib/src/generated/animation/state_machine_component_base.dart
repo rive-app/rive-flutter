@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/animation/state_machine_component_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/animation/state_machine_component_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
 

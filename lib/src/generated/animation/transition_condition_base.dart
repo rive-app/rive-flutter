@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/animation/transition_condition_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/animation/transition_condition_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
 

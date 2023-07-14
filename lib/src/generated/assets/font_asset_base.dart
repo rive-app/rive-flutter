@@ -1,5 +1,5 @@
-/// Core automatically generated lib/src/generated/assets/font_asset_base.dart.
-/// Do not modify manually.
+// Core automatically generated lib/src/generated/assets/font_asset_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';

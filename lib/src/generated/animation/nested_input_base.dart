@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/animation/nested_input_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/animation/nested_input_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/rive_core/component.dart';
 

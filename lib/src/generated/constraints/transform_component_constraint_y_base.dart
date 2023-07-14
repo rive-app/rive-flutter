@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/constraints/transform_component_constraint_y_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/constraints/transform_component_constraint_y_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';

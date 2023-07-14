@@ -1,5 +1,5 @@
-/// Core automatically generated lib/src/generated/assets/asset_base.dart.
-/// Do not modify manually.
+// Core automatically generated lib/src/generated/assets/asset_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
 

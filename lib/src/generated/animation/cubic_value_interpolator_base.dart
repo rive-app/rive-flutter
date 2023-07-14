@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/animation/cubic_value_interpolator_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/animation/cubic_value_interpolator_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/rive_core/animation/cubic_interpolator.dart';
 
