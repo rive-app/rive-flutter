@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/animation/linear_animation_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/animation/linear_animation_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/rive_core/animation/animation.dart';
 

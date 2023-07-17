@@ -45,7 +45,7 @@ void main() {
 
         RiveFile.import(
           riveBytes,
-          importEmbeddedAssets: false,
+          loadEmbeddedAssets: false,
         );
       }, createHttpClient: (_) => mockHttpClient);
 
@@ -62,8 +62,8 @@ void main() {
         runZonedGuarded(() {
           RiveFile.import(
             riveBytes,
-            importEmbeddedAssets: false,
-            cdn: false,
+            loadEmbeddedAssets: false,
+            loadCdnAssets: false,
           );
         }, (error, stack) {
           // importing assets throws rn when we do not end up loading assets..
@@ -85,7 +85,7 @@ void main() {
       final riveBytes = loadFile('assets/sample_image.riv');
       final imageBytes = loadFile('assets/file.png');
       final parameters = [];
-      RiveFile.import(riveBytes, importEmbeddedAssets: false,
+      RiveFile.import(riveBytes, loadEmbeddedAssets: false,
           assetLoader: CallbackAssetLoader(
         (asset) async {
           parameters.add(asset);
@@ -138,7 +138,7 @@ void main() {
         runZonedGuarded(() {
           RiveFile.import(
             riveBytes,
-            importEmbeddedAssets: false,
+            loadEmbeddedAssets: false,
           );
         }, (error, stack) {
           print('what?');
@@ -156,8 +156,8 @@ void main() {
 
         RiveFile.import(
           riveBytes,
-          importEmbeddedAssets: false,
-          cdn: false,
+          loadEmbeddedAssets: false,
+          loadCdnAssets: false,
         );
       }, createHttpClient: (_) => mockHttpClient);
 
@@ -174,7 +174,7 @@ void main() {
       await HttpOverrides.runZoned(() async {
         final riveBytes = loadFile('assets/cdn_image.riv');
 
-        RiveFile.import(riveBytes, importEmbeddedAssets: false,
+        RiveFile.import(riveBytes, loadEmbeddedAssets: false,
             assetLoader: CallbackAssetLoader(
           (asset) async {
             parameters.add(asset);
@@ -200,7 +200,7 @@ void main() {
       await HttpOverrides.runZoned(() async {
         final riveBytes = loadFile('assets/cdn_image.riv');
 
-        RiveFile.import(riveBytes, importEmbeddedAssets: false,
+        RiveFile.import(riveBytes, loadEmbeddedAssets: false,
             assetLoader: CallbackAssetLoader(
           (asset) async {
             parameters.add(asset);

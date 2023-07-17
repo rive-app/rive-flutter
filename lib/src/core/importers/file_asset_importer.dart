@@ -1,43 +1,29 @@
+import 'package:rive/src/asset_loader.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 
-/// QUESTION: renamed this to loader & importer
-/// we use the "importer" names elsewhere
-///
-/// but IMO, the function names are pretty telling,
-/// now the loader has "loadContents" & the resolver has "resolve"
-/// before this was backwards.
-/// (
-///   also as part of our import process, we import components,
-///   some components have additional *resolvers* added to the stack, which
-///   get ... resolved... and when components mention assets, those assets get
-///   loaded
-/// )
-
+// TODO: Deprecated. Remove this in the next major version (0.12.0).
 // ignore: one_member_abstracts
-abstract class FileAssetLoader {
-  Future<bool> load(FileAsset asset);
-  bool isCompatible(FileAsset asset) => true;
+abstract class FileAssetResolver {
+  Future<Uint8List> loadContents(FileAsset asset);
 }
 
-// this should be the resolver.
 class FileAssetImporter extends ImportStackObject {
   final FileAssetLoader? assetLoader;
   final FileAsset fileAsset;
-  final bool importEmbeddedAssets;
+  final bool loadEmbeddedAssets;
 
   FileAssetImporter(
     this.fileAsset,
     this.assetLoader, {
-    this.importEmbeddedAssets = true,
+    this.loadEmbeddedAssets = true,
   });
 
   bool _contentsResolved = false;
 
-  // awkward name
   void resolveContents(FileAssetContents contents) {
-    if (importEmbeddedAssets) {
+    if (loadEmbeddedAssets) {
       _contentsResolved = true;
       fileAsset.decode(contents.bytes);
     }
@@ -47,7 +33,18 @@ class FileAssetImporter extends ImportStackObject {
   bool resolve() {
     if (!_contentsResolved) {
       // try to get them out of band
-      assetLoader?.load(fileAsset);
+      assetLoader?.load(fileAsset).then((loaded) {
+        // TODO: improve error logging
+        // Only print if in debug mode.
+        assert(() {
+          if (!loaded) {
+            debugPrint('''Rive asset (${fileAsset.name}) was not able to load:
+  - Unique file name: ${fileAsset.uniqueFilename}
+  - Asset id: ${fileAsset.id}''');
+          }
+          return true;
+        }());
+      });
     }
     return super.resolve();
   }

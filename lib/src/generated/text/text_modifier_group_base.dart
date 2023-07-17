@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/text/text_modifier_group_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/text/text_modifier_group_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';

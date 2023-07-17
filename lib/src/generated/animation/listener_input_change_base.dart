@@ -1,6 +1,6 @@
-/// Core automatically generated
-/// lib/src/generated/animation/listener_input_change_base.dart.
-/// Do not modify manually.
+// Core automatically generated
+// lib/src/generated/animation/listener_input_change_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/rive_core/animation/listener_action.dart';
 

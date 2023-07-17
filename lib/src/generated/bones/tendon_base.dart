@@ -1,5 +1,5 @@
-/// Core automatically generated lib/src/generated/bones/tendon_base.dart.
-/// Do not modify manually.
+// Core automatically generated lib/src/generated/bones/tendon_base.dart.
+// Do not modify manually.
 
 import 'package:rive/src/rive_core/component.dart';
 

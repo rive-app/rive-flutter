@@ -1,11 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
 import 'package:http/http.dart' as http;
 
-/// An example showing how to load image or font assets dynamically
+import 'package:rive/rive.dart';
+
+/// An example showing how to load image or font assets dynamically.
+///
+/// In this example there is no delay in the assets loading, as they are
+/// cached in memory.
+///
+/// The example also shows how to swap out the assets multiple times by
+/// keeping a reference to the asset and swapping it out.
 class CustomCachedAssetLoading extends StatefulWidget {
   const CustomCachedAssetLoading({Key? key}) : super(key: key);
 
@@ -23,12 +31,11 @@ class _CustomCachedAssetLoadingState extends State<CustomCachedAssetLoading> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _warmUpCache();
-    });
+    _warmUpCache();
   }
 
-  _warmUpCache() async {
+  /// Create a cache of images and fonts to swap out instantly.
+  Future<void> _warmUpCache() async {
     final futures = <Future>[];
     loadImage() async {
       final res = await http.get(Uri.parse('https://picsum.photos/1000/1000'));
@@ -66,28 +73,41 @@ class _CustomCachedAssetLoadingState extends State<CustomCachedAssetLoading> {
 
     await Future.wait(futures);
 
-    setState(() {
-      _ready = true;
-    });
+    setState(() => _ready = true);
   }
 
   void next() {
-    setState(() {
-      _index += 1;
-    });
+    setState(() => _index += 1);
   }
 
   void previous() {
-    setState(() {
-      _index -= 1;
-    });
+    setState(() => _index -= 1);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_ready) {
+      return const Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text('Warming up cache. Loading files from network...'),
+              ),
+              CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Custom Asset Loading'),
+        title: const Text('Custom Cached Asset Loading'),
       ),
       body: Center(
         child: Row(
@@ -97,39 +117,9 @@ class _CustomCachedAssetLoadingState extends State<CustomCachedAssetLoading> {
               child: const Icon(Icons.arrow_back),
             ),
             Expanded(
-              child: (!_ready)
-                  ? const Center(child: Text('warming up cache'))
-                  : (_index % 2 == 0)
-                      ? RiveAnimation.asset(
-                          'assets/asset.riv',
-                          fit: BoxFit.cover,
-                          importEmbeddedAssets: false,
-                          assetLoader: CallbackAssetLoader(
-                            (asset) async {
-                              if (asset is ImageAsset) {
-                                asset.image = _imageCache[
-                                    Random().nextInt(_imageCache.length)];
-                                return true;
-                              }
-                              return false;
-                            },
-                          ),
-                        )
-                      : RiveAnimation.asset(
-                          'assets/sampletext.riv',
-                          fit: BoxFit.cover,
-                          importEmbeddedAssets: false,
-                          assetLoader: CallbackAssetLoader(
-                            (asset) async {
-                              if (asset is FontAsset) {
-                                asset.font = _fontCache[
-                                    Random().nextInt(_fontCache.length)];
-                                return true;
-                              }
-                              return false;
-                            },
-                          ),
-                        ),
+              child: (_index % 2 == 0)
+                  ? _RiveRandomCachedImage(imageCache: _imageCache)
+                  : _RiveRandomCachedFont(fontCache: _fontCache),
             ),
             GestureDetector(
               onTap: next,
@@ -138,6 +128,159 @@ class _CustomCachedAssetLoadingState extends State<CustomCachedAssetLoading> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _RiveRandomCachedImage extends StatefulWidget {
+  const _RiveRandomCachedImage({
+    Key? key,
+    required this.imageCache,
+  }) : super(key: key);
+
+  final List imageCache;
+
+  @override
+  State<_RiveRandomCachedImage> createState() => __RiveRandomCachedImageState();
+}
+
+class __RiveRandomCachedImageState extends State<_RiveRandomCachedImage> {
+  List get _imageCache => widget.imageCache;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRiveFile();
+  }
+
+  RiveFile? _riveImageSampleFile;
+  // A reference to the Rive image. Can be use to swap out the image at any
+  // point.
+  ImageAsset? _imageAsset;
+
+  Future<void> _loadRiveFile() async {
+    final imageFile = await RiveFile.asset(
+      'assets/asset.riv',
+      loadEmbeddedAssets: false,
+      assetLoader: CallbackAssetLoader(
+        (asset) async {
+          if (asset is ImageAsset) {
+            asset.image = _imageCache[Random().nextInt(_imageCache.length)];
+            // Maintain a reference to the image asset
+            // so we can swap it out later instantly.
+            _imageAsset = asset;
+            return true;
+          }
+          return false;
+        },
+      ),
+    );
+
+    setState(() => _riveImageSampleFile = imageFile);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_riveImageSampleFile == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          child: RiveAnimation.direct(
+            _riveImageSampleFile!,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              _imageAsset?.image =
+                  _imageCache[Random().nextInt(_imageCache.length)];
+            },
+            child: const Text('Random image asset'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RiveRandomCachedFont extends StatefulWidget {
+  const _RiveRandomCachedFont({
+    Key? key,
+    required this.fontCache,
+  }) : super(key: key);
+
+  final List fontCache;
+
+  @override
+  State<_RiveRandomCachedFont> createState() => __RiveRandomCachedFontState();
+}
+
+class __RiveRandomCachedFontState extends State<_RiveRandomCachedFont> {
+  List get _fontCache => widget.fontCache;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRiveFile();
+  }
+
+  RiveFile? _riveFontSampleFile;
+  final List<FontAsset?> _fontAssets = [];
+
+  Future<void> _loadRiveFile() async {
+    final fontFile = await RiveFile.asset(
+      'assets/sampletext.riv',
+      loadEmbeddedAssets: false,
+      assetLoader: CallbackAssetLoader(
+        (asset) async {
+          if (asset is FontAsset) {
+            // TODO: setting this will then not allow later updates to the font
+            // asset.font = _fontCache[Random().nextInt(_fontCache.length)];
+
+            _fontAssets.add(asset);
+            return true;
+          }
+          return false;
+        },
+      ),
+    );
+
+    setState(() {
+      _riveFontSampleFile = fontFile;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_riveFontSampleFile == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          child: RiveAnimation.direct(
+            _riveFontSampleFile!,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              for (var element in _fontAssets) {
+                element?.font = _fontCache[Random().nextInt(_fontCache.length)];
+              }
+            },
+            child: const Text('Random font asset'),
+          ),
+        ),
+      ],
     );
   }
 }
