@@ -309,7 +309,7 @@ class RiveFile {
   /// file - as set in the editor.
   static Future<RiveFile> asset(
     String bundleKey, {
-    AssetBundle? bundle,
+    required AssetBundle bundle,
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
     bool loadEmbeddedAssets = true,

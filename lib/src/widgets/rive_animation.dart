@@ -189,6 +189,7 @@ class RiveAnimationState extends State<RiveAnimation> {
       case _Source.asset:
         return RiveFile.asset(
           widget.name!,
+          bundle: DefaultAssetBundle.of(context),
         );
       case _Source.network:
         return RiveFile.network(

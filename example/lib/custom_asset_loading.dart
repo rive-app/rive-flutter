@@ -89,6 +89,7 @@ class _RiveRandomImageState extends State<_RiveRandomImage> {
           return true;
         },
       ),
+      bundle: DefaultAssetBundle.of(context),
     );
 
     setState(() {
@@ -149,6 +150,7 @@ class _RiveRandomFontState extends State<_RiveRandomFont> {
           return true;
         },
       ),
+      bundle: DefaultAssetBundle.of(context),
     );
 
     setState(() {
