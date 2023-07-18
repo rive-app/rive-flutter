@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:rive/src/asset.dart';
@@ -26,7 +27,11 @@ class CDNAssetLoader extends FileAssetLoader {
 
   @override
   Future<bool> load(FileAsset asset) async {
-    // TODO: Question (Max): Do we have a URL builder? Improve this.
+    // TODO (Max): Do we have a URL builder?
+    // TODO (Max): We should aim to get loading errors exposed where
+    // possible, this includes failed network requests but also
+    // failed asset.decode
+
     var url = asset.cdnBaseUrl;
 
     if (!url.endsWith('/')) {
@@ -37,10 +42,27 @@ class CDNAssetLoader extends FileAssetLoader {
     );
 
     final res = await http.get(Uri.parse(url));
-    await asset.decode(
-      Uint8List.view(res.bodyBytes.buffer),
-    );
-    return true;
+
+    if ((res.statusCode / 100).floor() == 2) {
+      try {
+        await asset.decode(
+          Uint8List.view(res.bodyBytes.buffer),
+        );
+      } on Exception catch (e) {
+        // only print in debug
+        assert(() {
+          debugPrint('''Unable to parse response ${asset.runtimeType}.
+  - Url: $url
+  - Exception: $e''');
+          return true;
+        }());
+        return false;
+      }
+
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

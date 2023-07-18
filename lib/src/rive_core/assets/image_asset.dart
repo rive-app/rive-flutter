@@ -28,10 +28,10 @@ class ImageAsset extends ImageAssetBase {
     image = await parseBytes(bytes);
   }
 
-  static Future<ui.Image?> parseBytes(Uint8List bytes) {
-    final completer = Completer<ui.Image?>();
-    ui.decodeImageFromList(bytes, completer.complete);
-    return completer.future;
+  static Future<ui.Image?> parseBytes(Uint8List bytes) async {
+    final codec = await ui.instantiateImageCodec(bytes);
+    final frameInfo = await codec.getNextFrame();
+    return frameInfo.image;
   }
 
   Image getDefaultObject() => Image()
