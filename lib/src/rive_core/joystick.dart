@@ -30,12 +30,9 @@ class Joystick extends JoystickBase {
     if (dirt & (ComponentDirt.transform | ComponentDirt.worldTransform) != 0) {
       _worldTransform = computeWorldTransform();
       Mat2D.invert(_inverseWorldTransform, _worldTransform);
-      if (handleSource != null) {
+      if (isComplex) {
         var pos = _inverseWorldTransform * handleSource!.worldTranslation;
         var local = localBounds.factorFrom(pos);
-
-        // In the editor we don't want to notify changes while we're in the
-        // update cycle.
 
         x = local.x;
         y = local.y;
@@ -94,6 +91,13 @@ class Joystick extends JoystickBase {
   @override
   void xChanged(double from, double to) {
     context.markNeedsAdvance();
+  }
+
+  @override
+  void buildDependencies() {
+    super.buildDependencies();
+    parent?.addDependent(this);
+    handleSource?.addDependent(this);
   }
 
   Vec2D get position => Vec2D.fromValues(posX, posY);
@@ -168,6 +172,13 @@ class Joystick extends JoystickBase {
         yAnimation = found;
       }
     }
+  }
+
+  @override
+  void onAddedDirty() {
+    super.onAddedDirty();
+
+    handleSource = context.resolve(handleSourceId);
   }
 
   void _transformChanged() {

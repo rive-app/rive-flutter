@@ -213,9 +213,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
     // If joysticks applied, run the update again for the animation changes.
     if (!canApplyJoysticksEarly && applyJoysticks()) {
-      updateComponents();
-
-      didUpdate = true;
+      if (updateComponents()) {
+        didUpdate = true;
+      }
     }
 
     if (nested) {

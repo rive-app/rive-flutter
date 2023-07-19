@@ -2,6 +2,9 @@
 
 - Resolve assets, such as images and fonts, manually. This allows for swapping out image/font assets at runtime, instead of using the embedded versions. See `RiveFile` and `CallbackAssetLoader`.
 
+Fixed:
+- Fix [[331](https://github.com/rive-app/rive-flutter/issues/331)] - external control on a Joystick not applied
+
 Deprecated:
 - `assetResolver` parameter on `RiveFile.network` and `RiveFile.import`. Use `assetLoader` instead - see `CallbackAssetLoader`.
 - `NetworkAssetResolver`, use `CallbackAssetLoader` instead.
