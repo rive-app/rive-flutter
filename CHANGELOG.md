@@ -1,8 +1,8 @@
-## UPCOMING
+
+## 0.11.5
 
 - Resolve assets, such as images and fonts, manually. This allows for swapping out image/font assets at runtime, instead of using the embedded versions. See `RiveFile` and `CallbackAssetLoader`.
-
-Fixed:
+- Update `http` package to v1.1.0
 - Fix [[331](https://github.com/rive-app/rive-flutter/issues/331)] - external control on a Joystick not applied
 
 Deprecated:
