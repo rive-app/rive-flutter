@@ -22,8 +22,7 @@ void main() {
     registerFallbackValue(Stream.value(<int>[]));
   });
   group("Test loading rive file with embedded asset.", () {
-    testWidgets('Default load does not hit any url',
-        (WidgetTester tester) async {
+    test('Default load does not hit any url', () async {
       final mockHttpClient = getMockHttpClient();
 
       await HttpOverrides.runZoned(() async {
@@ -36,8 +35,7 @@ void main() {
       verifyNever(() => mockHttpClient.openUrl(any(), any()));
     });
 
-    testWidgets('Disabling embedded assets also does not hit a url',
-        (WidgetTester tester) async {
+    test('Disabling embedded assets also does not hit a url', () async {
       final mockHttpClient = getMockHttpClient();
 
       await HttpOverrides.runZoned(() async {
@@ -53,8 +51,7 @@ void main() {
       verifyNever(() => mockHttpClient.openUrl(any(), any()));
     });
 
-    testWidgets('Disabling cdn also does not hit a url',
-        (WidgetTester tester) async {
+    test('Disabling cdn also does not hit a url', () async {
       final mockHttpClient = getMockHttpClient();
 
       await HttpOverrides.runZoned(() async {
@@ -79,8 +76,8 @@ void main() {
       verifyNever(() => mockHttpClient.openUrl(any(), any()));
       // by default we try to check for assets
     });
-    testWidgets('test importing rive file, make sure we get a good callback',
-        (WidgetTester tester) async {
+    test('test importing rive file, make sure we get a good callback',
+        () async {
       // lets just return an image
       final riveBytes = loadFile('assets/sample_image.riv');
       final imageBytes = loadFile('assets/file.png');
@@ -106,6 +103,37 @@ void main() {
       expect(fileAsset.assetId, 42981);
       expect(fileAsset.id, -1);
     });
+
+    test('Make sure the image gets the dimensions once the image is loaded',
+        () async {
+      // lets just return an image
+      final riveBytes = loadFile('assets/sample_image.riv');
+      final imageBytes = loadFile('assets/file.png');
+      final completer = Completer();
+
+      final file = RiveFile.import(
+        riveBytes,
+        loadEmbeddedAssets: false,
+        assetLoader: CallbackAssetLoader(
+          (asset) async {
+            await asset.decode(Uint8List.sublistView(
+              imageBytes,
+            ));
+            completer.complete(null);
+            return true;
+          },
+        ),
+      );
+      final image = file.artboards.first
+          .component("CleanShot 2023-06-08 at 08.51.19@2x.png");
+      print(image);
+
+      expect(image.width, 0);
+      expect(image.height, 0);
+      await completer.future;
+      expect(image.width, 256);
+      expect(image.height, 256);
+    });
   });
   group("Test loading rive file with cdn asset.", () {
     late MockHttpClient mockHttpClient;
@@ -115,7 +143,7 @@ void main() {
       prepMockRequest(mockHttpClient, Uint8List.sublistView(imageBytes));
     });
 
-    testWidgets('Default load will his the cdn', (WidgetTester tester) async {
+    test('Default load will his the cdn', () async {
       await HttpOverrides.runZoned(() async {
         final riveBytes = loadFile('assets/cdn_image.riv');
         RiveFile.import(
@@ -131,8 +159,7 @@ void main() {
           )).called(1);
     });
 
-    testWidgets('Disabling embedded assets also hits a url',
-        (WidgetTester tester) async {
+    test('Disabling embedded assets also hits a url', () async {
       await HttpOverrides.runZoned(() async {
         final riveBytes = loadFile('assets/cdn_image.riv');
         runZonedGuarded(() {
@@ -149,8 +176,7 @@ void main() {
       verify(() => mockHttpClient.openUrl(any(), any())).called(1);
     });
 
-    testWidgets('Disabling cdn will mean no url hit',
-        (WidgetTester tester) async {
+    test('Disabling cdn will mean no url hit', () async {
       await HttpOverrides.runZoned(() async {
         final riveBytes = loadFile('assets/cdn_image.riv');
 
@@ -165,9 +191,9 @@ void main() {
       verifyNever(() => mockHttpClient.openUrl(any(), any()));
       // by default we try to check for assets
     });
-    testWidgets(
+    test(
         'If we provide a callback, we are hit first, and success means no cdn hit',
-        (WidgetTester tester) async {
+        () async {
       // lets just return an image
       final imageBytes = loadFile('assets/file.png');
       final parameters = [];
@@ -192,9 +218,9 @@ void main() {
       verifyNever(() => mockHttpClient.openUrl(any(), any()));
     });
 
-    testWidgets(
+    test(
         'If we provide a callback, we are hit first, a failure means we hit cdn',
-        (WidgetTester tester) async {
+        () async {
       // lets just return an image
       final parameters = [];
       await HttpOverrides.runZoned(() async {

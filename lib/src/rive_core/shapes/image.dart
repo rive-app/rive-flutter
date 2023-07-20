@@ -19,6 +19,9 @@ class Image extends ImageBase
   Mesh? get mesh => _mesh;
   bool get hasMesh => _mesh != null;
 
+  double get width => image?.width.toDouble() ?? 0.0;
+  double get height => image?.width.toDouble() ?? 0.0;
+
   AABB get localBounds {
     if (hasMesh && _mesh!.draws) {
       return _mesh!.bounds;
@@ -26,8 +29,8 @@ class Image extends ImageBase
     if (asset == null) {
       return AABB.empty();
     }
-    final halfWidth = asset!.width / 2;
-    final halfHeight = asset!.height / 2;
+    final halfWidth = width / 2;
+    final halfHeight = height / 2;
     return AABB.fromValues(-halfWidth, -halfHeight, halfWidth, halfHeight);
   }
 
@@ -46,9 +49,6 @@ class Image extends ImageBase
       ..color = ui.Color.fromRGBO(0, 0, 0, renderOpacity)
       ..filterQuality = ui.FilterQuality.high
       ..blendMode = blendMode;
-
-    final width = asset!.width;
-    final height = asset!.height;
 
     canvas.save();
     canvas.transform(renderTransform.mat4);
