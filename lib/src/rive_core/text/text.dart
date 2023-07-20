@@ -475,9 +475,10 @@ class Text extends TextBase with TextStyleContainer {
   void update(int dirt) {
     super.update(dirt);
     if (dirt & ComponentDirt.path != 0) {
-      // Hardcode font for now.
+      // TODO: (Lugi) Hardcoded font for now
+      const defaultFontAsset = 'assets/fonts/Inter-Regular.ttf';
       if (_defaultFont == null) {
-        rootBundle.load('assets/fonts/Inter-Regular.ttf').then((fontAsset) {
+        final future = rootBundle.load(defaultFontAsset).then((fontAsset) {
           _defaultFont = Font.decode(fontAsset.buffer.asUint8List());
           // Reshape now that we have font.
           markShapeDirty();
