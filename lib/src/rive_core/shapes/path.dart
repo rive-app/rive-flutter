@@ -73,9 +73,15 @@ abstract class Path extends PathBase {
   }
 
   @override
+  void onDirty(int mask) {
+    if ((dirt & ComponentDirt.worldTransform) != 0) {
+      _shape?.pathChanged(this);
+    }
+  }
+
+  @override
   void updateWorldTransform() {
     super.updateWorldTransform();
-    _shape?.pathChanged(this);
 
     // Paths store their inverse world so that it's available for skinning and
     // other operations that occur at runtime.
@@ -282,6 +288,7 @@ abstract class Path extends PathBase {
     return true;
   }
 
+  @override
   AABB get localBounds => _renderPath.preciseComputeBounds();
   AABB computeBounds(Mat2D relativeTo) => preciseComputeBounds(
         transform: Mat2D.multiply(

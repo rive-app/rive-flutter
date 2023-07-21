@@ -195,7 +195,9 @@ class StateTransition extends StateTransitionBase {
               animationFrom.durationSeconds;
         }
 
-        if (time < exitTime) {
+        // Sometimes the time never reaches exitTime due to precision differences
+        // on diff platforms
+        if (time < exitTime - 1 / 1000) {
           return AllowTransition.waitingForExit;
         }
       }

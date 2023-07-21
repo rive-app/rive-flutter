@@ -88,6 +88,7 @@ import 'package:rive/src/rive_core/bones/skin.dart';
 import 'package:rive/src/rive_core/bones/tendon.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/constraints/distance_constraint.dart';
+import 'package:rive/src/rive_core/constraints/follow_path_constraint.dart';
 import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
 import 'package:rive/src/rive_core/constraints/rotation_constraint.dart';
 import 'package:rive/src/rive_core/constraints/scale_constraint.dart';
@@ -146,6 +147,8 @@ class RiveCoreContext {
         return DistanceConstraint();
       case IKConstraintBase.typeKey:
         return IKConstraint();
+      case FollowPathConstraintBase.typeKey:
+        return FollowPathConstraint();
       case TranslationConstraintBase.typeKey:
         return TranslationConstraint();
       case TransformConstraintBase.typeKey:
@@ -478,6 +481,31 @@ class RiveCoreContext {
           object.parentBoneCount = value;
         }
         break;
+      case FollowPathConstraintBase.distancePropertyKey:
+        if (object is FollowPathConstraintBase && value is double) {
+          object.distance = value;
+        }
+        break;
+      case FollowPathConstraintBase.orientPropertyKey:
+        if (object is FollowPathConstraintBase && value is bool) {
+          object.orient = value;
+        }
+        break;
+      case FollowPathConstraintBase.offsetPropertyKey:
+        if (object is FollowPathConstraintBase && value is bool) {
+          object.offset = value;
+        }
+        break;
+      case TransformConstraintBase.originXPropertyKey:
+        if (object is TransformConstraintBase && value is double) {
+          object.originX = value;
+        }
+        break;
+      case TransformConstraintBase.originYPropertyKey:
+        if (object is TransformConstraintBase && value is double) {
+          object.originY = value;
+        }
+        break;
       case WorldTransformComponentBase.opacityPropertyKey:
         if (object is WorldTransformComponentBase && value is double) {
           object.opacity = value;
@@ -571,6 +599,11 @@ class RiveCoreContext {
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         if (object is LinearAnimationBase && value is bool) {
           object.enableWorkArea = value;
+        }
+        break;
+      case LinearAnimationBase.quantizePropertyKey:
+        if (object is LinearAnimationBase && value is bool) {
+          object.quantize = value;
         }
         break;
       case NestedLinearAnimationBase.mixPropertyKey:
@@ -1428,6 +1461,11 @@ class RiveCoreContext {
           object.fontSize = value;
         }
         break;
+      case TextStyleBase.lineHeightPropertyKey:
+        if (object is TextStyleBase && value is double) {
+          object.lineHeight = value;
+        }
+        break;
       case TextStyleBase.fontAssetIdPropertyKey:
         if (object is TextStyleBase && value is int) {
           object.fontAssetId = value;
@@ -1476,6 +1514,16 @@ class RiveCoreContext {
       case TextBase.originYPropertyKey:
         if (object is TextBase && value is double) {
           object.originY = value;
+        }
+        break;
+      case TextBase.paragraphSpacingPropertyKey:
+        if (object is TextBase && value is double) {
+          object.paragraphSpacing = value;
+        }
+        break;
+      case TextBase.originValuePropertyKey:
+        if (object is TextBase && value is int) {
+          object.originValue = value;
         }
         break;
       case TextValueRunBase.styleIdPropertyKey:
@@ -1617,6 +1665,7 @@ class RiveCoreContext {
       case TextBase.alignValuePropertyKey:
       case TextBase.sizingValuePropertyKey:
       case TextBase.overflowValuePropertyKey:
+      case TextBase.originValuePropertyKey:
       case TextValueRunBase.styleIdPropertyKey:
       case FileAssetBase.assetIdPropertyKey:
         return uintType;
@@ -1629,6 +1678,9 @@ class RiveCoreContext {
       case TransformComponentConstraintYBase.copyFactorYPropertyKey:
       case TransformComponentConstraintYBase.minValueYPropertyKey:
       case TransformComponentConstraintYBase.maxValueYPropertyKey:
+      case FollowPathConstraintBase.distancePropertyKey:
+      case TransformConstraintBase.originXPropertyKey:
+      case TransformConstraintBase.originYPropertyKey:
       case WorldTransformComponentBase.opacityPropertyKey:
       case TransformComponentBase.rotationPropertyKey:
       case TransformComponentBase.scaleXPropertyKey:
@@ -1734,11 +1786,13 @@ class RiveCoreContext {
       case TextModifierGroupBase.scaleXPropertyKey:
       case TextModifierGroupBase.scaleYPropertyKey:
       case TextStyleBase.fontSizePropertyKey:
+      case TextStyleBase.lineHeightPropertyKey:
       case TextStyleAxisBase.axisValuePropertyKey:
       case TextBase.widthPropertyKey:
       case TextBase.heightPropertyKey:
       case TextBase.originXPropertyKey:
       case TextBase.originYPropertyKey:
+      case TextBase.paragraphSpacingPropertyKey:
         return doubleType;
       case TransformComponentConstraintBase.offsetPropertyKey:
       case TransformComponentConstraintBase.doesCopyPropertyKey:
@@ -1748,7 +1802,10 @@ class RiveCoreContext {
       case TransformComponentConstraintYBase.minYPropertyKey:
       case TransformComponentConstraintYBase.maxYPropertyKey:
       case IKConstraintBase.invertDirectionPropertyKey:
+      case FollowPathConstraintBase.orientPropertyKey:
+      case FollowPathConstraintBase.offsetPropertyKey:
       case LinearAnimationBase.enableWorkAreaPropertyKey:
+      case LinearAnimationBase.quantizePropertyKey:
       case NestedSimpleAnimationBase.isPlayingPropertyKey:
       case KeyFrameBoolBase.valuePropertyKey:
       case NestedBoolBase.nestedValuePropertyKey:
@@ -1957,6 +2014,8 @@ class RiveCoreContext {
         return (object as TextBase).sizingValue;
       case TextBase.overflowValuePropertyKey:
         return (object as TextBase).overflowValue;
+      case TextBase.originValuePropertyKey:
+        return (object as TextBase).originValue;
       case TextValueRunBase.styleIdPropertyKey:
         return (object as TextValueRunBase).styleId;
       case FileAssetBase.assetIdPropertyKey:
@@ -1985,6 +2044,12 @@ class RiveCoreContext {
         return (object as TransformComponentConstraintYBase).minValueY;
       case TransformComponentConstraintYBase.maxValueYPropertyKey:
         return (object as TransformComponentConstraintYBase).maxValueY;
+      case FollowPathConstraintBase.distancePropertyKey:
+        return (object as FollowPathConstraintBase).distance;
+      case TransformConstraintBase.originXPropertyKey:
+        return (object as TransformConstraintBase).originX;
+      case TransformConstraintBase.originYPropertyKey:
+        return (object as TransformConstraintBase).originY;
       case WorldTransformComponentBase.opacityPropertyKey:
         return (object as WorldTransformComponentBase).opacity;
       case TransformComponentBase.rotationPropertyKey:
@@ -2195,6 +2260,8 @@ class RiveCoreContext {
         return (object as TextModifierGroupBase).scaleY;
       case TextStyleBase.fontSizePropertyKey:
         return (object as TextStyleBase).fontSize;
+      case TextStyleBase.lineHeightPropertyKey:
+        return (object as TextStyleBase).lineHeight;
       case TextStyleAxisBase.axisValuePropertyKey:
         return (object as TextStyleAxisBase).axisValue;
       case TextBase.widthPropertyKey:
@@ -2205,6 +2272,8 @@ class RiveCoreContext {
         return (object as TextBase).originX;
       case TextBase.originYPropertyKey:
         return (object as TextBase).originY;
+      case TextBase.paragraphSpacingPropertyKey:
+        return (object as TextBase).paragraphSpacing;
     }
     return 0.0;
   }
@@ -2227,8 +2296,14 @@ class RiveCoreContext {
         return (object as TransformComponentConstraintYBase).maxY;
       case IKConstraintBase.invertDirectionPropertyKey:
         return (object as IKConstraintBase).invertDirection;
+      case FollowPathConstraintBase.orientPropertyKey:
+        return (object as FollowPathConstraintBase).orient;
+      case FollowPathConstraintBase.offsetPropertyKey:
+        return (object as FollowPathConstraintBase).offset;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         return (object as LinearAnimationBase).enableWorkArea;
+      case LinearAnimationBase.quantizePropertyKey:
+        return (object as LinearAnimationBase).quantize;
       case NestedSimpleAnimationBase.isPlayingPropertyKey:
         return (object as NestedSimpleAnimationBase).isPlaying;
       case KeyFrameBoolBase.valuePropertyKey:
@@ -2723,6 +2798,11 @@ class RiveCoreContext {
           object.overflowValue = value;
         }
         break;
+      case TextBase.originValuePropertyKey:
+        if (object is TextBase) {
+          object.originValue = value;
+        }
+        break;
       case TextValueRunBase.styleIdPropertyKey:
         if (object is TextValueRunBase) {
           object.styleId = value;
@@ -2781,6 +2861,21 @@ class RiveCoreContext {
       case TransformComponentConstraintYBase.maxValueYPropertyKey:
         if (object is TransformComponentConstraintYBase) {
           object.maxValueY = value;
+        }
+        break;
+      case FollowPathConstraintBase.distancePropertyKey:
+        if (object is FollowPathConstraintBase) {
+          object.distance = value;
+        }
+        break;
+      case TransformConstraintBase.originXPropertyKey:
+        if (object is TransformConstraintBase) {
+          object.originX = value;
+        }
+        break;
+      case TransformConstraintBase.originYPropertyKey:
+        if (object is TransformConstraintBase) {
+          object.originY = value;
         }
         break;
       case WorldTransformComponentBase.opacityPropertyKey:
@@ -3308,6 +3403,11 @@ class RiveCoreContext {
           object.fontSize = value;
         }
         break;
+      case TextStyleBase.lineHeightPropertyKey:
+        if (object is TextStyleBase) {
+          object.lineHeight = value;
+        }
+        break;
       case TextStyleAxisBase.axisValuePropertyKey:
         if (object is TextStyleAxisBase) {
           object.axisValue = value;
@@ -3331,6 +3431,11 @@ class RiveCoreContext {
       case TextBase.originYPropertyKey:
         if (object is TextBase) {
           object.originY = value;
+        }
+        break;
+      case TextBase.paragraphSpacingPropertyKey:
+        if (object is TextBase) {
+          object.paragraphSpacing = value;
         }
         break;
     }
@@ -3378,9 +3483,24 @@ class RiveCoreContext {
           object.invertDirection = value;
         }
         break;
+      case FollowPathConstraintBase.orientPropertyKey:
+        if (object is FollowPathConstraintBase) {
+          object.orient = value;
+        }
+        break;
+      case FollowPathConstraintBase.offsetPropertyKey:
+        if (object is FollowPathConstraintBase) {
+          object.offset = value;
+        }
+        break;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         if (object is LinearAnimationBase) {
           object.enableWorkArea = value;
+        }
+        break;
+      case LinearAnimationBase.quantizePropertyKey:
+        if (object is LinearAnimationBase) {
+          object.quantize = value;
         }
         break;
       case NestedSimpleAnimationBase.isPlayingPropertyKey:

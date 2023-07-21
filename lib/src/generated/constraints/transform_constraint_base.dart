@@ -19,4 +19,59 @@ abstract class TransformConstraintBase extends TransformSpaceConstraint {
         ConstraintBase.typeKey,
         ComponentBase.typeKey
       };
+
+  /// --------------------------------------------------------------------------
+  /// OriginX field with key 372.
+  static const double originXInitialValue = 0.0;
+  double _originX = originXInitialValue;
+  static const int originXPropertyKey = 372;
+
+  /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
+  double get originX => _originX;
+
+  /// Change the [_originX] field value.
+  /// [originXChanged] will be invoked only if the field's value has changed.
+  set originX(double value) {
+    if (_originX == value) {
+      return;
+    }
+    double from = _originX;
+    _originX = value;
+    if (hasValidated) {
+      originXChanged(from, value);
+    }
+  }
+
+  void originXChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// OriginY field with key 373.
+  static const double originYInitialValue = 0.0;
+  double _originY = originYInitialValue;
+  static const int originYPropertyKey = 373;
+
+  /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
+  double get originY => _originY;
+
+  /// Change the [_originY] field value.
+  /// [originYChanged] will be invoked only if the field's value has changed.
+  set originY(double value) {
+    if (_originY == value) {
+      return;
+    }
+    double from = _originY;
+    _originY = value;
+    if (hasValidated) {
+      originYChanged(from, value);
+    }
+  }
+
+  void originYChanged(double from, double to);
+
+  @override
+  void copy(covariant TransformConstraintBase source) {
+    super.copy(source);
+    _originX = source._originX;
+    _originY = source._originY;
+  }
 }

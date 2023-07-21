@@ -39,6 +39,28 @@ abstract class TextStyleBase extends ContainerComponent {
   void fontSizeChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
+  /// LineHeight field with key 370.
+  static const double lineHeightInitialValue = -1.0;
+  double _lineHeight = lineHeightInitialValue;
+  static const int lineHeightPropertyKey = 370;
+  double get lineHeight => _lineHeight;
+
+  /// Change the [_lineHeight] field value.
+  /// [lineHeightChanged] will be invoked only if the field's value has changed.
+  set lineHeight(double value) {
+    if (_lineHeight == value) {
+      return;
+    }
+    double from = _lineHeight;
+    _lineHeight = value;
+    if (hasValidated) {
+      lineHeightChanged(from, value);
+    }
+  }
+
+  void lineHeightChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
   /// FontAssetId field with key 279.
   static const int fontAssetIdInitialValue = -1;
   int _fontAssetId = fontAssetIdInitialValue;
@@ -65,6 +87,7 @@ abstract class TextStyleBase extends ContainerComponent {
   void copy(covariant TextStyleBase source) {
     super.copy(source);
     _fontSize = source._fontSize;
+    _lineHeight = source._lineHeight;
     _fontAssetId = source._fontAssetId;
   }
 }

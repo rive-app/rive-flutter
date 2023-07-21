@@ -28,6 +28,11 @@ enum TextOverflow {
   ellipsis,
 }
 
+enum TextOrigin {
+  top,
+  baseline,
+}
+
 class Text extends TextBase with TextStyleContainer {
   TextShapeResult? _shape;
   // A shape result specifically for modifiers.
@@ -89,12 +94,13 @@ class Text extends TextBase with TextStyleContainer {
       textRuns.add(TextRun(
         font: run.style?.font ?? defaultFont,
         fontSize: run.style?.fontSize ?? 16,
+        lineHeight: run.style?.lineHeight ?? -1,
         unicharCount: run.text.codeUnits.length,
         styleId: runIndex++,
       ));
     }
     if (withModifiers) {
-      // Make sure to split on glyphs from TextEffectors.
+      // Make sure to split on glyphs from TextModifiers.
       for (final modifierGroup in _modifierGroups) {
         textRuns = modifierGroup.applyShapeModifiers(this, textRuns);
       }
@@ -174,13 +180,26 @@ class Text extends TextBase with TextStyleContainer {
   }
 
 
-  Mat2D get originTransform => Mat2D.multiply(Mat2D(), worldTransform,
-      Mat2D.fromTranslate(-_size.width * originX, -_size.height * originY));
+  Mat2D get originTransform => Mat2D.multiply(
+        Mat2D(),
+        worldTransform,
+        Mat2D.fromTranslate(
+          _bounds.minX - _bounds.width * originX,
+          _bounds.minY - _bounds.height * originY,
+        ),
+      );
 
-  Size _size = Size.zero;
-  Size get size => _size;
+  AABB _bounds = AABB.collapsed(Vec2D());
+  // Size _size = Size.zero;
+  Size get size => Size(_bounds.width, _bounds.height);
 
-  static const double paragraphSpacing = 20;
+  @override
+  AABB get localBounds => AABB.fromCoordinates(
+        x: _bounds.minX - _bounds.width * originX,
+        y: _bounds.minY - _bounds.height * originY,
+        width: _bounds.width,
+        height: _bounds.height,
+      );
 
   void forEachGlyph(
       bool Function(LineRunGlyph, double, double, GlyphLine) callback) {
@@ -210,6 +229,7 @@ class Text extends TextBase with TextStyleContainer {
           maxX = x;
         }
       }
+
       if (paragraphLines.isNotEmpty) {
         y += paragraphLines.last.bottom;
       }
@@ -231,6 +251,7 @@ class Text extends TextBase with TextStyleContainer {
     _renderStyles.clear();
 
     double y = 0;
+    double minY = 0;
     double maxX = 0;
     var paragraphIndex = 0;
     int ellipsisLine = -1;
@@ -251,6 +272,7 @@ class Text extends TextBase with TextStyleContainer {
         if (paragraphLines.isNotEmpty) {
           y += paragraphLines.last.bottom;
         }
+
         y += paragraphSpacing;
       }
       if (ellipsisLine == -1) {
@@ -262,8 +284,20 @@ class Text extends TextBase with TextStyleContainer {
     }
 
     bool haveModifiers = _modifierGroups.isNotEmpty;
+    if (haveModifiers) {
+      for (final modifier in _modifierGroups) {
+        modifier.computeCoverage(_unicharCount);
+      }
+    }
 
     int lineIndex = 0;
+    paragraphIndex = 0;
+    if (textOrigin == TextOrigin.baseline &&
+        lines.isNotEmpty &&
+        lines.first.isNotEmpty) {
+      y -= lines.first.first.baseline;
+      minY = y;
+    }
     outer:
     for (final paragraphLines in lines) {
       final paragraph = shape.paragraphs[paragraphIndex++];
@@ -302,9 +336,9 @@ class Text extends TextBase with TextStyleContainer {
             var centerX = glyphInfo.center;
             var transform = Mat2D.fromScaleAndTranslation(
                 glyphInfo.run.fontSize, glyphInfo.run.fontSize, -centerX, 0);
-            for (final effector in _modifierGroups) {
-              transform = effector.transform(
-                  effector.glyphCoverage(glyphInfo), transform);
+            for (final modifier in _modifierGroups) {
+              transform = modifier.transform(
+                  modifier.glyphCoverage(glyphInfo), transform);
             }
             var offset = glyphInfo.offset;
             transform = Mat2D.multiply(
@@ -350,18 +384,31 @@ class Text extends TextBase with TextStyleContainer {
     }
     switch (sizing) {
       case TextSizing.autoWidth:
-        _size = Size(maxX, max(0, y - paragraphSpacing));
+        _bounds = AABB.fromValues(
+          0.0,
+          minY,
+          maxX,
+          max(minY, y - paragraphSpacing),
+        );
         break;
       case TextSizing.autoHeight:
-        _size = Size(width, max(0, y - paragraphSpacing));
+        _bounds = AABB.fromValues(
+          0.0,
+          minY,
+          width,
+          max(minY, y - paragraphSpacing),
+        );
         break;
       case TextSizing.fixed:
-        _size = Size(width, height);
+        _bounds = AABB.fromValues(
+          0.0,
+          minY,
+          width,
+          minY + height,
+        );
         break;
     }
   }
-
-  bool _renderStylesDirty = true;
 
   @override
   void draw(Canvas canvas) {
@@ -370,16 +417,12 @@ class Text extends TextBase with TextStyleContainer {
     if (lines == null || shape == null) {
       return;
     }
-    if (_renderStylesDirty) {
-      _renderStylesDirty = false;
-      _buildRenderStyles();
-    }
 
     canvas.save();
     canvas.transform(worldTransform.mat4);
-    canvas.translate(-_size.width * originX, -_size.height * originY);
+    canvas.translate(-_bounds.width * originX, -_bounds.height * originY);
     if (overflow == TextOverflow.clipped) {
-      canvas.clipRect(Offset.zero & _size);
+      canvas.clipRect(Offset.zero & size);
     }
     for (final style in _renderStyles) {
       style.draw(canvas);
@@ -393,6 +436,7 @@ class Text extends TextBase with TextStyleContainer {
     for (final group in _modifierGroups) {
       group.clearRangeMaps();
     }
+    markWorldTransformDirty();
   }
 
   /// Called when a modifier causes the text's shape to change.
@@ -406,7 +450,7 @@ class Text extends TextBase with TextStyleContainer {
   int _unicharCount = 0;
 
   void markPaintDirty() {
-    _renderStylesDirty = true;
+    addDirt(ComponentDirt.paint);
   }
 
   void computeShape() {
@@ -415,6 +459,8 @@ class Text extends TextBase with TextStyleContainer {
     _lines?.dispose();
     _lines = null;
     if (runs.isEmpty) {
+      _bounds = AABB.collapsed(Vec2D());
+
       return;
     }
     assert(_defaultFont != null);
@@ -436,10 +482,11 @@ class Text extends TextBase with TextStyleContainer {
           sizing == TextSizing.autoWidth ? -1 : width, align);
       _glyphLookup = GlyphLookup.fromShape(
           _modifierShape!, _modifierStyledText!.value.length);
+      _unicharCount = _modifierStyledText!.value.length;
       for (final group in _modifierGroups) {
         group.computeRangeMap(_modifierStyledText!.value, _modifierShape!,
             _modifierLines!, _glyphLookup!);
-        group.computeCoverage();
+        group.computeCoverage(_unicharCount);
       }
     } else {
       _modifierShape = null;
@@ -474,6 +521,7 @@ class Text extends TextBase with TextStyleContainer {
   @override
   void update(int dirt) {
     super.update(dirt);
+    bool rebuildRenderStyles = dirt & ComponentDirt.paint != 0;
     if (dirt & ComponentDirt.path != 0) {
       // TODO: (Lugi) Hardcoded font for now
       const defaultFontAsset = 'assets/fonts/Inter-Regular.ttf';
@@ -485,15 +533,24 @@ class Text extends TextBase with TextStyleContainer {
         });
       } else {
         computeShape();
+        rebuildRenderStyles = true;
       }
     }
+
+    // Could optimize this to do what the C++ runtime does by propagating
+    // opacity to the styles instead of rebuilding render styles.
     if (dirt & ComponentDirt.worldTransform != 0) {
       for (final style in styles) {
         for (final paint in style.shapePaints) {
-          paint.renderOpacity = renderOpacity;
+          if (paint.renderOpacity != renderOpacity) {
+            paint.renderOpacity = renderOpacity;
+            rebuildRenderStyles = true;
+          }
         }
       }
-      markPaintDirty();
+    }
+    if (rebuildRenderStyles) {
+      _buildRenderStyles();
     }
   }
 
@@ -562,4 +619,14 @@ class Text extends TextBase with TextStyleContainer {
   void originYChanged(double from, double to) {
     context.markNeedsAdvance();
   }
+
+  @override
+  void paragraphSpacingChanged(double from, double to) {
+    markPaintDirty();
+  }
+
+  TextOrigin get textOrigin => TextOrigin.values[originValue];
+
+  @override
+  void originValueChanged(int from, int to) => markPaintDirty();
 }

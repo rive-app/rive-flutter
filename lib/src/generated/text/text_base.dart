@@ -142,10 +142,10 @@ abstract class TextBase extends Drawable {
   void heightChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
-  /// OriginX field with key 363.
+  /// OriginX field with key 366.
   static const double originXInitialValue = 0.0;
   double _originX = originXInitialValue;
-  static const int originXPropertyKey = 363;
+  static const int originXPropertyKey = 366;
 
   /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
   double get originX => _originX;
@@ -166,10 +166,10 @@ abstract class TextBase extends Drawable {
   void originXChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
-  /// OriginY field with key 364.
+  /// OriginY field with key 367.
   static const double originYInitialValue = 0.0;
   double _originY = originYInitialValue;
-  static const int originYPropertyKey = 364;
+  static const int originYPropertyKey = 367;
 
   /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
   double get originY => _originY;
@@ -189,6 +189,54 @@ abstract class TextBase extends Drawable {
 
   void originYChanged(double from, double to);
 
+  /// --------------------------------------------------------------------------
+  /// ParagraphSpacing field with key 371.
+  static const double paragraphSpacingInitialValue = 0.0;
+  double _paragraphSpacing = paragraphSpacingInitialValue;
+  static const int paragraphSpacingPropertyKey = 371;
+  double get paragraphSpacing => _paragraphSpacing;
+
+  /// Change the [_paragraphSpacing] field value.
+  /// [paragraphSpacingChanged] will be invoked only if the field's value has
+  /// changed.
+  set paragraphSpacing(double value) {
+    if (_paragraphSpacing == value) {
+      return;
+    }
+    double from = _paragraphSpacing;
+    _paragraphSpacing = value;
+    if (hasValidated) {
+      paragraphSpacingChanged(from, value);
+    }
+  }
+
+  void paragraphSpacingChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
+  /// OriginValue field with key 377.
+  static const int originValueInitialValue = 0;
+  int _originValue = originValueInitialValue;
+  static const int originValuePropertyKey = 377;
+
+  /// Logical starting location of origin.
+  int get originValue => _originValue;
+
+  /// Change the [_originValue] field value.
+  /// [originValueChanged] will be invoked only if the field's value has
+  /// changed.
+  set originValue(int value) {
+    if (_originValue == value) {
+      return;
+    }
+    int from = _originValue;
+    _originValue = value;
+    if (hasValidated) {
+      originValueChanged(from, value);
+    }
+  }
+
+  void originValueChanged(int from, int to);
+
   @override
   void copy(covariant TextBase source) {
     super.copy(source);
@@ -199,5 +247,7 @@ abstract class TextBase extends Drawable {
     _height = source._height;
     _originX = source._originX;
     _originY = source._originY;
+    _paragraphSpacing = source._paragraphSpacing;
+    _originValue = source._originValue;
   }
 }

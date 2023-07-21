@@ -22,6 +22,7 @@ class Image extends ImageBase
   double get width => image?.width.toDouble() ?? 0.0;
   double get height => image?.width.toDouble() ?? 0.0;
 
+  @override
   AABB get localBounds {
     if (hasMesh && _mesh!.draws) {
       return _mesh!.bounds;

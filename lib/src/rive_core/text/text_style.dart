@@ -173,19 +173,14 @@ class TextStyle extends TextStyleBase
   }
 
   @override
-  void onFillsChanged() {
-    text?.markPaintDirty();
-  }
+  void onFillsChanged() => text?.markPaintDirty();
 
   @override
-  void onPaintMutatorChanged(ShapePaintMutator mutator) {
-    text?.markPaintDirty();
-  }
+  void onPaintMutatorChanged(ShapePaintMutator mutator) =>
+      text?.markPaintDirty();
 
   @override
-  void onStrokesChanged() {
-    text?.markPaintDirty();
-  }
+  void onStrokesChanged() => text?.markPaintDirty();
 
   @override
   Mat2D get worldTransform => text?.worldTransform ?? Mat2D.identity;
@@ -309,4 +304,11 @@ class TextStyle extends TextStyleBase
     }
     return super.import(stack);
   }
+
+  @override
+  void lineHeightChanged(double from, double to) {
+    _markShapeDirty();
+  }
+
+  double get autoLineHeight => font?.lineHeight(fontSize) ?? 0;
 }

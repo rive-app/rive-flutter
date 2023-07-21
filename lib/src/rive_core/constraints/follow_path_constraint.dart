@@ -1,0 +1,165 @@
+import 'dart:math';
+import 'dart:ui' as ui;
+
+import 'package:rive/src/generated/constraints/follow_path_constraint_base.dart';
+import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/constraints/constraint.dart';
+import 'package:rive/src/rive_core/shapes/shape.dart';
+import 'package:rive/src/rive_core/transform_component.dart';
+import 'package:rive/src/rive_core/transform_space.dart';
+import 'package:rive_common/math.dart';
+
+export 'package:rive/src/generated/constraints/follow_path_constraint_base.dart';
+
+/// A constraint which transforms its constrained TransformComponent to the
+/// targeted path.
+class FollowPathConstraint extends FollowPathConstraintBase {
+  final ui.Path _worldPath = ui.Path();
+
+  @override
+  Mat2D get targetTransform {
+    if (target is! Shape) {
+      return target!.worldTransform;
+    }
+    var metrics = _worldPath.computeMetrics().toList(growable: false);
+    if (metrics.isEmpty) {
+      return Mat2D();
+    }
+    double totalLength = 0.0;
+    for (final metric in metrics) {
+      totalLength += metric.length;
+    }
+    double distanceUnits = totalLength * distance.clamp(0, 1);
+    var itr = metrics.iterator;
+
+    // We already checked it wasn't empty.
+    itr.moveNext();
+    ui.PathMetric metric;
+    do {
+      metric = itr.current;
+      if (distanceUnits <= metric.length) {
+        break;
+      }
+
+      distanceUnits -= metric.length;
+    } while (itr.moveNext());
+
+    var tangent = metric.getTangentForOffset(distanceUnits);
+
+    if (tangent == null) {
+      return Mat2D();
+    }
+
+    Vec2D position = Vec2D.fromValues(tangent.position.dx, tangent.position.dy);
+
+    Mat2D transformB = Mat2D.clone(target!.worldTransform);
+
+    transformB[4] = position.x;
+    transformB[5] = position.y;
+    if (offset) {
+      Mat2D.multiply(transformB, transformB, constrainedComponent!.transform);
+    }
+    if (orient) {
+      Mat2D.multiply(
+          transformB,
+          transformB,
+          Mat2D.fromRotation(
+              Mat2D(), atan2(tangent.vector.dy, tangent.vector.dx)));
+    } else {
+      // If orient is off, respect the constrained component's rotation
+      var comp = TransformComponents();
+      Mat2D.decompose(constrainedComponent!.worldTransform, comp);
+      Mat2D.multiply(
+          transformB, transformB, Mat2D.fromRotation(Mat2D(), comp.rotation));
+    }
+    return transformB;
+  }
+
+  @override
+  void constrain(TransformComponent component) {
+    if (target == null) {
+      return;
+    }
+    var transformA = component.worldTransform;
+    var transformB = Mat2D.clone(targetTransform);
+    if (sourceSpace == TransformSpace.local) {
+      var targetParentWorld = parentWorld(target!);
+
+      var inverse = Mat2D();
+      if (!Mat2D.invert(inverse, targetParentWorld)) {
+        return;
+      }
+      Mat2D.multiply(transformB, inverse, transformB);
+    }
+    if (destSpace == TransformSpace.local && component.parent != null) {
+      var targetParentWorld = parentWorld(component);
+      Mat2D.multiply(transformB, targetParentWorld, transformB);
+    }
+
+    Mat2D.decompose(transformA, componentsA);
+    Mat2D.decompose(transformB, componentsB);
+
+    var angleA = componentsA[4] % (pi * 2);
+    var angleB = componentsB[4] % (pi * 2);
+    var diff = angleB - angleA;
+    if (diff > pi) {
+      diff -= pi * 2;
+    } else if (diff < -pi) {
+      diff += pi * 2;
+    }
+
+    var t = strength;
+    var ti = 1 - t;
+
+    componentsB[4] = angleA + diff * t;
+    componentsB[0] = componentsA[0] * ti + componentsB[0] * t;
+    componentsB[1] = componentsA[1] * ti + componentsB[1] * t;
+    componentsB[2] = componentsA[2] * ti + componentsB[2] * t;
+    componentsB[3] = componentsA[3] * ti + componentsB[3] * t;
+    componentsB[5] = componentsA[5] * ti + componentsB[5] * t;
+
+    Mat2D.compose(component.worldTransform, componentsB);
+  }
+
+  @override
+  void buildDependencies() {
+    if (target is Shape) {
+      var shape = target as Shape;
+      // Follow path should update after the target's path composer
+      shape.pathComposer.addDependent(this);
+    }
+    if (constrainedComponent != null) {
+      // The constrained component should update after follow path
+      addDependent(constrainedComponent!, via: this);
+    }
+  }
+
+  @override
+  void update(int dirt) {
+    if (target is! Shape) {
+      return;
+    }
+    var shape = target as Shape;
+    _worldPath.reset();
+    for (final path in shape.paths) {
+      _worldPath.addPath(path.uiPath, ui.Offset.zero,
+          matrix4: path.pathTransform.mat4);
+    }
+  }
+
+  @override
+  Component? get targetDependencyParent =>
+      target != null ? (target as Shape) : null;
+
+  @override
+  void distanceChanged(double from, double to) => markConstraintDirty();
+
+  @override
+  void orientChanged(bool from, bool to) => markConstraintDirty();
+
+  @override
+  void offsetChanged(bool from, bool to) => markConstraintDirty();
+
+  @override
+  bool validate() => super.validate() && (target == null || target is Shape);
+}

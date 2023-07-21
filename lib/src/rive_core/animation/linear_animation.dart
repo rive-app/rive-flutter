@@ -80,6 +80,10 @@ class LinearAnimation extends LinearAnimationBase {
   /// animations exist once but entire Rive file can be instanced multiple times
   /// playing different positions).
   void apply(double time, {required CoreContext coreContext, double mix = 1}) {
+    if (quantize) {
+      // ignore: parameter_assignments
+      time = (time * fps).floor() / fps;
+    }
     for (final keyedObject in _keyedObjects.values) {
       keyedObject.apply(time, mix, coreContext);
     }
@@ -108,6 +112,9 @@ class LinearAnimation extends LinearAnimationBase {
 
   @override
   void workStartChanged(int from, int to) {}
+
+  @override
+  void quantizeChanged(bool from, bool to) {}
 
   /// Convert a global clock to local seconds (takes into consideration work
   /// area start/end, speed, looping).

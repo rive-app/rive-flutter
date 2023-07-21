@@ -82,29 +82,27 @@ class TextModifierGroup extends TextModifierGroupBase {
 
   /// Coverage is ultimately always expressed per unicode codepoint.
   Float32List _coverage = Float32List(1);
-  int _textSize = -1;
 
   @visibleForTesting
   Float32List get coverageValues => _coverage;
 
   void computeRangeMap(String text, TextShapeResult? shape,
       BreakLinesResult? lines, GlyphLookup glyphLookup) {
-    _textSize = text.length;
     for (final range in _ranges) {
       range.computeRange(text, shape, lines, glyphLookup);
     }
   }
 
-  @override
-  void buildDependencies() => parent?.addDependent(this);
-
-  void computeCoverage() {
-    if (_textSize == -1) {
-      // This can happen if we're still loading the default font.
+  void computeCoverage(int unicharCount) {
+    if (dirt & ComponentDirt.textCoverage == 0) {
       return;
     }
+    // Because we're not dependent on anything we need to reset our dirt
+    // ourselves. We're not in the DAG so we'll never get reset.
+    dirt = 0x00;
     // When the text re-shapes, we udpate our coverage values.
-    _coverage = Float32List(_textSize);
+    _coverage = Float32List(unicharCount);
+
     for (final range in _ranges) {
       range.computeCoverage(_coverage);
     }
@@ -126,13 +124,6 @@ class TextModifierGroup extends TextModifierGroupBase {
       c += coverage(index + i);
     }
     return c /= count;
-  }
-
-  @override
-  void update(int dirt) {
-    if (dirt & ComponentDirt.textCoverage != 0) {
-      computeCoverage();
-    }
   }
 
   final List<Font> _cleanupFonts = [];
@@ -321,4 +312,7 @@ class TextModifierGroup extends TextModifierGroupBase {
 
   @override
   void yChanged(double from, double to) => textComponent?.markPaintDirty();
+
+  @override
+  void update(int dirt) {}
 }

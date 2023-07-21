@@ -182,6 +182,31 @@ abstract class LinearAnimationBase extends Animation {
 
   void enableWorkAreaChanged(bool from, bool to);
 
+  /// --------------------------------------------------------------------------
+  /// Quantize field with key 376.
+  static const bool quantizeInitialValue = false;
+  bool _quantize = quantizeInitialValue;
+  static const int quantizePropertyKey = 376;
+
+  /// Whether frames are quantized to desired frame rate or floating based on
+  /// runtime speed.
+  bool get quantize => _quantize;
+
+  /// Change the [_quantize] field value.
+  /// [quantizeChanged] will be invoked only if the field's value has changed.
+  set quantize(bool value) {
+    if (_quantize == value) {
+      return;
+    }
+    bool from = _quantize;
+    _quantize = value;
+    if (hasValidated) {
+      quantizeChanged(from, value);
+    }
+  }
+
+  void quantizeChanged(bool from, bool to);
+
   @override
   void copy(covariant LinearAnimationBase source) {
     super.copy(source);
@@ -192,5 +217,6 @@ abstract class LinearAnimationBase extends Animation {
     _workStart = source._workStart;
     _workEnd = source._workEnd;
     _enableWorkArea = source._enableWorkArea;
+    _quantize = source._quantize;
   }
 }

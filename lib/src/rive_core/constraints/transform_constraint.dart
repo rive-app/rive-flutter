@@ -11,13 +11,28 @@ export 'package:rive/src/generated/constraints/transform_constraint_base.dart';
 /// A constraint copies the transform from the target component to the
 /// constrained component in world or local space.
 class TransformConstraint extends TransformConstraintBase {
+  Mat2D get targetTransform {
+    var transform = target!.worldTransform;
+    if (originX != 0 || originY != 0) {
+      var bounds = target!.localBounds;
+      var local = Mat2D.fromTranslation(
+        Vec2D.fromValues(
+          bounds.left + bounds.width * originX,
+          bounds.top + bounds.height * originY,
+        ),
+      );
+      transform = Mat2D.multiply(Mat2D(), transform, local);
+    }
+    return transform;
+  }
+
   @override
   void constrain(TransformComponent component) {
     if (target == null) {
       return;
     }
     var transformA = component.worldTransform;
-    var transformB = Mat2D.clone(target!.worldTransform);
+    var transformB = Mat2D.clone(targetTransform);
     if (sourceSpace == TransformSpace.local) {
       var targetParentWorld = parentWorld(target!);
 
@@ -56,4 +71,12 @@ class TransformConstraint extends TransformConstraintBase {
 
     Mat2D.compose(component.worldTransform, componentsB);
   }
+
+  @override
+  void originXChanged(double from, double to) =>
+      constrainedComponent?.markTransformDirty();
+
+  @override
+  void originYChanged(double from, double to) =>
+      constrainedComponent?.markTransformDirty();
 }

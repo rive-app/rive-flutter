@@ -2,19 +2,12 @@ import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
-import 'package:rive/src/rive_core/constraints/ik_constraint.dart';
-import 'package:rive/src/rive_core/constraints/rotation_constraint.dart';
-import 'package:rive/src/rive_core/constraints/scale_constraint.dart';
-import 'package:rive/src/rive_core/constraints/transform_constraint.dart';
-import 'package:rive/src/rive_core/constraints/translation_constraint.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
 import 'package:rive_common/math.dart';
-
-import 'constraints/distance_constraint.dart';
 
 export 'package:rive/src/generated/transform_component_base.dart';
 
@@ -177,14 +170,9 @@ abstract class TransformComponent extends TransformComponentBase {
         addDirt(ComponentDirt.clip, recurse: true);
 
         break;
-      case TransformConstraintBase.typeKey:
-      case IKConstraintBase.typeKey:
-      case DistanceConstraintBase.typeKey:
-      case TranslationConstraintBase.typeKey:
-      case RotationConstraintBase.typeKey:
-      case ScaleConstraintBase.typeKey:
-        _constraints.add(child as Constraint);
-        break;
+    }
+    if (child is Constraint) {
+      _constraints.add(child);
     }
   }
 
@@ -203,15 +191,9 @@ abstract class TransformComponent extends TransformComponentBase {
           addDirt(ComponentDirt.clip, recurse: true);
         }
         break;
-      case TransformConstraintBase.typeKey:
-      case IKConstraintBase.typeKey:
-      case DistanceConstraintBase.typeKey:
-      case TranslationConstraintBase.typeKey:
-      case RotationConstraintBase.typeKey:
-      case ScaleConstraintBase.typeKey:
-        _constraints.remove(child as Constraint);
-
-        break;
+    }
+    if (child is Constraint) {
+      _constraints.remove(child);
     }
   }
 
@@ -225,4 +207,6 @@ abstract class TransformComponent extends TransformComponentBase {
     }
     super.buildDrawOrder(drawables, rules, allRules);
   }
+
+  AABB get localBounds => AABB.collapsed(Vec2D());
 }
