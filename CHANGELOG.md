@@ -1,3 +1,8 @@
+## UPCOMING
+
+- Expose `useArtboardSize` in `RiveAnimation` widget. Which is a boolean that determines whether to use the inherent size of the artboard, i.e. the absolute size defined by the artboard, or size the widget based on the available constraints only (sized by parent).
+- Add `clipRect` to `RiveAnimation` and `Rive` widgets. Forces the artboard to clip with the provided Rect.
+- Fixed `Rive` widget always applying a clip, regardless of `Artboard.clip` value (set in the Editor).
 
 ## 0.11.5
 

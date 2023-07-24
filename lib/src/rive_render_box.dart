@@ -18,6 +18,7 @@ abstract class RiveRenderBox extends RenderBox {
   BoxFit _fit = BoxFit.none;
   Alignment _alignment = Alignment.center;
   bool _useArtboardSize = false;
+  Rect? _clipRect;
 
   bool get useArtboardSize => _useArtboardSize;
 
@@ -59,6 +60,15 @@ abstract class RiveRenderBox extends RenderBox {
   set alignment(Alignment value) {
     if (value != _alignment) {
       _alignment = value;
+      markNeedsPaint();
+    }
+  }
+
+  Rect? get clipRect => _clipRect;
+
+  set clipRect(Rect? value) {
+    if (value != _clipRect) {
+      _clipRect = value;
       markNeedsPaint();
     }
   }

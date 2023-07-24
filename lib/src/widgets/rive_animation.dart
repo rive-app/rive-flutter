@@ -48,6 +48,12 @@ class RiveAnimation extends StatefulWidget {
   /// Enable/disable antialiasing when rendering
   final bool antialiasing;
 
+  /// {@macro Rive.useArtboardSize}
+  final bool useArtboardSize;
+
+  /// {@macro Rive.clipRect}
+  final Rect? clipRect;
+
   /// Controllers for instanced animations and state machines; use this
   /// to directly control animation states instead of passing names.
   final List<RiveAnimationController> controllers;
@@ -73,6 +79,8 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.useArtboardSize = false,
+    this.clipRect,
     this.controllers = const [],
     this.onInit,
     Key? key,
@@ -97,6 +105,8 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.useArtboardSize = false,
+    this.clipRect,
     this.controllers = const [],
     this.onInit,
     this.headers,
@@ -121,6 +131,8 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.useArtboardSize = false,
+    this.clipRect,
     this.controllers = const [],
     this.onInit,
     Key? key,
@@ -147,6 +159,8 @@ class RiveAnimation extends StatefulWidget {
     this.alignment,
     this.placeHolder,
     this.antialiasing = true,
+    this.useArtboardSize = false,
+    this.clipRect,
     this.controllers = const [],
     this.onInit,
     Key? key,
@@ -377,6 +391,8 @@ class RiveAnimationState extends State<RiveAnimation> {
             fit: widget.fit,
             alignment: widget.alignment,
             antialiasing: widget.antialiasing,
+            useArtboardSize: widget.useArtboardSize,
+            clipRect: widget.clipRect,
           ),
         )
       : widget.placeHolder ?? const SizedBox();

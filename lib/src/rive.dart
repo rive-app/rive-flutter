@@ -8,6 +8,7 @@ class Rive extends LeafRenderObjectWidget {
   /// Artboard used for drawing
   final Artboard artboard;
 
+  /// {@template Rive.useArtboardSize}
   /// Determines whether to use the inherent size of the [artboard], i.e. the
   /// absolute size defined by the artboard, or size the widget based on the
   /// available constraints only (sized by parent).
@@ -25,6 +26,7 @@ class Rive extends LeafRenderObjectWidget {
   /// of an [IntrinsicWidth] or [IntrinsicHeight] widget or intend to directly
   /// obtain the [RenderBox.getMinIntrinsicWidth] et al., you will want to set
   /// this to `true`.
+  /// {@endtemplate}
   final bool useArtboardSize;
 
   /// Fit for the rendering artboard
@@ -36,12 +38,22 @@ class Rive extends LeafRenderObjectWidget {
   /// Enables/disables antialiasing
   final bool antialiasing;
 
+  /// {@template Rive.clipRect}
+  /// Clip the artboard to this rect.
+  ///
+  /// If not supplied it'll default to the constraint size provided by the
+  /// parent widget. Unless the [Artboard] has clipping disabled, then no
+  /// clip will be applied.
+  /// {@endtemplate}
+  final Rect? clipRect;
+
   const Rive({
     required this.artboard,
     this.useArtboardSize = false,
     this.antialiasing = true,
     BoxFit? fit,
     Alignment? alignment,
+    this.clipRect,
   })  : fit = fit ?? BoxFit.contain,
         alignment = alignment ?? Alignment.center;
 
@@ -53,7 +65,8 @@ class Rive extends LeafRenderObjectWidget {
       ..fit = fit
       ..alignment = alignment
       ..artboardSize = Size(artboard.width, artboard.height)
-      ..useArtboardSize = useArtboardSize;
+      ..useArtboardSize = useArtboardSize
+      ..clipRect = clipRect;
   }
 
   @override
@@ -65,7 +78,8 @@ class Rive extends LeafRenderObjectWidget {
       ..fit = fit
       ..alignment = alignment
       ..artboardSize = Size(artboard.width, artboard.height)
-      ..useArtboardSize = useArtboardSize;
+      ..useArtboardSize = useArtboardSize
+      ..clipRect = clipRect;
   }
 }
 
@@ -106,7 +120,13 @@ class RiveRenderObject extends RiveRenderBox {
 
   @override
   void beforeDraw(Canvas canvas, Offset offset) {
-    canvas.clipRect(offset & size);
+    // Apply clip rect if provided and return early
+    if (clipRect != null) {
+      return canvas.clipRect(clipRect!);
+    }
+    if (artboard.clip) {
+      canvas.clipRect(offset & size);
+    }
   }
 
   @override
