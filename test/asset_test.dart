@@ -132,7 +132,7 @@ void main() {
       expect(image.height, 0);
       await completer.future;
       expect(image.width, 256);
-      expect(image.height, 256);
+      expect(image.height, 331);
     });
   });
   group("Test loading rive file with cdn asset.", () {

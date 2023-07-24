@@ -58,17 +58,10 @@ class TextModifierGroup extends TextModifierGroupBase {
     /// shaping change).
     if (_shapeModifiers.isNotEmpty) {
       textComponent?.modifierShapeDirty();
-
-      /// We don't need to add dirt as our coverage will be pre-computed during
-      /// the [Text.computeShape] call. This is because coverage is necessary to
-      /// properly shape the text.
     } else {
       textComponent?.markPaintDirty();
-
-      /// Coverage will be computed during our update and before
-      /// [Text._buildRenderStyles].
-      addDirt(ComponentDirt.textCoverage);
     }
+    addDirt(ComponentDirt.textCoverage);
   }
 
   /// Clear any cached selector range maps so they can be recomputed after next
@@ -201,8 +194,10 @@ class TextModifierGroup extends TextModifierGroupBase {
   }
 
   Mat2D get originTransform {
-    Mat2D xform =
-        modifiesOrigin ? Mat2D.fromTranslate(-originX, -originY) : Mat2D();
+    Mat2D xform = Mat2D.fromTranslate(
+      (modifiesOrigin ? -originX : 0.0) + (modifiesTranslation ? x : 0),
+      (modifiesOrigin ? -originY : 0.0) + (modifiesTranslation ? y : 0),
+    );
     return xform;
   }
 
@@ -212,20 +207,29 @@ class TextModifierGroup extends TextModifierGroupBase {
     }
 
     var transform = Mat2D();
-    var actualRotation = rotation * t;
+    var actualRotation = modifiesRotation ? rotation * t : 0.0;
     if (actualRotation != 0) {
       Mat2D.fromRotation(transform, actualRotation);
     } else {
       Mat2D.setIdentity(transform);
     }
-    transform[4] = x * t;
-    transform[5] = y * t;
-    Mat2D.scaleByValues(transform, (1 - t) + scaleX * t, (1 - t) + scaleY * t);
-    glyphTransform[4] += originX;
-    glyphTransform[5] += originY;
+    if (modifiesTranslation) {
+      transform[4] = x * t;
+      transform[5] = y * t;
+    }
+    if (modifiesScale) {
+      Mat2D.scaleByValues(
+          transform, (1 - t) + scaleX * t, (1 - t) + scaleY * t);
+    }
+    if (modifiesOrigin) {
+      glyphTransform[4] += originX;
+      glyphTransform[5] += originY;
+    }
     var result = Mat2D.multiply(Mat2D(), transform, glyphTransform);
-    result[4] -= originX;
-    result[5] -= originY;
+    if (modifiesOrigin) {
+      result[4] -= originX;
+      result[5] -= originY;
+    }
     return result;
   }
 
