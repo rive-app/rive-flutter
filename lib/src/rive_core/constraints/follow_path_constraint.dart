@@ -29,7 +29,11 @@ class FollowPathConstraint extends FollowPathConstraintBase {
     for (final metric in metrics) {
       totalLength += metric.length;
     }
-    double distanceUnits = totalLength * distance.clamp(0, 1);
+    // Normalize distance value to 0-1 since we need to support values
+    // <0 and >1
+    // Negative values follow path in reverse direction
+    var actualDistance = distance % 1;
+    double distanceUnits = totalLength * actualDistance.clamp(0, 1);
     var itr = metrics.iterator;
 
     // We already checked it wasn't empty.
@@ -51,27 +55,18 @@ class FollowPathConstraint extends FollowPathConstraintBase {
     }
 
     Vec2D position = Vec2D.fromValues(tangent.position.dx, tangent.position.dy);
-
     Mat2D transformB = Mat2D.clone(target!.worldTransform);
 
-    transformB[4] = position.x;
-    transformB[5] = position.y;
-    if (offset) {
-      Mat2D.multiply(transformB, transformB, constrainedComponent!.transform);
-    }
     if (orient) {
-      Mat2D.multiply(
-          transformB,
-          transformB,
-          Mat2D.fromRotation(
-              Mat2D(), atan2(tangent.vector.dy, tangent.vector.dx)));
-    } else {
-      // If orient is off, respect the constrained component's rotation
-      var comp = TransformComponents();
-      Mat2D.decompose(constrainedComponent!.worldTransform, comp);
-      Mat2D.multiply(
-          transformB, transformB, Mat2D.fromRotation(Mat2D(), comp.rotation));
+      Mat2D.fromRotation(
+          transformB, atan2(tangent.vector.dy, tangent.vector.dx));
     }
+    final offsetPosition = offset
+        ? Vec2D.fromValues(constrainedComponent!.transform[4],
+            constrainedComponent!.transform[5])
+        : Vec2D();
+    transformB[4] = position.x + offsetPosition.x;
+    transformB[5] = position.y + offsetPosition.y;
     return transformB;
   }
 
@@ -80,7 +75,9 @@ class FollowPathConstraint extends FollowPathConstraintBase {
     if (target == null) {
       return;
     }
+    // Constrained component world transform
     var transformA = component.worldTransform;
+    // Target transform
     var transformB = Mat2D.clone(targetTransform);
     if (sourceSpace == TransformSpace.local) {
       var targetParentWorld = parentWorld(target!);
@@ -99,24 +96,21 @@ class FollowPathConstraint extends FollowPathConstraintBase {
     Mat2D.decompose(transformA, componentsA);
     Mat2D.decompose(transformB, componentsB);
 
-    var angleA = componentsA[4] % (pi * 2);
-    var angleB = componentsB[4] % (pi * 2);
-    var diff = angleB - angleA;
-    if (diff > pi) {
-      diff -= pi * 2;
-    } else if (diff < -pi) {
-      diff += pi * 2;
-    }
-
     var t = strength;
     var ti = 1 - t;
 
-    componentsB[4] = angleA + diff * t;
+    // If orient is on, use the rotation value we calculated when getting the
+    // tanget of the path, otherwise respect constrained component's rotation
+    if (!orient) {
+      componentsB[4] = componentsA[4] % (pi * 2);
+    }
+    // Merge x/y position based on strength value
     componentsB[0] = componentsA[0] * ti + componentsB[0] * t;
     componentsB[1] = componentsA[1] * ti + componentsB[1] * t;
-    componentsB[2] = componentsA[2] * ti + componentsB[2] * t;
-    componentsB[3] = componentsA[3] * ti + componentsB[3] * t;
-    componentsB[5] = componentsA[5] * ti + componentsB[5] * t;
+    // Maintain scale & skew of constrained component
+    componentsB[2] = componentsA[2];
+    componentsB[3] = componentsA[3];
+    componentsB[5] = componentsA[5];
 
     Mat2D.compose(component.worldTransform, componentsB);
   }
