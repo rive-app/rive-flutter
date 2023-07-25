@@ -16,7 +16,6 @@ export 'package:rive/src/generated/constraints/follow_path_constraint_base.dart'
 class FollowPathConstraint extends FollowPathConstraintBase {
   final ui.Path _worldPath = ui.Path();
 
-  @override
   Mat2D get targetTransform {
     if (target is! Shape) {
       return target!.worldTransform;

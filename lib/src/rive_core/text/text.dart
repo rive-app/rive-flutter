@@ -525,10 +525,10 @@ class Text extends TextBase with TextStyleContainer {
     super.update(dirt);
     bool rebuildRenderStyles = dirt & ComponentDirt.paint != 0;
     if (dirt & ComponentDirt.path != 0) {
-      // TODO: (Lugi) Hardcoded font for now
+      // TODO: (Luigi) Hardcoded font for now
       const defaultFontAsset = 'assets/fonts/Inter-Regular.ttf';
       if (_defaultFont == null) {
-        final future = rootBundle.load(defaultFontAsset).then((fontAsset) {
+        rootBundle.load(defaultFontAsset).then((fontAsset) {
           _defaultFont = Font.decode(fontAsset.buffer.asUint8List());
           // Reshape now that we have font.
           markShapeDirty();

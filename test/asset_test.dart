@@ -192,8 +192,8 @@ void main() {
       // by default we try to check for assets
     });
     test(
-        'If we provide a callback, we are hit first, and success means no cdn hit',
-        () async {
+        'If we provide a callback, we are hit first, and success means '
+        'no cdn hit', () async {
       // lets just return an image
       final imageBytes = loadFile('assets/file.png');
       final parameters = [];
@@ -219,8 +219,8 @@ void main() {
     });
 
     test(
-        'If we provide a callback, we are hit first, a failure means we hit cdn',
-        () async {
+        'If we provide a callback, we are hit first, a failure means we '
+        'hit cdn', () async {
       // lets just return an image
       final parameters = [];
       await HttpOverrides.runZoned(() async {

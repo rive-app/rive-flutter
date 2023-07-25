@@ -6,7 +6,6 @@ class CoreStringType extends CoreFieldType<String> {
   String deserialize(BinaryReader reader) =>
       reader.readString(explicitLength: true);
 
-  @override
   void read(BinaryReader reader) {
     var length = reader.readVarUint();
     reader.read(length);

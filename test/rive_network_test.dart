@@ -11,7 +11,10 @@ import 'src/utils.dart';
 
 void main() {
   late MockHttpClient mockHttpClient;
+
+  // ignore: close_sinks
   late MockHttpClientRequest request;
+
   setUpAll(() {
     registerFallbackValue(ArtboardFake());
     registerFallbackValue(Uri());

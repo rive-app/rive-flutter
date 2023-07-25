@@ -1,8 +1,11 @@
-## UPCOMING
+## 0.11.6
 
+- Follow path constraint.
 - Expose `useArtboardSize` in `RiveAnimation` widget. Which is a boolean that determines whether to use the inherent size of the artboard, i.e. the absolute size defined by the artboard, or size the widget based on the available constraints only (sized by parent).
 - Add `clipRect` to `RiveAnimation` and `Rive` widgets. Forces the artboard to clip with the provided Rect.
 - Fixed `Rive` widget always applying a clip, regardless of `Artboard.clip` value (set in the Editor).
+- Support for run targeting with text modifiers.
+- Transform constraint can target text origin.
 
 ## 0.11.5
 
@@ -11,6 +14,7 @@
 - Fix [[331](https://github.com/rive-app/rive-flutter/issues/331)] - external control on a Joystick not applied
 
 Deprecated:
+
 - `assetResolver` parameter on `RiveFile.network` and `RiveFile.import`. Use `assetLoader` instead - see `CallbackAssetLoader`.
 - `NetworkAssetResolver`, use `CallbackAssetLoader` instead.
 

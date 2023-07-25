@@ -341,6 +341,17 @@ class RangeMapper {
       }
       index++;
     }
+    if (characterCount > 0) {
+      var indexTo = indexFrom + characterCount;
+      if (indexTo > start && end > indexFrom) {
+        var actualStart = max(start, indexFrom);
+        int selected = min(end, indexTo) - actualStart;
+        if (selected > 0) {
+          indices.add(actualStart);
+          lengths.add(selected);
+        }
+      }
+    }
     indices.add(end);
     return RangeMapper(indices, lengths);
   }
