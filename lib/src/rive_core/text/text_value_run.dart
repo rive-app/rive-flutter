@@ -21,6 +21,22 @@ class TextValueRun extends TextValueRunBase {
     _style?.ref(this);
   }
 
+  /// Returns the offset of this run within the text.
+  int get offset {
+    var text = textComponent;
+    if (text == null) {
+      return 0;
+    }
+    int value = 0;
+    for (final run in text.runs) {
+      if (run == this) {
+        break;
+      }
+      value += run.text.length;
+    }
+    return value;
+  }
+
   void markShapeDirty() => textComponent?.markShapeDirty();
 
   @override

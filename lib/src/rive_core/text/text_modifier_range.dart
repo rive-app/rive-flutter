@@ -1,13 +1,14 @@
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/text/text_modifier_range_base.dart';
 import 'package:rive/src/rive_core/animation/cubic_interpolator_component.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/text/text_modifier_group.dart';
+import 'package:rive/src/rive_core/text/text_value_run.dart';
 import 'package:rive_common/rive_text.dart';
 
 export 'package:rive/src/generated/text/text_modifier_range_base.dart';
@@ -110,25 +111,36 @@ class TextModifierRange extends TextModifierRangeBase {
     if (_rangeMapper != null) {
       return;
     }
+    int start = 0;
+    int end = text.length;
+    if (run != null) {
+      start = run!.offset;
+      end = start + run!.text.length;
+    }
     switch (units) {
       case TextRangeUnits.charactersExcludingSpaces:
         _rangeMapper = RangeMapper.fromCharacters(
           text,
+          start,
+          end,
           glyphLookup,
           withoutSpaces: true,
         );
         break;
       case TextRangeUnits.words:
-        _rangeMapper = RangeMapper.fromWords(text);
+        _rangeMapper = RangeMapper.fromWords(text, start, end);
         break;
       case TextRangeUnits.lines:
         if (shape != null && lines != null) {
-          _rangeMapper = RangeMapper.fromLines(text, shape, lines, glyphLookup);
+          _rangeMapper = RangeMapper.fromLines(
+              text, start, end, shape, lines, glyphLookup);
         }
         break;
       default:
         _rangeMapper = RangeMapper.fromCharacters(
           text,
+          start,
+          end,
           glyphLookup,
         );
         break;
@@ -247,6 +259,30 @@ class TextModifierRange extends TextModifierRangeBase {
 
   @override
   void strengthChanged(double from, double to) => modifierGroup?.rangeChanged();
+
+  @override
+  void runIdChanged(int from, int to) {
+    run = to == Core.missingId ? null : context.resolve(to);
+    modifierGroup?.rangeTypeChanged();
+  }
+
+  @override
+  void onAddedDirty() {
+    run = context.resolve(runId);
+    super.onAddedDirty();
+  }
+
+  TextValueRun? _run;
+
+  TextValueRun? get run => _run;
+
+  set run(TextValueRun? value) {
+    if (_run == value) {
+      return;
+    }
+
+    _run = value;
+  }
 }
 
 // See word indices and word lengths implementation above, we basically want the
@@ -270,7 +306,7 @@ class RangeMapper {
         unitLengths = Uint32List.fromList(lengths);
 
   /// Build a RangeMapper from the words in [text].
-  static RangeMapper? fromWords(String text) {
+  static RangeMapper? fromWords(String text, int start, int end) {
     if (text.isEmpty) {
       return null;
     }
@@ -280,12 +316,21 @@ class RangeMapper {
 
     int characterCount = 0;
     int index = 0;
+    int indexFrom = 0;
     for (final unit in text.codeUnits) {
       if (wantWhiteSpace == isWhiteSpace(unit)) {
         if (!wantWhiteSpace) {
-          indices.add(index);
+          indexFrom = index;
         } else {
-          lengths.add(characterCount);
+          var indexTo = indexFrom + characterCount;
+          if (indexTo > start && end > indexFrom) {
+            var actualStart = max(start, indexFrom);
+            int selected = min(end, indexTo) - actualStart;
+            if (selected > 0) {
+              indices.add(actualStart);
+              lengths.add(selected);
+            }
+          }
 
           characterCount = 0;
         }
@@ -296,23 +341,20 @@ class RangeMapper {
       }
       index++;
     }
-
-    if (characterCount != 0) {
-      lengths.add(characterCount);
-      indices.add(index);
-    }
+    indices.add(end);
     return RangeMapper(indices, lengths);
   }
 
   /// Build a RangeMapper from the words in [text].
-  static RangeMapper? fromCharacters(String text, GlyphLookup glyphLookup,
+  static RangeMapper? fromCharacters(
+      String text, int start, int end, GlyphLookup glyphLookup,
       {bool withoutSpaces = false}) {
     if (text.isEmpty) {
       return null;
     }
     List<int> indices = [];
     List<int> lengths = [];
-    for (int i = 0; i < text.length;) {
+    for (int i = start; i < end;) {
       var unit = text.codeUnits[i];
       if (withoutSpaces && isWhiteSpace(unit)) {
         i++;
@@ -325,12 +367,12 @@ class RangeMapper {
       i += codePoints;
     }
 
-    indices.add(text.length);
+    indices.add(end);
     return RangeMapper(indices, lengths);
   }
 
-  static RangeMapper? fromLines(String text, TextShapeResult shape,
-      BreakLinesResult lines, GlyphLookup glyphLookup) {
+  static RangeMapper? fromLines(String text, int start, int end,
+      TextShapeResult shape, BreakLinesResult lines, GlyphLookup glyphLookup) {
     if (text.isEmpty) {
       return null;
     }
@@ -342,23 +384,25 @@ class RangeMapper {
       final paragraph = shape.paragraphs[paragraphIndex++];
       var glyphRuns = paragraph.runs;
       for (final line in paragraphLines) {
-        // if (line.endIndex == 0) {
-        //   // Empty line.
-        //   continue;
-        // }
         var rf = glyphRuns[line.startRun];
         var indexFrom = rf.textIndexAt(line.startIndex);
 
         var rt = glyphRuns[line.endRun];
-        var endGlyphIndex = max(
-            0, line.endIndex - 1); //min(rt.glyphCount - 1, line.endIndex - 1);
+        var endGlyphIndex = max(0, line.endIndex - 1);
         var indexTo = rt.textIndexAt(endGlyphIndex);
         indexTo += glyphLookup.count(indexTo);
-        indices.add(indexFrom);
-        lengths.add(indexTo - indexFrom);
+
+        if (indexTo > start && end > indexFrom) {
+          var actualStart = max(start, indexFrom);
+          int selected = min(end, indexTo) - actualStart;
+          if (selected > 0) {
+            indices.add(actualStart);
+            lengths.add(selected);
+          }
+        }
       }
     }
-    indices.add(text.length);
+    indices.add(end);
     return RangeMapper(indices, lengths);
   }
 

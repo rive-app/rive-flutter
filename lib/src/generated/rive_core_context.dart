@@ -1391,6 +1391,11 @@ class RiveCoreContext {
           object.offset = value;
         }
         break;
+      case TextModifierRangeBase.runIdPropertyKey:
+        if (object is TextModifierRangeBase && value is int) {
+          object.runId = value;
+        }
+        break;
       case TextStyleFeatureBase.tagPropertyKey:
         if (object is TextStyleFeatureBase && value is int) {
           object.tag = value;
@@ -1656,6 +1661,7 @@ class RiveCoreContext {
       case TextModifierRangeBase.unitsValuePropertyKey:
       case TextModifierRangeBase.typeValuePropertyKey:
       case TextModifierRangeBase.modeValuePropertyKey:
+      case TextModifierRangeBase.runIdPropertyKey:
       case TextStyleFeatureBase.tagPropertyKey:
       case TextStyleFeatureBase.featureValuePropertyKey:
       case TextVariationModifierBase.axisTagPropertyKey:
@@ -1996,6 +2002,8 @@ class RiveCoreContext {
         return (object as TextModifierRangeBase).typeValue;
       case TextModifierRangeBase.modeValuePropertyKey:
         return (object as TextModifierRangeBase).modeValue;
+      case TextModifierRangeBase.runIdPropertyKey:
+        return (object as TextModifierRangeBase).runId;
       case TextStyleFeatureBase.tagPropertyKey:
         return (object as TextStyleFeatureBase).tag;
       case TextStyleFeatureBase.featureValuePropertyKey:
@@ -2751,6 +2759,11 @@ class RiveCoreContext {
       case TextModifierRangeBase.modeValuePropertyKey:
         if (object is TextModifierRangeBase) {
           object.modeValue = value;
+        }
+        break;
+      case TextModifierRangeBase.runIdPropertyKey:
+        if (object is TextModifierRangeBase) {
+          object.runId = value;
         }
         break;
       case TextStyleFeatureBase.tagPropertyKey:

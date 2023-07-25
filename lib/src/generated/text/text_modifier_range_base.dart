@@ -238,6 +238,30 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   void offsetChanged(double from, double to);
 
+  /// --------------------------------------------------------------------------
+  /// RunId field with key 378.
+  static const int runIdInitialValue = -1;
+  int _runId = runIdInitialValue;
+  static const int runIdPropertyKey = 378;
+
+  /// Identifier used to which run should be targeted.
+  int get runId => _runId;
+
+  /// Change the [_runId] field value.
+  /// [runIdChanged] will be invoked only if the field's value has changed.
+  set runId(int value) {
+    if (_runId == value) {
+      return;
+    }
+    int from = _runId;
+    _runId = value;
+    if (hasValidated) {
+      runIdChanged(from, value);
+    }
+  }
+
+  void runIdChanged(int from, int to);
+
   @override
   void copy(covariant TextModifierRangeBase source) {
     super.copy(source);
@@ -251,5 +275,6 @@ abstract class TextModifierRangeBase extends ContainerComponent {
     _falloffFrom = source._falloffFrom;
     _falloffTo = source._falloffTo;
     _offset = source._offset;
+    _runId = source._runId;
   }
 }
