@@ -418,7 +418,9 @@ class Text extends TextBase with TextStyleContainer {
       return;
     }
 
-    canvas.save();
+    if (!clip(canvas)) {
+      canvas.save();
+    }
     canvas.transform(worldTransform.mat4);
     canvas.translate(-_bounds.width * originX, -_bounds.height * originY);
     if (overflow == TextOverflow.clipped) {
