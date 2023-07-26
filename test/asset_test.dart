@@ -128,8 +128,8 @@ void main() {
           .component("CleanShot 2023-06-08 at 08.51.19@2x.png");
       print(image);
 
-      expect(image.width, 0);
-      expect(image.height, 0);
+      expect(image.width, 2444);
+      expect(image.height, 1634);
       await completer.future;
       expect(image.width, 256);
       expect(image.height, 331);

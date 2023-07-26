@@ -19,8 +19,8 @@ class Image extends ImageBase
   Mesh? get mesh => _mesh;
   bool get hasMesh => _mesh != null;
 
-  double get width => image?.width.toDouble() ?? 0.0;
-  double get height => image?.height.toDouble() ?? 0.0;
+  double get width => image?.width.toDouble() ?? asset!.width;
+  double get height => image?.height.toDouble() ?? asset!.height;
 
   @override
   AABB get localBounds {

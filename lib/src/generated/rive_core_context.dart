@@ -19,6 +19,7 @@ import 'package:rive/src/generated/animation/state_machine_component_base.dart';
 import 'package:rive/src/generated/animation/transition_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/assets/asset_base.dart';
+import 'package:rive/src/generated/assets/drawable_asset_base.dart';
 import 'package:rive/src/generated/assets/file_asset_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
@@ -1566,6 +1567,16 @@ class RiveCoreContext {
           object.cdnBaseUrl = value;
         }
         break;
+      case DrawableAssetBase.heightPropertyKey:
+        if (object is DrawableAssetBase && value is double) {
+          object.height = value;
+        }
+        break;
+      case DrawableAssetBase.widthPropertyKey:
+        if (object is DrawableAssetBase && value is double) {
+          object.width = value;
+        }
+        break;
       case FileAssetContentsBase.bytesPropertyKey:
         if (object is FileAssetContentsBase && value is Uint8List) {
           object.bytes = value;
@@ -1799,6 +1810,8 @@ class RiveCoreContext {
       case TextBase.originXPropertyKey:
       case TextBase.originYPropertyKey:
       case TextBase.paragraphSpacingPropertyKey:
+      case DrawableAssetBase.heightPropertyKey:
+      case DrawableAssetBase.widthPropertyKey:
         return doubleType;
       case TransformComponentConstraintBase.offsetPropertyKey:
       case TransformComponentConstraintBase.doesCopyPropertyKey:
@@ -2282,6 +2295,10 @@ class RiveCoreContext {
         return (object as TextBase).originY;
       case TextBase.paragraphSpacingPropertyKey:
         return (object as TextBase).paragraphSpacing;
+      case DrawableAssetBase.heightPropertyKey:
+        return (object as DrawableAssetBase).height;
+      case DrawableAssetBase.widthPropertyKey:
+        return (object as DrawableAssetBase).width;
     }
     return 0.0;
   }
@@ -3449,6 +3466,16 @@ class RiveCoreContext {
       case TextBase.paragraphSpacingPropertyKey:
         if (object is TextBase) {
           object.paragraphSpacing = value;
+        }
+        break;
+      case DrawableAssetBase.heightPropertyKey:
+        if (object is DrawableAssetBase) {
+          object.height = value;
+        }
+        break;
+      case DrawableAssetBase.widthPropertyKey:
+        if (object is DrawableAssetBase) {
+          object.width = value;
         }
         break;
     }
