@@ -12,18 +12,14 @@ export 'package:rive/src/generated/constraints/transform_constraint_base.dart';
 /// constrained component in world or local space.
 class TransformConstraint extends TransformConstraintBase {
   Mat2D get targetTransform {
-    var transform = target!.worldTransform;
-    if (originX != 0 || originY != 0) {
-      var bounds = target!.localBounds;
-      var local = Mat2D.fromTranslation(
-        Vec2D.fromValues(
-          bounds.left + bounds.width * originX,
-          bounds.top + bounds.height * originY,
-        ),
-      );
-      transform = Mat2D.multiply(Mat2D(), transform, local);
-    }
-    return transform;
+    var bounds = target!.localBounds;
+    var local = Mat2D.fromTranslation(
+      Vec2D.fromValues(
+        bounds.left + bounds.width * originX,
+        bounds.top + bounds.height * originY,
+      ),
+    );
+    return Mat2D.multiply(Mat2D(), target!.worldTransform, local);
   }
 
   @override

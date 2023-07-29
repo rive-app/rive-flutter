@@ -30,9 +30,12 @@ class Image extends ImageBase
     if (asset == null) {
       return AABB.empty();
     }
-    final halfWidth = width / 2;
-    final halfHeight = height / 2;
-    return AABB.fromValues(-halfWidth, -halfHeight, halfWidth, halfHeight);
+    return AABB.fromValues(
+      -width * originX,
+      -height * originY,
+      -width * originX + width,
+      -height * originY + height,
+    );
   }
 
   @override
@@ -54,7 +57,8 @@ class Image extends ImageBase
     canvas.save();
     canvas.transform(renderTransform.mat4);
     if (_mesh == null || !_mesh!.draws) {
-      canvas.drawImage(uiImage, ui.Offset(-width / 2, -height / 2), paint);
+      canvas.drawImage(
+          uiImage, ui.Offset(-width * originX, -height * originY), paint);
     } else {
       paint.shader = ui.ImageShader(
           uiImage,
@@ -123,6 +127,12 @@ class Image extends ImageBase
 
   @override
   Skinnable<MeshVertex>? get skinnable => _mesh;
+
+  @override
+  void originXChanged(double from, double to) => markTransformDirty();
+
+  @override
+  void originYChanged(double from, double to) => markTransformDirty();
 
   Mat2D get renderTransform {
     var mesh = _mesh;

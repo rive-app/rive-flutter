@@ -96,7 +96,9 @@ class TextStyle extends TextStyleBase
   int shaperId = -1;
 
   @override
-  void fontSizeChanged(double from, double to) => _markShapeDirty();
+  void fontSizeChanged(double from, double to) {
+    _markShapeDirty();
+  }
 
   void _markShapeDirty() {
     for (final run in _referencers) {

@@ -1132,6 +1132,16 @@ class RiveCoreContext {
           object.assetId = value;
         }
         break;
+      case ImageBase.originXPropertyKey:
+        if (object is ImageBase && value is double) {
+          object.originX = value;
+        }
+        break;
+      case ImageBase.originYPropertyKey:
+        if (object is ImageBase && value is double) {
+          object.originY = value;
+        }
+        break;
       case CubicDetachedVertexBase.inRotationPropertyKey:
         if (object is CubicDetachedVertexBase && value is double) {
           object.inRotation = value;
@@ -1754,6 +1764,8 @@ class RiveCoreContext {
       case CubicMirroredVertexBase.distancePropertyKey:
       case PolygonBase.cornerRadiusPropertyKey:
       case StarBase.innerRadiusPropertyKey:
+      case ImageBase.originXPropertyKey:
+      case ImageBase.originYPropertyKey:
       case CubicDetachedVertexBase.inRotationPropertyKey:
       case CubicDetachedVertexBase.inDistancePropertyKey:
       case CubicDetachedVertexBase.outRotationPropertyKey:
@@ -2183,6 +2195,10 @@ class RiveCoreContext {
         return (object as PolygonBase).cornerRadius;
       case StarBase.innerRadiusPropertyKey:
         return (object as StarBase).innerRadius;
+      case ImageBase.originXPropertyKey:
+        return (object as ImageBase).originX;
+      case ImageBase.originYPropertyKey:
+        return (object as ImageBase).originY;
       case CubicDetachedVertexBase.inRotationPropertyKey:
         return (object as CubicDetachedVertexBase).inRotation;
       case CubicDetachedVertexBase.inDistancePropertyKey:
@@ -3186,6 +3202,16 @@ class RiveCoreContext {
       case StarBase.innerRadiusPropertyKey:
         if (object is StarBase) {
           object.innerRadius = value;
+        }
+        break;
+      case ImageBase.originXPropertyKey:
+        if (object is ImageBase) {
+          object.originX = value;
+        }
+        break;
+      case ImageBase.originYPropertyKey:
+        if (object is ImageBase) {
+          object.originY = value;
         }
         break;
       case CubicDetachedVertexBase.inRotationPropertyKey:

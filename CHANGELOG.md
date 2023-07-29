@@ -1,3 +1,7 @@
+## 0.11.7
+
+- Fix for gradients on text.
+
 ## 0.11.6
 
 - Follow path constraint.

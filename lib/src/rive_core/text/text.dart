@@ -252,36 +252,42 @@ class Text extends TextBase with TextStyleContainer {
 
     double y = 0;
     double minY = 0;
-    double maxX = 0;
     var paragraphIndex = 0;
     int ellipsisLine = -1;
     bool isEllipsisLineLast = false;
+    double maxWidth = 0;
 
-    // Find the line to put the ellipsis on (line before the one that
-    // overflows).
-    if (overflow == TextOverflow.ellipsis && sizing == TextSizing.fixed) {
-      int lastLineIndex = -1;
-      for (final paragraphLines in lines) {
-        for (final line in paragraphLines) {
-          lastLineIndex++;
-          if (y + line.bottom <= height) {
-            ellipsisLine++;
-          }
+    // If we want an ellipsis we need to find the line to put the
+    // ellipsis on (line before the one that overflows).
+    var wantEllipsis =
+        overflow == TextOverflow.ellipsis && sizing == TextSizing.fixed;
+
+    // We iterate in a pre-path building pass to compute dimensions.
+    int lastLineIndex = -1;
+    for (final paragraphLines in lines) {
+      final paragraph = shape.paragraphs[paragraphIndex++];
+      for (final line in paragraphLines) {
+        var width = line.width(paragraph);
+        if (width > maxWidth) {
+          maxWidth = width;
         }
-
-        if (paragraphLines.isNotEmpty) {
-          y += paragraphLines.last.bottom;
+        lastLineIndex++;
+        if (wantEllipsis && y + line.bottom <= height) {
+          ellipsisLine++;
         }
+      }
 
-        y += paragraphSpacing;
+      if (paragraphLines.isNotEmpty) {
+        y += paragraphLines.last.bottom;
       }
-      if (ellipsisLine == -1) {
-        // Nothing fits, just show the first line and ellipse it.
-        ellipsisLine = 0;
-      }
-      isEllipsisLineLast = lastLineIndex == ellipsisLine;
-      y = 0;
+
+      y += paragraphSpacing;
     }
+    if (wantEllipsis && ellipsisLine == -1) {
+      // Nothing fits, just show the first line and ellipse it.
+      ellipsisLine = 0;
+    }
+    isEllipsisLineLast = lastLineIndex == ellipsisLine;
 
     bool haveModifiers = _modifierGroups.isNotEmpty;
     if (haveModifiers) {
@@ -298,6 +304,37 @@ class Text extends TextBase with TextStyleContainer {
       y -= lines.first.first.baseline;
       minY = y;
     }
+
+    switch (sizing) {
+      case TextSizing.autoWidth:
+        _bounds = AABB.fromValues(
+          0.0,
+          minY,
+          maxWidth,
+          max(minY, y - paragraphSpacing),
+        );
+        break;
+      case TextSizing.autoHeight:
+        _bounds = AABB.fromValues(
+          0.0,
+          minY,
+          width,
+          max(minY, y - paragraphSpacing),
+        );
+        break;
+      case TextSizing.fixed:
+        _bounds = AABB.fromValues(
+          0.0,
+          minY,
+          width,
+          minY + height,
+        );
+        break;
+    }
+
+    y = -_bounds.height * originY;
+    paragraphIndex = 0;
+
     outer:
     for (final paragraphLines in lines) {
       final paragraph = shape.paragraphs[paragraphIndex++];
@@ -317,7 +354,7 @@ class Text extends TextBase with TextStyleContainer {
             break;
         }
 
-        double x = line.startX;
+        double x = -_bounds.width * originX + line.startX;
         for (final glyphInfo in lineIndex == ellipsisLine
             ? line.glyphsWithEllipsis(
                 width,
@@ -369,9 +406,6 @@ class Text extends TextBase with TextStyleContainer {
 
           x += run.advanceAt(glyphInfo.index);
         }
-        if (x > maxX) {
-          maxX = x;
-        }
         if (lineIndex == ellipsisLine) {
           break outer;
         }
@@ -381,32 +415,6 @@ class Text extends TextBase with TextStyleContainer {
         y += paragraphLines.last.bottom;
       }
       y += paragraphSpacing;
-    }
-    switch (sizing) {
-      case TextSizing.autoWidth:
-        _bounds = AABB.fromValues(
-          0.0,
-          minY,
-          maxX,
-          max(minY, y - paragraphSpacing),
-        );
-        break;
-      case TextSizing.autoHeight:
-        _bounds = AABB.fromValues(
-          0.0,
-          minY,
-          width,
-          max(minY, y - paragraphSpacing),
-        );
-        break;
-      case TextSizing.fixed:
-        _bounds = AABB.fromValues(
-          0.0,
-          minY,
-          width,
-          minY + height,
-        );
-        break;
     }
   }
 
@@ -422,7 +430,6 @@ class Text extends TextBase with TextStyleContainer {
       canvas.save();
     }
     canvas.transform(worldTransform.mat4);
-    canvas.translate(-_bounds.width * originX, -_bounds.height * originY);
     if (overflow == TextOverflow.clipped) {
       canvas.clipRect(Offset.zero & size);
     }

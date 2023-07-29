@@ -106,17 +106,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   void _sortAndValidateKeyFrames() {
     sort();
-
-    for (int i = 0; i < _keyframes.length - 1; i++) {
-      var a = _keyframes[i];
-      var b = _keyframes[i + 1];
-      if (a.frame == b.frame) {
-        // N.B. this removes it from the list too.
-        context.removeObject(a);
-        // Repeat current.
-        i--;
-      }
-    }
   }
 
   /// Number of keyframes for this keyed property.
