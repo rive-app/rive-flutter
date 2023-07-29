@@ -1,3 +1,7 @@
+## 0.11.8
+
+- Fix text origin changing updating text offset.
+
 ## 0.11.7
 
 - Fix for gradients on text.

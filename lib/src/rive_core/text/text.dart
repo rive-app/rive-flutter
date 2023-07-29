@@ -621,12 +621,12 @@ class Text extends TextBase with TextStyleContainer {
 
   @override
   void originXChanged(double from, double to) {
-    context.markNeedsAdvance();
+    markPaintDirty();
   }
 
   @override
   void originYChanged(double from, double to) {
-    context.markNeedsAdvance();
+    markPaintDirty();
   }
 
   @override
