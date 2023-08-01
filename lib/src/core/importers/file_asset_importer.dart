@@ -1,5 +1,6 @@
 import 'package:rive/src/asset_loader.dart';
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/debug.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 
@@ -35,15 +36,13 @@ class FileAssetImporter extends ImportStackObject {
       // try to get them out of band
       assetLoader?.load(fileAsset).then((loaded) {
         // TODO: improve error logging
-        // Only print if in debug mode.
-        assert(() {
-          if (!loaded) {
-            debugPrint('''Rive asset (${fileAsset.name}) was not able to load:
+        if (!loaded) {
+          printDebugMessage(
+            '''Rive asset (${fileAsset.name}) was not able to load:
   - Unique file name: ${fileAsset.uniqueFilename}
-  - Asset id: ${fileAsset.id}''');
-          }
-          return true;
-        }());
+  - Asset id: ${fileAsset.id}''',
+          );
+        }
       });
     }
     return super.resolve();

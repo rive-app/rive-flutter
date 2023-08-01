@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:rive/src/asset.dart';
+import 'package:rive/src/debug.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/utilities/utilities.dart';
 
@@ -49,13 +49,11 @@ class CDNAssetLoader extends FileAssetLoader {
           Uint8List.view(res.bodyBytes.buffer),
         );
       } on Exception catch (e) {
-        // only print in debug
-        assert(() {
-          debugPrint('''Unable to parse response ${asset.runtimeType}.
+        printDebugMessage(
+          '''Unable to parse response ${asset.runtimeType}.
   - Url: $url
-  - Exception: $e''');
-          return true;
-        }());
+  - Exception: $e''',
+        );
         return false;
       }
 

@@ -1,3 +1,7 @@
+## 0.11.9
+
+- Fix issue showing text when the default font is not available at `assets/fonts/Inter-Regular.ttf`. We will set first valid font we encounter in a rive file as default font instead.
+
 ## 0.11.8
 
 - Fix text origin changing updating text offset.

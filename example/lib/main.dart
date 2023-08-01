@@ -15,6 +15,7 @@ import 'package:rive_example/simple_machine_listener.dart';
 import 'package:rive_example/simple_state_machine.dart';
 import 'package:rive_example/skinning_demo.dart';
 import 'package:rive_example/state_machine_skills.dart';
+import 'package:rive_example/basic_text.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -54,6 +55,7 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     const _Page('State Machine with Listener', StateMachineListener()),
     const _Page('Skinning Demo', SkinningDemo()),
     const _Page('Animation Carousel', AnimationCarousel()),
+    const _Page('Basic Text', BasicText()),
     const _Page('Custom Asset Loading', CustomAssetLoading()),
     const _Page('Custom Cached Asset Loading', CustomCachedAssetLoading()),
   ];

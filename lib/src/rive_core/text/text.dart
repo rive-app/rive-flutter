@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
+import 'package:rive/src/debug.dart';
 import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/text/styled_text.dart';
@@ -76,6 +77,15 @@ class Text extends TextBase with TextStyleContainer {
   final List<rive.TextStyle> auxStyles = [];
 
   int get unicharCount => _unicharCount;
+
+  Font? getFirstAvailableFont() {
+    for (final run in runs) {
+      if (run.style?.font != null) {
+        return run.style?.font;
+      }
+    }
+    return null;
+  }
 
   StyledText makeStyled(
     Font defaultFont, {
@@ -178,7 +188,6 @@ class Text extends TextBase with TextStyleContainer {
     super.onAdded();
     _syncRuns();
   }
-
 
   Mat2D get originTransform => Mat2D.multiply(
         Mat2D(),
@@ -472,6 +481,9 @@ class Text extends TextBase with TextStyleContainer {
 
       return;
     }
+
+    // Question (max): is it safer to simply skip computing Shape if we
+    // have no default font?
     assert(_defaultFont != null);
     var defaultFont = _defaultFont!;
     _modifierShape?.dispose();
@@ -539,6 +551,11 @@ class Text extends TextBase with TextStyleContainer {
           _defaultFont = Font.decode(fontAsset.buffer.asUint8List());
           // Reshape now that we have font.
           markShapeDirty();
+        }).onError((error, stackTrace) {
+          _defaultFont = getFirstAvailableFont();
+          if (_defaultFont != null) {
+            markShapeDirty();
+          }
         });
       } else {
         computeShape();
