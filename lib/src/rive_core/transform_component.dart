@@ -209,4 +209,7 @@ abstract class TransformComponent extends TransformComponentBase {
   }
 
   AABB get localBounds => AABB.collapsed(Vec2D());
+
+  /// Bounds to use for constraining to object space.
+  AABB get constraintBounds => AABB.collapsed(Vec2D());
 }

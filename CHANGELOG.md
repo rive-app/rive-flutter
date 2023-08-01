@@ -1,6 +1,10 @@
+## 0.11.10
+
+- Fixes an issue with the origin on the TransformConstraint affecting non-text objects.
+
 ## 0.11.9
 
-- Fix [335](https://github.com/rive-app/rive-flutter/issues/335) _debugDisposed issue
+- Fix [335](https://github.com/rive-app/rive-flutter/issues/335) \_debugDisposed issue
 - Fix issue showing text when the default font is not available at `assets/fonts/Inter-Regular.ttf` ([338](https://github.com/rive-app/rive-flutter/issues/338)). We will set first valid font we encounter in a rive file as default font instead.
 
 ## 0.11.8

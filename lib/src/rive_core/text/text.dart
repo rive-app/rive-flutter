@@ -188,6 +188,7 @@ class Text extends TextBase with TextStyleContainer {
     _syncRuns();
   }
 
+
   Mat2D get originTransform => Mat2D.multiply(
         Mat2D(),
         worldTransform,
@@ -208,6 +209,9 @@ class Text extends TextBase with TextStyleContainer {
         width: _bounds.width,
         height: _bounds.height,
       );
+
+  @override
+  AABB get constraintBounds => localBounds;
 
   void forEachGlyph(
       bool Function(LineRunGlyph, double, double, GlyphLine) callback) {
