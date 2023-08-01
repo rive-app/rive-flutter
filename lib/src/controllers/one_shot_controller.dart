@@ -30,8 +30,8 @@ class OneShotAnimation extends SimpleAnimation {
   /// Dispose of any callback listeners
   @override
   void dispose() {
-    super.dispose();
     isActiveChanged.removeListener(onActiveChanged);
+    super.dispose();
   }
 
   /// Perform tasks when the animation's active state changes

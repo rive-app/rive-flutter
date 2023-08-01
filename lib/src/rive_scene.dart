@@ -80,8 +80,8 @@ class RiveSceneRenderObject extends RiveRenderBox {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.redraw.removeListener(scheduleRepaint);
+    super.dispose();
   }
 
   @override

@@ -103,8 +103,8 @@ class RiveRenderObject extends RiveRenderBox {
 
   @override
   void dispose() {
-    super.dispose();
     _artboard.redraw.removeListener(scheduleRepaint);
+    super.dispose();
   }
 
   @override
