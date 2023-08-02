@@ -47,6 +47,10 @@ For additional help, see the Runtime sections of the Rive help documentation, su
 
 Be sure to read the [platform specific considerations](platform_considerations.md) for the Rive Flutter package.
 
+### Awesome Rive
+
+For even more examples and resources on using Rive at runtime or in other tools, checkout the [awesome-rive](https://github.com/rive-app/awesome-rive) repo.
+
 ## Examples
 
 To see some examples of what you can do with Rive Flutter, check out the following projects:
