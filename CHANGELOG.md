@@ -1,3 +1,7 @@
+## 0.11.11
+
+- Fixes an issue with text clipping when baseline is aligned to origin.
+
 ## 0.11.10
 
 - Fixes an issue with the origin on the TransformConstraint affecting non-text objects.

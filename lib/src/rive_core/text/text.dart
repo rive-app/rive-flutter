@@ -268,6 +268,12 @@ class Text extends TextBase with TextStyleContainer {
     int ellipsisLine = -1;
     bool isEllipsisLineLast = false;
     double maxWidth = 0;
+    if (textOrigin == TextOrigin.baseline &&
+        lines.isNotEmpty &&
+        lines.first.isNotEmpty) {
+      y -= lines.first.first.baseline;
+      minY = y;
+    }
 
     // If we want an ellipsis we need to find the line to put the
     // ellipsis on (line before the one that overflows).
@@ -310,12 +316,6 @@ class Text extends TextBase with TextStyleContainer {
 
     int lineIndex = 0;
     paragraphIndex = 0;
-    if (textOrigin == TextOrigin.baseline &&
-        lines.isNotEmpty &&
-        lines.first.isNotEmpty) {
-      y -= lines.first.first.baseline;
-      minY = y;
-    }
 
     switch (sizing) {
       case TextSizing.autoWidth:
@@ -345,6 +345,11 @@ class Text extends TextBase with TextStyleContainer {
     }
 
     y = -_bounds.height * originY;
+    if (textOrigin == TextOrigin.baseline &&
+        lines.isNotEmpty &&
+        lines.first.isNotEmpty) {
+      y -= lines.first.first.baseline;
+    }
     paragraphIndex = 0;
 
     outer:
@@ -443,7 +448,7 @@ class Text extends TextBase with TextStyleContainer {
     }
     canvas.transform(worldTransform.mat4);
     if (overflow == TextOverflow.clipped) {
-      canvas.clipRect(Offset.zero & size);
+      canvas.clipRect(localBounds.rect); //Offset.zero & size);
     }
     for (final style in _renderStyles) {
       style.draw(canvas);
@@ -642,11 +647,15 @@ class Text extends TextBase with TextStyleContainer {
   @override
   void originXChanged(double from, double to) {
     markPaintDirty();
+    // Mostly for constraints.
+    markWorldTransformDirty();
   }
 
   @override
   void originYChanged(double from, double to) {
     markPaintDirty();
+    // Mostly for constraints.
+    markWorldTransformDirty();
   }
 
   @override
@@ -657,5 +666,8 @@ class Text extends TextBase with TextStyleContainer {
   TextOrigin get textOrigin => TextOrigin.values[originValue];
 
   @override
-  void originValueChanged(int from, int to) => markPaintDirty();
+  void originValueChanged(int from, int to) {
+    markPaintDirty();
+    markWorldTransformDirty();
+  }
 }
