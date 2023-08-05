@@ -1,3 +1,7 @@
+## 0.11.12
+
+- Fixes a memory leak in the text engine.
+
 ## 0.11.11
 
 - Fixes an issue with text clipping when baseline is aligned to origin.
