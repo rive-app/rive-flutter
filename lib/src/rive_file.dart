@@ -13,6 +13,7 @@ import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/assets/font_asset_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
+import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/local_file_io.dart'
     if (dart.library.html) 'package:rive/src/local_file_web.dart';
 import 'package:rive/src/rive_core/animation/blend_state_1d.dart';
@@ -35,6 +36,7 @@ import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
+import 'package:rive_common/rive_text.dart';
 
 import 'package:rive_common/utilities.dart';
 
@@ -70,6 +72,22 @@ Core<CoreContext>? _readRuntimeObject(
   return object;
 }
 
+int _peekRuntimeObjectType(
+    BinaryReader reader, HashMap<int, CoreFieldType> propertyToField) {
+  int coreObjectKey = reader.readVarUint();
+
+  while (true) {
+    int propertyKey = reader.readVarUint();
+    if (propertyKey == 0) {
+      // Terminator. https://media.giphy.com/media/7TtvTUMm9mp20/giphy.gif
+      break;
+    }
+
+    _skipProperty(reader, propertyKey, propertyToField);
+  }
+  return coreObjectKey;
+}
+
 void _skipProperty(BinaryReader reader, int propertyKey,
     HashMap<int, CoreFieldType> propertyToField) {
   var field =
@@ -91,22 +109,18 @@ class RiveFile {
   final _artboards = <Artboard>[];
   final FileAssetLoader? _assetLoader;
 
-  RiveFile._(
-    BinaryReader reader,
-    this.header,
-    this._assetLoader, {
-    bool loadEmbeddedAssets = true,
-  }) {
+  // List of core file types
+  static final indexToField = <CoreFieldType>[
+    RiveCoreContext.uintType,
+    RiveCoreContext.stringType,
+    RiveCoreContext.doubleType,
+    RiveCoreContext.colorType
+  ];
+
+  static HashMap<int, CoreFieldType> _propertyToFieldLookup(
+      RuntimeHeader header) {
     /// Property fields table of contents
     final propertyToField = HashMap<int, CoreFieldType>();
-
-    // List of core file types
-    final indexToField = <CoreFieldType>[
-      RiveCoreContext.uintType,
-      RiveCoreContext.stringType,
-      RiveCoreContext.doubleType,
-      RiveCoreContext.colorType
-    ];
 
     header.propertyToFieldIndex.forEach((key, fieldIndex) {
       if (fieldIndex < 0 || fieldIndex >= indexToField.length) {
@@ -115,6 +129,36 @@ class RiveFile {
 
       propertyToField[key] = indexToField[fieldIndex];
     });
+    return propertyToField;
+  }
+
+  // Peek into the bytes to see if we're going to need to use the text runtime.
+  static bool needsTextRuntime(ByteData bytes) {
+    var reader = BinaryReader(bytes);
+    var header = RuntimeHeader.read(reader);
+
+    /// Property fields table of contents
+    final propertyToField = _propertyToFieldLookup(header);
+
+    while (!reader.isEOF) {
+      final coreType = _peekRuntimeObjectType(reader, propertyToField);
+      switch (coreType) {
+        case TextBase.typeKey:
+          return true;
+      }
+    }
+    return false;
+  }
+
+  RiveFile._(
+    BinaryReader reader,
+    this.header,
+    this._assetLoader, {
+    bool loadEmbeddedAssets = true,
+  }) {
+    /// Property fields table of contents
+    final propertyToField = _propertyToFieldLookup(header);
+
     int artboardId = 0;
     var artboardLookup = HashMap<int, Artboard>();
     var importStack = ImportStack();
@@ -298,6 +342,37 @@ class RiveFile {
     );
   }
 
+  static bool _initializedText = false;
+
+  /// Initialize Rive's text engine if it hasn't been yet.
+  static Future<void> initializeText() async {
+    if (!_initializedText) {
+      await Font.initialize();
+      _initializedText = true;
+    }
+  }
+
+  static Future<RiveFile> _initTextAndImport(
+    ByteData bytes, {
+    FileAssetLoader? assetLoader,
+    bool loadCdnAssets = true,
+    bool loadEmbeddedAssets = true,
+  }) async {
+    if (!_initializedText) {
+      /// If the file looks like needs the text runtime, let's load it.
+      if (RiveFile.needsTextRuntime(bytes)) {
+        await Font.initialize();
+        _initializedText = true;
+      }
+    }
+    return RiveFile.import(
+      bytes,
+      assetLoader: assetLoader,
+      loadCdnAssets: loadCdnAssets,
+      loadEmbeddedAssets: loadEmbeddedAssets,
+    );
+  }
+
   /// Imports a Rive file from an asset bundle.
   ///
   /// Default uses [rootBundle] from Flutter. Provide a custom [bundle] to load
@@ -318,7 +393,7 @@ class RiveFile {
       bundleKey,
     );
 
-    return RiveFile.import(
+    return _initTextAndImport(
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
@@ -344,7 +419,7 @@ class RiveFile {
   }) async {
     final res = await http.get(Uri.parse(url), headers: headers);
     final bytes = ByteData.view(res.bodyBytes.buffer);
-    return RiveFile.import(
+    return _initTextAndImport(
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
@@ -365,7 +440,7 @@ class RiveFile {
     bool loadEmbeddedAssets = true,
   }) async {
     final bytes = await localFileBytes(path);
-    return RiveFile.import(
+    return _initTextAndImport(
       ByteData.view(bytes!.buffer),
       assetLoader: assetLoader,
       loadEmbeddedAssets: loadEmbeddedAssets,

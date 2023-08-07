@@ -1,3 +1,8 @@
+## 0.11.13
+
+- Initializes Rive's text engine only when necessary when calling any of `RiveFile.asset`, `RiveFile.network`, or `RiveFile.file`.
+- You'll need to manually call `RiveFile.initializeText` when calling `RiveFile.import` directly to use text features. You can optionally only call this if you know the file needs the text engine, or you can determine if it needs it by calling `RiveFile.needsTextRuntime`.
+
 ## 0.11.12
 
 - Fixes a memory leak in the text engine.
