@@ -482,6 +482,16 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         position,
         hitEvent: ListenerType.up,
       );
+
+  void pointerExit(Vec2D position) => _processEvent(
+        position,
+        hitEvent: ListenerType.exit,
+      );
+
+  void pointerEnter(Vec2D position) => _processEvent(
+        position,
+        hitEvent: ListenerType.enter,
+      );
 }
 
 /// Representation of a Shape from the Artboard Instance and all the events it

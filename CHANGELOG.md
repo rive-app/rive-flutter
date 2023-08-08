@@ -1,3 +1,7 @@
+## Upcoming
+
+- Refactor how hit testing is performed in `RiveAnimation` and `Rive` widgets. Pointer events (listeners) can now be enabled on the `Rive` widget by setting `enablePointerEvents` to `true` (default is false).
+
 ## 0.11.13
 
 - Initializes Rive's text engine only when necessary when calling any of `RiveFile.asset`, `RiveFile.network`, or `RiveFile.file`.

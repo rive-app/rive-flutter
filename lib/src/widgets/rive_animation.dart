@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
-import 'package:rive_common/math.dart';
 
 /// Specifies whether a source is from an asset bundle or http
 enum _Source {
@@ -311,89 +310,23 @@ class RiveAnimationState extends State<RiveAnimation> {
     super.dispose();
   }
 
-  Vec2D? _toArtboard(Offset local) {
-    RiveRenderObject? riveRenderer;
-    var renderObject = context.findRenderObject();
-    if (renderObject is! RenderBox) {
-      return null;
-    }
-    renderObject.visitChildren(
-      (child) {
-        if (child is RiveRenderObject) {
-          riveRenderer = child;
-        }
-      },
-    );
-    if (riveRenderer == null) {
-      return null;
-    }
-    var globalCoordinates = renderObject.localToGlobal(local);
-
-    return riveRenderer!.globalToArtboard(globalCoordinates);
-  }
-
-  Widget _optionalHitTester(BuildContext context, Widget child) {
-    assert(_artboard != null);
-    var hasHitTesting = _artboard!.animationControllers.any(
-      (controller) =>
-          controller is StateMachineController &&
-          (controller.hitShapes.isNotEmpty ||
-              controller.hitNestedArtboards.isNotEmpty),
-    );
-
-    if (hasHitTesting) {
-      void hitHelper(PointerEvent event,
-          void Function(StateMachineController, Vec2D) callback) {
-        var artboardPosition = _toArtboard(event.localPosition);
-        if (artboardPosition != null) {
-          var stateMachineControllers = _artboard!.animationControllers
-              .whereType<StateMachineController>();
-          for (final stateMachineController in stateMachineControllers) {
-            callback(stateMachineController, artboardPosition);
-          }
-        }
-      }
-
-      return Listener(
-        onPointerDown: (details) => hitHelper(
-          details,
-          (controller, artboardPosition) =>
-              controller.pointerDown(artboardPosition, details),
-        ),
-        onPointerUp: (details) => hitHelper(
-          details,
-          (controller, artboardPosition) =>
-              controller.pointerUp(artboardPosition),
-        ),
-        onPointerHover: (details) => hitHelper(
-          details,
-          (controller, artboardPosition) =>
-              controller.pointerMove(artboardPosition),
-        ),
-        onPointerMove: (details) => hitHelper(
-          details,
-          (controller, artboardPosition) =>
-              controller.pointerMove(artboardPosition),
-        ),
-        child: child,
+  bool get _shouldAddHitTesting => _artboard!.animationControllers.any(
+        (controller) =>
+            controller is StateMachineController &&
+            (controller.hitShapes.isNotEmpty ||
+                controller.hitNestedArtboards.isNotEmpty),
       );
-    }
-
-    return child;
-  }
 
   @override
   Widget build(BuildContext context) => _artboard != null
-      ? _optionalHitTester(
-          context,
-          Rive(
-            artboard: _artboard!,
-            fit: widget.fit,
-            alignment: widget.alignment,
-            antialiasing: widget.antialiasing,
-            useArtboardSize: widget.useArtboardSize,
-            clipRect: widget.clipRect,
-          ),
+      ? Rive(
+          artboard: _artboard!,
+          fit: widget.fit,
+          alignment: widget.alignment,
+          antialiasing: widget.antialiasing,
+          useArtboardSize: widget.useArtboardSize,
+          clipRect: widget.clipRect,
+          enablePointerEvents: _shouldAddHitTesting,
         )
       : widget.placeHolder ?? const SizedBox();
 }

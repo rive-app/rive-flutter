@@ -19,6 +19,7 @@ abstract class RiveRenderBox extends RenderBox {
   Alignment _alignment = Alignment.center;
   bool _useArtboardSize = false;
   Rect? _clipRect;
+  bool _enableHitTests = false;
 
   bool get useArtboardSize => _useArtboardSize;
 
@@ -70,6 +71,14 @@ abstract class RiveRenderBox extends RenderBox {
     if (value != _clipRect) {
       _clipRect = value;
       markNeedsPaint();
+    }
+  }
+
+  bool get enableHitTests => _enableHitTests;
+
+  set enableHitTests(bool value) {
+    if (value != _enableHitTests) {
+      _enableHitTests = value;
     }
   }
 
