@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter/services.dart';
 import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/text/styled_text.dart';
@@ -532,18 +531,11 @@ class Text extends TextBase with TextStyleContainer {
     bool rebuildRenderStyles = dirt & ComponentDirt.paint != 0;
     if (dirt & ComponentDirt.path != 0) {
       // TODO: (Luigi) Hardcoded font for now
-      const defaultFontAsset = 'assets/fonts/Inter-Regular.ttf';
       if (_defaultFont == null) {
-        rootBundle.load(defaultFontAsset).then((fontAsset) {
-          _defaultFont = Font.decode(fontAsset.buffer.asUint8List());
-          // Reshape now that we have font.
+        _defaultFont = getFirstAvailableFont();
+        if (_defaultFont != null) {
           markShapeDirty();
-        }).onError((error, stackTrace) {
-          _defaultFont = getFirstAvailableFont();
-          if (_defaultFont != null) {
-            markShapeDirty();
-          }
-        });
+        }
       } else {
         computeShape();
         rebuildRenderStyles = true;
