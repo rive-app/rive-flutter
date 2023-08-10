@@ -2,6 +2,7 @@
 // lib/src/generated/animation/listener_align_target_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/listener_action.dart';
 
 abstract class ListenerAlignTargetBase extends ListenerAction {
@@ -38,8 +39,10 @@ abstract class ListenerAlignTargetBase extends ListenerAction {
   void targetIdChanged(int from, int to);
 
   @override
-  void copy(covariant ListenerAlignTargetBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _targetId = source._targetId;
+    if (source is ListenerAlignTargetBase) {
+      _targetId = source._targetId;
+    }
   }
 }

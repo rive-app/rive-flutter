@@ -42,8 +42,10 @@ abstract class DrawRulesBase extends ContainerComponent {
   void drawTargetIdChanged(int from, int to);
 
   @override
-  void copy(covariant DrawRulesBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _drawTargetId = source._drawTargetId;
+    if (source is DrawRulesBase) {
+      _drawTargetId = source._drawTargetId;
+    }
   }
 }

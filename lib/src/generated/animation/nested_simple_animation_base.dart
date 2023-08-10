@@ -2,6 +2,7 @@
 // lib/src/generated/animation/nested_simple_animation_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/nested_animation_base.dart';
@@ -69,9 +70,11 @@ abstract class NestedSimpleAnimationBase extends NestedLinearAnimation {
   void isPlayingChanged(bool from, bool to);
 
   @override
-  void copy(covariant NestedSimpleAnimationBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _speed = source._speed;
-    _isPlaying = source._isPlaying;
+    if (source is NestedSimpleAnimationBase) {
+      _speed = source._speed;
+      _isPlaying = source._isPlaying;
+    }
   }
 }

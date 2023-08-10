@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/paint/solid_color_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class SolidColorBase extends Component {
@@ -34,8 +35,10 @@ abstract class SolidColorBase extends Component {
   void colorValueChanged(int from, int to);
 
   @override
-  void copy(covariant SolidColorBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _colorValue = source._colorValue;
+    if (source is SolidColorBase) {
+      _colorValue = source._colorValue;
+    }
   }
 }

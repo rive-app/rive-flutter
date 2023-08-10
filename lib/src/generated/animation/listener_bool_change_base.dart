@@ -2,6 +2,7 @@
 // lib/src/generated/animation/listener_bool_change_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/listener_action_base.dart';
 import 'package:rive/src/rive_core/animation/listener_input_change.dart';
 
@@ -41,8 +42,10 @@ abstract class ListenerBoolChangeBase extends ListenerInputChange {
   void valueChanged(int from, int to);
 
   @override
-  void copy(covariant ListenerBoolChangeBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _value = source._value;
+    if (source is ListenerBoolChangeBase) {
+      _value = source._value;
+    }
   }
 }

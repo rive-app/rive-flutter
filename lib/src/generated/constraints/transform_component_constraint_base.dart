@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/transform_component_constraint_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
@@ -216,15 +217,17 @@ abstract class TransformComponentConstraintBase
   void maxChanged(bool from, bool to);
 
   @override
-  void copy(covariant TransformComponentConstraintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _minMaxSpaceValue = source._minMaxSpaceValue;
-    _copyFactor = source._copyFactor;
-    _minValue = source._minValue;
-    _maxValue = source._maxValue;
-    _offset = source._offset;
-    _doesCopy = source._doesCopy;
-    _min = source._min;
-    _max = source._max;
+    if (source is TransformComponentConstraintBase) {
+      _minMaxSpaceValue = source._minMaxSpaceValue;
+      _copyFactor = source._copyFactor;
+      _minValue = source._minValue;
+      _maxValue = source._maxValue;
+      _offset = source._offset;
+      _doesCopy = source._doesCopy;
+      _min = source._min;
+      _max = source._max;
+    }
   }
 }

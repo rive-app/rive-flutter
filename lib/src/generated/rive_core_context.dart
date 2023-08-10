@@ -58,6 +58,7 @@ import 'package:rive/src/rive_core/animation/keyframe_string.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/listener_align_target.dart';
 import 'package:rive/src/rive_core/animation/listener_bool_change.dart';
+import 'package:rive/src/rive_core/animation/listener_fire_event.dart';
 import 'package:rive/src/rive_core/animation/listener_number_change.dart';
 import 'package:rive/src/rive_core/animation/listener_trigger_change.dart';
 import 'package:rive/src/rive_core/animation/nested_bool.dart';
@@ -164,6 +165,8 @@ class RiveCoreContext {
         return NestedArtboard();
       case SoloBase.typeKey:
         return Solo();
+      case ListenerFireEventBase.typeKey:
+        return ListenerFireEvent();
       case AnimationBase.typeKey:
         return Animation();
       case LinearAnimationBase.typeKey:
@@ -560,6 +563,11 @@ class RiveCoreContext {
       case SoloBase.activeComponentIdPropertyKey:
         if (object is SoloBase && value is int) {
           object.activeComponentId = value;
+        }
+        break;
+      case ListenerFireEventBase.eventIdPropertyKey:
+        if (object is ListenerFireEventBase && value is int) {
+          object.eventId = value;
         }
         break;
       case AnimationBase.namePropertyKey:
@@ -1482,6 +1490,11 @@ class RiveCoreContext {
           object.lineHeight = value;
         }
         break;
+      case TextStyleBase.letterSpacingPropertyKey:
+        if (object is TextStyleBase && value is double) {
+          object.letterSpacing = value;
+        }
+        break;
       case TextStyleBase.fontAssetIdPropertyKey:
         if (object is TextStyleBase && value is int) {
           object.fontAssetId = value;
@@ -1626,6 +1639,7 @@ class RiveCoreContext {
       case NestedArtboardBase.artboardIdPropertyKey:
       case NestedAnimationBase.animationIdPropertyKey:
       case SoloBase.activeComponentIdPropertyKey:
+      case ListenerFireEventBase.eventIdPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
       case LinearAnimationBase.loopValuePropertyKey:
@@ -1816,6 +1830,7 @@ class RiveCoreContext {
       case TextModifierGroupBase.scaleYPropertyKey:
       case TextStyleBase.fontSizePropertyKey:
       case TextStyleBase.lineHeightPropertyKey:
+      case TextStyleBase.letterSpacingPropertyKey:
       case TextStyleAxisBase.axisValuePropertyKey:
       case TextBase.widthPropertyKey:
       case TextBase.heightPropertyKey:
@@ -1915,6 +1930,8 @@ class RiveCoreContext {
         return (object as NestedAnimationBase).animationId;
       case SoloBase.activeComponentIdPropertyKey:
         return (object as SoloBase).activeComponentId;
+      case ListenerFireEventBase.eventIdPropertyKey:
+        return (object as ListenerFireEventBase).eventId;
       case LinearAnimationBase.fpsPropertyKey:
         return (object as LinearAnimationBase).fps;
       case LinearAnimationBase.durationPropertyKey:
@@ -2299,6 +2316,8 @@ class RiveCoreContext {
         return (object as TextStyleBase).fontSize;
       case TextStyleBase.lineHeightPropertyKey:
         return (object as TextStyleBase).lineHeight;
+      case TextStyleBase.letterSpacingPropertyKey:
+        return (object as TextStyleBase).letterSpacing;
       case TextStyleAxisBase.axisValuePropertyKey:
         return (object as TextStyleAxisBase).axisValue;
       case TextBase.widthPropertyKey:
@@ -2512,6 +2531,11 @@ class RiveCoreContext {
       case SoloBase.activeComponentIdPropertyKey:
         if (object is SoloBase) {
           object.activeComponentId = value;
+        }
+        break;
+      case ListenerFireEventBase.eventIdPropertyKey:
+        if (object is ListenerFireEventBase) {
+          object.eventId = value;
         }
         break;
       case LinearAnimationBase.fpsPropertyKey:
@@ -3462,6 +3486,11 @@ class RiveCoreContext {
       case TextStyleBase.lineHeightPropertyKey:
         if (object is TextStyleBase) {
           object.lineHeight = value;
+        }
+        break;
+      case TextStyleBase.letterSpacingPropertyKey:
+        if (object is TextStyleBase) {
+          object.letterSpacing = value;
         }
         break;
       case TextStyleAxisBase.axisValuePropertyKey:

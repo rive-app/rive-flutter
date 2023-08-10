@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/clipping_shape_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class ClippingShapeBase extends Component {
@@ -82,10 +83,12 @@ abstract class ClippingShapeBase extends Component {
   void isVisibleChanged(bool from, bool to);
 
   @override
-  void copy(covariant ClippingShapeBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _sourceId = source._sourceId;
-    _fillRule = source._fillRule;
-    _isVisible = source._isVisible;
+    if (source is ClippingShapeBase) {
+      _sourceId = source._sourceId;
+      _fillRule = source._fillRule;
+      _isVisible = source._isVisible;
+    }
   }
 }

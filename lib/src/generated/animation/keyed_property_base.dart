@@ -37,7 +37,9 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   void propertyKeyChanged(int from, int to);
 
   @override
-  void copy(covariant KeyedPropertyBase source) {
-    _propertyKey = source._propertyKey;
+  void copy(Core source) {
+    if (source is KeyedPropertyBase) {
+      _propertyKey = source._propertyKey;
+    }
   }
 }

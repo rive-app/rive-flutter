@@ -38,7 +38,9 @@ abstract class StateMachineComponentBase<T extends CoreContext>
   void nameChanged(String from, String to);
 
   @override
-  void copy(covariant StateMachineComponentBase source) {
-    _name = source._name;
+  void copy(Core source) {
+    if (source is StateMachineComponentBase) {
+      _name = source._name;
+    }
   }
 }

@@ -2,6 +2,7 @@
 // lib/src/generated/text/text_style_axis_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TextStyleAxisBase extends Component {
@@ -56,9 +57,11 @@ abstract class TextStyleAxisBase extends Component {
   void axisValueChanged(double from, double to);
 
   @override
-  void copy(covariant TextStyleAxisBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _tag = source._tag;
-    _axisValue = source._axisValue;
+    if (source is TextStyleAxisBase) {
+      _tag = source._tag;
+      _axisValue = source._axisValue;
+    }
   }
 }

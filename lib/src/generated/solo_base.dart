@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/solo_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
@@ -47,8 +48,10 @@ abstract class SoloBase extends Node {
   void activeComponentIdChanged(int from, int to);
 
   @override
-  void copy(covariant SoloBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _activeComponentId = source._activeComponentId;
+    if (source is SoloBase) {
+      _activeComponentId = source._activeComponentId;
+    }
   }
 }

@@ -100,6 +100,11 @@ class TextStyle extends TextStyleBase
     _markShapeDirty();
   }
 
+  @override
+  void letterSpacingChanged(double from, double to) {
+    _markShapeDirty();
+  }
+
   void _markShapeDirty() {
     for (final run in _referencers) {
       run.markShapeDirty();

@@ -217,16 +217,18 @@ abstract class TextModifierGroupBase extends ContainerComponent {
   void scaleYChanged(double from, double to);
 
   @override
-  void copy(covariant TextModifierGroupBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _modifierFlags = source._modifierFlags;
-    _originX = source._originX;
-    _originY = source._originY;
-    _opacity = source._opacity;
-    _x = source._x;
-    _y = source._y;
-    _rotation = source._rotation;
-    _scaleX = source._scaleX;
-    _scaleY = source._scaleY;
+    if (source is TextModifierGroupBase) {
+      _modifierFlags = source._modifierFlags;
+      _originX = source._originX;
+      _originY = source._originY;
+      _opacity = source._opacity;
+      _x = source._x;
+      _y = source._y;
+      _rotation = source._rotation;
+      _scaleX = source._scaleX;
+      _scaleY = source._scaleY;
+    }
   }
 }

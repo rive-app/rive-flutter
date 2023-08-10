@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/constraint_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class ConstraintBase extends Component {
@@ -36,8 +37,10 @@ abstract class ConstraintBase extends Component {
   void strengthChanged(double from, double to);
 
   @override
-  void copy(covariant ConstraintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _strength = source._strength;
+    if (source is ConstraintBase) {
+      _strength = source._strength;
+    }
   }
 }

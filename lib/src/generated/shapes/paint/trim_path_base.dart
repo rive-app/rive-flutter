@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/paint/trim_path_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TrimPathBase extends Component {
@@ -100,11 +101,13 @@ abstract class TrimPathBase extends Component {
   void modeValueChanged(int from, int to);
 
   @override
-  void copy(covariant TrimPathBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _start = source._start;
-    _end = source._end;
-    _offset = source._offset;
-    _modeValue = source._modeValue;
+    if (source is TrimPathBase) {
+      _start = source._start;
+      _end = source._end;
+      _offset = source._offset;
+      _modeValue = source._modeValue;
+    }
   }
 }

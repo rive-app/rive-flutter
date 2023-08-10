@@ -2,6 +2,7 @@
 // lib/src/generated/text/text_variation_modifier_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/text/text_modifier_base.dart';
 import 'package:rive/src/rive_core/text/text_shape_modifier.dart';
@@ -63,9 +64,11 @@ abstract class TextVariationModifierBase extends TextShapeModifier {
   void axisValueChanged(double from, double to);
 
   @override
-  void copy(covariant TextVariationModifierBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _axisTag = source._axisTag;
-    _axisValue = source._axisValue;
+    if (source is TextVariationModifierBase) {
+      _axisTag = source._axisTag;
+      _axisValue = source._axisValue;
+    }
   }
 }

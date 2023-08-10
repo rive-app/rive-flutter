@@ -24,8 +24,6 @@ function installRiveCpp {
             echo "Getting rive-cpp from current repo."
             export INSTALL_TO=$PWD
             mkdir -p rive-cpp
-            # cp -fR ../../runtime rive-cpp
-            # git clone machine1:/path/to/project machine2:/target/path
             pushd ../../runtime
 
             function copyRepoFile {

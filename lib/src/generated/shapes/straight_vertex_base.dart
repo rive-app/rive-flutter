@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/straight_vertex_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/shapes/vertex_base.dart';
@@ -46,8 +47,10 @@ abstract class StraightVertexBase extends PathVertex<Weight> {
   void radiusChanged(double from, double to);
 
   @override
-  void copy(covariant StraightVertexBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _radius = source._radius;
+    if (source is StraightVertexBase) {
+      _radius = source._radius;
+    }
   }
 }

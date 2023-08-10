@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/bones/tendon_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TendonBase extends Component {
@@ -179,14 +180,16 @@ abstract class TendonBase extends Component {
   void tyChanged(double from, double to);
 
   @override
-  void copy(covariant TendonBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _boneId = source._boneId;
-    _xx = source._xx;
-    _yx = source._yx;
-    _xy = source._xy;
-    _yy = source._yy;
-    _tx = source._tx;
-    _ty = source._ty;
+    if (source is TendonBase) {
+      _boneId = source._boneId;
+      _xx = source._xx;
+      _yx = source._yx;
+      _xy = source._xy;
+      _yy = source._yy;
+      _tx = source._tx;
+      _ty = source._ty;
+    }
   }
 }

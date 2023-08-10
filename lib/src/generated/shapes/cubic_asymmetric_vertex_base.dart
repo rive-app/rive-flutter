@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/cubic_asymmetric_vertex_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
@@ -96,10 +97,12 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   void outDistanceChanged(double from, double to);
 
   @override
-  void copy(covariant CubicAsymmetricVertexBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _rotation = source._rotation;
-    _inDistance = source._inDistance;
-    _outDistance = source._outDistance;
+    if (source is CubicAsymmetricVertexBase) {
+      _rotation = source._rotation;
+      _inDistance = source._inDistance;
+      _outDistance = source._outDistance;
+    }
   }
 }

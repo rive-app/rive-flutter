@@ -2,6 +2,7 @@
 // lib/src/generated/animation/state_machine_number_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
 
@@ -39,8 +40,10 @@ abstract class StateMachineNumberBase extends StateMachineInput {
   void valueChanged(double from, double to);
 
   @override
-  void copy(covariant StateMachineNumberBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _value = source._value;
+    if (source is StateMachineNumberBase) {
+      _value = source._value;
+    }
   }
 }

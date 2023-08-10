@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/artboard_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
@@ -212,15 +213,17 @@ abstract class ArtboardBase extends WorldTransformComponent {
   void defaultStateMachineIdChanged(int from, int to);
 
   @override
-  void copy(covariant ArtboardBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _clip = source._clip;
-    _width = source._width;
-    _height = source._height;
-    _x = source._x;
-    _y = source._y;
-    _originX = source._originX;
-    _originY = source._originY;
-    _defaultStateMachineId = source._defaultStateMachineId;
+    if (source is ArtboardBase) {
+      _clip = source._clip;
+      _width = source._width;
+      _height = source._height;
+      _x = source._x;
+      _y = source._y;
+      _originX = source._originX;
+      _originY = source._originY;
+      _defaultStateMachineId = source._defaultStateMachineId;
+    }
   }
 }

@@ -50,9 +50,9 @@ class Rive extends LeafRenderObjectWidget {
 
   /// The mouse cursor for mouse pointers that are hovering over the region.
   ///
-  /// When a mouse enters the region, its cursor will be changed to the [cursor].
-  /// When the mouse leaves the region, the cursor will be decided by the region
-  /// found at the new location.
+  /// When a mouse enters the region, its cursor will be changed to the
+  /// [cursor]. When the mouse leaves the region, the cursor will be decided by
+  /// the region found at the new location.
   ///
   /// The [cursor] defaults to [MouseCursor.defer], deferring the choice of
   /// cursor to the next region behind it in hit-test order.
@@ -83,12 +83,14 @@ class Rive extends LeafRenderObjectWidget {
   RenderObject createRenderObject(BuildContext context) {
     // Doing this here and not in constructor so it can remain const
     artboard.antialiasing = antialiasing;
+    final tickerModeValue = TickerMode.of(context);
     return RiveRenderObject(artboard as RuntimeArtboard)
       ..fit = fit
       ..alignment = alignment
       ..artboardSize = Size(artboard.width, artboard.height)
       ..useArtboardSize = useArtboardSize
       ..clipRect = clipRect
+      ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
       ..cursor = cursor;
   }
@@ -96,6 +98,7 @@ class Rive extends LeafRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, covariant RiveRenderObject renderObject) {
+    final tickerModeValue = TickerMode.of(context);
     artboard.antialiasing = antialiasing;
     renderObject
       ..artboard = artboard
@@ -104,6 +107,7 @@ class Rive extends LeafRenderObjectWidget {
       ..artboardSize = Size(artboard.width, artboard.height)
       ..useArtboardSize = useArtboardSize
       ..clipRect = clipRect
+      ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
       ..cursor = cursor;
   }
@@ -230,8 +234,8 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   @override
   void detach() {
     // It's possible that the renderObject be detached during mouse events
-    // dispatching, set the [MouseTrackerAnnotation.validForMouseTracker] false to prevent
-    // the callbacks from being called.
+    // dispatching, set the [MouseTrackerAnnotation.validForMouseTracker] false
+    // to prevent the callbacks from being called.
     _validForMouseTracker = false;
     super.detach();
   }

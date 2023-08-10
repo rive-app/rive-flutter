@@ -40,8 +40,10 @@ abstract class WorldTransformComponentBase extends ContainerComponent {
   void opacityChanged(double from, double to);
 
   @override
-  void copy(covariant WorldTransformComponentBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _opacity = source._opacity;
+    if (source is WorldTransformComponentBase) {
+      _opacity = source._opacity;
+    }
   }
 }

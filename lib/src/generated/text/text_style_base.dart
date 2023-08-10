@@ -61,6 +61,29 @@ abstract class TextStyleBase extends ContainerComponent {
   void lineHeightChanged(double from, double to);
 
   /// --------------------------------------------------------------------------
+  /// LetterSpacing field with key 390.
+  static const double letterSpacingInitialValue = 0.0;
+  double _letterSpacing = letterSpacingInitialValue;
+  static const int letterSpacingPropertyKey = 390;
+  double get letterSpacing => _letterSpacing;
+
+  /// Change the [_letterSpacing] field value.
+  /// [letterSpacingChanged] will be invoked only if the field's value has
+  /// changed.
+  set letterSpacing(double value) {
+    if (_letterSpacing == value) {
+      return;
+    }
+    double from = _letterSpacing;
+    _letterSpacing = value;
+    if (hasValidated) {
+      letterSpacingChanged(from, value);
+    }
+  }
+
+  void letterSpacingChanged(double from, double to);
+
+  /// --------------------------------------------------------------------------
   /// FontAssetId field with key 279.
   static const int fontAssetIdInitialValue = -1;
   int _fontAssetId = fontAssetIdInitialValue;
@@ -84,10 +107,13 @@ abstract class TextStyleBase extends ContainerComponent {
   void fontAssetIdChanged(int from, int to);
 
   @override
-  void copy(covariant TextStyleBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _fontSize = source._fontSize;
-    _lineHeight = source._lineHeight;
-    _fontAssetId = source._fontAssetId;
+    if (source is TextStyleBase) {
+      _fontSize = source._fontSize;
+      _lineHeight = source._lineHeight;
+      _letterSpacing = source._letterSpacing;
+      _fontAssetId = source._fontAssetId;
+    }
   }
 }

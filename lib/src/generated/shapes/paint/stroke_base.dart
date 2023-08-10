@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/paint/stroke_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint.dart';
@@ -108,11 +109,13 @@ abstract class StrokeBase extends ShapePaint {
   void transformAffectsStrokeChanged(bool from, bool to);
 
   @override
-  void copy(covariant StrokeBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _thickness = source._thickness;
-    _cap = source._cap;
-    _join = source._join;
-    _transformAffectsStroke = source._transformAffectsStroke;
+    if (source is StrokeBase) {
+      _thickness = source._thickness;
+      _cap = source._cap;
+      _join = source._join;
+      _transformAffectsStroke = source._transformAffectsStroke;
+    }
   }
 }

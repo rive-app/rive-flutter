@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/shapes/rectangle_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -151,12 +152,14 @@ abstract class RectangleBase extends ParametricPath {
   void cornerRadiusBRChanged(double from, double to);
 
   @override
-  void copy(covariant RectangleBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _linkCornerRadius = source._linkCornerRadius;
-    _cornerRadiusTL = source._cornerRadiusTL;
-    _cornerRadiusTR = source._cornerRadiusTR;
-    _cornerRadiusBL = source._cornerRadiusBL;
-    _cornerRadiusBR = source._cornerRadiusBR;
+    if (source is RectangleBase) {
+      _linkCornerRadius = source._linkCornerRadius;
+      _cornerRadiusTL = source._cornerRadiusTL;
+      _cornerRadiusTR = source._cornerRadiusTR;
+      _cornerRadiusBL = source._cornerRadiusBL;
+      _cornerRadiusBR = source._cornerRadiusBR;
+    }
   }
 }

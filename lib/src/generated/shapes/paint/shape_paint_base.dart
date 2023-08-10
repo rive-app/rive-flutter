@@ -40,8 +40,10 @@ abstract class ShapePaintBase extends ContainerComponent {
   void isVisibleChanged(bool from, bool to);
 
   @override
-  void copy(covariant ShapePaintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _isVisible = source._isVisible;
+    if (source is ShapePaintBase) {
+      _isVisible = source._isVisible;
+    }
   }
 }

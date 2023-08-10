@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/distance_constraint_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/rive_core/constraints/targeted_constraint.dart';
@@ -68,9 +69,11 @@ abstract class DistanceConstraintBase extends TargetedConstraint {
   void modeValueChanged(int from, int to);
 
   @override
-  void copy(covariant DistanceConstraintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _distance = source._distance;
-    _modeValue = source._modeValue;
+    if (source is DistanceConstraintBase) {
+      _distance = source._distance;
+      _modeValue = source._modeValue;
+    }
   }
 }

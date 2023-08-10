@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/parametric_path_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -121,11 +122,13 @@ abstract class ParametricPathBase extends Path {
   void originYChanged(double from, double to);
 
   @override
-  void copy(covariant ParametricPathBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _width = source._width;
-    _height = source._height;
-    _originX = source._originX;
-    _originY = source._originY;
+    if (source is ParametricPathBase) {
+      _width = source._width;
+      _height = source._height;
+      _originX = source._originX;
+      _originY = source._originY;
+    }
   }
 }

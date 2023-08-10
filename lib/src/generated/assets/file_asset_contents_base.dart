@@ -36,7 +36,9 @@ abstract class FileAssetContentsBase<T extends CoreContext> extends Core<T> {
   void bytesChanged(Uint8List from, Uint8List to);
 
   @override
-  void copy(covariant FileAssetContentsBase source) {
-    _bytes = source._bytes;
+  void copy(Core source) {
+    if (source is FileAssetContentsBase) {
+      _bytes = source._bytes;
+    }
   }
 }

@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/draw_target_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class DrawTargetBase extends Component {
@@ -60,9 +61,11 @@ abstract class DrawTargetBase extends Component {
   void placementValueChanged(int from, int to);
 
   @override
-  void copy(covariant DrawTargetBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _drawableId = source._drawableId;
-    _placementValue = source._placementValue;
+    if (source is DrawTargetBase) {
+      _drawableId = source._drawableId;
+      _placementValue = source._placementValue;
+    }
   }
 }

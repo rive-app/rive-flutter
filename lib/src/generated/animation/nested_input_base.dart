@@ -2,6 +2,7 @@
 // lib/src/generated/animation/nested_input_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class NestedInputBase extends Component {
@@ -36,8 +37,10 @@ abstract class NestedInputBase extends Component {
   void inputIdChanged(int from, int to);
 
   @override
-  void copy(covariant NestedInputBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _inputId = source._inputId;
+    if (source is NestedInputBase) {
+      _inputId = source._inputId;
+    }
   }
 }

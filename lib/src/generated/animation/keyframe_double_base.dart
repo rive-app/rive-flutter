@@ -2,6 +2,7 @@
 // lib/src/generated/animation/keyframe_double_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 
 abstract class KeyFrameDoubleBase extends KeyFrame {
@@ -34,8 +35,10 @@ abstract class KeyFrameDoubleBase extends KeyFrame {
   void valueChanged(double from, double to);
 
   @override
-  void copy(covariant KeyFrameDoubleBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _value = source._value;
+    if (source is KeyFrameDoubleBase) {
+      _value = source._value;
+    }
   }
 }

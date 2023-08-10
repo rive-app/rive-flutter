@@ -2,6 +2,7 @@
 // lib/src/generated/animation/advanceable_state_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/state_machine_layer_component_base.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 
@@ -39,8 +40,10 @@ abstract class AdvanceableStateBase extends LayerState {
   void speedChanged(double from, double to);
 
   @override
-  void copy(covariant AdvanceableStateBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _speed = source._speed;
+    if (source is AdvanceableStateBase) {
+      _speed = source._speed;
+    }
   }
 }

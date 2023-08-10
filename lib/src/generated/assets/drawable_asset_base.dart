@@ -2,6 +2,7 @@
 // lib/src/generated/assets/drawable_asset_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 
@@ -62,9 +63,11 @@ abstract class DrawableAssetBase extends FileAsset {
   void widthChanged(double from, double to);
 
   @override
-  void copy(covariant DrawableAssetBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _height = source._height;
-    _width = source._width;
+    if (source is DrawableAssetBase) {
+      _height = source._height;
+      _width = source._width;
+    }
   }
 }

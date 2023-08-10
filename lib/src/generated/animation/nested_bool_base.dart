@@ -2,6 +2,7 @@
 // lib/src/generated/animation/nested_bool_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/animation/nested_input.dart';
 
@@ -37,8 +38,10 @@ abstract class NestedBoolBase extends NestedInput {
   void nestedValueChanged(bool from, bool to);
 
   @override
-  void copy(covariant NestedBoolBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _nestedValue = source._nestedValue;
+    if (source is NestedBoolBase) {
+      _nestedValue = source._nestedValue;
+    }
   }
 }

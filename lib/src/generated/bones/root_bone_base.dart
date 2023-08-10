@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/bones/root_bone_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/bones/skeletal_component_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
@@ -72,9 +73,11 @@ abstract class RootBoneBase extends Bone {
   void yChanged(double from, double to);
 
   @override
-  void copy(covariant RootBoneBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _x = source._x;
-    _y = source._y;
+    if (source is RootBoneBase) {
+      _x = source._x;
+      _y = source._y;
+    }
   }
 }

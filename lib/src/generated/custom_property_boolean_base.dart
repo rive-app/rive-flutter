@@ -2,15 +2,20 @@
 // lib/src/generated/custom_property_boolean_base.dart.
 // Do not modify manually.
 
-import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/component_base.dart';
+import 'package:rive/src/rive_core/custom_property.dart';
 
-abstract class CustomPropertyBooleanBase extends Component {
+abstract class CustomPropertyBooleanBase extends CustomProperty {
   static const int typeKey = 129;
   @override
   int get coreType => CustomPropertyBooleanBase.typeKey;
   @override
-  Set<int> get coreTypes =>
-      {CustomPropertyBooleanBase.typeKey, ComponentBase.typeKey};
+  Set<int> get coreTypes => {
+        CustomPropertyBooleanBase.typeKey,
+        CustomPropertyBase.typeKey,
+        ComponentBase.typeKey
+      };
 
   /// --------------------------------------------------------------------------
   /// PropertyValue field with key 245.
@@ -36,8 +41,10 @@ abstract class CustomPropertyBooleanBase extends Component {
   void propertyValueChanged(bool from, bool to);
 
   @override
-  void copy(covariant CustomPropertyBooleanBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _propertyValue = source._propertyValue;
+    if (source is CustomPropertyBooleanBase) {
+      _propertyValue = source._propertyValue;
+    }
   }
 }

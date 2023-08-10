@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/shapes/points_path_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -49,8 +50,10 @@ abstract class PointsPathBase extends Path {
   void isClosedChanged(bool from, bool to);
 
   @override
-  void copy(covariant PointsPathBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _isClosed = source._isClosed;
+    if (source is PointsPathBase) {
+      _isClosed = source._isClosed;
+    }
   }
 }

@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/cubic_detached_vertex_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
@@ -121,11 +122,13 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
   void outDistanceChanged(double from, double to);
 
   @override
-  void copy(covariant CubicDetachedVertexBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _inRotation = source._inRotation;
-    _inDistance = source._inDistance;
-    _outRotation = source._outRotation;
-    _outDistance = source._outDistance;
+    if (source is CubicDetachedVertexBase) {
+      _inRotation = source._inRotation;
+      _inDistance = source._inDistance;
+      _outRotation = source._outRotation;
+      _outDistance = source._outDistance;
+    }
   }
 }

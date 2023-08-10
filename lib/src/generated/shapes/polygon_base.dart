@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/shapes/polygon_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -75,9 +76,11 @@ abstract class PolygonBase extends ParametricPath {
   void cornerRadiusChanged(double from, double to);
 
   @override
-  void copy(covariant PolygonBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _points = source._points;
-    _cornerRadius = source._cornerRadius;
+    if (source is PolygonBase) {
+      _points = source._points;
+      _cornerRadius = source._cornerRadius;
+    }
   }
 }

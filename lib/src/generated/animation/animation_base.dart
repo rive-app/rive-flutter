@@ -36,7 +36,9 @@ abstract class AnimationBase<T extends CoreContext> extends Core<T> {
   void nameChanged(String from, String to);
 
   @override
-  void copy(covariant AnimationBase source) {
-    _name = source._name;
+  void copy(Core source) {
+    if (source is AnimationBase) {
+      _name = source._name;
+    }
   }
 }

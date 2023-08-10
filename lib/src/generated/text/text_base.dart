@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/text/text_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -238,16 +239,18 @@ abstract class TextBase extends Drawable {
   void originValueChanged(int from, int to);
 
   @override
-  void copy(covariant TextBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _alignValue = source._alignValue;
-    _sizingValue = source._sizingValue;
-    _overflowValue = source._overflowValue;
-    _width = source._width;
-    _height = source._height;
-    _originX = source._originX;
-    _originY = source._originY;
-    _paragraphSpacing = source._paragraphSpacing;
-    _originValue = source._originValue;
+    if (source is TextBase) {
+      _alignValue = source._alignValue;
+      _sizingValue = source._sizingValue;
+      _overflowValue = source._overflowValue;
+      _width = source._width;
+      _height = source._height;
+      _originX = source._originX;
+      _originY = source._originY;
+      _paragraphSpacing = source._paragraphSpacing;
+      _originValue = source._originValue;
+    }
   }
 }

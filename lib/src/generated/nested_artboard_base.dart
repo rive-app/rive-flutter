@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/nested_artboard_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -48,8 +49,10 @@ abstract class NestedArtboardBase extends Drawable {
   void artboardIdChanged(int from, int to);
 
   @override
-  void copy(covariant NestedArtboardBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _artboardId = source._artboardId;
+    if (source is NestedArtboardBase) {
+      _artboardId = source._artboardId;
+    }
   }
 }

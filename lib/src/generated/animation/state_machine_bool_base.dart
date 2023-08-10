@@ -2,6 +2,7 @@
 // lib/src/generated/animation/state_machine_bool_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
 
@@ -39,8 +40,10 @@ abstract class StateMachineBoolBase extends StateMachineInput {
   void valueChanged(bool from, bool to);
 
   @override
-  void copy(covariant StateMachineBoolBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _value = source._value;
+    if (source is StateMachineBoolBase) {
+      _value = source._value;
+    }
   }
 }

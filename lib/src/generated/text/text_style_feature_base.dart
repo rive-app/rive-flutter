@@ -2,6 +2,7 @@
 // lib/src/generated/text/text_style_feature_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TextStyleFeatureBase extends Component {
@@ -58,9 +59,11 @@ abstract class TextStyleFeatureBase extends Component {
   void featureValueChanged(int from, int to);
 
   @override
-  void copy(covariant TextStyleFeatureBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _tag = source._tag;
-    _featureValue = source._featureValue;
+    if (source is TextStyleFeatureBase) {
+      _tag = source._tag;
+      _featureValue = source._featureValue;
+    }
   }
 }

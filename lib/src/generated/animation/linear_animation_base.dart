@@ -2,6 +2,7 @@
 // lib/src/generated/animation/linear_animation_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 
 abstract class LinearAnimationBase extends Animation {
@@ -208,15 +209,17 @@ abstract class LinearAnimationBase extends Animation {
   void quantizeChanged(bool from, bool to);
 
   @override
-  void copy(covariant LinearAnimationBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _fps = source._fps;
-    _duration = source._duration;
-    _speed = source._speed;
-    _loopValue = source._loopValue;
-    _workStart = source._workStart;
-    _workEnd = source._workEnd;
-    _enableWorkArea = source._enableWorkArea;
-    _quantize = source._quantize;
+    if (source is LinearAnimationBase) {
+      _fps = source._fps;
+      _duration = source._duration;
+      _speed = source._speed;
+      _loopValue = source._loopValue;
+      _workStart = source._workStart;
+      _workEnd = source._workEnd;
+      _enableWorkArea = source._enableWorkArea;
+      _quantize = source._quantize;
+    }
   }
 }

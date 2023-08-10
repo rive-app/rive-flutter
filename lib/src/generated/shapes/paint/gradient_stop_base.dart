@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/paint/gradient_stop_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class GradientStopBase extends Component {
@@ -56,9 +57,11 @@ abstract class GradientStopBase extends Component {
   void positionChanged(double from, double to);
 
   @override
-  void copy(covariant GradientStopBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _colorValue = source._colorValue;
-    _position = source._position;
+    if (source is GradientStopBase) {
+      _colorValue = source._colorValue;
+      _position = source._position;
+    }
   }
 }

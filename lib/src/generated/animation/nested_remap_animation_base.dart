@@ -2,6 +2,7 @@
 // lib/src/generated/animation/nested_remap_animation_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/nested_animation_base.dart';
@@ -45,8 +46,10 @@ abstract class NestedRemapAnimationBase extends NestedLinearAnimation {
   void timeChanged(double from, double to);
 
   @override
-  void copy(covariant NestedRemapAnimationBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _time = source._time;
+    if (source is NestedRemapAnimationBase) {
+      _time = source._time;
+    }
   }
 }

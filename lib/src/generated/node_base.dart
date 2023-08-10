@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/node_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/world_transform_component_base.dart';
@@ -68,9 +69,11 @@ abstract class NodeBase extends TransformComponent {
   void yChanged(double from, double to);
 
   @override
-  void copy(covariant NodeBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _x = source._x;
-    _y = source._y;
+    if (source is NodeBase) {
+      _x = source._x;
+      _y = source._y;
+    }
   }
 }

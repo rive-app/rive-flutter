@@ -2,6 +2,7 @@
 // lib/src/generated/animation/cubic_interpolator_component_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class CubicInterpolatorComponentBase extends Component {
@@ -101,11 +102,13 @@ abstract class CubicInterpolatorComponentBase extends Component {
   void y2Changed(double from, double to);
 
   @override
-  void copy(covariant CubicInterpolatorComponentBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _x1 = source._x1;
-    _y1 = source._y1;
-    _x2 = source._x2;
-    _y2 = source._y2;
+    if (source is CubicInterpolatorComponentBase) {
+      _x1 = source._x1;
+      _y1 = source._y1;
+      _x2 = source._x2;
+      _y2 = source._y2;
+    }
   }
 }

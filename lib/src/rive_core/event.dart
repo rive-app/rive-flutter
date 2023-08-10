@@ -1,15 +1,13 @@
 import 'package:rive/src/generated/event_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/custom_property_boolean.dart';
-import 'package:rive/src/rive_core/custom_property_number.dart';
-import 'package:rive/src/rive_core/custom_property_string.dart';
+import 'package:rive/src/rive_core/custom_property.dart';
 import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/event_base.dart';
 
 class Event extends EventBase {
-  final Set<Component> customProperties = {};
+  final List<CustomProperty> customProperties = [];
 
   @override
   void typeChanged(String from, String to) {}
@@ -25,18 +23,7 @@ class Event extends EventBase {
   }
 
   void _syncCustomProperties() {
-    var nextCustomProperties = children.where(
-      (child) {
-        switch (child.coreType) {
-          case CustomPropertyBooleanBase.typeKey:
-          case CustomPropertyStringBase.typeKey:
-          case CustomPropertyNumberBase.typeKey:
-            return true;
-          default:
-            return false;
-        }
-      },
-    ).toSet();
+    var nextCustomProperties = children.whereType<CustomProperty>().toSet();
     if (!iterableEquals(customProperties, nextCustomProperties)) {
       customProperties.clear();
       customProperties.addAll(nextCustomProperties);
@@ -54,4 +41,8 @@ class Event extends EventBase {
     super.childRemoved(child);
     _syncCustomProperties();
   }
+
+  static final _UnknownEvent unknown = _UnknownEvent();
 }
+
+class _UnknownEvent extends Event {}

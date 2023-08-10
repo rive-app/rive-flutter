@@ -2,6 +2,7 @@
 // lib/src/generated/animation/keyframe_string_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 
 abstract class KeyFrameStringBase extends KeyFrame {
@@ -34,8 +35,10 @@ abstract class KeyFrameStringBase extends KeyFrame {
   void valueChanged(String from, String to);
 
   @override
-  void copy(covariant KeyFrameStringBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _value = source._value;
+    if (source is KeyFrameStringBase) {
+      _value = source._value;
+    }
   }
 }

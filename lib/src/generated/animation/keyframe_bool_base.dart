@@ -2,6 +2,7 @@
 // lib/src/generated/animation/keyframe_bool_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 
 abstract class KeyFrameBoolBase extends KeyFrame {
@@ -34,8 +35,10 @@ abstract class KeyFrameBoolBase extends KeyFrame {
   void valueChanged(bool from, bool to);
 
   @override
-  void copy(covariant KeyFrameBoolBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _value = source._value;
+    if (source is KeyFrameBoolBase) {
+      _value = source._value;
+    }
   }
 }

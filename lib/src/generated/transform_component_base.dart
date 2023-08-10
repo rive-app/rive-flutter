@@ -2,6 +2,7 @@
 // lib/src/generated/transform_component_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
@@ -85,10 +86,12 @@ abstract class TransformComponentBase extends WorldTransformComponent {
   void scaleYChanged(double from, double to);
 
   @override
-  void copy(covariant TransformComponentBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _rotation = source._rotation;
-    _scaleX = source._scaleX;
-    _scaleY = source._scaleY;
+    if (source is TransformComponentBase) {
+      _rotation = source._rotation;
+      _scaleX = source._scaleX;
+      _scaleY = source._scaleY;
+    }
   }
 }

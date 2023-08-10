@@ -2,6 +2,7 @@
 // lib/src/generated/text/text_value_run_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class TextValueRunBase extends Component {
@@ -60,9 +61,11 @@ abstract class TextValueRunBase extends Component {
   void textChanged(String from, String to);
 
   @override
-  void copy(covariant TextValueRunBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _styleId = source._styleId;
-    _text = source._text;
+    if (source is TextValueRunBase) {
+      _styleId = source._styleId;
+      _text = source._text;
+    }
   }
 }

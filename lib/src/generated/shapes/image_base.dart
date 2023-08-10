@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/shapes/image_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -96,10 +97,12 @@ abstract class ImageBase extends Drawable {
   void originYChanged(double from, double to);
 
   @override
-  void copy(covariant ImageBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _assetId = source._assetId;
-    _originX = source._originX;
-    _originY = source._originY;
+    if (source is ImageBase) {
+      _assetId = source._assetId;
+      _originX = source._originX;
+      _originY = source._originY;
+    }
   }
 }

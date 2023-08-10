@@ -1,6 +1,8 @@
-## Upcoming
+## 0.11.14
 
 - Refactor how hit testing is performed in `RiveAnimation` and `Rive` widgets. Pointer events (listeners) can now be enabled on the `Rive` widget by setting `enablePointerEvents` to `true` (default is false).
+- Change in how animations advance when using `RiveAnimation` and `Rive` widgets. Now using `Ticker`, which will allow Rive animations to respect `timeDilation` and `TickerMode`. Resolves [187](https://github.com/rive-app/rive-flutter/issues/187), [254](https://github.com/rive-app/rive-flutter/issues/254), [307](https://github.com/rive-app/rive-flutter/issues/307), and [328](https://github.com/rive-app/rive-flutter/issues/328)
+- Support for line spacing.
 
 ## 0.11.13
 

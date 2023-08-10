@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/joystick_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
 abstract class JoystickBase extends Component {
@@ -289,19 +290,21 @@ abstract class JoystickBase extends Component {
   void handleSourceIdChanged(int from, int to);
 
   @override
-  void copy(covariant JoystickBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _x = source._x;
-    _y = source._y;
-    _posX = source._posX;
-    _posY = source._posY;
-    _originX = source._originX;
-    _originY = source._originY;
-    _width = source._width;
-    _height = source._height;
-    _xId = source._xId;
-    _yId = source._yId;
-    _joystickFlags = source._joystickFlags;
-    _handleSourceId = source._handleSourceId;
+    if (source is JoystickBase) {
+      _x = source._x;
+      _y = source._y;
+      _posX = source._posX;
+      _posY = source._posY;
+      _originX = source._originX;
+      _originY = source._originY;
+      _width = source._width;
+      _height = source._height;
+      _xId = source._xId;
+      _yId = source._yId;
+      _joystickFlags = source._joystickFlags;
+      _handleSourceId = source._handleSourceId;
+    }
   }
 }

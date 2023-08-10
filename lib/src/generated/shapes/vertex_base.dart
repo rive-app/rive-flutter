@@ -65,9 +65,11 @@ abstract class VertexBase extends ContainerComponent {
   void yChanged(double from, double to);
 
   @override
-  void copy(covariant VertexBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _x = source._x;
-    _y = source._y;
+    if (source is VertexBase) {
+      _x = source._x;
+      _y = source._y;
+    }
   }
 }

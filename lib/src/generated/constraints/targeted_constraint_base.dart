@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/targeted_constraint_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 
@@ -42,8 +43,10 @@ abstract class TargetedConstraintBase extends Constraint {
   void targetIdChanged(int from, int to);
 
   @override
-  void copy(covariant TargetedConstraintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _targetId = source._targetId;
+    if (source is TargetedConstraintBase) {
+      _targetId = source._targetId;
+    }
   }
 }

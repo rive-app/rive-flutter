@@ -2,6 +2,7 @@
 // lib/src/generated/shapes/cubic_mirrored_vertex_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/shapes/path_vertex_base.dart';
@@ -71,9 +72,11 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
   void distanceChanged(double from, double to);
 
   @override
-  void copy(covariant CubicMirroredVertexBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _rotation = source._rotation;
-    _distance = source._distance;
+    if (source is CubicMirroredVertexBase) {
+      _rotation = source._rotation;
+      _distance = source._distance;
+    }
   }
 }

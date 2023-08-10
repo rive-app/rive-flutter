@@ -2,6 +2,7 @@
 // lib/src/generated/animation/keyframe_color_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 
 abstract class KeyFrameColorBase extends KeyFrame {
@@ -34,8 +35,10 @@ abstract class KeyFrameColorBase extends KeyFrame {
   void valueChanged(int from, int to);
 
   @override
-  void copy(covariant KeyFrameColorBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _value = source._value;
+    if (source is KeyFrameColorBase) {
+      _value = source._value;
+    }
   }
 }

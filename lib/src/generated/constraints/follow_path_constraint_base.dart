@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/follow_path_constraint_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
@@ -94,10 +95,12 @@ abstract class FollowPathConstraintBase extends TransformSpaceConstraint {
   void offsetChanged(bool from, bool to);
 
   @override
-  void copy(covariant FollowPathConstraintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _distance = source._distance;
-    _orient = source._orient;
-    _offset = source._offset;
+    if (source is FollowPathConstraintBase) {
+      _distance = source._distance;
+      _orient = source._orient;
+      _offset = source._offset;
+    }
   }
 }

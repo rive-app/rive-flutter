@@ -2,6 +2,7 @@
 // lib/src/generated/animation/state_machine_listener_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine_component.dart';
 
 abstract class StateMachineListenerBase extends StateMachineComponent {
@@ -62,9 +63,11 @@ abstract class StateMachineListenerBase extends StateMachineComponent {
   void listenerTypeValueChanged(int from, int to);
 
   @override
-  void copy(covariant StateMachineListenerBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _targetId = source._targetId;
-    _listenerTypeValue = source._listenerTypeValue;
+    if (source is StateMachineListenerBase) {
+      _targetId = source._targetId;
+      _listenerTypeValue = source._listenerTypeValue;
+    }
   }
 }

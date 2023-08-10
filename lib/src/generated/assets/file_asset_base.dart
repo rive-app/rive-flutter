@@ -85,10 +85,12 @@ abstract class FileAssetBase extends Asset {
   void cdnBaseUrlChanged(String from, String to);
 
   @override
-  void copy(covariant FileAssetBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _assetId = source._assetId;
-    _cdnUuid = source._cdnUuid;
-    _cdnBaseUrl = source._cdnBaseUrl;
+    if (source is FileAssetBase) {
+      _assetId = source._assetId;
+      _cdnUuid = source._cdnUuid;
+      _cdnBaseUrl = source._cdnBaseUrl;
+    }
   }
 }

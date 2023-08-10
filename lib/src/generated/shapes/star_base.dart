@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/shapes/star_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/node_base.dart';
@@ -53,8 +54,10 @@ abstract class StarBase extends Polygon {
   void innerRadiusChanged(double from, double to);
 
   @override
-  void copy(covariant StarBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _innerRadius = source._innerRadius;
+    if (source is StarBase) {
+      _innerRadius = source._innerRadius;
+    }
   }
 }

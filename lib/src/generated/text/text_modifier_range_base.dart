@@ -263,18 +263,20 @@ abstract class TextModifierRangeBase extends ContainerComponent {
   void runIdChanged(int from, int to);
 
   @override
-  void copy(covariant TextModifierRangeBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _modifyFrom = source._modifyFrom;
-    _modifyTo = source._modifyTo;
-    _strength = source._strength;
-    _unitsValue = source._unitsValue;
-    _typeValue = source._typeValue;
-    _modeValue = source._modeValue;
-    _clamp = source._clamp;
-    _falloffFrom = source._falloffFrom;
-    _falloffTo = source._falloffTo;
-    _offset = source._offset;
-    _runId = source._runId;
+    if (source is TextModifierRangeBase) {
+      _modifyFrom = source._modifyFrom;
+      _modifyTo = source._modifyTo;
+      _strength = source._strength;
+      _unitsValue = source._unitsValue;
+      _typeValue = source._typeValue;
+      _modeValue = source._modeValue;
+      _clamp = source._clamp;
+      _falloffFrom = source._falloffFrom;
+      _falloffTo = source._falloffTo;
+      _offset = source._offset;
+      _runId = source._runId;
+    }
   }
 }

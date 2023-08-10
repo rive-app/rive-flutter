@@ -5,20 +5,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive_common/math.dart';
 
-/// This allows a value of type T or T?
-/// to be treated as a value of type T?.
-///
-/// We use this so that APIs that have become
-/// non-nullable can still be used with `!` and `?`
-/// to support older versions of the API as well.
-T? _ambiguate<T>(T? value) => value;
-
 abstract class RiveRenderBox extends RenderBox {
-  final Stopwatch _stopwatch = Stopwatch();
+  Ticker? _ticker;
   BoxFit _fit = BoxFit.none;
   Alignment _alignment = Alignment.center;
   bool _useArtboardSize = false;
   Rect? _clipRect;
+  bool _tickerModeEnabled = true;
   bool _enableHitTests = false;
 
   bool get useArtboardSize => _useArtboardSize;
@@ -71,6 +64,20 @@ abstract class RiveRenderBox extends RenderBox {
     if (value != _clipRect) {
       _clipRect = value;
       markNeedsPaint();
+    }
+  }
+
+  bool get tickerModeEnabled => _tickerModeEnabled;
+
+  set tickerModeEnabled(bool value) {
+    if (value != _tickerModeEnabled) {
+      _tickerModeEnabled = value;
+
+      if (_tickerModeEnabled) {
+        _startTicker();
+      } else {
+        _stopTicker();
+      }
     }
   }
 
@@ -178,14 +185,49 @@ abstract class RiveRenderBox extends RenderBox {
 
   @override
   void detach() {
-    _stopwatch.stop();
+    _stopTicker();
+
     super.detach();
+  }
+
+  @override
+  void dispose() {
+    _ticker?.dispose();
+    _ticker = null;
+
+    super.dispose();
   }
 
   @override
   void attach(PipelineOwner owner) {
     super.attach(owner);
-    _stopwatch.start();
+
+    _ticker = Ticker(_frameCallback);
+    _startTicker();
+  }
+
+  void _stopTicker() {
+    _elapsedSeconds = 0;
+    _prevTickerElapsedInSeconds = 0;
+
+    _ticker?.stop();
+  }
+
+  void _startTicker() {
+    _elapsedSeconds = 0;
+    _prevTickerElapsedInSeconds = 0;
+
+    // Always ensure ticker is stopped before starting
+    if (_ticker?.isActive ?? false) {
+      _ticker?.stop();
+    }
+    _ticker?.start();
+  }
+
+  void _restartTickerIfStopped() {
+    if (_ticker != null && !_ticker!.isActive) {
+      _startTicker();
+    }
   }
 
   /// Get the Axis Aligned Bounding Box that encompasses the world space scene
@@ -197,25 +239,28 @@ abstract class RiveRenderBox extends RenderBox {
 
   void afterDraw(Canvas canvas, Offset offset) {}
 
+  /// Time between frame callbacks
   double _elapsedSeconds = 0;
 
+  /// The total time [_ticker] has been active in seconds
+  double _prevTickerElapsedInSeconds = 0;
+
+  void _calculateElapsedSeconds(Duration duration) {
+    final double tickerElapsedInSeconds =
+        duration.inMicroseconds.toDouble() / Duration.microsecondsPerSecond;
+    assert(tickerElapsedInSeconds >= 0.0);
+
+    _elapsedSeconds = tickerElapsedInSeconds - _prevTickerElapsedInSeconds;
+    _prevTickerElapsedInSeconds = tickerElapsedInSeconds;
+  }
+
   void _frameCallback(Duration duration) {
-    _elapsedSeconds = _stopwatch.elapsedTicks / _stopwatch.frequency;
-    _stopwatch.reset();
-    _stopwatch.start();
+    _calculateElapsedSeconds(duration);
+
     markNeedsPaint();
   }
 
-  int _frameCallbackId = -1;
-
-  void scheduleRepaint() {
-    if (_frameCallbackId != -1) {
-      return;
-    }
-    _frameCallbackId = _ambiguate(SchedulerBinding.instance)
-            ?.scheduleFrameCallback(_frameCallback) ??
-        -1;
-  }
+  void scheduleRepaint() => _restartTickerIfStopped();
 
   /// Override this if you want to do custom viewTransform alignment. This will
   /// be called after advancing. Return true to prevent regular paint.
@@ -305,11 +350,8 @@ abstract class RiveRenderBox extends RenderBox {
   @protected
   @override
   void paint(PaintingContext context, Offset offset) {
-    _frameCallbackId = -1;
-    if (advance(_elapsedSeconds)) {
-      scheduleRepaint();
-    } else {
-      _stopwatch.stop();
+    if (!advance(_elapsedSeconds)) {
+      _stopTicker();
     }
     _elapsedSeconds = 0;
 

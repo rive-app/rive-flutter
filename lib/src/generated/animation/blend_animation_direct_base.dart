@@ -2,6 +2,7 @@
 // lib/src/generated/animation/blend_animation_direct_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/blend_animation.dart';
 
 abstract class BlendAnimationDirectBase extends BlendAnimation {
@@ -87,10 +88,12 @@ abstract class BlendAnimationDirectBase extends BlendAnimation {
   void blendSourceChanged(int from, int to);
 
   @override
-  void copy(covariant BlendAnimationDirectBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _inputId = source._inputId;
-    _mixValue = source._mixValue;
-    _blendSource = source._blendSource;
+    if (source is BlendAnimationDirectBase) {
+      _inputId = source._inputId;
+      _mixValue = source._mixValue;
+      _blendSource = source._blendSource;
+    }
   }
 }

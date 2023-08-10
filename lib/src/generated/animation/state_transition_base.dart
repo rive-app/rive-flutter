@@ -2,6 +2,7 @@
 // lib/src/generated/animation/state_transition_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer_component.dart';
 
 abstract class StateTransitionBase extends StateMachineLayerComponent {
@@ -161,13 +162,15 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
   void interpolatorIdChanged(int from, int to);
 
   @override
-  void copy(covariant StateTransitionBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _stateToId = source._stateToId;
-    _flags = source._flags;
-    _duration = source._duration;
-    _exitTime = source._exitTime;
-    _interpolationType = source._interpolationType;
-    _interpolatorId = source._interpolatorId;
+    if (source is StateTransitionBase) {
+      _stateToId = source._stateToId;
+      _flags = source._flags;
+      _duration = source._duration;
+      _exitTime = source._exitTime;
+      _interpolationType = source._interpolationType;
+      _interpolatorId = source._interpolatorId;
+    }
   }
 }

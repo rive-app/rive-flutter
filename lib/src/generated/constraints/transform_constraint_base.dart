@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/transform_constraint_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
@@ -69,9 +70,11 @@ abstract class TransformConstraintBase extends TransformSpaceConstraint {
   void originYChanged(double from, double to);
 
   @override
-  void copy(covariant TransformConstraintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _originX = source._originX;
-    _originY = source._originY;
+    if (source is TransformConstraintBase) {
+      _originX = source._originX;
+      _originY = source._originY;
+    }
   }
 }

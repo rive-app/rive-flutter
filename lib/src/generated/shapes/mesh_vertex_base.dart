@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/shapes/mesh_vertex_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/shapes/vertex.dart';
@@ -66,9 +67,11 @@ abstract class MeshVertexBase extends Vertex {
   void vChanged(double from, double to);
 
   @override
-  void copy(covariant MeshVertexBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _u = source._u;
-    _v = source._v;
+    if (source is MeshVertexBase) {
+      _u = source._u;
+      _v = source._v;
+    }
   }
 }

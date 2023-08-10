@@ -42,8 +42,10 @@ abstract class NestedAnimationBase extends ContainerComponent {
   void animationIdChanged(int from, int to);
 
   @override
-  void copy(covariant NestedAnimationBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _animationId = source._animationId;
+    if (source is NestedAnimationBase) {
+      _animationId = source._animationId;
+    }
   }
 }

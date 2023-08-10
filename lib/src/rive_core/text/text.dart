@@ -104,6 +104,7 @@ class Text extends TextBase with TextStyleContainer {
         font: run.style?.font ?? defaultFont,
         fontSize: run.style?.fontSize ?? 16,
         lineHeight: run.style?.lineHeight ?? -1,
+        letterSpacing: run.style?.letterSpacing ?? 0,
         unicharCount: run.text.codeUnits.length,
         styleId: runIndex++,
       ));
@@ -141,24 +142,6 @@ class Text extends TextBase with TextStyleContainer {
     }
     return buffer.toString();
   }
-
-  /// [defaultFont] will be removed when we add asset font options.
-  // TextShapeResult? shape(Font defaultFont) {
-  //   if (_shape != null) {
-  //     return _shape;
-  //   }
-  //   var styled = makeStyled(defaultFont);
-  //   _shape = defaultFont.shape(
-  //     styled.value,
-  //     styled.runs,
-  //   );
-  //   if (_modifierGroups.isNotEmpty && _shape != null) {
-  //     _glyphLookup = GlyphLookup.fromShape(_shape!, styled.value.length);
-  //   } else {
-  //     _glyphLookup = null;
-  //   }
-  //   return _shape;
-  // }
 
   void _disposeShape() {
     for (final shape in _cleanupShapes) {
@@ -221,7 +204,6 @@ class Text extends TextBase with TextStyleContainer {
       return;
     }
     double y = 0;
-    double maxX = 0;
     var paragraphIndex = 0;
 
     for (final paragraphLines in lines) {
@@ -236,9 +218,6 @@ class Text extends TextBase with TextStyleContainer {
           }
 
           x += run.advanceAt(glyphInfo.index);
-        }
-        if (x > maxX) {
-          maxX = x;
         }
       }
 

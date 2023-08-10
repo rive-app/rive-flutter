@@ -2,6 +2,7 @@
 // lib/src/generated/animation/listener_input_change_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/listener_action.dart';
 
 abstract class ListenerInputChangeBase extends ListenerAction {
@@ -37,8 +38,10 @@ abstract class ListenerInputChangeBase extends ListenerAction {
   void inputIdChanged(int from, int to);
 
   @override
-  void copy(covariant ListenerInputChangeBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _inputId = source._inputId;
+    if (source is ListenerInputChangeBase) {
+      _inputId = source._inputId;
+    }
   }
 }

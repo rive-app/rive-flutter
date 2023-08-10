@@ -35,7 +35,9 @@ abstract class AssetBase<T extends CoreContext> extends Core<T> {
   void nameChanged(String from, String to);
 
   @override
-  void copy(covariant AssetBase source) {
-    _name = source._name;
+  void copy(Core source) {
+    if (source is AssetBase) {
+      _name = source._name;
+    }
   }
 }

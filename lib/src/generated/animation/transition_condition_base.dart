@@ -36,7 +36,9 @@ abstract class TransitionConditionBase<T extends CoreContext> extends Core<T> {
   void inputIdChanged(int from, int to);
 
   @override
-  void copy(covariant TransitionConditionBase source) {
-    _inputId = source._inputId;
+  void copy(Core source) {
+    if (source is TransitionConditionBase) {
+      _inputId = source._inputId;
+    }
   }
 }

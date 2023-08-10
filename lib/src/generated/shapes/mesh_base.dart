@@ -39,8 +39,10 @@ abstract class MeshBase extends ContainerComponent {
   void triangleIndexBytesChanged(Uint8List from, Uint8List to);
 
   @override
-  void copy(covariant MeshBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _triangleIndexBytes = source._triangleIndexBytes;
+    if (source is MeshBase) {
+      _triangleIndexBytes = source._triangleIndexBytes;
+    }
   }
 }

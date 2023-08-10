@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/transform_component_constraint_y_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
@@ -169,13 +170,15 @@ abstract class TransformComponentConstraintYBase
   void maxYChanged(bool from, bool to);
 
   @override
-  void copy(covariant TransformComponentConstraintYBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _copyFactorY = source._copyFactorY;
-    _minValueY = source._minValueY;
-    _maxValueY = source._maxValueY;
-    _doesCopyY = source._doesCopyY;
-    _minY = source._minY;
-    _maxY = source._maxY;
+    if (source is TransformComponentConstraintYBase) {
+      _copyFactorY = source._copyFactorY;
+      _minValueY = source._minValueY;
+      _maxValueY = source._maxValueY;
+      _doesCopyY = source._doesCopyY;
+      _minY = source._minY;
+      _maxY = source._maxY;
+    }
   }
 }

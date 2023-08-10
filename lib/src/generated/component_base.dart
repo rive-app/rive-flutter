@@ -60,8 +60,10 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
   void parentIdChanged(int from, int to);
 
   @override
-  void copy(covariant ComponentBase source) {
-    _name = source._name;
-    _parentId = source._parentId;
+  void copy(Core source) {
+    if (source is ComponentBase) {
+      _name = source._name;
+      _parentId = source._parentId;
+    }
   }
 }

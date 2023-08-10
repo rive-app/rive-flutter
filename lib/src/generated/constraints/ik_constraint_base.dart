@@ -2,6 +2,7 @@
 // lib/src/generated/constraints/ik_constraint_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/rive_core/constraints/targeted_constraint.dart';
@@ -71,9 +72,11 @@ abstract class IKConstraintBase extends TargetedConstraint {
   void parentBoneCountChanged(int from, int to);
 
   @override
-  void copy(covariant IKConstraintBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _invertDirection = source._invertDirection;
-    _parentBoneCount = source._parentBoneCount;
+    if (source is IKConstraintBase) {
+      _invertDirection = source._invertDirection;
+      _parentBoneCount = source._parentBoneCount;
+    }
   }
 }

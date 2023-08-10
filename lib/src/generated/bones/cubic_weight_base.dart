@@ -1,6 +1,7 @@
 // Core automatically generated lib/src/generated/bones/cubic_weight_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 
@@ -101,11 +102,13 @@ abstract class CubicWeightBase extends Weight {
   void outIndicesChanged(int from, int to);
 
   @override
-  void copy(covariant CubicWeightBase source) {
+  void copy(Core source) {
     super.copy(source);
-    _inValues = source._inValues;
-    _inIndices = source._inIndices;
-    _outValues = source._outValues;
-    _outIndices = source._outIndices;
+    if (source is CubicWeightBase) {
+      _inValues = source._inValues;
+      _inIndices = source._inIndices;
+      _outValues = source._outValues;
+      _outIndices = source._outIndices;
+    }
   }
 }
