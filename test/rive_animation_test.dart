@@ -259,5 +259,51 @@ void main() {
       // should not call onInit more than onces when updating these properties
       verify(() => initMock.call(any())).called(1);
     });
+
+    testWidgets('Events report', (WidgetTester tester) async {
+      // Build our app and trigger a frame.
+      final riveBytes = loadFile('assets/event_on_listener.riv');
+      final riveFile = RiveFile.import(riveBytes);
+
+      var controller = StateMachineController.fromArtboard(
+          riveFile.mainArtboard, 'State Machine 1');
+      expect(controller, isNotNull);
+
+      Set<String> receivedEvents = {};
+      controller!.addEventListener((event) {
+        receivedEvents.add(event.name);
+      });
+
+      BoxFit fit = BoxFit.contain;
+      Alignment alignment = Alignment.topLeft;
+      bool anitaliasing = true;
+      Widget placeholder = _placeHolderWidgetOne;
+
+      const riveKey = Key('riveWidgetKey');
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: RiveAnimation.direct(
+                riveFile,
+                key: riveKey,
+                controllers: [controller],
+                fit: fit,
+                alignment: alignment,
+                antialiasing: anitaliasing,
+                placeHolder: placeholder,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tapAt(tester.getTopLeft(find.byKey(riveKey)) +
+          const Offset(343 * 1.2, 116 * 1.2));
+      await tester.pumpAndSettle();
+
+      expect(receivedEvents, contains('Footstep'));
+      expect(receivedEvents, contains('Event 3'));
+    });
   });
 }

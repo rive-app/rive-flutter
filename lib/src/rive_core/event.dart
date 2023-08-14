@@ -10,9 +10,6 @@ class Event extends EventBase {
   final List<CustomProperty> customProperties = [];
 
   @override
-  void typeChanged(String from, String to) {}
-
-  @override
   void update(int dirt) {}
 
   @override

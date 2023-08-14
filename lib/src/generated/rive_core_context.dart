@@ -101,9 +101,11 @@ import 'package:rive/src/rive_core/custom_property_number.dart';
 import 'package:rive/src/rive_core/custom_property_string.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
+import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
+import 'package:rive/src/rive_core/open_url_event.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
 import 'package:rive/src/rive_core/shapes/contour_mesh_vertex.dart';
 import 'package:rive/src/rive_core/shapes/cubic_asymmetric_vertex.dart';
@@ -299,6 +301,8 @@ class RiveCoreContext {
         return Image();
       case CubicDetachedVertexBase.typeKey:
         return CubicDetachedVertex();
+      case EventBase.typeKey:
+        return Event();
       case DrawRulesBase.typeKey:
         return DrawRules();
       case CustomPropertyBooleanBase.typeKey:
@@ -309,6 +313,8 @@ class RiveCoreContext {
         return Joystick();
       case BackboardBase.typeKey:
         return Backboard();
+      case OpenUrlEventBase.typeKey:
+        return OpenUrlEvent();
       case BoneBase.typeKey:
         return Bone();
       case RootBoneBase.typeKey:
@@ -1280,6 +1286,16 @@ class RiveCoreContext {
           object.handleSourceId = value;
         }
         break;
+      case OpenUrlEventBase.urlPropertyKey:
+        if (object is OpenUrlEventBase && value is String) {
+          object.url = value;
+        }
+        break;
+      case OpenUrlEventBase.targetValuePropertyKey:
+        if (object is OpenUrlEventBase && value is int) {
+          object.targetValue = value;
+        }
+        break;
       case BoneBase.lengthPropertyKey:
         if (object is BoneBase && value is double) {
           object.length = value;
@@ -1620,6 +1636,7 @@ class RiveCoreContext {
       case AnimationBase.namePropertyKey:
       case StateMachineComponentBase.namePropertyKey:
       case KeyFrameStringBase.valuePropertyKey:
+      case OpenUrlEventBase.urlPropertyKey:
       case TextValueRunBase.textPropertyKey:
       case CustomPropertyStringBase.propertyValuePropertyKey:
       case AssetBase.namePropertyKey:
@@ -1692,6 +1709,7 @@ class RiveCoreContext {
       case JoystickBase.yIdPropertyKey:
       case JoystickBase.joystickFlagsPropertyKey:
       case JoystickBase.handleSourceIdPropertyKey:
+      case OpenUrlEventBase.targetValuePropertyKey:
       case TendonBase.boneIdPropertyKey:
       case TextModifierRangeBase.unitsValuePropertyKey:
       case TextModifierRangeBase.typeValuePropertyKey:
@@ -1888,6 +1906,8 @@ class RiveCoreContext {
         return (object as StateMachineComponentBase).name;
       case KeyFrameStringBase.valuePropertyKey:
         return (object as KeyFrameStringBase).value;
+      case OpenUrlEventBase.urlPropertyKey:
+        return (object as OpenUrlEventBase).url;
       case TextValueRunBase.textPropertyKey:
         return (object as TextValueRunBase).text;
       case CustomPropertyStringBase.propertyValuePropertyKey:
@@ -2036,6 +2056,8 @@ class RiveCoreContext {
         return (object as JoystickBase).joystickFlags;
       case JoystickBase.handleSourceIdPropertyKey:
         return (object as JoystickBase).handleSourceId;
+      case OpenUrlEventBase.targetValuePropertyKey:
+        return (object as OpenUrlEventBase).targetValue;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
       case TextModifierRangeBase.unitsValuePropertyKey:
@@ -2438,6 +2460,11 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
+      case OpenUrlEventBase.urlPropertyKey:
+        if (object is OpenUrlEventBase) {
+          object.url = value;
+        }
+        break;
       case TextValueRunBase.textPropertyKey:
         if (object is TextValueRunBase) {
           object.text = value;
@@ -2796,6 +2823,11 @@ class RiveCoreContext {
       case JoystickBase.handleSourceIdPropertyKey:
         if (object is JoystickBase) {
           object.handleSourceId = value;
+        }
+        break;
+      case OpenUrlEventBase.targetValuePropertyKey:
+        if (object is OpenUrlEventBase) {
+          object.targetValue = value;
         }
         break;
       case TendonBase.boneIdPropertyKey:

@@ -1,3 +1,5 @@
+library rive_core;
+
 import 'dart:collection';
 
 import 'package:flutter/gestures.dart';
@@ -18,6 +20,7 @@ import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
@@ -30,6 +33,9 @@ typedef OnStateChange = void Function(
 
 /// Callback signature for layer state changes
 typedef OnLayerStateChange = void Function(LayerState);
+
+/// Callback signature for events firing.
+typedef OnEvent = void Function(Event);
 
 class LayerController {
   final StateMachineLayer layer;
@@ -229,12 +235,26 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
+  final _firedEvents = <Event>[];
 
   /// Optional callback for state changes
   final OnStateChange? onStateChange;
 
+  final _eventListeners = <OnEvent>{};
+
   /// Constructor that takes a state machine and optional state change callback
-  StateMachineController(this.stateMachine, {this.onStateChange});
+  StateMachineController(
+    this.stateMachine, {
+    @Deprecated('Use `addEventListener` instead.') this.onStateChange,
+  });
+
+  void addEventListener(OnEvent callback) => _eventListeners.add(callback);
+  void removeEventListener(OnEvent callback) =>
+      _eventListeners.remove(callback);
+
+  void reportEvent(Event event) {
+    _firedEvents.add(event);
+  }
 
   void _clearLayerControllers() {
     for (final layer in layerControllers) {
@@ -362,6 +382,13 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
     }
     advanceInputs();
     isActive = keepGoing;
+
+    // Callback for events.
+    if (_firedEvents.isNotEmpty) {
+      var events = _firedEvents.toList(growable: false);
+      _firedEvents.clear();
+      _eventListeners.toList().forEach(events.forEach);
+    }
   }
 
   bool _processEvent(
