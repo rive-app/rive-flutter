@@ -305,5 +305,48 @@ void main() {
       expect(receivedEvents, contains('Footstep'));
       expect(receivedEvents, contains('Event 3'));
     });
+
+    testWidgets('State & Transition events report',
+        (WidgetTester tester) async {
+      // Build our app and trigger a frame.
+      final riveBytes = loadFile('assets/events_on_states.riv');
+      final riveFile = RiveFile.import(riveBytes);
+
+      var controller = StateMachineController.fromArtboard(
+          riveFile.mainArtboard, 'State Machine 1');
+      expect(controller, isNotNull);
+
+      Set<String> receivedEvents = {};
+      controller!.addEventListener((event) {
+        receivedEvents.add(event.name);
+      });
+
+      BoxFit fit = BoxFit.contain;
+      Alignment alignment = Alignment.topLeft;
+      bool anitaliasing = true;
+      Widget placeholder = _placeHolderWidgetOne;
+
+      const riveKey = Key('riveWidgetKey');
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: RiveAnimation.direct(
+                riveFile,
+                key: riveKey,
+                controllers: [controller],
+                fit: fit,
+                alignment: alignment,
+                antialiasing: anitaliasing,
+                placeHolder: placeholder,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(Duration.zero);
+
+      expect(receivedEvents, contains('First'));
+    });
   });
 }

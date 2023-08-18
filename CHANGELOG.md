@@ -1,3 +1,7 @@
+## 0.11.15
+
+- New event system! Listen to events reported by a StateMachine via StateMachineController.addEventListener.
+
 ## 0.11.14
 
 - Refactor how hit testing is performed in `RiveAnimation` and `Rive` widgets. Pointer events (listeners) can now be enabled on the `Rive` widget by setting `enablePointerEvents` to `true` (default is false).

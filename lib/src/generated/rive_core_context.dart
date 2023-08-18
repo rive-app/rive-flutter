@@ -69,6 +69,7 @@ import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/animation/nested_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
+import 'package:rive/src/rive_core/animation/state_machine_fire_event.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_machine_number.dart';
@@ -225,6 +226,8 @@ class RiveCoreContext {
         return KeyFrameColor();
       case StateMachineBase.typeKey:
         return StateMachine();
+      case StateMachineFireEventBase.typeKey:
+        return StateMachineFireEvent();
       case EntryStateBase.typeKey:
         return EntryState();
       case StateMachineTriggerBase.typeKey:
@@ -849,6 +852,16 @@ class RiveCoreContext {
       case KeyFrameColorBase.valuePropertyKey:
         if (object is KeyFrameColorBase && value is int) {
           object.value = value;
+        }
+        break;
+      case StateMachineFireEventBase.eventIdPropertyKey:
+        if (object is StateMachineFireEventBase && value is int) {
+          object.eventId = value;
+        }
+        break;
+      case StateMachineFireEventBase.occursValuePropertyKey:
+        if (object is StateMachineFireEventBase && value is int) {
+          object.occursValue = value;
         }
         break;
       case NestedNumberBase.nestedValuePropertyKey:
@@ -1686,6 +1699,8 @@ class RiveCoreContext {
       case StateTransitionBase.exitTimePropertyKey:
       case StateTransitionBase.interpolationTypePropertyKey:
       case StateTransitionBase.interpolatorIdPropertyKey:
+      case StateMachineFireEventBase.eventIdPropertyKey:
+      case StateMachineFireEventBase.occursValuePropertyKey:
       case BlendState1DBase.inputIdPropertyKey:
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
       case StrokeBase.capPropertyKey:
@@ -2010,6 +2025,10 @@ class RiveCoreContext {
         return (object as StateTransitionBase).interpolationType;
       case StateTransitionBase.interpolatorIdPropertyKey:
         return (object as StateTransitionBase).interpolatorId;
+      case StateMachineFireEventBase.eventIdPropertyKey:
+        return (object as StateMachineFireEventBase).eventId;
+      case StateMachineFireEventBase.occursValuePropertyKey:
+        return (object as StateMachineFireEventBase).occursValue;
       case BlendState1DBase.inputIdPropertyKey:
         return (object as BlendState1DBase).inputId;
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
@@ -2708,6 +2727,16 @@ class RiveCoreContext {
       case StateTransitionBase.interpolatorIdPropertyKey:
         if (object is StateTransitionBase) {
           object.interpolatorId = value;
+        }
+        break;
+      case StateMachineFireEventBase.eventIdPropertyKey:
+        if (object is StateMachineFireEventBase) {
+          object.eventId = value;
+        }
+        break;
+      case StateMachineFireEventBase.occursValuePropertyKey:
+        if (object is StateMachineFireEventBase) {
+          object.occursValue = value;
         }
         break;
       case BlendState1DBase.inputIdPropertyKey:

@@ -15,6 +15,7 @@ import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
+import 'package:rive/src/rive_core/animation/state_machine_fire_event.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
@@ -46,6 +47,7 @@ class LayerController {
   StateInstance? _stateFrom;
   bool _holdAnimationFrom = false;
   StateTransition? _transition;
+  bool _transitionCompleted = false;
   double _mix = 1.0;
   double _mixFrom = 1.0;
 
@@ -65,15 +67,35 @@ class LayerController {
     _changeState(layer.entryState);
   }
 
+  void _fireEvents(Iterable<StateMachineFireEvent> fireEvents) {
+    for (final fireEvent in fireEvents) {
+      Event event = core.resolveWithDefault(fireEvent.eventId, Event.unknown);
+      if (event != Event.unknown) {
+        controller.reportEvent(event);
+      }
+    }
+  }
+
   bool _changeState(LayerState? state, {StateTransition? transition}) {
     assert(state is! AnyState,
         'We don\'t allow making the AnyState an active state.');
     if (state == _currentState?.state) {
       return false;
     }
-    _currentState?.dispose();
+    var currentState = _currentState;
+    if (currentState != null) {
+      _fireEvents(currentState.state.eventsAt(StateMachineFireOccurance.atEnd));
+      currentState.dispose();
+    }
+    var nextState = state;
 
-    _currentState = state?.makeInstance();
+    if (nextState != null) {
+      _currentState = nextState.makeInstance();
+      _fireEvents(nextState.eventsAt(StateMachineFireOccurance.atStart));
+    } else {
+      _currentState = null;
+    }
+
     return true;
   }
 
@@ -89,12 +111,16 @@ class LayerController {
       _mix != 1;
 
   void _updateMix(double elapsedSeconds) {
-    if (_transition != null &&
-        _stateFrom != null &&
-        _transition!.duration != 0) {
-      _mix = (_mix + elapsedSeconds / _transition!.mixTime(_stateFrom!.state))
+    var transition = _transition;
+    if (transition != null && _stateFrom != null && transition.duration != 0) {
+      _mix = (_mix + elapsedSeconds / transition.mixTime(_stateFrom!.state))
           .clamp(0, 1)
           .toDouble();
+
+      if (_mix == 1 && !_transitionCompleted) {
+        _transitionCompleted = true;
+        _fireEvents(transition.eventsAt(StateMachineFireOccurance.atEnd));
+      }
     } else {
       _mix = 1;
     }
@@ -190,6 +216,15 @@ class LayerController {
           _changeState(transition.stateTo, transition: transition)) {
         // Take transition
         _transition = transition;
+
+        _fireEvents(transition.eventsAt(StateMachineFireOccurance.atStart));
+        // Immediately fire end events if transition has no duration.
+        if (transition.duration == 0) {
+          _transitionCompleted = true;
+          _fireEvents(transition.eventsAt(StateMachineFireOccurance.atEnd));
+        } else {
+          _transitionCompleted = false;
+        }
 
         _stateFrom = outState;
 

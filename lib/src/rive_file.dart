@@ -25,6 +25,7 @@ import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
+import 'package:rive/src/rive_core/animation/state_machine_layer_component.dart';
 import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
@@ -259,6 +260,14 @@ class RiveFile {
 
       if (!importStack.makeLatest(stackType, stackObject)) {
         throw const RiveFormatErrorException('Rive file is corrupt.');
+      }
+      // Special case for StateMachineLayerComponents as the concrete types also
+      // add importers.
+      if (object is StateMachineLayerComponent) {
+        if (!importStack.makeLatest(StateMachineLayerComponentBase.typeKey,
+            StateMachineLayerComponentImporter(object))) {
+          throw const RiveFormatErrorException('Rive file is corrupt.');
+        }
       }
 
       // Store all as some may fail to import (will be set to null, but we still

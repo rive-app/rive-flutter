@@ -7,7 +7,6 @@ class StateMachineListenerImporter extends ArtboardImportStackObject {
   StateMachineListenerImporter(this.listener);
 
   void addAction(ListenerAction change) {
-    // listener.context.addObject(change);
     listener.internalAddAction(change);
   }
 }
