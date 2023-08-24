@@ -1,5 +1,6 @@
 import 'package:rive/src/generated/solo_base.dart';
 import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 
 export 'package:rive/src/generated/solo_base.dart';
@@ -24,6 +25,9 @@ class Solo extends SoloBase {
   @override
   void propagateCollapseToChildren(bool collapse) {
     for (final child in children) {
+      if (child is Constraint) {
+        continue;
+      }
       child.propagateCollapse(collapse || child != _activeComponent);
     }
   }
