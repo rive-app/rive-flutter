@@ -56,7 +56,10 @@ class LinearAnimationInstance {
 
   /// Whether the controller driving this animation should keep requesting
   /// frames be drawn.
-  bool get keepGoing => animation.loop != Loop.oneShot || !_didLoop;
+  bool get keepGoing =>
+      animation.loop != Loop.oneShot ||
+      (direction > 0 && _time < animation.durationSeconds) ||
+      (direction < 0 && _time > 0);
 
   /// Apply the changes incurred during advance, also automatically fires any
   /// accrued events.
@@ -70,19 +73,20 @@ class LinearAnimationInstance {
 
   bool advance(double elapsedSeconds) {
     var deltaSeconds = elapsedSeconds * animation.speed * _direction;
+    _spilledTime = 0;
 
     if (deltaSeconds == 0) {
-      // we say keep going, if you advance by 0.
-      // could argue that any further advances by 0 result in nothing so you
-      // should not keep going
-      // could argue its saying, we are not at the end of the animation yet,
-      // so keep going our runtimes currently expect the latter, so we say keep
-      // going!
       _didLoop = false;
       return true;
     }
     _lastTotalTime = _totalTime;
     _totalTime += deltaSeconds.abs();
+
+    // NOTE:
+    // do not track spilled time, if our one shot loop is already completed.
+    // stop gap before we move spilled tracking into state machine logic.
+    var killSpilledTime = !keepGoing;
+
     _time += deltaSeconds;
 
     var fps = animation.fps;
@@ -92,21 +96,17 @@ class LinearAnimationInstance {
     var end = animation.enableWorkArea ? animation.workEnd : animation.duration;
     var range = end - start;
 
-    bool keepGoing = true;
     bool didLoop = false;
-    _spilledTime = 0;
 
     int direction = deltaSeconds < 0 ? -1 : 1;
     switch (animation.loop) {
       case Loop.oneShot:
         if (direction == 1 && frames > end) {
-          keepGoing = false;
           _spilledTime = (frames - end) / fps;
           frames = end.toDouble();
           _time = frames / fps;
           didLoop = true;
         } else if (direction == -1 && frames < start) {
-          keepGoing = false;
           _spilledTime = (start - frames) / fps;
           frames = start.toDouble();
           _time = frames / fps;
@@ -152,6 +152,11 @@ class LinearAnimationInstance {
         }
         break;
     }
+
+    if (killSpilledTime) {
+      _spilledTime = 0;
+    }
+
     _didLoop = didLoop;
     return keepGoing;
   }

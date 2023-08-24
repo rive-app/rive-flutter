@@ -146,11 +146,7 @@ class LayerController {
 
   bool apply(CoreContext core, double elapsedSeconds) {
     if (_currentState != null) {
-      if (_currentState?.keepGoing == true) {
-        // NOTE: if we advance even after we have been told not to keep going
-        // we are not just inappropriate we are also re adding spilled time
-        _currentState!.advance(elapsedSeconds, controller);
-      }
+      _currentState!.advance(elapsedSeconds, controller);
     }
 
     _updateMix(elapsedSeconds);
@@ -177,7 +173,7 @@ class LayerController {
 
     _apply(core);
 
-    // give the current state the oportunity to clear spilled time, so that we
+    // give the current state the opportunity to clear spilled time, so that we
     // do not carry this over into another iteration.
     _currentState?.clearSpilledTime();
 
