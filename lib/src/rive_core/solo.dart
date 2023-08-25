@@ -1,9 +1,8 @@
-import 'package:rive/src/generated/solo_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/clipping_shape.dart';
-
+import 'package:rive/src/generated/solo_base.dart';
 export 'package:rive/src/generated/solo_base.dart';
 
 class Solo extends SoloBase {
@@ -29,11 +28,9 @@ class Solo extends SoloBase {
     // as they are more aking to properties of the solo itself. For those
     // components, simply pass on the collapse value of the solo itself.
     for (final child in children) {
-      switch (child.coreType) {
-        case ConstraintBase.typeKey:
-        case ClippingShapeBase.typeKey:
-          child.propagateCollapse(collapse);
-          continue;
+      if (child is Constraint || child is ClippingShape) {
+        child.propagateCollapse(collapse);
+        continue;
       }
 
       // This child is part of the solo set so only make it active if it's the
