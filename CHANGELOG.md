@@ -1,6 +1,7 @@
 ## 0.11.15
 
 - New event system! Listen to events reported by a StateMachine via StateMachineController.addEventListener.
+- Fixes an issue with animations not playing back correctly when a work area is defined.
 
 ## 0.11.14
 

@@ -173,7 +173,7 @@ class LayerController {
 
     _apply(core);
 
-    // give the current state the opportunity to clear spilled time, so that we
+    // give the current state the oportunity to clear spilled time, so that we
     // do not carry this over into another iteration.
     _currentState?.clearSpilledTime();
 

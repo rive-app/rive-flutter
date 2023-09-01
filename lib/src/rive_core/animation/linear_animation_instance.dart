@@ -46,6 +46,8 @@ class LinearAnimationInstance {
   /// Returns the animation's play direction: 1 for forwards, -1 for backwards
   double get direction => _direction;
 
+  double get directedSpeed => animation.speed * _direction;
+
   double get progress =>
       (_time - animation.startTime).abs() /
       (animation.endTime - animation.startTime).abs();
@@ -58,8 +60,8 @@ class LinearAnimationInstance {
   /// frames be drawn.
   bool get keepGoing =>
       animation.loop != Loop.oneShot ||
-      (direction > 0 && _time < animation.durationSeconds) ||
-      (direction < 0 && _time > 0);
+      (directedSpeed > 0 && _time < animation.endSeconds) ||
+      (directedSpeed < 0 && _time > animation.startSeconds);
 
   /// Apply the changes incurred during advance, also automatically fires any
   /// accrued events.
