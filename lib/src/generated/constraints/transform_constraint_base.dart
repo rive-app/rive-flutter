@@ -23,9 +23,9 @@ abstract class TransformConstraintBase extends TransformSpaceConstraint {
 
   /// --------------------------------------------------------------------------
   /// OriginX field with key 372.
+  static const int originXPropertyKey = 372;
   static const double originXInitialValue = 0.0;
   double _originX = originXInitialValue;
-  static const int originXPropertyKey = 372;
 
   /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
   double get originX => _originX;
@@ -47,9 +47,9 @@ abstract class TransformConstraintBase extends TransformSpaceConstraint {
 
   /// --------------------------------------------------------------------------
   /// OriginY field with key 373.
+  static const int originYPropertyKey = 373;
   static const double originYInitialValue = 0.0;
   double _originY = originYInitialValue;
-  static const int originYPropertyKey = 373;
 
   /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
   double get originY => _originY;

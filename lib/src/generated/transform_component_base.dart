@@ -21,9 +21,9 @@ abstract class TransformComponentBase extends WorldTransformComponent {
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 15.
+  static const int rotationPropertyKey = 15;
   static const double rotationInitialValue = 0;
   double _rotation = rotationInitialValue;
-  static const int rotationPropertyKey = 15;
   double get rotation => _rotation;
 
   /// Change the [_rotation] field value.
@@ -43,9 +43,9 @@ abstract class TransformComponentBase extends WorldTransformComponent {
 
   /// --------------------------------------------------------------------------
   /// ScaleX field with key 16.
+  static const int scaleXPropertyKey = 16;
   static const double scaleXInitialValue = 1;
   double _scaleX = scaleXInitialValue;
-  static const int scaleXPropertyKey = 16;
   double get scaleX => _scaleX;
 
   /// Change the [_scaleX] field value.
@@ -65,9 +65,9 @@ abstract class TransformComponentBase extends WorldTransformComponent {
 
   /// --------------------------------------------------------------------------
   /// ScaleY field with key 17.
+  static const int scaleYPropertyKey = 17;
   static const double scaleYInitialValue = 1;
   double _scaleY = scaleYInitialValue;
-  static const int scaleYPropertyKey = 17;
   double get scaleY => _scaleY;
 
   /// Change the [_scaleY] field value.

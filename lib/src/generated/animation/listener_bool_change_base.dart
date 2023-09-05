@@ -19,9 +19,9 @@ abstract class ListenerBoolChangeBase extends ListenerInputChange {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 228.
+  static const int valuePropertyKey = 228;
   static const int valueInitialValue = 1;
   int _value = valueInitialValue;
-  static const int valuePropertyKey = 228;
 
   /// Value to set the input to when the listener occurs.
   int get value => _value;

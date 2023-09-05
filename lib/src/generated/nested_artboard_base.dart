@@ -26,9 +26,9 @@ abstract class NestedArtboardBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// ArtboardId field with key 197.
+  static const int artboardIdPropertyKey = 197;
   static const int artboardIdInitialValue = -1;
   int _artboardId = artboardIdInitialValue;
-  static const int artboardIdPropertyKey = 197;
 
   /// Identifier used to track the Artboard nested.
   int get artboardId => _artboardId;

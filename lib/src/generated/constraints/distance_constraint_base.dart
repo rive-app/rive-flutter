@@ -21,9 +21,9 @@ abstract class DistanceConstraintBase extends TargetedConstraint {
 
   /// --------------------------------------------------------------------------
   /// Distance field with key 177.
+  static const int distancePropertyKey = 177;
   static const double distanceInitialValue = 100.0;
   double _distance = distanceInitialValue;
-  static const int distancePropertyKey = 177;
 
   /// The unit distance the constraint will move the constrained object relative
   /// to the target.
@@ -46,9 +46,9 @@ abstract class DistanceConstraintBase extends TargetedConstraint {
 
   /// --------------------------------------------------------------------------
   /// ModeValue field with key 178.
+  static const int modeValuePropertyKey = 178;
   static const int modeValueInitialValue = 0;
   int _modeValue = modeValueInitialValue;
-  static const int modeValuePropertyKey = 178;
 
   /// Backing value for the mode enum.
   int get modeValue => _modeValue;

@@ -28,9 +28,9 @@ abstract class PolygonBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// Points field with key 125.
+  static const int pointsPropertyKey = 125;
   static const int pointsInitialValue = 5;
   int _points = pointsInitialValue;
-  static const int pointsPropertyKey = 125;
 
   /// The number of points for the polygon.
   int get points => _points;
@@ -52,9 +52,9 @@ abstract class PolygonBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// CornerRadius field with key 126.
+  static const int cornerRadiusPropertyKey = 126;
   static const double cornerRadiusInitialValue = 0;
   double _cornerRadius = cornerRadiusInitialValue;
-  static const int cornerRadiusPropertyKey = 126;
 
   /// The corner radius.
   double get cornerRadius => _cornerRadius;

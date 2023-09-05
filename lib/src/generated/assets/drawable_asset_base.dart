@@ -16,9 +16,9 @@ abstract class DrawableAssetBase extends FileAsset {
 
   /// --------------------------------------------------------------------------
   /// Height field with key 207.
+  static const int heightPropertyKey = 207;
   static const double heightInitialValue = 0;
   double _height = heightInitialValue;
-  static const int heightPropertyKey = 207;
 
   /// Height of the original asset uploaded
   double get height => _height;
@@ -40,9 +40,9 @@ abstract class DrawableAssetBase extends FileAsset {
 
   /// --------------------------------------------------------------------------
   /// Width field with key 208.
+  static const int widthPropertyKey = 208;
   static const double widthInitialValue = 0;
   double _width = widthInitialValue;
-  static const int widthPropertyKey = 208;
 
   /// Width of the original asset uploaded
   double get width => _width;

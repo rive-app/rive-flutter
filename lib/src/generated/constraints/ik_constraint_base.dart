@@ -21,9 +21,9 @@ abstract class IKConstraintBase extends TargetedConstraint {
 
   /// --------------------------------------------------------------------------
   /// InvertDirection field with key 174.
+  static const int invertDirectionPropertyKey = 174;
   static const bool invertDirectionInitialValue = false;
   bool _invertDirection = invertDirectionInitialValue;
-  static const int invertDirectionPropertyKey = 174;
 
   /// True when the direction taken towards the target should be inverted from
   /// the default.
@@ -47,9 +47,9 @@ abstract class IKConstraintBase extends TargetedConstraint {
 
   /// --------------------------------------------------------------------------
   /// ParentBoneCount field with key 175.
+  static const int parentBoneCountPropertyKey = 175;
   static const int parentBoneCountInitialValue = 0;
   int _parentBoneCount = parentBoneCountInitialValue;
-  static const int parentBoneCountPropertyKey = 175;
 
   /// The number of bones above this one that are influenced by this IK
   /// constraint.

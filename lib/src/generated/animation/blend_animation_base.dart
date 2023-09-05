@@ -13,9 +13,9 @@ abstract class BlendAnimationBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// AnimationId field with key 165.
+  static const int animationIdPropertyKey = 165;
   static const int animationIdInitialValue = -1;
   int _animationId = animationIdInitialValue;
-  static const int animationIdPropertyKey = 165;
 
   /// Id of the animation this BlendAnimation references.
   int get animationId => _animationId;

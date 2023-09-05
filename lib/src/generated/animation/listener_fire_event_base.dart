@@ -15,9 +15,9 @@ abstract class ListenerFireEventBase extends ListenerAction {
 
   /// --------------------------------------------------------------------------
   /// EventId field with key 389.
+  static const int eventIdPropertyKey = 389;
   static const int eventIdInitialValue = -1;
   int _eventId = eventIdInitialValue;
-  static const int eventIdPropertyKey = 389;
 
   /// Id of the Event referenced.
   int get eventId => _eventId;

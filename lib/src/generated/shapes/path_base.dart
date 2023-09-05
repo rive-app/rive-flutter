@@ -24,9 +24,9 @@ abstract class PathBase extends Node {
 
   /// --------------------------------------------------------------------------
   /// PathFlags field with key 128.
+  static const int pathFlagsPropertyKey = 128;
   static const int pathFlagsInitialValue = 0;
   int _pathFlags = pathFlagsInitialValue;
-  static const int pathFlagsPropertyKey = 128;
   int get pathFlags => _pathFlags;
 
   /// Change the [_pathFlags] field value.

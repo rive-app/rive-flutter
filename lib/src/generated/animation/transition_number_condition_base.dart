@@ -19,9 +19,9 @@ abstract class TransitionNumberConditionBase extends TransitionValueCondition {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 157.
+  static const int valuePropertyKey = 157;
   static const double valueInitialValue = 0;
   double _value = valueInitialValue;
-  static const int valuePropertyKey = 157;
   double get value => _value;
 
   /// Change the [_value] field value.

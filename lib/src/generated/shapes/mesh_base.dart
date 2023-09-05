@@ -15,9 +15,9 @@ abstract class MeshBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// TriangleIndexBytes field with key 223.
+  static const int triangleIndexBytesPropertyKey = 223;
   static final Uint8List triangleIndexBytesInitialValue = Uint8List(0);
   Uint8List _triangleIndexBytes = triangleIndexBytesInitialValue;
-  static const int triangleIndexBytesPropertyKey = 223;
 
   /// Byte data for the triangle indices.
   Uint8List get triangleIndexBytes => _triangleIndexBytes;

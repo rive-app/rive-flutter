@@ -26,9 +26,9 @@ abstract class PointsPathBase extends Path {
 
   /// --------------------------------------------------------------------------
   /// IsClosed field with key 32.
+  static const int isClosedPropertyKey = 32;
   static const bool isClosedInitialValue = false;
   bool _isClosed = isClosedInitialValue;
-  static const int isClosedPropertyKey = 32;
 
   /// If the path should close back on its first vertex.
   @override

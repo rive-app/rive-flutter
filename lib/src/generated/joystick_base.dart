@@ -13,9 +13,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// X field with key 299.
+  static const int xPropertyKey = 299;
   static const double xInitialValue = 0;
   double _x = xInitialValue;
-  static const int xPropertyKey = 299;
   double get x => _x;
 
   /// Change the [_x] field value.
@@ -35,9 +35,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Y field with key 300.
+  static const int yPropertyKey = 300;
   static const double yInitialValue = 0;
   double _y = yInitialValue;
-  static const int yPropertyKey = 300;
   double get y => _y;
 
   /// Change the [_y] field value.
@@ -57,9 +57,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// PosX field with key 303.
+  static const int posXPropertyKey = 303;
   static const double posXInitialValue = 0;
   double _posX = posXInitialValue;
-  static const int posXPropertyKey = 303;
   double get posX => _posX;
 
   /// Change the [_posX] field value.
@@ -79,9 +79,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// PosY field with key 304.
+  static const int posYPropertyKey = 304;
   static const double posYInitialValue = 0;
   double _posY = posYInitialValue;
-  static const int posYPropertyKey = 304;
   double get posY => _posY;
 
   /// Change the [_posY] field value.
@@ -101,9 +101,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// OriginX field with key 307.
+  static const int originXPropertyKey = 307;
   static const double originXInitialValue = 0.5;
   double _originX = originXInitialValue;
-  static const int originXPropertyKey = 307;
 
   /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
   double get originX => _originX;
@@ -125,9 +125,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// OriginY field with key 308.
+  static const int originYPropertyKey = 308;
   static const double originYInitialValue = 0.5;
   double _originY = originYInitialValue;
-  static const int originYPropertyKey = 308;
 
   /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
   double get originY => _originY;
@@ -149,9 +149,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Width field with key 305.
+  static const int widthPropertyKey = 305;
   static const double widthInitialValue = 100;
   double _width = widthInitialValue;
-  static const int widthPropertyKey = 305;
   double get width => _width;
 
   /// Change the [_width] field value.
@@ -171,9 +171,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Height field with key 306.
+  static const int heightPropertyKey = 306;
   static const double heightInitialValue = 100;
   double _height = heightInitialValue;
-  static const int heightPropertyKey = 306;
   double get height => _height;
 
   /// Change the [_height] field value.
@@ -193,9 +193,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// XId field with key 301.
+  static const int xIdPropertyKey = 301;
   static const int xIdInitialValue = -1;
   int _xId = xIdInitialValue;
-  static const int xIdPropertyKey = 301;
 
   /// Identifier used to track the animation used for the x axis of the
   /// joystick.
@@ -218,9 +218,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// YId field with key 302.
+  static const int yIdPropertyKey = 302;
   static const int yIdInitialValue = -1;
   int _yId = yIdInitialValue;
-  static const int yIdPropertyKey = 302;
 
   /// Identifier used to track the animation used for the y axis of the
   /// joystick.
@@ -243,9 +243,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// JoystickFlags field with key 312.
+  static const int joystickFlagsPropertyKey = 312;
   static const int joystickFlagsInitialValue = 0;
   int _joystickFlags = joystickFlagsInitialValue;
-  static const int joystickFlagsPropertyKey = 312;
   int get joystickFlags => _joystickFlags;
 
   /// Change the [_joystickFlags] field value.
@@ -266,9 +266,9 @@ abstract class JoystickBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// HandleSourceId field with key 313.
+  static const int handleSourceIdPropertyKey = 313;
   static const int handleSourceIdInitialValue = -1;
   int _handleSourceId = handleSourceIdInitialValue;
-  static const int handleSourceIdPropertyKey = 313;
 
   /// Identifier used to track the custom handle source of the joystick.
   int get handleSourceId => _handleSourceId;

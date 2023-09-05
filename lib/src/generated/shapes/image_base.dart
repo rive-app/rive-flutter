@@ -26,9 +26,9 @@ abstract class ImageBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// AssetId field with key 206.
+  static const int assetIdPropertyKey = 206;
   static const int assetIdInitialValue = -1;
   int _assetId = assetIdInitialValue;
-  static const int assetIdPropertyKey = 206;
 
   /// Image drawable for an image asset
   int get assetId => _assetId;
@@ -50,9 +50,9 @@ abstract class ImageBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// OriginX field with key 380.
+  static const int originXPropertyKey = 380;
   static const double originXInitialValue = 0.5;
   double _originX = originXInitialValue;
-  static const int originXPropertyKey = 380;
 
   /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
   double get originX => _originX;
@@ -74,9 +74,9 @@ abstract class ImageBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// OriginY field with key 381.
+  static const int originYPropertyKey = 381;
   static const double originYInitialValue = 0.5;
   double _originY = originYInitialValue;
-  static const int originYPropertyKey = 381;
 
   /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
   double get originY => _originY;

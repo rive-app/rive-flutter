@@ -14,9 +14,9 @@ abstract class StateMachineFireEventBase<T extends CoreContext>
 
   /// --------------------------------------------------------------------------
   /// EventId field with key 392.
+  static const int eventIdPropertyKey = 392;
   static const int eventIdInitialValue = -1;
   int _eventId = eventIdInitialValue;
-  static const int eventIdPropertyKey = 392;
 
   /// Id of the Event referenced.
   int get eventId => _eventId;
@@ -38,9 +38,9 @@ abstract class StateMachineFireEventBase<T extends CoreContext>
 
   /// --------------------------------------------------------------------------
   /// OccursValue field with key 393.
+  static const int occursValuePropertyKey = 393;
   static const int occursValueInitialValue = 0;
   int _occursValue = occursValueInitialValue;
-  static const int occursValuePropertyKey = 393;
 
   /// When the event fires.
   int get occursValue => _occursValue;

@@ -13,9 +13,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// X1 field with key 63.
+  static const int x1PropertyKey = 63;
   static const double x1InitialValue = 0.42;
   double _x1 = x1InitialValue;
-  static const int x1PropertyKey = 63;
   double get x1 => _x1;
 
   /// Change the [_x1] field value.
@@ -35,9 +35,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Y1 field with key 64.
+  static const int y1PropertyKey = 64;
   static const double y1InitialValue = 0;
   double _y1 = y1InitialValue;
-  static const int y1PropertyKey = 64;
   double get y1 => _y1;
 
   /// Change the [_y1] field value.
@@ -57,9 +57,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// X2 field with key 65.
+  static const int x2PropertyKey = 65;
   static const double x2InitialValue = 0.58;
   double _x2 = x2InitialValue;
-  static const int x2PropertyKey = 65;
   double get x2 => _x2;
 
   /// Change the [_x2] field value.
@@ -79,9 +79,9 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Y2 field with key 66.
+  static const int y2PropertyKey = 66;
   static const double y2InitialValue = 1;
   double _y2 = y2InitialValue;
-  static const int y2PropertyKey = 66;
   double get y2 => _y2;
 
   /// Change the [_y2] field value.

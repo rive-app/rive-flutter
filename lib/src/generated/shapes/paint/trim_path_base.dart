@@ -14,9 +14,9 @@ abstract class TrimPathBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Start field with key 114.
+  static const int startPropertyKey = 114;
   static const double startInitialValue = 0;
   double _start = startInitialValue;
-  static const int startPropertyKey = 114;
   double get start => _start;
 
   /// Change the [_start] field value.
@@ -36,9 +36,9 @@ abstract class TrimPathBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// End field with key 115.
+  static const int endPropertyKey = 115;
   static const double endInitialValue = 0;
   double _end = endInitialValue;
-  static const int endPropertyKey = 115;
   double get end => _end;
 
   /// Change the [_end] field value.
@@ -58,9 +58,9 @@ abstract class TrimPathBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Offset field with key 116.
+  static const int offsetPropertyKey = 116;
   static const double offsetInitialValue = 0;
   double _offset = offsetInitialValue;
-  static const int offsetPropertyKey = 116;
   double get offset => _offset;
 
   /// Change the [_offset] field value.
@@ -80,9 +80,9 @@ abstract class TrimPathBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// ModeValue field with key 117.
+  static const int modeValuePropertyKey = 117;
   static const int modeValueInitialValue = 0;
   int _modeValue = modeValueInitialValue;
-  static const int modeValuePropertyKey = 117;
   int get modeValue => _modeValue;
 
   /// Change the [_modeValue] field value.

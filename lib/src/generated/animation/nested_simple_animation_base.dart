@@ -23,9 +23,9 @@ abstract class NestedSimpleAnimationBase extends NestedLinearAnimation {
 
   /// --------------------------------------------------------------------------
   /// Speed field with key 199.
+  static const int speedPropertyKey = 199;
   static const double speedInitialValue = 1;
   double _speed = speedInitialValue;
-  static const int speedPropertyKey = 199;
 
   /// Speed to play the nested animation at.
   double get speed => _speed;
@@ -47,9 +47,9 @@ abstract class NestedSimpleAnimationBase extends NestedLinearAnimation {
 
   /// --------------------------------------------------------------------------
   /// IsPlaying field with key 201.
+  static const int isPlayingPropertyKey = 201;
   static const bool isPlayingInitialValue = false;
   bool _isPlaying = isPlayingInitialValue;
-  static const int isPlayingPropertyKey = 201;
 
   /// Enumerated backing value for playback state.
   bool get isPlaying => _isPlaying;

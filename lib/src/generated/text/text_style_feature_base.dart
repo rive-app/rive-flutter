@@ -15,9 +15,9 @@ abstract class TextStyleFeatureBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Tag field with key 356.
+  static const int tagPropertyKey = 356;
   static const int tagInitialValue = 0;
   int _tag = tagInitialValue;
-  static const int tagPropertyKey = 356;
   int get tag => _tag;
 
   /// Change the [_tag] field value.
@@ -37,9 +37,9 @@ abstract class TextStyleFeatureBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// FeatureValue field with key 357.
+  static const int featureValuePropertyKey = 357;
   static const int featureValueInitialValue = 1;
   int _featureValue = featureValueInitialValue;
-  static const int featureValuePropertyKey = 357;
   int get featureValue => _featureValue;
 
   /// Change the [_featureValue] field value.

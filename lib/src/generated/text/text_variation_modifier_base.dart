@@ -21,9 +21,9 @@ abstract class TextVariationModifierBase extends TextShapeModifier {
 
   /// --------------------------------------------------------------------------
   /// AxisTag field with key 320.
+  static const int axisTagPropertyKey = 320;
   static const int axisTagInitialValue = 0;
   int _axisTag = axisTagInitialValue;
-  static const int axisTagPropertyKey = 320;
   int get axisTag => _axisTag;
 
   /// Change the [_axisTag] field value.
@@ -43,9 +43,9 @@ abstract class TextVariationModifierBase extends TextShapeModifier {
 
   /// --------------------------------------------------------------------------
   /// AxisValue field with key 321.
+  static const int axisValuePropertyKey = 321;
   static const double axisValueInitialValue = 0;
   double _axisValue = axisValueInitialValue;
-  static const int axisValuePropertyKey = 321;
   double get axisValue => _axisValue;
 
   /// Change the [_axisValue] field value.

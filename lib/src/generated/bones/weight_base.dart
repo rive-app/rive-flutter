@@ -13,9 +13,9 @@ abstract class WeightBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Values field with key 102.
+  static const int valuesPropertyKey = 102;
   static const int valuesInitialValue = 255;
   int _values = valuesInitialValue;
-  static const int valuesPropertyKey = 102;
   int get values => _values;
 
   /// Change the [_values] field value.
@@ -35,9 +35,9 @@ abstract class WeightBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Indices field with key 103.
+  static const int indicesPropertyKey = 103;
   static const int indicesInitialValue = 1;
   int _indices = indicesInitialValue;
-  static const int indicesPropertyKey = 103;
   int get indices => _indices;
 
   /// Change the [_indices] field value.

@@ -21,9 +21,9 @@ abstract class AnimationStateBase extends AdvanceableState {
 
   /// --------------------------------------------------------------------------
   /// AnimationId field with key 149.
+  static const int animationIdPropertyKey = 149;
   static const int animationIdInitialValue = -1;
   int _animationId = animationIdInitialValue;
-  static const int animationIdPropertyKey = 149;
 
   /// Id of the animation this layer state refers to.
   int get animationId => _animationId;

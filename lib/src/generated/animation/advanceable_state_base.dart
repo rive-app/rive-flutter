@@ -19,9 +19,9 @@ abstract class AdvanceableStateBase extends LayerState {
 
   /// --------------------------------------------------------------------------
   /// Speed field with key 292.
+  static const int speedPropertyKey = 292;
   static const double speedInitialValue = 1;
   double _speed = speedInitialValue;
-  static const int speedPropertyKey = 292;
   double get speed => _speed;
 
   /// Change the [_speed] field value.

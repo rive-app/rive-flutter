@@ -15,9 +15,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// StateToId field with key 151.
+  static const int stateToIdPropertyKey = 151;
   static const int stateToIdInitialValue = -1;
   int _stateToId = stateToIdInitialValue;
-  static const int stateToIdPropertyKey = 151;
 
   /// Id of the state this transition originates from.
   int get stateToId => _stateToId;
@@ -39,9 +39,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// Flags field with key 152.
+  static const int flagsPropertyKey = 152;
   static const int flagsInitialValue = 0;
   int _flags = flagsInitialValue;
-  static const int flagsPropertyKey = 152;
   int get flags => _flags;
 
   /// Change the [_flags] field value.
@@ -61,9 +61,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// Duration field with key 158.
+  static const int durationPropertyKey = 158;
   static const int durationInitialValue = 0;
   int _duration = durationInitialValue;
-  static const int durationPropertyKey = 158;
 
   /// Duration of the trasition (mix time) in milliseconds or percentage (0-100)
   /// based on flags.
@@ -86,9 +86,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// ExitTime field with key 160.
+  static const int exitTimePropertyKey = 160;
   static const int exitTimeInitialValue = 0;
   int _exitTime = exitTimeInitialValue;
-  static const int exitTimePropertyKey = 160;
 
   /// Duration in milliseconds that must elapse before allowing the state to
   /// change. If the flags mark this property as being percentage based, the
@@ -112,9 +112,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// InterpolationType field with key 349.
+  static const int interpolationTypePropertyKey = 349;
   static const int interpolationTypeInitialValue = 1;
   int _interpolationType = interpolationTypeInitialValue;
-  static const int interpolationTypePropertyKey = 349;
 
   /// The type of interpolation index in Interpolation applied to this state
   /// transition ('linear' by default).
@@ -138,9 +138,9 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   /// --------------------------------------------------------------------------
   /// InterpolatorId field with key 350.
+  static const int interpolatorIdPropertyKey = 350;
   static const int interpolatorIdInitialValue = -1;
   int _interpolatorId = interpolatorIdInitialValue;
-  static const int interpolatorIdPropertyKey = 350;
 
   /// The id of the custom interpolator used when interpolation is Cubic.
   int get interpolatorId => _interpolatorId;

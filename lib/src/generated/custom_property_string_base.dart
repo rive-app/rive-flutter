@@ -19,9 +19,9 @@ abstract class CustomPropertyStringBase extends CustomProperty {
 
   /// --------------------------------------------------------------------------
   /// PropertyValue field with key 246.
+  static const int propertyValuePropertyKey = 246;
   static const String propertyValueInitialValue = '';
   String _propertyValue = propertyValueInitialValue;
-  static const int propertyValuePropertyKey = 246;
   String get propertyValue => _propertyValue;
 
   /// Change the [_propertyValue] field value.

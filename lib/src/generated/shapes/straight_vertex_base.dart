@@ -24,9 +24,9 @@ abstract class StraightVertexBase extends PathVertex<Weight> {
 
   /// --------------------------------------------------------------------------
   /// Radius field with key 26.
+  static const int radiusPropertyKey = 26;
   static const double radiusInitialValue = 0;
   double _radius = radiusInitialValue;
-  static const int radiusPropertyKey = 26;
 
   /// Radius of the vertex
   double get radius => _radius;

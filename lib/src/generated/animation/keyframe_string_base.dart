@@ -3,20 +3,25 @@
 // Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/animation/keyframe.dart';
+import 'package:rive/src/generated/animation/keyframe_base.dart';
+import 'package:rive/src/rive_core/animation/interpolating_keyframe.dart';
 
-abstract class KeyFrameStringBase extends KeyFrame {
+abstract class KeyFrameStringBase extends InterpolatingKeyFrame {
   static const int typeKey = 142;
   @override
   int get coreType => KeyFrameStringBase.typeKey;
   @override
-  Set<int> get coreTypes => {KeyFrameStringBase.typeKey, KeyFrameBase.typeKey};
+  Set<int> get coreTypes => {
+        KeyFrameStringBase.typeKey,
+        InterpolatingKeyFrameBase.typeKey,
+        KeyFrameBase.typeKey
+      };
 
   /// --------------------------------------------------------------------------
   /// Value field with key 280.
+  static const int valuePropertyKey = 280;
   static const String valueInitialValue = '';
   String _value = valueInitialValue;
-  static const int valuePropertyKey = 280;
   String get value => _value;
 
   /// Change the [_value] field value.

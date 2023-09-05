@@ -19,9 +19,9 @@ abstract class CustomPropertyBooleanBase extends CustomProperty {
 
   /// --------------------------------------------------------------------------
   /// PropertyValue field with key 245.
+  static const int propertyValuePropertyKey = 245;
   static const bool propertyValueInitialValue = false;
   bool _propertyValue = propertyValueInitialValue;
-  static const int propertyValuePropertyKey = 245;
   bool get propertyValue => _propertyValue;
 
   /// Change the [_propertyValue] field value.

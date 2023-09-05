@@ -8,6 +8,12 @@ import 'linear_animation.dart';
 
 export 'package:rive/src/generated/animation/keyed_object_base.dart';
 
+// ignore: one_member_abstracts
+abstract class KeyedCallbackReporter {
+  void reportKeyedCallback(
+      int objectId, int propertyKey, double elapsedSeconds);
+}
+
 class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   final HashMap<int, KeyedProperty> _keyedProperties =
       HashMap<int, KeyedProperty>();
@@ -61,12 +67,35 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     return removed != null;
   }
 
-  void apply(double time, double mix, CoreContext coreContext) {
+  void reportKeyedCallbacks(
+    double secondsFrom,
+    double secondsTo, {
+    required KeyedCallbackReporter reporter,
+  }) {
+    for (final keyedProperty
+        in _keyedProperties.values.where((property) => property.isCallback)) {
+      keyedProperty.reportKeyedCallbacks(
+        objectId,
+        secondsFrom,
+        secondsTo,
+        reporter: reporter,
+      );
+    }
+  }
+
+  void apply(
+    double time,
+    double mix,
+    CoreContext coreContext,
+  ) {
     Core? object = coreContext.resolve(objectId);
     if (object == null) {
       return;
     }
     for (final keyedProperty in _keyedProperties.values) {
+      if (keyedProperty.isCallback) {
+        continue;
+      }
       keyedProperty.apply(time, mix, object);
     }
   }

@@ -24,9 +24,9 @@ abstract class DrawableBase extends Node {
 
   /// --------------------------------------------------------------------------
   /// BlendModeValue field with key 23.
+  static const int blendModeValuePropertyKey = 23;
   static const int blendModeValueInitialValue = 3;
   int _blendModeValue = blendModeValueInitialValue;
-  static const int blendModeValuePropertyKey = 23;
   int get blendModeValue => _blendModeValue;
 
   /// Change the [_blendModeValue] field value.
@@ -47,9 +47,9 @@ abstract class DrawableBase extends Node {
 
   /// --------------------------------------------------------------------------
   /// DrawableFlags field with key 129.
+  static const int drawableFlagsPropertyKey = 129;
   static const int drawableFlagsInitialValue = 0;
   int _drawableFlags = drawableFlagsInitialValue;
-  static const int drawableFlagsPropertyKey = 129;
   int get drawableFlags => _drawableFlags;
 
   /// Change the [_drawableFlags] field value.

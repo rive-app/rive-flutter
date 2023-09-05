@@ -28,9 +28,9 @@ abstract class RectangleBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// LinkCornerRadius field with key 164.
+  static const int linkCornerRadiusPropertyKey = 164;
   static const bool linkCornerRadiusInitialValue = true;
   bool _linkCornerRadius = linkCornerRadiusInitialValue;
-  static const int linkCornerRadiusPropertyKey = 164;
 
   /// Whether the TL corner radius defines all the radiuses
   bool get linkCornerRadius => _linkCornerRadius;
@@ -53,9 +53,9 @@ abstract class RectangleBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// CornerRadiusTL field with key 31.
+  static const int cornerRadiusTLPropertyKey = 31;
   static const double cornerRadiusTLInitialValue = 0;
   double _cornerRadiusTL = cornerRadiusTLInitialValue;
-  static const int cornerRadiusTLPropertyKey = 31;
 
   /// Top left radius of the corners of this rectangle
   double get cornerRadiusTL => _cornerRadiusTL;
@@ -78,9 +78,9 @@ abstract class RectangleBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// CornerRadiusTR field with key 161.
+  static const int cornerRadiusTRPropertyKey = 161;
   static const double cornerRadiusTRInitialValue = 0;
   double _cornerRadiusTR = cornerRadiusTRInitialValue;
-  static const int cornerRadiusTRPropertyKey = 161;
 
   /// Top right radius of the corners of this rectangle
   double get cornerRadiusTR => _cornerRadiusTR;
@@ -103,9 +103,9 @@ abstract class RectangleBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// CornerRadiusBL field with key 162.
+  static const int cornerRadiusBLPropertyKey = 162;
   static const double cornerRadiusBLInitialValue = 0;
   double _cornerRadiusBL = cornerRadiusBLInitialValue;
-  static const int cornerRadiusBLPropertyKey = 162;
 
   /// Bottom left radius of the corners of this rectangle
   double get cornerRadiusBL => _cornerRadiusBL;
@@ -128,9 +128,9 @@ abstract class RectangleBase extends ParametricPath {
 
   /// --------------------------------------------------------------------------
   /// CornerRadiusBR field with key 163.
+  static const int cornerRadiusBRPropertyKey = 163;
   static const double cornerRadiusBRInitialValue = 0;
   double _cornerRadiusBR = cornerRadiusBRInitialValue;
-  static const int cornerRadiusBRPropertyKey = 163;
 
   /// Bottom right radius of the corners of this rectangle
   double get cornerRadiusBR => _cornerRadiusBR;

@@ -16,9 +16,9 @@ abstract class NestedBoolBase extends NestedInput {
 
   /// --------------------------------------------------------------------------
   /// NestedValue field with key 238.
+  static const int nestedValuePropertyKey = 238;
   static const bool nestedValueInitialValue = false;
   bool _nestedValue = nestedValueInitialValue;
-  static const int nestedValuePropertyKey = 238;
   bool get nestedValue => _nestedValue;
 
   /// Change the [_nestedValue] field value.

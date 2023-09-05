@@ -19,9 +19,9 @@ abstract class NestedNumberBase extends NestedInput {
 
   /// --------------------------------------------------------------------------
   /// NestedValue field with key 239.
+  static const int nestedValuePropertyKey = 239;
   static const double nestedValueInitialValue = 0;
   double _nestedValue = nestedValueInitialValue;
-  static const int nestedValuePropertyKey = 239;
   double get nestedValue => _nestedValue;
 
   /// Change the [_nestedValue] field value.

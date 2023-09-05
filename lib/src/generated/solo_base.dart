@@ -24,9 +24,9 @@ abstract class SoloBase extends Node {
 
   /// --------------------------------------------------------------------------
   /// ActiveComponentId field with key 296.
+  static const int activeComponentIdPropertyKey = 296;
   static const int activeComponentIdInitialValue = 0;
   int _activeComponentId = activeComponentIdInitialValue;
-  static const int activeComponentIdPropertyKey = 296;
 
   /// Identifier of the active child in the solo set.
   int get activeComponentId => _activeComponentId;

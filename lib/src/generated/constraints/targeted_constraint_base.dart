@@ -19,9 +19,9 @@ abstract class TargetedConstraintBase extends Constraint {
 
   /// --------------------------------------------------------------------------
   /// TargetId field with key 173.
+  static const int targetIdPropertyKey = 173;
   static const int targetIdInitialValue = -1;
   int _targetId = targetIdInitialValue;
-  static const int targetIdPropertyKey = 173;
 
   /// Identifier used to track the TransformComponent used as the target for the
   /// constraint.

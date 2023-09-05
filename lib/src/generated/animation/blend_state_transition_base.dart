@@ -19,9 +19,9 @@ abstract class BlendStateTransitionBase extends StateTransition {
 
   /// --------------------------------------------------------------------------
   /// ExitBlendAnimationId field with key 171.
+  static const int exitBlendAnimationIdPropertyKey = 171;
   static const int exitBlendAnimationIdInitialValue = -1;
   int _exitBlendAnimationId = exitBlendAnimationIdInitialValue;
-  static const int exitBlendAnimationIdPropertyKey = 171;
 
   /// Id of the state the blend state animation used for exit time calculation.
   int get exitBlendAnimationId => _exitBlendAnimationId;

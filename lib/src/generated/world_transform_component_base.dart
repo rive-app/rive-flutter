@@ -19,9 +19,9 @@ abstract class WorldTransformComponentBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Opacity field with key 18.
+  static const int opacityPropertyKey = 18;
   static const double opacityInitialValue = 1;
   double _opacity = opacityInitialValue;
-  static const int opacityPropertyKey = 18;
   double get opacity => _opacity;
 
   /// Change the [_opacity] field value.

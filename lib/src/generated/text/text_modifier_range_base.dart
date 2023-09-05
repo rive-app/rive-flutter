@@ -19,9 +19,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ModifyFrom field with key 327.
+  static const int modifyFromPropertyKey = 327;
   static const double modifyFromInitialValue = 0;
   double _modifyFrom = modifyFromInitialValue;
-  static const int modifyFromPropertyKey = 327;
   double get modifyFrom => _modifyFrom;
 
   /// Change the [_modifyFrom] field value.
@@ -41,9 +41,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ModifyTo field with key 336.
+  static const int modifyToPropertyKey = 336;
   static const double modifyToInitialValue = 1;
   double _modifyTo = modifyToInitialValue;
-  static const int modifyToPropertyKey = 336;
   double get modifyTo => _modifyTo;
 
   /// Change the [_modifyTo] field value.
@@ -63,9 +63,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Strength field with key 334.
+  static const int strengthPropertyKey = 334;
   static const double strengthInitialValue = 1;
   double _strength = strengthInitialValue;
-  static const int strengthPropertyKey = 334;
   double get strength => _strength;
 
   /// Change the [_strength] field value.
@@ -85,9 +85,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// UnitsValue field with key 316.
+  static const int unitsValuePropertyKey = 316;
   static const int unitsValueInitialValue = 0;
   int _unitsValue = unitsValueInitialValue;
-  static const int unitsValuePropertyKey = 316;
   int get unitsValue => _unitsValue;
 
   /// Change the [_unitsValue] field value.
@@ -107,9 +107,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// TypeValue field with key 325.
+  static const int typeValuePropertyKey = 325;
   static const int typeValueInitialValue = 0;
   int _typeValue = typeValueInitialValue;
-  static const int typeValuePropertyKey = 325;
   int get typeValue => _typeValue;
 
   /// Change the [_typeValue] field value.
@@ -129,9 +129,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ModeValue field with key 326.
+  static const int modeValuePropertyKey = 326;
   static const int modeValueInitialValue = 0;
   int _modeValue = modeValueInitialValue;
-  static const int modeValuePropertyKey = 326;
   int get modeValue => _modeValue;
 
   /// Change the [_modeValue] field value.
@@ -151,9 +151,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Clamp field with key 333.
+  static const int clampPropertyKey = 333;
   static const bool clampInitialValue = false;
   bool _clamp = clampInitialValue;
-  static const int clampPropertyKey = 333;
   bool get clamp => _clamp;
 
   /// Change the [_clamp] field value.
@@ -173,9 +173,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// FalloffFrom field with key 317.
+  static const int falloffFromPropertyKey = 317;
   static const double falloffFromInitialValue = 0;
   double _falloffFrom = falloffFromInitialValue;
-  static const int falloffFromPropertyKey = 317;
   double get falloffFrom => _falloffFrom;
 
   /// Change the [_falloffFrom] field value.
@@ -196,9 +196,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// FalloffTo field with key 318.
+  static const int falloffToPropertyKey = 318;
   static const double falloffToInitialValue = 1;
   double _falloffTo = falloffToInitialValue;
-  static const int falloffToPropertyKey = 318;
   double get falloffTo => _falloffTo;
 
   /// Change the [_falloffTo] field value.
@@ -218,9 +218,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Offset field with key 319.
+  static const int offsetPropertyKey = 319;
   static const double offsetInitialValue = 0;
   double _offset = offsetInitialValue;
-  static const int offsetPropertyKey = 319;
   double get offset => _offset;
 
   /// Change the [_offset] field value.
@@ -240,9 +240,9 @@ abstract class TextModifierRangeBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// RunId field with key 378.
+  static const int runIdPropertyKey = 378;
   static const int runIdInitialValue = -1;
   int _runId = runIdInitialValue;
-  static const int runIdPropertyKey = 378;
 
   /// Identifier used to which run should be targeted.
   int get runId => _runId;

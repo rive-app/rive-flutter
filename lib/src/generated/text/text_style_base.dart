@@ -18,9 +18,9 @@ abstract class TextStyleBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// FontSize field with key 274.
+  static const int fontSizePropertyKey = 274;
   static const double fontSizeInitialValue = 12;
   double _fontSize = fontSizeInitialValue;
-  static const int fontSizePropertyKey = 274;
   double get fontSize => _fontSize;
 
   /// Change the [_fontSize] field value.
@@ -40,9 +40,9 @@ abstract class TextStyleBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// LineHeight field with key 370.
+  static const int lineHeightPropertyKey = 370;
   static const double lineHeightInitialValue = -1.0;
   double _lineHeight = lineHeightInitialValue;
-  static const int lineHeightPropertyKey = 370;
   double get lineHeight => _lineHeight;
 
   /// Change the [_lineHeight] field value.
@@ -62,9 +62,9 @@ abstract class TextStyleBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// LetterSpacing field with key 390.
+  static const int letterSpacingPropertyKey = 390;
   static const double letterSpacingInitialValue = 0.0;
   double _letterSpacing = letterSpacingInitialValue;
-  static const int letterSpacingPropertyKey = 390;
   double get letterSpacing => _letterSpacing;
 
   /// Change the [_letterSpacing] field value.
@@ -85,9 +85,9 @@ abstract class TextStyleBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// FontAssetId field with key 279.
+  static const int fontAssetIdPropertyKey = 279;
   static const int fontAssetIdInitialValue = -1;
   int _fontAssetId = fontAssetIdInitialValue;
-  static const int fontAssetIdPropertyKey = 279;
   int get fontAssetId => _fontAssetId;
 
   /// Change the [_fontAssetId] field value.

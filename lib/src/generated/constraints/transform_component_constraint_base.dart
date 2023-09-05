@@ -24,9 +24,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// MinMaxSpaceValue field with key 195.
+  static const int minMaxSpaceValuePropertyKey = 195;
   static const int minMaxSpaceValueInitialValue = 0;
   int _minMaxSpaceValue = minMaxSpaceValueInitialValue;
-  static const int minMaxSpaceValuePropertyKey = 195;
 
   /// The min/max transform space.
   int get minMaxSpaceValue => _minMaxSpaceValue;
@@ -49,9 +49,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// CopyFactor field with key 182.
+  static const int copyFactorPropertyKey = 182;
   static const double copyFactorInitialValue = 1;
   double _copyFactor = copyFactorInitialValue;
-  static const int copyFactorPropertyKey = 182;
 
   /// Copy factor.
   double get copyFactor => _copyFactor;
@@ -73,9 +73,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// MinValue field with key 183.
+  static const int minValuePropertyKey = 183;
   static const double minValueInitialValue = 0;
   double _minValue = minValueInitialValue;
-  static const int minValuePropertyKey = 183;
 
   /// Minimum value.
   double get minValue => _minValue;
@@ -97,9 +97,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// MaxValue field with key 184.
+  static const int maxValuePropertyKey = 184;
   static const double maxValueInitialValue = 0;
   double _maxValue = maxValueInitialValue;
-  static const int maxValuePropertyKey = 184;
 
   /// Maximum value.
   double get maxValue => _maxValue;
@@ -121,9 +121,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// Offset field with key 188.
+  static const int offsetPropertyKey = 188;
   static const bool offsetInitialValue = false;
   bool _offset = offsetInitialValue;
-  static const int offsetPropertyKey = 188;
 
   /// True when the original component (rotation/scale/translation) is used to
   /// offset the copied one.
@@ -146,9 +146,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// DoesCopy field with key 189.
+  static const int doesCopyPropertyKey = 189;
   static const bool doesCopyInitialValue = true;
   bool _doesCopy = doesCopyInitialValue;
-  static const int doesCopyPropertyKey = 189;
 
   /// Whether the component is copied.
   bool get doesCopy => _doesCopy;
@@ -170,9 +170,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// Min field with key 190.
+  static const int minPropertyKey = 190;
   static const bool minInitialValue = false;
   bool _min = minInitialValue;
-  static const int minPropertyKey = 190;
 
   /// Whether min is used.
   bool get min => _min;
@@ -194,9 +194,9 @@ abstract class TransformComponentConstraintBase
 
   /// --------------------------------------------------------------------------
   /// Max field with key 191.
+  static const int maxPropertyKey = 191;
   static const bool maxInitialValue = false;
   bool _max = maxInitialValue;
-  static const int maxPropertyKey = 191;
 
   /// Whether max is used.
   bool get max => _max;

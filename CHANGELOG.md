@@ -1,3 +1,7 @@
+## 0.11.17
+
+- Timeline based events with new example showing how to play audio when an event fires.
+
 ## 0.11.16
 
 - Updates to text engine to support newer version of clang on Windows.

@@ -12,9 +12,9 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Name field with key 4.
+  static const int namePropertyKey = 4;
   static const String nameInitialValue = '';
   String _name = nameInitialValue;
-  static const int namePropertyKey = 4;
 
   /// Non-unique identifier, used to give friendly names to elements in the
   /// hierarchy. Runtimes provide an API for finding components by this [name].
@@ -37,9 +37,9 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// ParentId field with key 5.
+  static const int parentIdPropertyKey = 5;
   static const int parentIdInitialValue = 0;
   int _parentId = parentIdInitialValue;
-  static const int parentIdPropertyKey = 5;
 
   /// Identifier used to track parent ContainerComponent.
   int get parentId => _parentId;

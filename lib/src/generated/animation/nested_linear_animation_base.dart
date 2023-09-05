@@ -23,9 +23,9 @@ abstract class NestedLinearAnimationBase
 
   /// --------------------------------------------------------------------------
   /// Mix field with key 200.
+  static const int mixPropertyKey = 200;
   static const double mixInitialValue = 1;
   double _mix = mixInitialValue;
-  static const int mixPropertyKey = 200;
 
   /// Value to mix the animation in.
   double get mix => _mix;

@@ -23,9 +23,9 @@ abstract class FollowPathConstraintBase extends TransformSpaceConstraint {
 
   /// --------------------------------------------------------------------------
   /// Distance field with key 363.
+  static const int distancePropertyKey = 363;
   static const double distanceInitialValue = 0;
   double _distance = distanceInitialValue;
-  static const int distancePropertyKey = 363;
 
   /// Distance along the path to follow.
   double get distance => _distance;
@@ -47,9 +47,9 @@ abstract class FollowPathConstraintBase extends TransformSpaceConstraint {
 
   /// --------------------------------------------------------------------------
   /// Orient field with key 364.
+  static const int orientPropertyKey = 364;
   static const bool orientInitialValue = true;
   bool _orient = orientInitialValue;
-  static const int orientPropertyKey = 364;
 
   /// True when the orientation from the path is copied to the constrained
   /// transform.
@@ -72,9 +72,9 @@ abstract class FollowPathConstraintBase extends TransformSpaceConstraint {
 
   /// --------------------------------------------------------------------------
   /// Offset field with key 365.
+  static const int offsetPropertyKey = 365;
   static const bool offsetInitialValue = false;
   bool _offset = offsetInitialValue;
-  static const int offsetPropertyKey = 365;
 
   /// True when the local translation is used to offset the transformed one.
   bool get offset => _offset;

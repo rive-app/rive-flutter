@@ -15,9 +15,9 @@ abstract class ListenerInputChangeBase extends ListenerAction {
 
   /// --------------------------------------------------------------------------
   /// InputId field with key 227.
+  static const int inputIdPropertyKey = 227;
   static const int inputIdInitialValue = -1;
   int _inputId = inputIdInitialValue;
-  static const int inputIdPropertyKey = 227;
 
   /// Id of the StateMachineInput referenced.
   int get inputId => _inputId;

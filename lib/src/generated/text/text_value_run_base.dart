@@ -14,9 +14,9 @@ abstract class TextValueRunBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// StyleId field with key 272.
+  static const int styleIdPropertyKey = 272;
   static const int styleIdInitialValue = -1;
   int _styleId = styleIdInitialValue;
-  static const int styleIdPropertyKey = 272;
 
   /// The id of the style to be applied to this run.
   int get styleId => _styleId;
@@ -38,9 +38,9 @@ abstract class TextValueRunBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Text field with key 268.
+  static const int textPropertyKey = 268;
   static const String textInitialValue = '';
   String _text = textInitialValue;
-  static const int textPropertyKey = 268;
 
   /// The text string value.
   String get text => _text;

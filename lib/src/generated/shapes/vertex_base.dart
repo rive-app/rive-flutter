@@ -18,9 +18,9 @@ abstract class VertexBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// X field with key 24.
+  static const int xPropertyKey = 24;
   static const double xInitialValue = 0;
   double _x = xInitialValue;
-  static const int xPropertyKey = 24;
 
   /// X value for the translation of the vertex.
   double get x => _x;
@@ -42,9 +42,9 @@ abstract class VertexBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Y field with key 25.
+  static const int yPropertyKey = 25;
   static const double yInitialValue = 0;
   double _y = yInitialValue;
-  static const int yPropertyKey = 25;
 
   /// Y value for the translation of the vertex.
   double get y => _y;

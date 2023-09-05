@@ -13,9 +13,9 @@ abstract class FileAssetContentsBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Bytes field with key 212.
+  static const int bytesPropertyKey = 212;
   static final Uint8List bytesInitialValue = Uint8List(0);
   Uint8List _bytes = bytesInitialValue;
-  static const int bytesPropertyKey = 212;
 
   /// Byte data of the file.
   Uint8List get bytes => _bytes;

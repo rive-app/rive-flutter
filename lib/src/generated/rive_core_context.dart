@@ -10,6 +10,7 @@ import 'package:rive/src/generated/animation/advanceable_state_base.dart';
 import 'package:rive/src/generated/animation/blend_animation_base.dart';
 import 'package:rive/src/generated/animation/cubic_ease_interpolator_base.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
+import 'package:rive/src/generated/animation/interpolating_keyframe_base.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
 import 'package:rive/src/generated/animation/keyframe_string_base.dart';
 import 'package:rive/src/generated/animation/listener_input_change_base.dart';
@@ -51,6 +52,7 @@ import 'package:rive/src/rive_core/animation/exit_state.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/keyframe_bool.dart';
+import 'package:rive/src/rive_core/animation/keyframe_callback.dart';
 import 'package:rive/src/rive_core/animation/keyframe_color.dart';
 import 'package:rive/src/rive_core/animation/keyframe_double.dart';
 import 'package:rive/src/rive_core/animation/keyframe_id.dart';
@@ -246,6 +248,8 @@ class RiveCoreContext {
         return BlendAnimation1D();
       case BlendState1DBase.typeKey:
         return BlendState1D();
+      case KeyFrameCallbackBase.typeKey:
+        return KeyFrameCallback();
       case NestedRemapAnimationBase.typeKey:
         return NestedRemapAnimation();
       case TransitionBoolConditionBase.typeKey:
@@ -739,13 +743,13 @@ class RiveCoreContext {
           object.frame = value;
         }
         break;
-      case KeyFrameBase.interpolationTypePropertyKey:
-        if (object is KeyFrameBase && value is int) {
+      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
+        if (object is InterpolatingKeyFrameBase && value is int) {
           object.interpolationType = value;
         }
         break;
-      case KeyFrameBase.interpolatorIdPropertyKey:
-        if (object is KeyFrameBase && value is int) {
+      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
+        if (object is InterpolatingKeyFrameBase && value is int) {
           object.interpolatorId = value;
         }
         break;
@@ -1643,6 +1647,7 @@ class RiveCoreContext {
   static CoreFieldType boolType = CoreBoolType();
   static CoreFieldType colorType = CoreColorType();
   static CoreFieldType bytesType = CoreBytesType();
+  static CoreFieldType callbackType = CoreCallbackType();
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
@@ -1687,8 +1692,8 @@ class RiveCoreContext {
       case StateMachineListenerBase.targetIdPropertyKey:
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
       case KeyFrameBase.framePropertyKey:
-      case KeyFrameBase.interpolationTypePropertyKey:
-      case KeyFrameBase.interpolatorIdPropertyKey:
+      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
+      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
       case KeyFrameIdBase.valuePropertyKey:
       case ListenerBoolChangeBase.valuePropertyKey:
       case ListenerAlignTargetBase.targetIdPropertyKey:
@@ -1906,8 +1911,19 @@ class RiveCoreContext {
       case FileAssetBase.cdnUuidPropertyKey:
       case FileAssetContentsBase.bytesPropertyKey:
         return bytesType;
+      case EventBase.triggerPropertyKey:
+        return callbackType;
       default:
         return null;
+    }
+  }
+
+  static bool isCallback(int propertyKey) {
+    switch (propertyKey) {
+      case EventBase.triggerPropertyKey:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -2001,10 +2017,10 @@ class RiveCoreContext {
         return (object as StateMachineListenerBase).listenerTypeValue;
       case KeyFrameBase.framePropertyKey:
         return (object as KeyFrameBase).frame;
-      case KeyFrameBase.interpolationTypePropertyKey:
-        return (object as KeyFrameBase).interpolationType;
-      case KeyFrameBase.interpolatorIdPropertyKey:
-        return (object as KeyFrameBase).interpolatorId;
+      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
+        return (object as InterpolatingKeyFrameBase).interpolationType;
+      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
+        return (object as InterpolatingKeyFrameBase).interpolatorId;
       case KeyFrameIdBase.valuePropertyKey:
         return (object as KeyFrameIdBase).value;
       case ListenerBoolChangeBase.valuePropertyKey:
@@ -2669,13 +2685,13 @@ class RiveCoreContext {
           object.frame = value;
         }
         break;
-      case KeyFrameBase.interpolationTypePropertyKey:
-        if (object is KeyFrameBase) {
+      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
+        if (object is InterpolatingKeyFrameBase) {
           object.interpolationType = value;
         }
         break;
-      case KeyFrameBase.interpolatorIdPropertyKey:
-        if (object is KeyFrameBase) {
+      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
+        if (object is InterpolatingKeyFrameBase) {
           object.interpolatorId = value;
         }
         break;
@@ -3757,6 +3773,16 @@ class RiveCoreContext {
       case FileAssetContentsBase.bytesPropertyKey:
         if (object is FileAssetContentsBase) {
           object.bytes = value;
+        }
+        break;
+    }
+  }
+
+  static void setCallback(Core object, int propertyKey, CallbackData value) {
+    switch (propertyKey) {
+      case EventBase.triggerPropertyKey:
+        if (object is EventBase) {
+          object.trigger(value);
         }
         break;
     }

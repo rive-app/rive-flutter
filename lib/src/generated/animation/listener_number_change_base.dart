@@ -19,9 +19,9 @@ abstract class ListenerNumberChangeBase extends ListenerInputChange {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 229.
+  static const int valuePropertyKey = 229;
   static const double valueInitialValue = 0;
   double _value = valueInitialValue;
-  static const int valuePropertyKey = 229;
 
   /// Value to set the input to when the listener occurs.
   double get value => _value;

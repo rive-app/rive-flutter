@@ -22,9 +22,9 @@ abstract class BlendState1DBase extends BlendState<BlendAnimation1D> {
 
   /// --------------------------------------------------------------------------
   /// InputId field with key 167.
+  static const int inputIdPropertyKey = 167;
   static const int inputIdInitialValue = -1;
   int _inputId = inputIdInitialValue;
-  static const int inputIdPropertyKey = 167;
 
   /// Id of the input that drives the mix value for this blend state.
   int get inputId => _inputId;

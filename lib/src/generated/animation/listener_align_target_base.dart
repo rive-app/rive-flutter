@@ -15,9 +15,9 @@ abstract class ListenerAlignTargetBase extends ListenerAction {
 
   /// --------------------------------------------------------------------------
   /// TargetId field with key 240.
+  static const int targetIdPropertyKey = 240;
   static const int targetIdInitialValue = 0;
   int _targetId = targetIdInitialValue;
-  static const int targetIdPropertyKey = 240;
 
   /// Identifier used to track the object use as a target fo this listener
   /// action.

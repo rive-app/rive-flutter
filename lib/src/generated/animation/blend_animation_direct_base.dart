@@ -15,9 +15,9 @@ abstract class BlendAnimationDirectBase extends BlendAnimation {
 
   /// --------------------------------------------------------------------------
   /// InputId field with key 168.
+  static const int inputIdPropertyKey = 168;
   static const int inputIdInitialValue = -1;
   int _inputId = inputIdInitialValue;
-  static const int inputIdPropertyKey = 168;
 
   /// Id of the input that drives the direct mix value for this animation.
   int get inputId => _inputId;
@@ -39,9 +39,9 @@ abstract class BlendAnimationDirectBase extends BlendAnimation {
 
   /// --------------------------------------------------------------------------
   /// MixValue field with key 297.
+  static const int mixValuePropertyKey = 297;
   static const double mixValueInitialValue = 100;
   double _mixValue = mixValueInitialValue;
-  static const int mixValuePropertyKey = 297;
 
   /// Direct mix value for this animation.
   double get mixValue => _mixValue;
@@ -63,9 +63,9 @@ abstract class BlendAnimationDirectBase extends BlendAnimation {
 
   /// --------------------------------------------------------------------------
   /// BlendSource field with key 298.
+  static const int blendSourcePropertyKey = 298;
   static const int blendSourceInitialValue = 0;
   int _blendSource = blendSourceInitialValue;
-  static const int blendSourcePropertyKey = 298;
 
   /// Source to use when establishing the mix value for the animation. 0 means
   /// look at the input, 1 look at the mixValue.

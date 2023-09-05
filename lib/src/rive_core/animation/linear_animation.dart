@@ -73,6 +73,20 @@ class LinearAnimation extends LinearAnimationBase {
   /// Returns the start time of the animation in seconds, considering speed
   double get startTime => (speed >= 0) ? startSeconds : endSeconds;
 
+  void reportKeyedCallbacks(
+    double secondsFrom,
+    double secondsTo, {
+    required KeyedCallbackReporter reporter,
+  }) {
+    for (final keyedObject in _keyedObjects.values) {
+      keyedObject.reportKeyedCallbacks(
+        secondsFrom,
+        secondsTo,
+        reporter: reporter,
+      );
+    }
+  }
+
   /// Pass in a different [core] context if you want to apply the animation to a
   /// different instance. This isn't meant to be used yet but left as mostly a
   /// note to remember that at runtime we have to support applying animations to

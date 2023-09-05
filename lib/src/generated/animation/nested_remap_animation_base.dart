@@ -23,9 +23,9 @@ abstract class NestedRemapAnimationBase extends NestedLinearAnimation {
 
   /// --------------------------------------------------------------------------
   /// Time field with key 202.
+  static const int timePropertyKey = 202;
   static const double timeInitialValue = 0.0;
   double _time = timeInitialValue;
-  static const int timePropertyKey = 202;
 
   /// Time value in seconds for the nested linear animation.
   double get time => _time;

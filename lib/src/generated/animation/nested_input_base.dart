@@ -14,9 +14,9 @@ abstract class NestedInputBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// InputId field with key 237.
+  static const int inputIdPropertyKey = 237;
   static const int inputIdInitialValue = -1;
   int _inputId = inputIdInitialValue;
-  static const int inputIdPropertyKey = 237;
 
   /// Identifier used to track the actual backing state machine input.
   int get inputId => _inputId;

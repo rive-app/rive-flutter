@@ -13,9 +13,9 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// PropertyKey field with key 53.
+  static const int propertyKeyPropertyKey = 53;
   static const int propertyKeyInitialValue = CoreContext.invalidPropertyKey;
   int _propertyKey = propertyKeyInitialValue;
-  static const int propertyKeyPropertyKey = 53;
 
   /// The property type that is keyed.
   int get propertyKey => _propertyKey;

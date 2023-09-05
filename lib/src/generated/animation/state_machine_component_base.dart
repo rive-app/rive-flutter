@@ -14,9 +14,9 @@ abstract class StateMachineComponentBase<T extends CoreContext>
 
   /// --------------------------------------------------------------------------
   /// Name field with key 138.
+  static const int namePropertyKey = 138;
   static const String nameInitialValue = '';
   String _name = nameInitialValue;
-  static const int namePropertyKey = 138;
 
   /// Non-unique identifier, used to give friendly names to state machine
   /// components (like layers or inputs).

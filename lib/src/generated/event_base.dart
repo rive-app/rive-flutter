@@ -15,4 +15,9 @@ abstract class EventBase extends ContainerComponent {
         ContainerComponentBase.typeKey,
         ComponentBase.typeKey
       };
+
+  /// --------------------------------------------------------------------------
+  /// Trigger field with key 395.
+  static const int triggerPropertyKey = 395;
+  void trigger(CallbackData value);
 }

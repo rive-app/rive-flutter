@@ -19,9 +19,9 @@ abstract class StateMachineNumberBase extends StateMachineInput {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 140.
+  static const int valuePropertyKey = 140;
   static const double valueInitialValue = 0;
   double _value = valueInitialValue;
-  static const int valuePropertyKey = 140;
   double get value => _value;
 
   /// Change the [_value] field value.

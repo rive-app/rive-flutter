@@ -18,9 +18,9 @@ abstract class NestedAnimationBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// AnimationId field with key 198.
+  static const int animationIdPropertyKey = 198;
   static const int animationIdInitialValue = -1;
   int _animationId = animationIdInitialValue;
-  static const int animationIdPropertyKey = 198;
 
   /// Identifier used to track the animation in the nested artboard.
   int get animationId => _animationId;

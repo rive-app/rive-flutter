@@ -26,9 +26,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// AlignValue field with key 281.
+  static const int alignValuePropertyKey = 281;
   static const int alignValueInitialValue = 0;
   int _alignValue = alignValueInitialValue;
-  static const int alignValuePropertyKey = 281;
   int get alignValue => _alignValue;
 
   /// Change the [_alignValue] field value.
@@ -48,9 +48,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// SizingValue field with key 284.
+  static const int sizingValuePropertyKey = 284;
   static const int sizingValueInitialValue = 0;
   int _sizingValue = sizingValueInitialValue;
-  static const int sizingValuePropertyKey = 284;
   int get sizingValue => _sizingValue;
 
   /// Change the [_sizingValue] field value.
@@ -71,9 +71,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// OverflowValue field with key 287.
+  static const int overflowValuePropertyKey = 287;
   static const int overflowValueInitialValue = 0;
   int _overflowValue = overflowValueInitialValue;
-  static const int overflowValuePropertyKey = 287;
 
   /// One of visible, hidden, clipped, ellipsis.
   int get overflowValue => _overflowValue;
@@ -96,9 +96,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// Width field with key 285.
+  static const int widthPropertyKey = 285;
   static const double widthInitialValue = 0;
   double _width = widthInitialValue;
-  static const int widthPropertyKey = 285;
 
   /// Width of the text object.
   double get width => _width;
@@ -120,9 +120,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// Height field with key 286.
+  static const int heightPropertyKey = 286;
   static const double heightInitialValue = 0;
   double _height = heightInitialValue;
-  static const int heightPropertyKey = 286;
 
   /// Height of the text object.
   double get height => _height;
@@ -144,9 +144,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// OriginX field with key 366.
+  static const int originXPropertyKey = 366;
   static const double originXInitialValue = 0.0;
   double _originX = originXInitialValue;
-  static const int originXPropertyKey = 366;
 
   /// Origin x in normalized coordinates (0.5 = center, 0 = left, 1 = right).
   double get originX => _originX;
@@ -168,9 +168,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// OriginY field with key 367.
+  static const int originYPropertyKey = 367;
   static const double originYInitialValue = 0.0;
   double _originY = originYInitialValue;
-  static const int originYPropertyKey = 367;
 
   /// Origin y in normalized coordinates (0.5 = center, 0 = top, 1 = bottom).
   double get originY => _originY;
@@ -192,9 +192,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// ParagraphSpacing field with key 371.
+  static const int paragraphSpacingPropertyKey = 371;
   static const double paragraphSpacingInitialValue = 0.0;
   double _paragraphSpacing = paragraphSpacingInitialValue;
-  static const int paragraphSpacingPropertyKey = 371;
   double get paragraphSpacing => _paragraphSpacing;
 
   /// Change the [_paragraphSpacing] field value.
@@ -215,9 +215,9 @@ abstract class TextBase extends Drawable {
 
   /// --------------------------------------------------------------------------
   /// OriginValue field with key 377.
+  static const int originValuePropertyKey = 377;
   static const int originValueInitialValue = 0;
   int _originValue = originValueInitialValue;
-  static const int originValuePropertyKey = 377;
 
   /// Logical starting location of origin.
   int get originValue => _originValue;

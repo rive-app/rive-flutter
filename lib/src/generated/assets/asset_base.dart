@@ -12,9 +12,9 @@ abstract class AssetBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// Name field with key 203.
+  static const int namePropertyKey = 203;
   static const String nameInitialValue = '';
   String _name = nameInitialValue;
-  static const int namePropertyKey = 203;
 
   /// Name of the asset
   String get name => _name;

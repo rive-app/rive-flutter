@@ -21,9 +21,9 @@ abstract class TransformSpaceConstraintBase extends TargetedConstraint {
 
   /// --------------------------------------------------------------------------
   /// SourceSpaceValue field with key 179.
+  static const int sourceSpaceValuePropertyKey = 179;
   static const int sourceSpaceValueInitialValue = 0;
   int _sourceSpaceValue = sourceSpaceValueInitialValue;
-  static const int sourceSpaceValuePropertyKey = 179;
 
   /// The source transform space.
   int get sourceSpaceValue => _sourceSpaceValue;
@@ -46,9 +46,9 @@ abstract class TransformSpaceConstraintBase extends TargetedConstraint {
 
   /// --------------------------------------------------------------------------
   /// DestSpaceValue field with key 180.
+  static const int destSpaceValuePropertyKey = 180;
   static const int destSpaceValueInitialValue = 0;
   int _destSpaceValue = destSpaceValueInitialValue;
-  static const int destSpaceValuePropertyKey = 180;
 
   /// The destination transform space.
   int get destSpaceValue => _destSpaceValue;

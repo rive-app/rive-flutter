@@ -20,9 +20,9 @@ abstract class OpenUrlEventBase extends Event {
 
   /// --------------------------------------------------------------------------
   /// Url field with key 248.
+  static const int urlPropertyKey = 248;
   static const String urlInitialValue = '';
   String _url = urlInitialValue;
-  static const int urlPropertyKey = 248;
 
   /// URL to open.
   String get url => _url;
@@ -44,9 +44,9 @@ abstract class OpenUrlEventBase extends Event {
 
   /// --------------------------------------------------------------------------
   /// TargetValue field with key 249.
+  static const int targetValuePropertyKey = 249;
   static const int targetValueInitialValue = 0;
   int _targetValue = targetValueInitialValue;
-  static const int targetValuePropertyKey = 249;
 
   /// Backing value for the target enum.
   int get targetValue => _targetValue;

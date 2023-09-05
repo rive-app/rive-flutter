@@ -19,9 +19,9 @@ abstract class StateMachineBoolBase extends StateMachineInput {
 
   /// --------------------------------------------------------------------------
   /// Value field with key 141.
+  static const int valuePropertyKey = 141;
   static const bool valueInitialValue = false;
   bool _value = valueInitialValue;
-  static const int valuePropertyKey = 141;
   bool get value => _value;
 
   /// Change the [_value] field value.

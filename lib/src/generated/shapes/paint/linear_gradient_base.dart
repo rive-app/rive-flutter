@@ -19,9 +19,9 @@ abstract class LinearGradientBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// StartX field with key 42.
+  static const int startXPropertyKey = 42;
   static const double startXInitialValue = 0;
   double _startX = startXInitialValue;
-  static const int startXPropertyKey = 42;
   double get startX => _startX;
 
   /// Change the [_startX] field value.
@@ -41,9 +41,9 @@ abstract class LinearGradientBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// StartY field with key 33.
+  static const int startYPropertyKey = 33;
   static const double startYInitialValue = 0;
   double _startY = startYInitialValue;
-  static const int startYPropertyKey = 33;
   double get startY => _startY;
 
   /// Change the [_startY] field value.
@@ -63,9 +63,9 @@ abstract class LinearGradientBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// EndX field with key 34.
+  static const int endXPropertyKey = 34;
   static const double endXInitialValue = 0;
   double _endX = endXInitialValue;
-  static const int endXPropertyKey = 34;
   double get endX => _endX;
 
   /// Change the [_endX] field value.
@@ -85,9 +85,9 @@ abstract class LinearGradientBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// EndY field with key 35.
+  static const int endYPropertyKey = 35;
   static const double endYInitialValue = 0;
   double _endY = endYInitialValue;
-  static const int endYPropertyKey = 35;
   double get endY => _endY;
 
   /// Change the [_endY] field value.
@@ -107,9 +107,9 @@ abstract class LinearGradientBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Opacity field with key 46.
+  static const int opacityPropertyKey = 46;
   static const double opacityInitialValue = 1;
   double _opacity = opacityInitialValue;
-  static const int opacityPropertyKey = 46;
   double get opacity => _opacity;
 
   /// Change the [_opacity] field value.

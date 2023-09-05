@@ -20,9 +20,9 @@ abstract class MeshVertexBase extends Vertex {
 
   /// --------------------------------------------------------------------------
   /// U field with key 215.
+  static const int uPropertyKey = 215;
   static const double uInitialValue = 0;
   double _u = uInitialValue;
-  static const int uPropertyKey = 215;
 
   /// U value for the texture coordinate of the vertex.
   double get u => _u;
@@ -44,9 +44,9 @@ abstract class MeshVertexBase extends Vertex {
 
   /// --------------------------------------------------------------------------
   /// V field with key 216.
+  static const int vPropertyKey = 216;
   static const double vInitialValue = 0;
   double _v = vInitialValue;
-  static const int vPropertyKey = 216;
 
   /// V value for the texture coordinate of the vertex.
   double get v => _v;

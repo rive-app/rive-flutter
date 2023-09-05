@@ -21,9 +21,9 @@ abstract class StrokeBase extends ShapePaint {
 
   /// --------------------------------------------------------------------------
   /// Thickness field with key 47.
+  static const int thicknessPropertyKey = 47;
   static const double thicknessInitialValue = 1;
   double _thickness = thicknessInitialValue;
-  static const int thicknessPropertyKey = 47;
   double get thickness => _thickness;
 
   /// Change the [_thickness] field value.
@@ -43,9 +43,9 @@ abstract class StrokeBase extends ShapePaint {
 
   /// --------------------------------------------------------------------------
   /// Cap field with key 48.
+  static const int capPropertyKey = 48;
   static const int capInitialValue = 0;
   int _cap = capInitialValue;
-  static const int capPropertyKey = 48;
   int get cap => _cap;
 
   /// Change the [_cap] field value.
@@ -65,9 +65,9 @@ abstract class StrokeBase extends ShapePaint {
 
   /// --------------------------------------------------------------------------
   /// Join field with key 49.
+  static const int joinPropertyKey = 49;
   static const int joinInitialValue = 0;
   int _join = joinInitialValue;
-  static const int joinPropertyKey = 49;
   int get join => _join;
 
   /// Change the [_join] field value.
@@ -87,9 +87,9 @@ abstract class StrokeBase extends ShapePaint {
 
   /// --------------------------------------------------------------------------
   /// TransformAffectsStroke field with key 50.
+  static const int transformAffectsStrokePropertyKey = 50;
   static const bool transformAffectsStrokeInitialValue = true;
   bool _transformAffectsStroke = transformAffectsStrokeInitialValue;
-  static const int transformAffectsStrokePropertyKey = 50;
   bool get transformAffectsStroke => _transformAffectsStroke;
 
   /// Change the [_transformAffectsStroke] field value.

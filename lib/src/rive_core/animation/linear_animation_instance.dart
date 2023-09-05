@@ -1,4 +1,5 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 
@@ -73,7 +74,8 @@ class LinearAnimationInstance {
     _spilledTime = 0;
   }
 
-  bool advance(double elapsedSeconds) {
+  bool advance(double elapsedSeconds,
+      {KeyedCallbackReporter? callbackReporter}) {
     var deltaSeconds = elapsedSeconds * animation.speed * _direction;
     _spilledTime = 0;
 
@@ -89,7 +91,16 @@ class LinearAnimationInstance {
     // stop gap before we move spilled tracking into state machine logic.
     var killSpilledTime = !keepGoing;
 
+    var lastTime = _time;
     _time += deltaSeconds;
+
+    if (callbackReporter != null) {
+      animation.reportKeyedCallbacks(
+        lastTime,
+        _time,
+        reporter: callbackReporter,
+      );
+    }
 
     var fps = animation.fps;
     double frames = _time * fps;

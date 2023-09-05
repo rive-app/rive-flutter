@@ -13,9 +13,9 @@ abstract class TransitionConditionBase<T extends CoreContext> extends Core<T> {
 
   /// --------------------------------------------------------------------------
   /// InputId field with key 155.
+  static const int inputIdPropertyKey = 155;
   static const int inputIdInitialValue = -1;
   int _inputId = inputIdInitialValue;
-  static const int inputIdPropertyKey = 155;
 
   /// Id of the StateMachineInput referenced.
   int get inputId => _inputId;

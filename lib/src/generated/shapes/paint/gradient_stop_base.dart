@@ -14,9 +14,9 @@ abstract class GradientStopBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// ColorValue field with key 38.
+  static const int colorValuePropertyKey = 38;
   static const int colorValueInitialValue = 0xFFFFFFFF;
   int _colorValue = colorValueInitialValue;
-  static const int colorValuePropertyKey = 38;
   int get colorValue => _colorValue;
 
   /// Change the [_colorValue] field value.
@@ -36,9 +36,9 @@ abstract class GradientStopBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Position field with key 39.
+  static const int positionPropertyKey = 39;
   static const double positionInitialValue = 0;
   double _position = positionInitialValue;
-  static const int positionPropertyKey = 39;
   double get position => _position;
 
   /// Change the [_position] field value.

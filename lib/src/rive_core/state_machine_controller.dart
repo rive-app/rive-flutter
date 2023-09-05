@@ -10,6 +10,7 @@ import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
 import 'package:rive/src/rive_core/animation/entry_state.dart';
 import 'package:rive/src/rive_core/animation/exit_state.dart';
+import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
@@ -262,7 +263,8 @@ class LayerController {
   }
 }
 
-class StateMachineController extends RiveAnimationController<CoreContext> {
+class StateMachineController extends RiveAnimationController<CoreContext>
+    implements KeyedCallbackReporter {
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
@@ -550,6 +552,21 @@ class StateMachineController extends RiveAnimationController<CoreContext> {
         position,
         hitEvent: ListenerType.enter,
       );
+
+  /// Implementation of interface that reports which time based events have
+  /// elapsed on a timeline within this state machine.
+  @override
+  void reportKeyedCallback(
+      int objectId, int propertyKey, double elapsedSeconds) {
+    var coreObject = core.resolve(objectId);
+    if (coreObject != null) {
+      RiveCoreContext.setCallback(
+        coreObject,
+        propertyKey,
+        CallbackData(this, delay: elapsedSeconds),
+      );
+    }
+  }
 }
 
 /// Representation of a Shape from the Artboard Instance and all the events it

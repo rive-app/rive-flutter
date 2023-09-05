@@ -15,9 +15,9 @@ abstract class StateMachineListenerBase extends StateMachineComponent {
 
   /// --------------------------------------------------------------------------
   /// TargetId field with key 224.
+  static const int targetIdPropertyKey = 224;
   static const int targetIdInitialValue = 0;
   int _targetId = targetIdInitialValue;
-  static const int targetIdPropertyKey = 224;
 
   /// Identifier used to track the object use as a target fo this listener.
   int get targetId => _targetId;
@@ -39,9 +39,9 @@ abstract class StateMachineListenerBase extends StateMachineComponent {
 
   /// --------------------------------------------------------------------------
   /// ListenerTypeValue field with key 225.
+  static const int listenerTypeValuePropertyKey = 225;
   static const int listenerTypeValueInitialValue = 0;
   int _listenerTypeValue = listenerTypeValueInitialValue;
-  static const int listenerTypeValuePropertyKey = 225;
 
   /// Listener type (hover, click, etc).
   int get listenerTypeValue => _listenerTypeValue;

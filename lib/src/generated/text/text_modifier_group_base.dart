@@ -19,9 +19,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ModifierFlags field with key 335.
+  static const int modifierFlagsPropertyKey = 335;
   static const int modifierFlagsInitialValue = 0;
   int _modifierFlags = modifierFlagsInitialValue;
-  static const int modifierFlagsPropertyKey = 335;
   int get modifierFlags => _modifierFlags;
 
   /// Change the [_modifierFlags] field value.
@@ -42,9 +42,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// OriginX field with key 328.
+  static const int originXPropertyKey = 328;
   static const double originXInitialValue = 0;
   double _originX = originXInitialValue;
-  static const int originXPropertyKey = 328;
   double get originX => _originX;
 
   /// Change the [_originX] field value.
@@ -64,9 +64,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// OriginY field with key 329.
+  static const int originYPropertyKey = 329;
   static const double originYInitialValue = 0;
   double _originY = originYInitialValue;
-  static const int originYPropertyKey = 329;
   double get originY => _originY;
 
   /// Change the [_originY] field value.
@@ -86,9 +86,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Opacity field with key 324.
+  static const int opacityPropertyKey = 324;
   static const double opacityInitialValue = 1;
   double _opacity = opacityInitialValue;
-  static const int opacityPropertyKey = 324;
   double get opacity => _opacity;
 
   /// Change the [_opacity] field value.
@@ -108,9 +108,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// X field with key 322.
+  static const int xPropertyKey = 322;
   static const double xInitialValue = 0;
   double _x = xInitialValue;
-  static const int xPropertyKey = 322;
   double get x => _x;
 
   /// Change the [_x] field value.
@@ -130,9 +130,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Y field with key 323.
+  static const int yPropertyKey = 323;
   static const double yInitialValue = 0;
   double _y = yInitialValue;
-  static const int yPropertyKey = 323;
   double get y => _y;
 
   /// Change the [_y] field value.
@@ -152,9 +152,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 332.
+  static const int rotationPropertyKey = 332;
   static const double rotationInitialValue = 0;
   double _rotation = rotationInitialValue;
-  static const int rotationPropertyKey = 332;
   double get rotation => _rotation;
 
   /// Change the [_rotation] field value.
@@ -174,9 +174,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ScaleX field with key 330.
+  static const int scaleXPropertyKey = 330;
   static const double scaleXInitialValue = 1;
   double _scaleX = scaleXInitialValue;
-  static const int scaleXPropertyKey = 330;
   double get scaleX => _scaleX;
 
   /// Change the [_scaleX] field value.
@@ -196,9 +196,9 @@ abstract class TextModifierGroupBase extends ContainerComponent {
 
   /// --------------------------------------------------------------------------
   /// ScaleY field with key 331.
+  static const int scaleYPropertyKey = 331;
   static const double scaleYInitialValue = 1;
   double _scaleY = scaleYInitialValue;
-  static const int scaleYPropertyKey = 331;
   double get scaleY => _scaleY;
 
   /// Change the [_scaleY] field value.

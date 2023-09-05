@@ -14,9 +14,9 @@ abstract class TextStyleAxisBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Tag field with key 289.
+  static const int tagPropertyKey = 289;
   static const int tagInitialValue = 0;
   int _tag = tagInitialValue;
-  static const int tagPropertyKey = 289;
   int get tag => _tag;
 
   /// Change the [_tag] field value.
@@ -36,9 +36,9 @@ abstract class TextStyleAxisBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// AxisValue field with key 288.
+  static const int axisValuePropertyKey = 288;
   static const double axisValueInitialValue = 0;
   double _axisValue = axisValueInitialValue;
-  static const int axisValuePropertyKey = 288;
   double get axisValue => _axisValue;
 
   /// Change the [_axisValue] field value.

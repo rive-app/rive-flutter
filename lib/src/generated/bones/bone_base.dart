@@ -24,9 +24,9 @@ abstract class BoneBase extends SkeletalComponent {
 
   /// --------------------------------------------------------------------------
   /// Length field with key 89.
+  static const int lengthPropertyKey = 89;
   static const double lengthInitialValue = 0;
   double _length = lengthInitialValue;
-  static const int lengthPropertyKey = 89;
   double get length => _length;
 
   /// Change the [_length] field value.

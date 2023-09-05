@@ -13,9 +13,9 @@ abstract class FileAssetBase extends Asset {
 
   /// --------------------------------------------------------------------------
   /// AssetId field with key 204.
+  static const int assetIdPropertyKey = 204;
   static const int assetIdInitialValue = 0;
   int _assetId = assetIdInitialValue;
-  static const int assetIdPropertyKey = 204;
 
   /// Id of the asset as stored on the backend
   int get assetId => _assetId;
@@ -37,9 +37,9 @@ abstract class FileAssetBase extends Asset {
 
   /// --------------------------------------------------------------------------
   /// CdnUuid field with key 359.
+  static const int cdnUuidPropertyKey = 359;
   static final Uint8List cdnUuidInitialValue = Uint8List(0);
   Uint8List _cdnUuid = cdnUuidInitialValue;
-  static const int cdnUuidPropertyKey = 359;
 
   /// The cdn uuid if it exists
   Uint8List get cdnUuid => _cdnUuid;
@@ -61,10 +61,10 @@ abstract class FileAssetBase extends Asset {
 
   /// --------------------------------------------------------------------------
   /// CdnBaseUrl field with key 362.
+  static const int cdnBaseUrlPropertyKey = 362;
   static const String cdnBaseUrlInitialValue =
       'https://public.rive.app/cdn/uuid';
   String _cdnBaseUrl = cdnBaseUrlInitialValue;
-  static const int cdnBaseUrlPropertyKey = 362;
 
   /// Set the base url of our cdn.
   String get cdnBaseUrl => _cdnBaseUrl;

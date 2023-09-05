@@ -14,9 +14,9 @@ abstract class ConstraintBase extends Component {
 
   /// --------------------------------------------------------------------------
   /// Strength field with key 172.
+  static const int strengthPropertyKey = 172;
   static const double strengthInitialValue = 1.0;
   double _strength = strengthInitialValue;
-  static const int strengthPropertyKey = 172;
 
   /// Strength of the constraint. 0 means off. 1 means fully constraining.
   double get strength => _strength;

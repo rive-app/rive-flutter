@@ -19,9 +19,9 @@ abstract class CustomPropertyNumberBase extends CustomProperty {
 
   /// --------------------------------------------------------------------------
   /// PropertyValue field with key 243.
+  static const int propertyValuePropertyKey = 243;
   static const double propertyValueInitialValue = 0;
   double _propertyValue = propertyValueInitialValue;
-  static const int propertyValuePropertyKey = 243;
   double get propertyValue => _propertyValue;
 
   /// Change the [_propertyValue] field value.
