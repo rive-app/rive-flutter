@@ -1,3 +1,7 @@
+## 0.11.16
+
+- Updates to text engine to support newer version of clang on Windows.
+
 ## 0.11.15
 
 - New event system! Listen to events reported by a StateMachine via StateMachineController.addEventListener.
