@@ -9,13 +9,21 @@ class KeyFrameId extends KeyFrameIdBase {
 
   @override
   void apply(Core<CoreContext> object, int propertyKey, double mix) {
-    RiveCoreContext.setUint(object, propertyKey, value);
+    // If mix is 0, we don't apply this keyframe value. This rule allows
+    // "mixing" of id values which are usually on/off
+    if (mix > 0) {
+      RiveCoreContext.setUint(object, propertyKey, value);
+    }
   }
 
   @override
   void applyInterpolation(Core<CoreContext> object, int propertyKey,
       double currentTime, KeyFrameId nextFrame, double mix) {
-    RiveCoreContext.setUint(object, propertyKey, value);
+    // If mix is 0, we don't apply this keyframe value. This rule allows
+    // "mixing" of id values which are usually on/off
+    if (mix > 0) {
+      RiveCoreContext.setUint(object, propertyKey, value);
+    }
   }
 
   @override

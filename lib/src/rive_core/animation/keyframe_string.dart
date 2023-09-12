@@ -9,13 +9,21 @@ class KeyFrameString extends KeyFrameStringBase {
 
   @override
   void apply(Core<CoreContext> object, int propertyKey, double mix) {
-    RiveCoreContext.setString(object, propertyKey, value);
+    // If mix is 0, we don't apply this keyframe value. This rule allows
+    // "mixing" of string values which are inherently unmixable
+    if (mix > 0) {
+      RiveCoreContext.setString(object, propertyKey, value);
+    }
   }
 
   @override
   void applyInterpolation(Core<CoreContext> object, int propertyKey,
       double currentTime, KeyFrameString nextFrame, double mix) {
-    RiveCoreContext.setString(object, propertyKey, value);
+    // If mix is 0, we don't apply this keyframe value. This rule allows
+    // "mixing" of string values which are inherently unmixable
+    if (mix > 0) {
+      RiveCoreContext.setString(object, propertyKey, value);
+    }
   }
 
   @override
