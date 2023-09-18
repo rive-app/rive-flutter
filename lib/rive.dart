@@ -15,6 +15,7 @@ export 'package:rive/src/rive_core/artboard.dart';
 export 'package:rive/src/rive_core/assets/font_asset.dart';
 export 'package:rive/src/rive_core/assets/image_asset.dart';
 export 'package:rive/src/rive_core/nested_artboard.dart';
+export 'package:rive/src/rive_core/open_url_target.dart';
 export 'package:rive/src/rive_core/rive_animation_controller.dart';
 export 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 export 'package:rive/src/rive_core/runtime/runtime_header.dart'
@@ -29,4 +30,5 @@ export 'package:rive/src/rive_core/text/text_value_run.dart';
 export 'package:rive/src/rive_file.dart';
 export 'package:rive/src/rive_scene.dart';
 export 'package:rive/src/runtime_artboard.dart';
+export 'package:rive/src/runtime_event.dart';
 export 'package:rive/src/widgets/rive_animation.dart';

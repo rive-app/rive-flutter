@@ -4,7 +4,9 @@ import 'package:rive_example/custom_asset_loading.dart';
 import 'package:rive_example/custom_cached_asset_loading.dart';
 import 'package:rive_example/carousel.dart';
 import 'package:rive_example/custom_controller.dart';
+import 'package:rive_example/event_open_url_button.dart';
 import 'package:rive_example/event_sounds.dart';
+import 'package:rive_example/event_star_rating.dart';
 import 'package:rive_example/example_state_machine.dart';
 import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
@@ -59,7 +61,9 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     const _Page('Basic Text', BasicText()),
     const _Page('Custom Asset Loading', CustomAssetLoading()),
     const _Page('Custom Cached Asset Loading', CustomCachedAssetLoading()),
+    const _Page('Event Open URL Button', EventOpenUrlButton()),
     const _Page('Event Sounds', EventSounds()),
+    const _Page('Event Star Rating', EventStarRating()),
   ];
 
   @override

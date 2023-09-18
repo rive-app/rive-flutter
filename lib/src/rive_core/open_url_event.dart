@@ -1,9 +1,8 @@
 import 'package:rive/src/generated/open_url_event_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/open_url_target.dart';
 
 export 'package:rive/src/generated/open_url_event_base.dart';
-
-enum OpenUrlTarget { blank, parent, self, top }
 
 class OpenUrlEvent extends OpenUrlEventBase {
   @override

@@ -27,6 +27,7 @@ import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
+import 'package:rive/src/runtime_event.dart';
 import 'package:rive_common/math.dart';
 
 /// Callback signature for state machine state changes
@@ -37,7 +38,7 @@ typedef OnStateChange = void Function(
 typedef OnLayerStateChange = void Function(LayerState);
 
 /// Callback signature for events firing.
-typedef OnEvent = void Function(Event);
+typedef OnEvent = void Function(RiveEvent);
 
 class LayerController {
   final StateMachineLayer layer;
@@ -281,7 +282,12 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     @Deprecated('Use `addEventListener` instead.') this.onStateChange,
   });
 
+  /// Adds a Rive event listener to this controller.
+  ///
+  /// Documentation: https://help.rive.app/runtimes/rive-events
   void addEventListener(OnEvent callback) => _eventListeners.add(callback);
+
+  /// Removes listener from this controller.
   void removeEventListener(OnEvent callback) =>
       _eventListeners.remove(callback);
 
@@ -387,6 +393,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   @override
   void dispose() {
     _clearLayerControllers();
+    _eventListeners.clear();
     super.dispose();
   }
 
@@ -420,7 +427,12 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     if (_firedEvents.isNotEmpty) {
       var events = _firedEvents.toList(growable: false);
       _firedEvents.clear();
-      _eventListeners.toList().forEach(events.forEach);
+
+      _eventListeners.toList().forEach((listener) {
+        for (final event in events) {
+          listener(RiveEvent.fromCoreEvent(event));
+        }
+      });
     }
   }
 

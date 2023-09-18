@@ -9,12 +9,13 @@ environment:
   sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
-  just_audio: ^0.9.34
   flutter:
     sdk: flutter
   rive:
     path: ../
   http:
+  just_audio: ^0.9.34
+  url_launcher: ^6.1.14
 
 dev_dependencies:
   flutter_test:

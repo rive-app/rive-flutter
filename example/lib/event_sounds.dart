@@ -13,18 +13,41 @@ class EventSounds extends StatefulWidget {
 }
 
 class _EventSoundsState extends State<EventSounds> {
+  final _audioPlayer = AudioPlayer();
+  late final StateMachineController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer.setAsset('assets/step.mp3');
+  }
+
   Future<void> _onRiveInit(Artboard artboard) async {
-    final audioPlayer = AudioPlayer();
-    await audioPlayer!.setAsset('assets/step.mp3');
-    final controller =
-        StateMachineController.fromArtboard(artboard, 'skill-controller');
-    artboard.addController(controller!);
-    controller.addEventListener((event) {
-      if (event.name == 'Step') {
-        audioPlayer.stop();
-        audioPlayer.play();
-      }
-    });
+    _controller =
+        StateMachineController.fromArtboard(artboard, 'skill-controller')!;
+    artboard.addController(_controller);
+    _controller.addEventListener(onRiveEvent);
+  }
+
+  void onRiveEvent(RiveEvent event) {
+    // Seconds since the event was triggered and it being reported.
+    // This can be used to scrub the audio forward to the precise locaiton
+    // if needed.
+    // ignore: unused_local_variable
+    var seconds = event.secondsDelay;
+
+    if (event.name == 'Step') {
+      _audioPlayer.seek(Duration.zero);
+      _audioPlayer.play();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.removeEventListener(onRiveEvent);
+    _controller.dispose();
+    _audioPlayer.dispose();
+    super.dispose();
   }
 
   @override

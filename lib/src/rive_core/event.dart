@@ -11,6 +11,9 @@ export 'package:rive/src/generated/event_base.dart';
 class Event extends EventBase {
   final List<CustomProperty> customProperties = [];
 
+  double _secondsDelay = 0.0;
+  double get secondsDelay => _secondsDelay;
+
   @override
   void update(int dirt) {}
 
@@ -47,6 +50,7 @@ class Event extends EventBase {
   void trigger(CallbackData data) {
     if (data.context is StateMachineController) {
       var controller = data.context as StateMachineController;
+      _secondsDelay = data.delay;
       controller.reportEvent(this);
     }
   }
