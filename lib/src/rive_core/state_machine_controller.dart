@@ -269,7 +269,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
-  final _firedEvents = <Event>[];
+  final _reportedEvents = <Event>[];
 
   /// Optional callback for state changes
   final OnStateChange? onStateChange;
@@ -292,7 +292,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       _eventListeners.remove(callback);
 
   void reportEvent(Event event) {
-    _firedEvents.add(event);
+    _reportedEvents.add(event);
   }
 
   void _clearLayerControllers() {
@@ -393,7 +393,6 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   @override
   void dispose() {
     _clearLayerControllers();
-    _eventListeners.clear();
     super.dispose();
   }
 
@@ -424,9 +423,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     isActive = keepGoing;
 
     // Callback for events.
-    if (_firedEvents.isNotEmpty) {
-      var events = _firedEvents.toList(growable: false);
-      _firedEvents.clear();
+    if (_reportedEvents.isNotEmpty) {
+      var events = _reportedEvents.toList(growable: false);
+      _reportedEvents.clear();
 
       _eventListeners.toList().forEach((listener) {
         for (final event in events) {

@@ -60,7 +60,7 @@ class LinearAnimation extends LinearAnimationBase {
   /// Returns the seconds where the animiation work area starts
   double get startSeconds => (enableWorkArea ? workStart : 0).toDouble() / fps;
 
-  /// Returns the seconds where the animiation work area ends
+  /// Returns the seconds where the animation work area ends
   double get endSeconds =>
       (enableWorkArea ? workEnd : duration).toDouble() / fps;
 
@@ -78,11 +78,16 @@ class LinearAnimation extends LinearAnimationBase {
     double secondsTo, {
     required KeyedCallbackReporter reporter,
   }) {
+    int secondsFromExactOffset = startTime == secondsFrom &&
+            (speed >= 0 ? secondsFrom < secondsTo : secondsFrom < secondsTo)
+        ? 0
+        : 1;
     for (final keyedObject in _keyedObjects.values) {
       keyedObject.reportKeyedCallbacks(
         secondsFrom,
         secondsTo,
         reporter: reporter,
+        secondsFromExactOffset: secondsFromExactOffset,
       );
     }
   }

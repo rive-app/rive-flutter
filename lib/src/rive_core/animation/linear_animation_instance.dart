@@ -131,13 +131,29 @@ class LinearAnimationInstance {
           _spilledTime = (frames - end) / fps;
           frames = _time * fps;
           frames = start + (frames - start) % range;
+          lastTime = 0;
           _time = frames / fps;
+          if (callbackReporter != null) {
+            animation.reportKeyedCallbacks(
+              lastTime,
+              _time,
+              reporter: callbackReporter,
+            );
+          }
           didLoop = true;
         } else if (direction == -1 && frames <= start) {
           _spilledTime = (start - frames) / fps;
           frames = _time * fps;
           frames = end - (start - frames) % range;
+          lastTime = end / fps;
           _time = frames / fps;
+          if (callbackReporter != null) {
+            animation.reportKeyedCallbacks(
+              lastTime,
+              _time,
+              reporter: callbackReporter,
+            );
+          }
           didLoop = true;
         }
         break;
@@ -146,9 +162,11 @@ class LinearAnimationInstance {
         while (true) {
           if (direction == 1 && frames >= end) {
             _spilledTime = (frames - end) / animation.fps;
+            lastTime = end / fps;
             frames = end + (end - frames);
           } else if (direction == -1 && frames < start) {
             _spilledTime = (start - frames) / animation.fps;
+            lastTime = start / fps;
             frames = start + (start - frames);
           } else {
             // we're within the range, we can stop fixing. We do this in a
@@ -162,6 +180,13 @@ class LinearAnimationInstance {
           _direction *= -1;
           direction *= -1;
           didLoop = true;
+          if (callbackReporter != null) {
+            animation.reportKeyedCallbacks(
+              lastTime,
+              _time,
+              reporter: callbackReporter,
+            );
+          }
         }
         break;
     }

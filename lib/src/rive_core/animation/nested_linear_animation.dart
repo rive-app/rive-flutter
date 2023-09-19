@@ -40,7 +40,7 @@ abstract class NestedLinearAnimation extends NestedLinearAnimationBase {
 
   @override
   bool advance(double elapsedSeconds, MountedArtboard mountedArtboard) {
-    if (linearAnimationInstance != null) {
+    if (linearAnimationInstance != null && mix != 0) {
       linearAnimationInstance!.apply(mountedArtboard, mix);
       return true;
     }

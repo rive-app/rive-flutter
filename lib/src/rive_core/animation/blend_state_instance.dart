@@ -40,7 +40,13 @@ abstract class BlendStateInstance<T extends BlendState<K>,
     // does not change the mix values may
     for (final animation in animationInstances) {
       if (animation.animationInstance.keepGoing) {
-        animation.animationInstance.advance(seconds);
+        // Should animations with m_Mix == 0.0 advance? They will trigger events
+        // and the event properties (if any) will not be updated by
+        // animationInstance.apply.
+        animation.animationInstance.advance(
+          seconds,
+          callbackReporter: controller,
+        );
       }
     }
   }

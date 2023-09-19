@@ -146,8 +146,10 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     double secondsFrom,
     double secondsTo, {
     required KeyedCallbackReporter reporter,
+    int secondsFromExactOffset = 1,
   }) {
-    int idx = closestFrameIndex(secondsFrom, exactOffset: 1);
+    int idx =
+        closestFrameIndex(secondsFrom, exactOffset: secondsFromExactOffset);
     int idxTo = closestFrameIndex(secondsTo, exactOffset: 1);
 
     // going backwards?
