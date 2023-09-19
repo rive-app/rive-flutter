@@ -119,6 +119,7 @@ class StateMachineController extends core.StateMachineController {
   StateMachineController(
     StateMachine stateMachine, {
     core.OnStateChange? onStateChange,
+    // ignore: deprecated_member_use_from_same_package
   }) : super(stateMachine, onStateChange: onStateChange) {
     isActive = true;
     for (final input in stateMachine.inputs) {
