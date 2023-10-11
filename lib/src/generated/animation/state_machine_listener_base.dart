@@ -19,7 +19,7 @@ abstract class StateMachineListenerBase extends StateMachineComponent {
   static const int targetIdInitialValue = 0;
   int _targetId = targetIdInitialValue;
 
-  /// Identifier used to track the object use as a target fo this listener.
+  /// Identifier used to track the object use as a target for this listener.
   int get targetId => _targetId;
 
   /// Change the [_targetId] field value.
@@ -62,12 +62,37 @@ abstract class StateMachineListenerBase extends StateMachineComponent {
 
   void listenerTypeValueChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// EventId field with key 399.
+  static const int eventIdPropertyKey = 399;
+  static const int eventIdInitialValue = -1;
+  int _eventId = eventIdInitialValue;
+
+  /// Event id for the associated event, if listenerType is event
+  int get eventId => _eventId;
+
+  /// Change the [_eventId] field value.
+  /// [eventIdChanged] will be invoked only if the field's value has changed.
+  set eventId(int value) {
+    if (_eventId == value) {
+      return;
+    }
+    int from = _eventId;
+    _eventId = value;
+    if (hasValidated) {
+      eventIdChanged(from, value);
+    }
+  }
+
+  void eventIdChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is StateMachineListenerBase) {
       _targetId = source._targetId;
       _listenerTypeValue = source._listenerTypeValue;
+      _eventId = source._eventId;
     }
   }
 }

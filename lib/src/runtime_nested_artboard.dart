@@ -6,6 +6,7 @@ import 'package:rive/src/rive_core/animation/nested_linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
+import 'package:rive/src/runtime_mounted_artboard.dart';
 import 'package:rive_common/math.dart';
 
 class RuntimeNestedArtboard extends NestedArtboard {
@@ -18,7 +19,8 @@ class RuntimeNestedArtboard extends NestedArtboard {
       object.sourceArtboard = sourceArtboard;
       var runtimeArtboardInstance =
           sourceArtboard!.instance() as RuntimeArtboard;
-      object.mountedArtboard = RuntimeMountedArtboard(runtimeArtboardInstance);
+      object.mountedArtboard =
+          RuntimeMountedArtboard(runtimeArtboardInstance, object);
     }
     return object as K;
   }
@@ -46,10 +48,17 @@ class RuntimeNestedArtboard extends NestedArtboard {
       } else if (animation is NestedStateMachine) {
         var animationId = animation.animationId;
         if (animationId >= 0 && animationId < runtimeStateMachines.length) {
+          final controller =
+              StateMachineController(runtimeStateMachines[animationId]);
           animation.stateMachineInstance = RuntimeNestedStateMachineInstance(
             (mountedArtboard as RuntimeMountedArtboard).artboardInstance,
-            StateMachineController(runtimeStateMachines[animationId]),
+            controller,
           );
+          if (mountedArtboard is RuntimeMountedArtboard) {
+            final runtimeMountedArtboard =
+                mountedArtboard as RuntimeMountedArtboard;
+            runtimeMountedArtboard.addEventListener(controller);
+          }
         }
       }
     }
@@ -128,48 +137,4 @@ class RuntimeNestedStateMachineInstance extends NestedStateMachineInstance {
       stateMachineController.setInputValue(inputs[id].id, value);
     }
   }
-}
-
-class RuntimeMountedArtboard extends MountedArtboard {
-  final RuntimeArtboard artboardInstance;
-  RuntimeMountedArtboard(this.artboardInstance) {
-    artboardInstance.frameOrigin = false;
-    artboardInstance.advance(0, nested: true);
-  }
-
-  @override
-  void dispose() {}
-
-  @override
-  Mat2D worldTransform = Mat2D();
-
-  @override
-  void draw(Canvas canvas) {
-    canvas.save();
-    canvas.transform(worldTransform.mat4);
-    artboardInstance.draw(canvas);
-    canvas.restore();
-  }
-
-  @override
-  AABB get bounds {
-    var width = artboardInstance.width;
-
-    var height = artboardInstance.height;
-    var x = -artboardInstance.originX * width;
-    var y = -artboardInstance.originY * height;
-    return AABB.fromValues(x, y, x + width, y + height);
-  }
-
-  @override
-  double get renderOpacity => artboardInstance.opacity;
-
-  @override
-  set renderOpacity(double value) {
-    artboardInstance.opacity = value;
-  }
-
-  @override
-  bool advance(double seconds) =>
-      artboardInstance.advance(seconds, nested: true);
 }

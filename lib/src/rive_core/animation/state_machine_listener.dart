@@ -5,13 +5,14 @@ import 'package:rive/src/generated/animation/state_machine_listener_base.dart';
 import 'package:rive/src/rive_core/animation/listener_action.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_component.dart';
+import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart';
 import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/animation/state_machine_listener_base.dart';
 
-enum ListenerType { enter, exit, down, up, move }
+enum ListenerType { enter, exit, down, up, move, event }
 
 class StateMachineListener extends StateMachineListenerBase {
   final ListenerActions actions = ListenerActions();
@@ -28,6 +29,18 @@ class StateMachineListener extends StateMachineListenerBase {
     targetId = _target?.id ?? Core.missingId;
   }
 
+  Event? _event;
+  Event? get event => _event;
+  set event(Event? value) {
+    if (_event == value) {
+      return;
+    }
+
+    _event = value;
+
+    eventId = _event?.id ?? Core.missingId;
+  }
+
   @override
   String get name =>
       super.name.isEmpty ? (_target?.name ?? 'Listener') : super.name;
@@ -42,7 +55,14 @@ class StateMachineListener extends StateMachineListenerBase {
       machine.listeners;
 
   @override
-  void targetIdChanged(int from, int to) => target = context.resolve(to);
+  void targetIdChanged(int from, int to) {
+    target = context.resolve(to);
+  }
+
+  @override
+  void eventIdChanged(int from, int to) {
+    event = context.resolve(to);
+  }
 
   /// Called by rive_core to add an [ListenerAction] to this
   /// [StateMachineListener]. This should be @internal when it's supported.

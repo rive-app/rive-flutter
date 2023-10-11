@@ -738,6 +738,11 @@ class RiveCoreContext {
           object.listenerTypeValue = value;
         }
         break;
+      case StateMachineListenerBase.eventIdPropertyKey:
+        if (object is StateMachineListenerBase && value is int) {
+          object.eventId = value;
+        }
+        break;
       case KeyFrameBase.framePropertyKey:
         if (object is KeyFrameBase && value is int) {
           object.frame = value;
@@ -1691,6 +1696,7 @@ class RiveCoreContext {
       case KeyedPropertyBase.propertyKeyPropertyKey:
       case StateMachineListenerBase.targetIdPropertyKey:
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
+      case StateMachineListenerBase.eventIdPropertyKey:
       case KeyFrameBase.framePropertyKey:
       case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
       case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
@@ -2015,6 +2021,8 @@ class RiveCoreContext {
         return (object as StateMachineListenerBase).targetId;
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
         return (object as StateMachineListenerBase).listenerTypeValue;
+      case StateMachineListenerBase.eventIdPropertyKey:
+        return (object as StateMachineListenerBase).eventId;
       case KeyFrameBase.framePropertyKey:
         return (object as KeyFrameBase).frame;
       case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
@@ -2678,6 +2686,11 @@ class RiveCoreContext {
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
         if (object is StateMachineListenerBase) {
           object.listenerTypeValue = value;
+        }
+        break;
+      case StateMachineListenerBase.eventIdPropertyKey:
+        if (object is StateMachineListenerBase) {
+          object.eventId = value;
         }
         break;
       case KeyFrameBase.framePropertyKey:

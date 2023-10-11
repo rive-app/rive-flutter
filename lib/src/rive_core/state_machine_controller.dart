@@ -270,11 +270,16 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
   final _reportedEvents = <Event>[];
+  // Keep a seperate list of nested events because we also need to store
+  // the source of the nested event in order to compare to listener target
+  final Map<int, List<Event>> _reportedNestedEvents = {};
 
   /// Optional callback for state changes
   final OnStateChange? onStateChange;
 
   final _eventListeners = <OnEvent>{};
+
+  List<Event> get reportedEvents => _reportedEvents;
 
   /// Constructor that takes a state machine and optional state change callback
   StateMachineController(
@@ -293,6 +298,24 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
   void reportEvent(Event event) {
     _reportedEvents.add(event);
+  }
+
+  void reportNestedEvent(Event event, Node source) {
+    if (_reportedNestedEvents[source.id] == null) {
+      _reportedNestedEvents[source.id] = [];
+    }
+    _reportedNestedEvents[source.id]!.add(event);
+  }
+
+  bool hasListenerWithTarget(Node target) {
+    var listeners = stateMachine.listeners.whereType<StateMachineListener>();
+    for (final listener in listeners) {
+      var listenerTarget = artboard?.context.resolve(listener.targetId);
+      if (listenerTarget == target) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void _clearLayerControllers() {
@@ -422,10 +445,38 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     advanceInputs();
     isActive = keepGoing;
 
+    applyEvents();
+  }
+
+  void applyEvents() {
     // Callback for events.
-    if (_reportedEvents.isNotEmpty) {
+    if (_reportedEvents.isNotEmpty || _reportedNestedEvents.isNotEmpty) {
       var events = _reportedEvents.toList(growable: false);
+      var nestedEvents = Map<int, List<Event>>.from(_reportedNestedEvents);
       _reportedEvents.clear();
+      _reportedNestedEvents.clear();
+
+      var listeners = stateMachine.listeners.whereType<StateMachineListener>();
+      listeners.forEach((listener) {
+        if (listener.listenerType == ListenerType.event) {
+          // Handle events from this artboard
+          events.forEach((event) {
+            if (listener.eventId == event.id) {
+              listener.performChanges(this, Vec2D());
+            }
+          });
+          // Handle events from nested artboards
+          nestedEvents.forEach((targetId, eventList) {
+            if (listener.targetId == targetId) {
+              eventList.forEach((nestedEvent) {
+                if (listener.eventId == nestedEvent.id) {
+                  listener.performChanges(this, Vec2D());
+                }
+              });
+            }
+          });
+        }
+      });
 
       _eventListeners.toList().forEach((listener) {
         for (final event in events) {

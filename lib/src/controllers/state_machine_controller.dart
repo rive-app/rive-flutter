@@ -1,10 +1,11 @@
-import 'package:flutter/foundation.dart';
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart' as core;
 import 'package:rive/src/rive_core/animation/state_machine_number.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 
 /// [StateMachine]s supports three input types. The StateMachine mostly
@@ -108,6 +109,9 @@ class SMITrigger extends SMIInput<bool> {
   void advance() => change(false);
 }
 
+/// Callback signature for events firing.
+typedef OnRuntimeEvent = void Function(Event);
+
 /// An AnimationController which controls a StateMachine and provides access to
 /// the inputs of the StateMachine.
 class StateMachineController extends core.StateMachineController {
@@ -115,6 +119,8 @@ class StateMachineController extends core.StateMachineController {
 
   /// A list of inputs available in the StateMachine.
   Iterable<SMIInput> get inputs => _inputs;
+
+  final _runtimeEventListeners = <OnRuntimeEvent>{};
 
   StateMachineController(
     StateMachine stateMachine, {
@@ -178,5 +184,17 @@ class StateMachineController extends core.StateMachineController {
     for (final input in _inputs) {
       input.advance();
     }
+  }
+
+  void addRuntimeEventListener(OnRuntimeEvent callback) =>
+      _runtimeEventListeners.add(callback);
+  void removeRuntimeEventListener(OnRuntimeEvent callback) =>
+      _runtimeEventListeners.remove(callback);
+
+  @override
+  void applyEvents() {
+    var events = reportedEvents.toList(growable: false);
+    super.applyEvents();
+    _runtimeEventListeners.toList().forEach(events.forEach);
   }
 }
