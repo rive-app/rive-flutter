@@ -648,6 +648,11 @@ class RiveCoreContext {
           object.inputId = value;
         }
         break;
+      case ListenerInputChangeBase.nestedInputIdPropertyKey:
+        if (object is ListenerInputChangeBase && value is int) {
+          object.nestedInputId = value;
+        }
+        break;
       case AdvanceableStateBase.speedPropertyKey:
         if (object is AdvanceableStateBase && value is double) {
           object.speed = value;
@@ -1650,9 +1655,9 @@ class RiveCoreContext {
   static CoreFieldType uintType = CoreUintType();
   static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType boolType = CoreBoolType();
+  static CoreFieldType callbackType = CoreCallbackType();
   static CoreFieldType colorType = CoreColorType();
   static CoreFieldType bytesType = CoreBytesType();
-  static CoreFieldType callbackType = CoreCallbackType();
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ComponentBase.namePropertyKey:
@@ -1686,6 +1691,7 @@ class RiveCoreContext {
       case LinearAnimationBase.workStartPropertyKey:
       case LinearAnimationBase.workEndPropertyKey:
       case ListenerInputChangeBase.inputIdPropertyKey:
+      case ListenerInputChangeBase.nestedInputIdPropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case NestedInputBase.inputIdPropertyKey:
       case KeyedObjectBase.objectIdPropertyKey:
@@ -1909,6 +1915,9 @@ class RiveCoreContext {
       case ArtboardBase.clipPropertyKey:
       case TextModifierRangeBase.clampPropertyKey:
         return boolType;
+      case NestedTriggerBase.firePropertyKey:
+      case EventBase.triggerPropertyKey:
+        return callbackType;
       case KeyFrameColorBase.valuePropertyKey:
       case SolidColorBase.colorValuePropertyKey:
       case GradientStopBase.colorValuePropertyKey:
@@ -1917,8 +1926,6 @@ class RiveCoreContext {
       case FileAssetBase.cdnUuidPropertyKey:
       case FileAssetContentsBase.bytesPropertyKey:
         return bytesType;
-      case EventBase.triggerPropertyKey:
-        return callbackType;
       default:
         return null;
     }
@@ -1926,6 +1933,7 @@ class RiveCoreContext {
 
   static bool isCallback(int propertyKey) {
     switch (propertyKey) {
+      case NestedTriggerBase.firePropertyKey:
       case EventBase.triggerPropertyKey:
         return true;
       default:
@@ -2001,6 +2009,8 @@ class RiveCoreContext {
         return (object as LinearAnimationBase).workEnd;
       case ListenerInputChangeBase.inputIdPropertyKey:
         return (object as ListenerInputChangeBase).inputId;
+      case ListenerInputChangeBase.nestedInputIdPropertyKey:
+        return (object as ListenerInputChangeBase).nestedInputId;
       case AnimationStateBase.animationIdPropertyKey:
         return (object as AnimationStateBase).animationId;
       case NestedInputBase.inputIdPropertyKey:
@@ -2636,6 +2646,11 @@ class RiveCoreContext {
       case ListenerInputChangeBase.inputIdPropertyKey:
         if (object is ListenerInputChangeBase) {
           object.inputId = value;
+        }
+        break;
+      case ListenerInputChangeBase.nestedInputIdPropertyKey:
+        if (object is ListenerInputChangeBase) {
+          object.nestedInputId = value;
         }
         break;
       case AnimationStateBase.animationIdPropertyKey:
@@ -3751,6 +3766,21 @@ class RiveCoreContext {
     }
   }
 
+  static void setCallback(Core object, int propertyKey, CallbackData value) {
+    switch (propertyKey) {
+      case NestedTriggerBase.firePropertyKey:
+        if (object is NestedTriggerBase) {
+          object.fire(value);
+        }
+        break;
+      case EventBase.triggerPropertyKey:
+        if (object is EventBase) {
+          object.trigger(value);
+        }
+        break;
+    }
+  }
+
   static void setColor(Core object, int propertyKey, int value) {
     switch (propertyKey) {
       case KeyFrameColorBase.valuePropertyKey:
@@ -3786,16 +3816,6 @@ class RiveCoreContext {
       case FileAssetContentsBase.bytesPropertyKey:
         if (object is FileAssetContentsBase) {
           object.bytes = value;
-        }
-        break;
-    }
-  }
-
-  static void setCallback(Core object, int propertyKey, CallbackData value) {
-    switch (propertyKey) {
-      case EventBase.triggerPropertyKey:
-        if (object is EventBase) {
-          object.trigger(value);
         }
         break;
     }

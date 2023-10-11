@@ -1,12 +1,18 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/nested_input_base.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
+import 'package:rive/src/rive_core/nested_artboard.dart';
 
 export 'package:rive/src/generated/animation/nested_input_base.dart';
 
 abstract class NestedInput extends NestedInputBase {
   @override
   void inputIdChanged(int from, int to) {}
+
+  NestedArtboard? get nestedArtboard =>
+      nestedStateMachine?.parent is NestedArtboard
+          ? nestedStateMachine?.parent as NestedArtboard
+          : null;
 
   NestedStateMachine? get nestedStateMachine =>
       parent is NestedStateMachine ? parent as NestedStateMachine : null;

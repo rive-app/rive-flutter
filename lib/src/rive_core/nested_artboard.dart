@@ -34,6 +34,9 @@ class NestedArtboard extends NestedArtboardBase {
   bool get hasNestedStateMachine =>
       _animations.any((animation) => animation is NestedStateMachine);
 
+  List<NestedStateMachine> get nestedStateMachines =>
+      _animations.whereType<NestedStateMachine>().toList(growable: false);
+
   /// Used by nested animations/state machines to let the nesting artboard know
   /// it needs to redraw/advance time.
   void markNeedsAdvance() => context.markNeedsAdvance();

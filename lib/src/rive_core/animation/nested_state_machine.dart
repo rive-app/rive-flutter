@@ -19,6 +19,7 @@ abstract class NestedStateMachineInstance {
 
   void pointerUp(Vec2D position);
 
+  dynamic getInputValue(int id);
   void setInputValue(int id, dynamic value);
 }
 
@@ -47,6 +48,12 @@ class NestedStateMachine extends NestedStateMachineBase {
       NestedStateMachineInstance? from, NestedStateMachineInstance? to) {
     from?.isActiveChanged.removeListener(_isActiveChanged);
     to?.isActiveChanged.addListener(_isActiveChanged);
+  }
+
+  dynamic getInputValue(int id) {
+    int inputId = id;
+
+    _stateMachineInstance?.getInputValue(inputId);
   }
 
   void setInputValue(int id, dynamic value) {

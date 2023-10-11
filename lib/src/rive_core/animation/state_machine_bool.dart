@@ -6,5 +6,8 @@ class StateMachineBool extends StateMachineBoolBase {
   void valueChanged(bool from, bool to) {}
 
   @override
+  void publicChanged(bool from, bool to) {}
+
+  @override
   bool isValidType<T>() => T == bool;
 }

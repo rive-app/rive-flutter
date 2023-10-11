@@ -131,6 +131,8 @@ class RuntimeNestedStateMachineInstance extends NestedStateMachineInstance {
   void pointerUp(Vec2D position) => stateMachineController.pointerUp(position);
 
   @override
+  dynamic getInputValue(int id) => stateMachineController.getInputValue(id);
+  @override
   void setInputValue(int id, dynamic value) {
     var inputs = stateMachineController.stateMachine.inputs;
     if (id < inputs.length && id >= 0) {

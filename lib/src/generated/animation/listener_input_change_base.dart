@@ -37,11 +37,37 @@ abstract class ListenerInputChangeBase extends ListenerAction {
 
   void inputIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// NestedInputId field with key 400.
+  static const int nestedInputIdPropertyKey = 400;
+  static const int nestedInputIdInitialValue = -1;
+  int _nestedInputId = nestedInputIdInitialValue;
+
+  /// Id of the NestedInput referenced if this is listening to a nested input.
+  int get nestedInputId => _nestedInputId;
+
+  /// Change the [_nestedInputId] field value.
+  /// [nestedInputIdChanged] will be invoked only if the field's value has
+  /// changed.
+  set nestedInputId(int value) {
+    if (_nestedInputId == value) {
+      return;
+    }
+    int from = _nestedInputId;
+    _nestedInputId = value;
+    if (hasValidated) {
+      nestedInputIdChanged(from, value);
+    }
+  }
+
+  void nestedInputIdChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is ListenerInputChangeBase) {
       _inputId = source._inputId;
+      _nestedInputId = source._nestedInputId;
     }
   }
 }

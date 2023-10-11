@@ -2,6 +2,7 @@
 // lib/src/generated/animation/nested_trigger_base.dart.
 // Do not modify manually.
 
+import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/animation/nested_input.dart';
 
@@ -15,4 +16,9 @@ abstract class NestedTriggerBase extends NestedInput {
         NestedInputBase.typeKey,
         ComponentBase.typeKey
       };
+
+  /// --------------------------------------------------------------------------
+  /// Fire field with key 401.
+  static const int firePropertyKey = 401;
+  void fire(CallbackData value);
 }

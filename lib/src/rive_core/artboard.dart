@@ -4,6 +4,10 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/artboard_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
+import 'package:rive/src/rive_core/animation/nested_bool.dart';
+import 'package:rive/src/rive_core/animation/nested_input.dart';
+import 'package:rive/src/rive_core/animation/nested_number.dart';
+import 'package:rive/src/rive_core/animation/nested_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -161,6 +165,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   final Set<NestedArtboard> _activeNestedArtboards = {};
   Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
+
+  final Set<NestedInput> _nestedInputs = {};
 
   final List<Joystick> _joysticks = [];
   Iterable<Joystick> get joysticks => _joysticks;
@@ -322,6 +328,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       case NestedArtboardBase.typeKey:
         _activeNestedArtboards.add(component as NestedArtboard);
         break;
+      case NestedBoolBase.typeKey:
+      case NestedNumberBase.typeKey:
+      case NestedTriggerBase.typeKey:
+        _nestedInputs.add(component as NestedInput);
+        break;
       case JoystickBase.typeKey:
         _joysticks.add(component as Joystick);
         break;
@@ -335,6 +346,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     switch (component.coreType) {
       case NestedArtboardBase.typeKey:
         _activeNestedArtboards.remove(component as NestedArtboard);
+        break;
+      case NestedBoolBase.typeKey:
+      case NestedNumberBase.typeKey:
+      case NestedTriggerBase.typeKey:
+        _nestedInputs.remove(component as NestedInput);
         break;
       case JoystickBase.typeKey:
         _joysticks.remove(component as Joystick);

@@ -1,7 +1,9 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/listener_input_change_base.dart';
+import 'package:rive/src/rive_core/animation/nested_input.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_input.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart';
 
 export 'package:rive/src/generated/animation/listener_input_change_base.dart';
 
@@ -18,10 +20,17 @@ abstract class ListenerInputChange extends ListenerInputChangeBase {
     inputId = _input.id;
   }
 
+  NestedInput? nestedInputForController(StateMachineController controller) {
+    return controller.artboard?.context.resolve(nestedInputId);
+  }
+
   @override
   void inputIdChanged(int from, int to) {
     input = context.resolveWithDefault(to, StateMachineInput.unknown);
   }
+
+  @override
+  void nestedInputIdChanged(int from, int to) {}
 
   @override
   void onAddedDirty() {
