@@ -14,7 +14,7 @@ class ListenerTriggerChange extends ListenerTriggerChangeBase {
     if (nestedInput != null && nestedInput is NestedTrigger) {
       nestedInput.fire(CallbackData(controller, delay: 0));
     } else if (input is StateMachineTrigger) {
-      (input as StateMachineTrigger).fire();
+      controller.setInputValue(inputId, true);
     }
   }
 }
