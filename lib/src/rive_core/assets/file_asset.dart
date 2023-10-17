@@ -5,6 +5,27 @@ import 'package:rive/src/rive_core/backboard.dart';
 export 'package:rive/src/generated/assets/file_asset_base.dart';
 
 abstract class FileAsset extends FileAssetBase {
+  late final List<WeakReference<FileAssetReferencer>> _fileAssetReferencers =
+      [];
+  List<WeakReference<FileAssetReferencer>> get fileAssetReferencers =>
+      _fileAssetReferencers;
+
+  // this needs to be late to be able to refer to _fileAssetReferencers
+  late Finalizer finalizer = Finalizer<void>((_) {
+    // remove file asset referencers that are no longer alive when
+    // the finalizer is triggered.
+    _fileAssetReferencers.removeWhere((element) => element.target == null);
+  });
+
+  /// Add a callback to be executed when the asset has been loaded/updated
+  void registerFileAssetReferencer(FileAssetReferencer referencer) {
+    _fileAssetReferencers.add(WeakReference(referencer));
+
+    // we do not passe the referencer itself here because that would
+    // keep the referencer alive
+    finalizer.attach(referencer, null);
+  }
+
   @override
   void assetIdChanged(int from, int to) {}
 
@@ -67,7 +88,11 @@ abstract class FileAssetReferencer<T extends FileAsset> {
     if (_asset == value) {
       return;
     }
+
     _asset = value;
+
+    _asset?.registerFileAssetReferencer(this);
+
     assetId = value?.id ?? Core.missingId;
   }
 

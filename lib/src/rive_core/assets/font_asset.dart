@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/generated/assets/font_asset_base.dart';
+import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/text/text_style.dart';
 import 'package:rive_common/rive_text.dart';
 
 export 'package:rive/src/generated/assets/font_asset_base.dart';
@@ -38,6 +40,17 @@ class FontAsset extends FontAssetBase {
     _callbacks.clear();
     for (final callback in callbacks) {
       callback();
+    }
+
+    // the referencer could register a callback as well rather
+    // actual referencers. might be cleaner for this specific scenario
+    // but i'm not sure if there are other use-cases for the back-ref
+    // that will require a different paradigm
+    for (final referencer in fileAssetReferencers) {
+      final target = referencer.target;
+      if (target is TextStyle) {
+        target.addDirt(ComponentDirt.textShape);
+      }
     }
   }
 

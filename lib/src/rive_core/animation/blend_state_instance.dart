@@ -23,7 +23,7 @@ abstract class BlendStateInstance<T extends BlendState<K>,
   BlendStateInstance(T state)
       : animationInstances = state.animations
             .where((animation) => animation.animation != null)
-            .map((animation) => BlendStateAnimationInstance(animation))
+            .map(BlendStateAnimationInstance.new)
             .toList(growable: false),
         super(state);
 

@@ -239,9 +239,7 @@ class __RiveRandomCachedFontState extends State<_RiveRandomCachedFont> {
       assetLoader: CallbackAssetLoader(
         (asset) async {
           if (asset is FontAsset) {
-            // TODO: setting this will then not allow later updates to the font
-            // asset.font = _fontCache[Random().nextInt(_fontCache.length)];
-
+            asset.font = _fontCache[Random().nextInt(_fontCache.length)];
             _fontAssets.add(asset);
             return true;
           }

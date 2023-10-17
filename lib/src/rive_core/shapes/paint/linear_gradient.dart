@@ -100,7 +100,7 @@ class LinearGradient extends LinearGradientBase with ShapePaintMutator {
       var colorPositions = <double>[];
       for (final stop in gradientStops) {
         colors.add(stop.color);
-        colorPositions.add(stop.position);
+        colorPositions.add(stop.position.clamp(0.0, 1.0));
       }
       // Check if we need to update the world space gradient.
       if (paintsInWorldSpace) {

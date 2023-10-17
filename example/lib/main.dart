@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rive_example/basic_text_customized.dart';
 
 import 'package:rive_example/custom_asset_loading.dart';
 import 'package:rive_example/custom_cached_asset_loading.dart';
@@ -45,6 +46,7 @@ class RiveExampleApp extends StatefulWidget {
 class _RiveExampleAppState extends State<RiveExampleApp> {
   // Example animations
   final _pages = [
+    const _Page('Basic Text Customized', BasicTextCustomized()),
     const _Page('Simple Animation - Asset', SimpleAssetAnimation()),
     const _Page('Simple Animation - Network', SimpleNetworkAnimation()),
     const _Page('Play/Pause Animation', PlayPauseAnimation()),
