@@ -1,3 +1,7 @@
+## Upcoming
+
+- Increase HTTP dependency range for Rive and Rive Common
+
 ## 0.11.17
 
 - Timeline based events with new example showing how to play audio when an event fires.
