@@ -34,6 +34,9 @@ import 'package:rive_common/math.dart';
 typedef OnStateChange = void Function(
     String stateMachineName, String stateName);
 
+/// Callback signature for nested input changes
+typedef OnInputValueChange = void Function(int id, dynamic value);
+
 /// Callback signature for layer state changes
 typedef OnLayerStateChange = void Function(LayerState);
 
@@ -277,6 +280,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   /// Optional callback for state changes
   final OnStateChange? onStateChange;
 
+  /// Optional callback for input value changes
+  OnInputValueChange? onInputValueChange;
+
   final _eventListeners = <OnEvent>{};
 
   List<Event> get reportedEvents => _reportedEvents;
@@ -432,6 +438,10 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   void setInputValue(int id, dynamic value) {
     _inputValues[id] = value;
     isActive = true;
+
+    if (onInputValueChange != null) {
+      onInputValueChange!(id, value);
+    }
   }
 
   @override
