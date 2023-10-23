@@ -67,6 +67,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void update(int dirt);
 
   /// The artboard this component belongs to.
+
   Artboard? get artboard => _artboard;
 
   // Note that this isn't a setter as we don't want anything externally changing
