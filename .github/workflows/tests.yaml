@@ -8,23 +8,13 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           lfs: true
 
-      - name: Checkout and install Flutter
-        run: git clone https://github.com/flutter/flutter.git
-
-      - name: Add the Flutter path
-        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-
-      - name: Set Flutter root
-        run: echo "FLUTTER_ROOT=$GITHUB_WORKSPACE/flutter" >> $GITHUB_ENV
-
-      - name: Setup flutter
-        run: |
-          flutter channel stable
-          flutter doctor
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.6'
 
       - name: Run tests
         run: flutter test
