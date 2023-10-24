@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rive_example/basic_text_customized.dart';
 
 import 'package:rive_example/custom_asset_loading.dart';
 import 'package:rive_example/custom_cached_asset_loading.dart';
@@ -46,7 +45,6 @@ class RiveExampleApp extends StatefulWidget {
 class _RiveExampleAppState extends State<RiveExampleApp> {
   // Example animations
   final _pages = [
-    const _Page('Basic Text Customized', BasicTextCustomized()),
     const _Page('Simple Animation - Asset', SimpleAssetAnimation()),
     const _Page('Simple Animation - Network', SimpleNetworkAnimation()),
     const _Page('Play/Pause Animation', PlayPauseAnimation()),
@@ -61,8 +59,8 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     const _Page('Skinning Demo', SkinningDemo()),
     const _Page('Animation Carousel', AnimationCarousel()),
     const _Page('Basic Text', BasicText()),
-    const _Page('Custom Asset Loading', CustomAssetLoading()),
-    const _Page('Custom Cached Asset Loading', CustomCachedAssetLoading()),
+    const _Page('Asset Loading', CustomAssetLoading()),
+    const _Page('Cached Asset Loading', CustomCachedAssetLoading()),
     const _Page('Event Open URL Button', EventOpenUrlButton()),
     const _Page('Event Sounds', EventSounds()),
     const _Page('Event Star Rating', EventStarRating()),

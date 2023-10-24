@@ -14,6 +14,8 @@ import 'package:rive/rive.dart';
 ///
 /// The example also shows how to swap out the assets multiple times by
 /// keeping a reference to the asset and swapping it out.
+///
+/// See: https://help.rive.app/runtimes/loading-assets
 class CustomCachedAssetLoading extends StatefulWidget {
   const CustomCachedAssetLoading({Key? key}) : super(key: key);
 
@@ -38,7 +40,7 @@ class _CustomCachedAssetLoadingState extends State<CustomCachedAssetLoading> {
   Future<void> _warmUpCache() async {
     final futures = <Future>[];
     loadImage() async {
-      final res = await http.get(Uri.parse('https://picsum.photos/1000/1000'));
+      final res = await http.get(Uri.parse('https://picsum.photos/500/500'));
       final body = Uint8List.view(res.bodyBytes.buffer);
       final image = await ImageAsset.parseBytes(body);
       if (image != null) {
@@ -160,10 +162,9 @@ class __RiveRandomCachedImageState extends State<_RiveRandomCachedImage> {
 
   Future<void> _loadRiveFile() async {
     final imageFile = await RiveFile.asset(
-      'assets/asset.riv',
-      loadEmbeddedAssets: false,
+      'assets/image_out_of_band.riv',
       assetLoader: CallbackAssetLoader(
-        (asset) async {
+        (asset, bytes) async {
           if (asset is ImageAsset) {
             asset.image = _imageCache[Random().nextInt(_imageCache.length)];
             // Maintain a reference to the image asset
@@ -188,9 +189,23 @@ class __RiveRandomCachedImageState extends State<_RiveRandomCachedImage> {
     return Column(
       children: [
         Expanded(
-          child: RiveAnimation.direct(
-            _riveImageSampleFile!,
-            fit: BoxFit.cover,
+          child: Stack(
+            children: [
+              RiveAnimation.direct(
+                _riveImageSampleFile!,
+                stateMachines: const ['State Machine 1'],
+                fit: BoxFit.cover,
+              ),
+              const Positioned(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'This example caches images and swaps them out instantly.\n\nHover to zoom.',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Padding(
@@ -200,7 +215,7 @@ class __RiveRandomCachedImageState extends State<_RiveRandomCachedImage> {
               _imageAsset?.image =
                   _imageCache[Random().nextInt(_imageCache.length)];
             },
-            child: const Text('Random image asset'),
+            child: const Text('Random image'),
           ),
         ),
       ],
@@ -234,10 +249,9 @@ class __RiveRandomCachedFontState extends State<_RiveRandomCachedFont> {
 
   Future<void> _loadRiveFile() async {
     final fontFile = await RiveFile.asset(
-      'assets/sampletext.riv',
-      loadEmbeddedAssets: false,
+      'assets/acqua_text_out_of_band.riv',
       assetLoader: CallbackAssetLoader(
-        (asset) async {
+        (asset, bytes) async {
           if (asset is FontAsset) {
             asset.font = _fontCache[Random().nextInt(_fontCache.length)];
             _fontAssets.add(asset);
@@ -262,9 +276,23 @@ class __RiveRandomCachedFontState extends State<_RiveRandomCachedFont> {
     return Column(
       children: [
         Expanded(
-          child: RiveAnimation.direct(
-            _riveFontSampleFile!,
-            fit: BoxFit.cover,
+          child: Stack(
+            children: [
+              RiveAnimation.direct(
+                _riveFontSampleFile!,
+                stateMachines: const ['State Machine 1'],
+                fit: BoxFit.cover,
+              ),
+              const Positioned(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'This example caches fonts and swaps them out instantly.\n\nClick to change drink.',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Padding(
@@ -275,7 +303,7 @@ class __RiveRandomCachedFontState extends State<_RiveRandomCachedFont> {
                 element?.font = _fontCache[Random().nextInt(_fontCache.length)];
               }
             },
-            child: const Text('Random font asset'),
+            child: const Text('Random font'),
           ),
         ),
       ],

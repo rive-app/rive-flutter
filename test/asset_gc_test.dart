@@ -46,25 +46,26 @@ void main() {
         );
 
         // each artboard adds file asset referencer.
-        var count = 20;
+        var count = 19;
         while (count-- > 0) {
           riveFile.artboards.first.instance();
         }
 
         final image = riveFile.artboards.first.component<Image>(assetName);
         final asset = image!.asset!;
-        expect(asset.fileAssetReferencers.length, 21);
-        await Future<void>.delayed(const Duration(milliseconds: 10));
+        expect(asset.fileAssetReferencers.length, 20);
+        await Future<void>.delayed(const Duration(milliseconds: 100));
         // ok, kinda lame, but the above allows garbage collection to kick in
         // which will remove referencers, its not really deterministic though
+
         expect(
           asset.fileAssetReferencers.length < 5,
           true,
           reason: "Expected ${asset.fileAssetReferencers.length} < 5",
         );
       },
-      // skipping because it only works when we run this test directly,
-      // not when running it as part of other tests.
+      // skipping because it does not work, you can see things get
+      // finalized but this does not consistently happen in tests.
       skip: true,
     );
   });

@@ -9,9 +9,9 @@ import 'package:rive/src/utilities/utilities.dart';
 ///
 /// See [CallbackAssetLoader] and [LocalAssetLoader] for an example of how to
 /// use this.
+// ignore: one_member_abstracts
 abstract class FileAssetLoader {
-  Future<bool> load(FileAsset asset);
-  bool isCompatible(FileAsset asset) => true;
+  Future<bool> load(FileAsset asset, Uint8List? embeddedBytes);
 }
 
 /// Loads assets from Rive's CDN.
@@ -23,10 +23,12 @@ class CDNAssetLoader extends FileAssetLoader {
   CDNAssetLoader();
 
   @override
-  bool isCompatible(FileAsset asset) => asset.cdnUuid.isNotEmpty;
-
-  @override
-  Future<bool> load(FileAsset asset) async {
+  Future<bool> load(FileAsset asset, Uint8List? embeddedBytes) async {
+    // if the asset is embedded, or does not have a cdn uuid, do not attempt
+    // to load it
+    if (embeddedBytes != null || asset.cdnUuid.isEmpty) {
+      return false;
+    }
     // TODO (Max): Do we have a URL builder?
     // TODO (Max): We should aim to get loading errors exposed where
     // possible, this includes failed network requests but also
@@ -81,7 +83,11 @@ class LocalAssetLoader extends FileAssetLoader {
   }) : _assetBundle = assetBundle ?? rootBundle;
 
   @override
-  Future<bool> load(FileAsset asset) async {
+  Future<bool> load(FileAsset asset, Uint8List? embeddedBytes) async {
+    // do not load embedded assets.
+    if (embeddedBytes != null) {
+      return false;
+    }
     String? assetPath;
     switch (asset.type) {
       case Type.unknown:
@@ -109,7 +115,6 @@ class LocalAssetLoader extends FileAssetLoader {
 ///
 /// This callback will be triggered for any **referenced** assets.
 ///
-/// Set [loadEmbeddedAssets] to false to disable loading embedded assets
 ///
 /// Set [loadCdnAssets] to false to disable loading
 /// assets from the Rive CDN.
@@ -120,10 +125,9 @@ class LocalAssetLoader extends FileAssetLoader {
 /// ```dart
 /// final riveFile = await RiveFile.asset(
 ///  'assets/asset.riv',
-///  loadEmbeddedAssets: true,
 ///  loadCdnAssets: true,
 ///  assetLoader: CallbackAssetLoader(
-///    (asset) async {
+///    (asset, bytes) async {
 ///      final res =
 ///          await http.get(Uri.parse('https://picsum.photos/1000/1000'));
 ///      await asset.decode(Uint8List.view(res.bodyBytes.buffer));
@@ -133,13 +137,13 @@ class LocalAssetLoader extends FileAssetLoader {
 /// );
 /// ```
 class CallbackAssetLoader extends FileAssetLoader {
-  Future<bool> Function(FileAsset) callback;
+  Future<bool> Function(FileAsset asset, Uint8List? embeddedBytes) callback;
 
   CallbackAssetLoader(this.callback);
 
   @override
-  Future<bool> load(FileAsset asset) async {
-    return callback(asset);
+  Future<bool> load(FileAsset asset, Uint8List? embeddedBytes) async {
+    return callback(asset, embeddedBytes);
   }
 }
 
@@ -157,13 +161,10 @@ class FallbackAssetLoader extends FileAssetLoader {
   FallbackAssetLoader(this.fileAssetLoaders);
 
   @override
-  Future<bool> load(FileAsset asset) async {
+  Future<bool> load(FileAsset asset, Uint8List? embeddedBytes) async {
     for (var i = 0; i < fileAssetLoaders.length; i++) {
       final resolver = fileAssetLoaders[i];
-      if (!resolver.isCompatible(asset)) {
-        continue;
-      }
-      final success = await resolver.load(asset);
+      final success = await resolver.load(asset, embeddedBytes);
       if (success) {
         return true;
       }

@@ -5,8 +5,5 @@ class StateMachineTrigger extends StateMachineTriggerBase {
   void fire() {}
 
   @override
-  void publicChanged(bool from, bool to) {}
-
-  @override
   bool isValidType<T>() => T == bool;
 }

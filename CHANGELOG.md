@@ -1,6 +1,7 @@
-## Upcoming
+## 0.12.0
 
 - Increase HTTP dependency range for Rive and Rive Common
+- Update api for loading rive files, simplifying loading external images & fonts.
 
 ## 0.11.17
 

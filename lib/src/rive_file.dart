@@ -30,7 +30,6 @@ import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
-import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -154,9 +153,8 @@ class RiveFile {
   RiveFile._(
     BinaryReader reader,
     this.header,
-    this._assetLoader, {
-    bool loadEmbeddedAssets = true,
-  }) {
+    this._assetLoader,
+  ) {
     /// Property fields table of contents
     final propertyToField = _propertyToFieldLookup(header);
 
@@ -175,12 +173,7 @@ class RiveFile {
         }
         continue;
       }
-      // TODO: Question (Max): two options, either tell the fileAssetImporter,
-      // or simply skip the object. I think we should skip the object.
-      if (!loadEmbeddedAssets && object is FileAssetContentsBase) {
-        // suppress importing embedded assets
-        continue;
-      }
+
       ImportStackObject? stackObject;
       var stackType = object.coreType;
       switch (object.coreType) {
@@ -247,7 +240,6 @@ class RiveFile {
           stackObject = FileAssetImporter(
             object as FileAsset,
             _assetLoader,
-            loadEmbeddedAssets: loadEmbeddedAssets,
           );
           stackType = FileAssetBase.typeKey;
           break;
@@ -322,10 +314,10 @@ class RiveFile {
   ///
   /// Set [loadCdnAssets] to `false` to disable loading assets from the CDN.
   ///
-  /// Set [loadEmbeddedAssets] to `false` to disable loading embedded assets.
-  ///
   /// Whether an assets is embedded/cdn/referenced is determined by the Rive
   /// file - as set in the editor.
+  ///
+  /// Loading assets documentation: https://help.rive.app/runtimes/loading-assets
   /// {@endtemplate}
   ///
   /// Will throw [RiveFormatErrorException] if data is malformed. Will throw
@@ -335,7 +327,6 @@ class RiveFile {
     @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
-    bool loadEmbeddedAssets = true,
   }) {
     var reader = BinaryReader(bytes);
     return RiveFile._(
@@ -347,7 +338,6 @@ class RiveFile {
           if (loadCdnAssets) CDNAssetLoader(),
         ],
       ),
-      loadEmbeddedAssets: loadEmbeddedAssets,
     );
   }
 
@@ -365,7 +355,6 @@ class RiveFile {
     ByteData bytes, {
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
-    bool loadEmbeddedAssets = true,
   }) async {
     if (!_initializedText) {
       /// If the file looks like needs the text runtime, let's load it.
@@ -378,7 +367,6 @@ class RiveFile {
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
-      loadEmbeddedAssets: loadEmbeddedAssets,
     );
   }
 
@@ -396,7 +384,6 @@ class RiveFile {
     AssetBundle? bundle,
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
-    bool loadEmbeddedAssets = true,
   }) async {
     final bytes = await (bundle ?? rootBundle).load(
       bundleKey,
@@ -406,7 +393,6 @@ class RiveFile {
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
-      loadEmbeddedAssets: loadEmbeddedAssets,
     );
   }
 
@@ -424,7 +410,6 @@ class RiveFile {
     @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
-    bool loadEmbeddedAssets = true,
   }) async {
     final res = await http.get(Uri.parse(url), headers: headers);
     final bytes = ByteData.view(res.bodyBytes.buffer);
@@ -432,7 +417,6 @@ class RiveFile {
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
-      loadEmbeddedAssets: loadEmbeddedAssets,
     );
   }
 
@@ -446,13 +430,11 @@ class RiveFile {
     String path, {
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
-    bool loadEmbeddedAssets = true,
   }) async {
     final bytes = await localFileBytes(path);
     return _initTextAndImport(
       ByteData.view(bytes!.buffer),
       assetLoader: assetLoader,
-      loadEmbeddedAssets: loadEmbeddedAssets,
       loadCdnAssets: loadCdnAssets,
     );
   }

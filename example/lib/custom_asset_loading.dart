@@ -14,6 +14,8 @@ import 'package:http/http.dart' as http;
 /// and provide them instantly.
 ///
 /// See `custom_cached_asset_loading.dart` for an example of this.
+///
+/// See: https://help.rive.app/runtimes/loading-assets
 class CustomAssetLoading extends StatefulWidget {
   const CustomAssetLoading({Key? key}) : super(key: key);
 
@@ -79,14 +81,18 @@ class _RiveRandomImageState extends State<_RiveRandomImage> {
 
   Future<void> _loadFiles() async {
     final imageFile = await RiveFile.asset(
-      'assets/asset.riv',
-      loadEmbeddedAssets: false,
+      'assets/image_out_of_band.riv',
       assetLoader: CallbackAssetLoader(
-        (asset) async {
-          final res =
-              await http.get(Uri.parse('https://picsum.photos/1000/1000'));
-          await asset.decode(Uint8List.view(res.bodyBytes.buffer));
-          return true;
+        (asset, bytes) async {
+          // Replace image assets that are not embedded in the rive file
+          if (asset is ImageAsset && bytes == null) {
+            final res =
+                await http.get(Uri.parse('https://picsum.photos/500/500'));
+            await asset.decode(Uint8List.view(res.bodyBytes.buffer));
+            return true;
+          } else {
+            return false; // use default asset loading
+          }
         },
       ),
     );
@@ -102,9 +108,23 @@ class _RiveRandomImageState extends State<_RiveRandomImage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return RiveAnimation.direct(
-      _riveImageSampleFile!,
-      fit: BoxFit.cover,
+    return Stack(
+      children: [
+        RiveAnimation.direct(
+          _riveImageSampleFile!,
+          stateMachines: const ['State Machine 1'],
+          fit: BoxFit.cover,
+        ),
+        const Positioned(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              'This example loads a random image dynamically and asynchronously.\n\nHover to zoom.',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        )
+      ],
     );
   }
 }
@@ -128,25 +148,29 @@ class _RiveRandomFontState extends State<_RiveRandomFont> {
 
   Future<void> _loadFiles() async {
     final fontFile = await RiveFile.asset(
-      'assets/sampletext.riv',
-      loadEmbeddedAssets: false, // disable loading embedded assets.
+      'assets/acqua_text_out_of_band.riv',
       assetLoader: CallbackAssetLoader(
-        (asset) async {
-          final urls = [
-            'https://cdn.rive.app/runtime/flutter/IndieFlower-Regular.ttf',
-            'https://cdn.rive.app/runtime/flutter/comic-neue.ttf',
-            'https://cdn.rive.app/runtime/flutter/inter.ttf',
-            'https://cdn.rive.app/runtime/flutter/inter-tight.ttf',
-            'https://cdn.rive.app/runtime/flutter/josefin-sans.ttf',
-            'https://cdn.rive.app/runtime/flutter/send-flowers.ttf',
-          ];
+        (asset, bytes) async {
+          // Replace font assets that are not embedded in the rive file
+          if (asset is FontAsset && bytes == null) {
+            final urls = [
+              'https://cdn.rive.app/runtime/flutter/IndieFlower-Regular.ttf',
+              'https://cdn.rive.app/runtime/flutter/comic-neue.ttf',
+              'https://cdn.rive.app/runtime/flutter/inter.ttf',
+              'https://cdn.rive.app/runtime/flutter/inter-tight.ttf',
+              'https://cdn.rive.app/runtime/flutter/josefin-sans.ttf',
+              'https://cdn.rive.app/runtime/flutter/send-flowers.ttf',
+            ];
 
-          final res = await http.get(
-            // pick a random url from the list of fonts
-            Uri.parse(urls[Random().nextInt(urls.length)]),
-          );
-          await asset.decode(Uint8List.view(res.bodyBytes.buffer));
-          return true;
+            final res = await http.get(
+              // pick a random url from the list of fonts
+              Uri.parse(urls[Random().nextInt(urls.length)]),
+            );
+            await asset.decode(Uint8List.view(res.bodyBytes.buffer));
+            return true;
+          } else {
+            return false; // use default asset loading
+          }
         },
       ),
     );
@@ -162,9 +186,23 @@ class _RiveRandomFontState extends State<_RiveRandomFont> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return RiveAnimation.direct(
-      _riveFontSampleFile!,
-      fit: BoxFit.cover,
+    return Stack(
+      children: [
+        RiveAnimation.direct(
+          _riveFontSampleFile!,
+          stateMachines: const ['State Machine 1'],
+          fit: BoxFit.cover,
+        ),
+        const Positioned(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              'This example loads a random font dynamically and asynchronously.\n\nClick to change drink.',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        )
+      ],
     );
   }
 }

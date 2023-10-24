@@ -13,38 +13,32 @@ abstract class FileAssetResolver {
 class FileAssetImporter extends ImportStackObject {
   final FileAssetLoader? assetLoader;
   final FileAsset fileAsset;
-  final bool loadEmbeddedAssets;
+  Uint8List? embeddedBytes;
 
   FileAssetImporter(
     this.fileAsset,
-    this.assetLoader, {
-    this.loadEmbeddedAssets = true,
-  });
-
-  bool _contentsResolved = false;
+    this.assetLoader,
+  );
 
   void resolveContents(FileAssetContents contents) {
-    if (loadEmbeddedAssets) {
-      _contentsResolved = true;
-      fileAsset.decode(contents.bytes);
-    }
+    embeddedBytes = contents.bytes;
   }
 
   @override
   bool resolve() {
-    if (!_contentsResolved) {
-      // try to get them out of band
-      assetLoader?.load(fileAsset).then((loaded) {
+    // allow our loader to load the file asset.
+    assetLoader?.load(fileAsset, embeddedBytes).then((loaded) {
+      if (!loaded && embeddedBytes != null) {
+        fileAsset.decode(embeddedBytes!);
+      } else if (!loaded) {
         // TODO: improve error logging
-        if (!loaded) {
-          printDebugMessage(
-            '''Rive asset (${fileAsset.name}) was not able to load:
+        printDebugMessage(
+          '''Rive asset (${fileAsset.name}) was not able to load:
   - Unique file name: ${fileAsset.uniqueFilename}
   - Asset id: ${fileAsset.id}''',
-          );
-        }
-      });
-    }
+        );
+      }
+    });
     return super.resolve();
   }
 }

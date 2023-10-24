@@ -117,7 +117,7 @@ class NestedArtboard extends NestedArtboardBase {
   }
 
   bool advance(double elapsedSeconds) {
-    if (mountedArtboard == null) {
+    if (mountedArtboard == null || isCollapsed) {
       return false;
     }
 

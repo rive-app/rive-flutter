@@ -18,7 +18,4 @@ abstract class StateMachineInput extends StateMachineInputBase {
   bool isValidType<T>() => false;
 }
 
-class _StateMachineUnknownInput extends StateMachineInput {
-  @override
-  void publicChanged(bool from, bool to) {}
-}
+class _StateMachineUnknownInput extends StateMachineInput {}
