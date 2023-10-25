@@ -1,4 +1,5 @@
 import 'package:rive/src/generated/constraints/transform_space_constraint_base.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/transform_space.dart';
 import 'package:rive_common/math.dart';
 
@@ -8,7 +9,7 @@ abstract class TransformSpaceConstraint extends TransformSpaceConstraintBase {
   final TransformComponents componentsA = TransformComponents();
   final TransformComponents componentsB = TransformComponents();
 
-  TransformSpace get destSpace => TransformSpace.values[destSpaceValue];
+  TransformSpace get destSpace => enumAt(TransformSpace.values, destSpaceValue);
   set destSpace(TransformSpace value) => destSpaceValue = value.index;
 
   TransformSpace get sourceSpace => TransformSpace.values[sourceSpaceValue];

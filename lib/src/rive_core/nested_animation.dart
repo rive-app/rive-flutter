@@ -12,7 +12,6 @@ abstract class NestedAnimation<T extends Animation>
   @override
   void animationIdChanged(int from, int to) {}
 
-
   bool get isEnabled;
 
   /// Returns true when the NestedAnimation needs to keep advancing. Returning

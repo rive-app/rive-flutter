@@ -1,4 +1,5 @@
 import 'package:rive/src/generated/constraints/distance_constraint_base.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 import 'package:rive_common/math.dart';
 
@@ -57,6 +58,7 @@ class DistanceConstraint extends DistanceConstraintBase {
   @override
   void modeValueChanged(int from, int to) => markConstraintDirty();
 
-  DistanceConstraintMode get mode => DistanceConstraintMode.values[modeValue];
+  DistanceConstraintMode get mode =>
+      enumAt(DistanceConstraintMode.values, modeValue);
   set mode(DistanceConstraintMode value) => modeValue = value.index;
 }

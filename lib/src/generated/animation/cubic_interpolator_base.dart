@@ -3,13 +3,15 @@
 // Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/keyframe_interpolator.dart';
 
-abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
+abstract class CubicInterpolatorBase extends KeyFrameInterpolator {
   static const int typeKey = 139;
   @override
   int get coreType => CubicInterpolatorBase.typeKey;
   @override
-  Set<int> get coreTypes => {CubicInterpolatorBase.typeKey};
+  Set<int> get coreTypes =>
+      {CubicInterpolatorBase.typeKey, KeyFrameInterpolatorBase.typeKey};
 
   /// --------------------------------------------------------------------------
   /// X1 field with key 63.
@@ -101,6 +103,7 @@ abstract class CubicInterpolatorBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is CubicInterpolatorBase) {
       _x1 = source._x1;
       _y1 = source._y1;

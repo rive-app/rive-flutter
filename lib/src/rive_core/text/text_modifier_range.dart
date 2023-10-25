@@ -7,6 +7,7 @@ import 'package:rive/src/rive_core/animation/cubic_interpolator_component.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/text/text_modifier_group.dart';
 import 'package:rive/src/rive_core/text/text_value_run.dart';
 import 'package:rive_common/rive_text.dart';
@@ -236,7 +237,7 @@ class TextModifierRange extends TextModifierRangeBase {
     }
   }
 
-  TextRangeUnits get units => TextRangeUnits.values[unitsValue];
+  TextRangeUnits get units => enumAt(TextRangeUnits.values, unitsValue);
   set units(TextRangeUnits units) => unitsValue = units.index;
 
   @override
@@ -248,7 +249,7 @@ class TextModifierRange extends TextModifierRangeBase {
   @override
   void modeValueChanged(int from, int to) => modifierGroup?.rangeChanged();
 
-  TextRangeType get type => TextRangeType.values[typeValue];
+  TextRangeType get type => enumAt(TextRangeType.values, typeValue);
   set type(TextRangeType value) => typeValue = value.index;
 
   @override

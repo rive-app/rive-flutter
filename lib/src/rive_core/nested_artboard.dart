@@ -64,7 +64,6 @@ class NestedArtboard extends NestedArtboardBase {
   @override
   void artboardIdChanged(int from, int to) {}
 
-
   @override
   void childAdded(Component child) {
     super.childAdded(child);

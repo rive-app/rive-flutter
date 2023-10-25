@@ -50,14 +50,14 @@ class CubicValueInterpolator extends CubicValueInterpolatorBase {
     if (_from != from || _to != to) {
       _from = from;
       _to = to;
-      updateStoredCubic();
+      updateInterpolator();
     }
     return _cubic.transform(value);
   }
 
   @override
-  void updateStoredCubic() {
+  void updateInterpolator() {
     _cubic = _CubicValue(x1, x2, _from, y1, y2, _to);
-    super.updateStoredCubic();
+    super.updateInterpolator();
   }
 }

@@ -47,6 +47,7 @@ import 'package:rive/src/rive_core/animation/blend_state_transition.dart';
 import 'package:rive/src/rive_core/animation/cubic_ease_interpolator.dart';
 import 'package:rive/src/rive_core/animation/cubic_interpolator_component.dart';
 import 'package:rive/src/rive_core/animation/cubic_value_interpolator.dart';
+import 'package:rive/src/rive_core/animation/elastic_interpolator.dart';
 import 'package:rive/src/rive_core/animation/entry_state.dart';
 import 'package:rive/src/rive_core/animation/exit_state.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
@@ -240,6 +241,8 @@ class RiveCoreContext {
         return BlendStateDirect();
       case NestedStateMachineBase.typeKey:
         return NestedStateMachine();
+      case ElasticInterpolatorBase.typeKey:
+        return ElasticInterpolator();
       case ExitStateBase.typeKey:
         return ExitState();
       case NestedNumberBase.typeKey:
@@ -876,6 +879,21 @@ class RiveCoreContext {
       case StateMachineFireEventBase.occursValuePropertyKey:
         if (object is StateMachineFireEventBase && value is int) {
           object.occursValue = value;
+        }
+        break;
+      case ElasticInterpolatorBase.easingValuePropertyKey:
+        if (object is ElasticInterpolatorBase && value is int) {
+          object.easingValue = value;
+        }
+        break;
+      case ElasticInterpolatorBase.amplitudePropertyKey:
+        if (object is ElasticInterpolatorBase && value is double) {
+          object.amplitude = value;
+        }
+        break;
+      case ElasticInterpolatorBase.periodPropertyKey:
+        if (object is ElasticInterpolatorBase && value is double) {
+          object.period = value;
         }
         break;
       case NestedNumberBase.nestedValuePropertyKey:
@@ -1718,6 +1736,7 @@ class RiveCoreContext {
       case StateTransitionBase.interpolatorIdPropertyKey:
       case StateMachineFireEventBase.eventIdPropertyKey:
       case StateMachineFireEventBase.occursValuePropertyKey:
+      case ElasticInterpolatorBase.easingValuePropertyKey:
       case BlendState1DBase.inputIdPropertyKey:
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
       case StrokeBase.capPropertyKey:
@@ -1795,6 +1814,8 @@ class RiveCoreContext {
       case CubicInterpolatorComponentBase.y2PropertyKey:
       case ListenerNumberChangeBase.valuePropertyKey:
       case KeyFrameDoubleBase.valuePropertyKey:
+      case ElasticInterpolatorBase.amplitudePropertyKey:
+      case ElasticInterpolatorBase.periodPropertyKey:
       case NestedNumberBase.nestedValuePropertyKey:
       case BlendAnimation1DBase.valuePropertyKey:
       case NestedRemapAnimationBase.timePropertyKey:
@@ -2063,6 +2084,8 @@ class RiveCoreContext {
         return (object as StateMachineFireEventBase).eventId;
       case StateMachineFireEventBase.occursValuePropertyKey:
         return (object as StateMachineFireEventBase).occursValue;
+      case ElasticInterpolatorBase.easingValuePropertyKey:
+        return (object as ElasticInterpolatorBase).easingValue;
       case BlendState1DBase.inputIdPropertyKey:
         return (object as BlendState1DBase).inputId;
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
@@ -2221,6 +2244,10 @@ class RiveCoreContext {
         return (object as ListenerNumberChangeBase).value;
       case KeyFrameDoubleBase.valuePropertyKey:
         return (object as KeyFrameDoubleBase).value;
+      case ElasticInterpolatorBase.amplitudePropertyKey:
+        return (object as ElasticInterpolatorBase).amplitude;
+      case ElasticInterpolatorBase.periodPropertyKey:
+        return (object as ElasticInterpolatorBase).period;
       case NestedNumberBase.nestedValuePropertyKey:
         return (object as NestedNumberBase).nestedValue;
       case BlendAnimation1DBase.valuePropertyKey:
@@ -2783,6 +2810,11 @@ class RiveCoreContext {
           object.occursValue = value;
         }
         break;
+      case ElasticInterpolatorBase.easingValuePropertyKey:
+        if (object is ElasticInterpolatorBase) {
+          object.easingValue = value;
+        }
+        break;
       case BlendState1DBase.inputIdPropertyKey:
         if (object is BlendState1DBase) {
           object.inputId = value;
@@ -3166,6 +3198,16 @@ class RiveCoreContext {
       case KeyFrameDoubleBase.valuePropertyKey:
         if (object is KeyFrameDoubleBase) {
           object.value = value;
+        }
+        break;
+      case ElasticInterpolatorBase.amplitudePropertyKey:
+        if (object is ElasticInterpolatorBase) {
+          object.amplitude = value;
+        }
+        break;
+      case ElasticInterpolatorBase.periodPropertyKey:
+        if (object is ElasticInterpolatorBase) {
+          object.period = value;
         }
         break;
       case NestedNumberBase.nestedValuePropertyKey:

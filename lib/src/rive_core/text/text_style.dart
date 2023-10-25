@@ -166,7 +166,6 @@ class TextStyle extends TextStyleBase
     _variationHelper?.addDirt(ComponentDirt.textShape);
   }
 
-
   @override
   void onDirty(int mask) {
     super.onDirty(mask);

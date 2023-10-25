@@ -91,7 +91,6 @@ class Image extends ImageBase
     }
   }
 
-
   @override
   int get assetIdPropertyKey => ImageBase.assetIdPropertyKey;
 

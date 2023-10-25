@@ -15,6 +15,7 @@ import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/state_transition_flags.dart';
 
 export 'package:rive/src/generated/animation/state_transition_base.dart';
@@ -221,7 +222,7 @@ class StateTransition extends StateTransitionBase {
   bool get canInterpolate => stateTo is! EntryState;
 
   KeyFrameInterpolation get interpolation =>
-      KeyFrameInterpolation.values[interpolationType];
+      enumAt(KeyFrameInterpolation.values, interpolationType);
   set interpolation(KeyFrameInterpolation value) {
     if (canInterpolate) {
       interpolationType = value.index;

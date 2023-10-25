@@ -1,7 +1,6 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
-import 'package:rive/src/rive_core/artboard.dart';
 
 export 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 
@@ -31,7 +30,7 @@ abstract class CubicInterface {
 
 // Returns dx/dt given t, x1, and x2, or dy/dt given t, y1, and y2.
 abstract class CubicInterpolator extends CubicInterpolatorBase
-    implements Interpolator, CubicInterface {
+    implements CubicInterface {
   @override
   bool equalParameters(Interpolator other) {
     if (other is CubicInterpolator) {
@@ -44,9 +43,6 @@ abstract class CubicInterpolator extends CubicInterpolatorBase
   }
 
   @override
-  void onAdded() => updateStoredCubic();
-
-  @override
   void onAddedDirty() {}
 
   @override
@@ -56,30 +52,16 @@ abstract class CubicInterpolator extends CubicInterpolatorBase
   double transformValue(double from, double to, double value);
 
   @override
-  void x1Changed(double from, double to) => updateStoredCubic();
+  void x1Changed(double from, double to) => updateInterpolator();
 
   @override
-  void x2Changed(double from, double to) => updateStoredCubic();
+  void x2Changed(double from, double to) => updateInterpolator();
 
   @override
-  void y1Changed(double from, double to) => updateStoredCubic();
+  void y1Changed(double from, double to) => updateInterpolator();
 
   @override
-  void y2Changed(double from, double to) => updateStoredCubic();
-
-  @protected
-  void updateStoredCubic() {}
-
-  @override
-  bool import(ImportStack stack) {
-    var artboardHelper = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
-    if (artboardHelper == null) {
-      return false;
-    }
-    artboardHelper.addComponent(this);
-
-    return super.import(stack);
-  }
+  void y2Changed(double from, double to) => updateInterpolator();
 }
 
 // Helper to convert a factor in cubic space to t value. We use this to compute

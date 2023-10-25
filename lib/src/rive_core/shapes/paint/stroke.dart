@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rive/src/generated/shapes/paint/stroke_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke_effect.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
@@ -31,21 +32,21 @@ class Stroke extends StrokeBase {
     ..strokeJoin = strokeJoin
     ..strokeWidth = thickness;
 
-  StrokeCap get strokeCap => StrokeCap.values[cap];
+  StrokeCap get strokeCap => enumAt(StrokeCap.values, cap);
   set strokeCap(StrokeCap value) => cap = value.index;
 
-  StrokeJoin get strokeJoin => StrokeJoin.values[join];
+  StrokeJoin get strokeJoin => enumAt(StrokeJoin.values, join);
   set strokeJoin(StrokeJoin value) => join = value.index;
 
   @override
   void capChanged(int from, int to) {
-    paint.strokeCap = StrokeCap.values[to];
+    paint.strokeCap = enumAt(StrokeCap.values, to);
     parent?.addDirt(ComponentDirt.paint);
   }
 
   @override
   void joinChanged(int from, int to) {
-    paint.strokeJoin = StrokeJoin.values[to];
+    paint.strokeJoin = enumAt(StrokeJoin.values, to);
     parent?.addDirt(ComponentDirt.paint);
   }
 

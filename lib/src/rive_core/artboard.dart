@@ -113,11 +113,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return null;
   }
 
-  /// Find all components of a specific type.
-  Iterable<T> components<T>() {
-    return _components.whereType<T>();
-  }
-
   @override
   Artboard get artboard => this;
 

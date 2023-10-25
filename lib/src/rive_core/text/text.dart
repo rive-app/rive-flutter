@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/text/styled_text.dart';
 import 'package:rive/src/rive_core/text/text_modifier_group.dart';
 import 'package:rive/src/rive_core/text/text_style.dart' as rive;
@@ -169,7 +170,6 @@ class Text extends TextBase with TextStyleContainer {
     super.onAdded();
     _syncRuns();
   }
-
 
   Mat2D get originTransform => Mat2D.multiply(
         Mat2D(),
@@ -575,7 +575,7 @@ class Text extends TextBase with TextStyleContainer {
     markShapeDirty();
   }
 
-  TextAlign get align => TextAlign.values[alignValue];
+  TextAlign get align => enumAt(TextAlign.values, alignValue);
   set align(TextAlign value) => alignValue = value.index;
 
   @override
@@ -588,7 +588,7 @@ class Text extends TextBase with TextStyleContainer {
   TextSizing get sizing => TextSizing.values[sizingValue];
   set sizing(TextSizing value) => sizingValue = value.index;
   TextOverflow get overflow {
-    return TextOverflow.values[overflowValue];
+    return enumAt(TextOverflow.values, overflowValue);
   }
 
   set overflow(TextOverflow value) => overflowValue = value.index;

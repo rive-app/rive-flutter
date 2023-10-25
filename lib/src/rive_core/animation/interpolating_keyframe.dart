@@ -4,6 +4,7 @@ import 'package:rive/src/rive_core/animation/cubic_interpolator.dart';
 import 'package:rive/src/rive_core/animation/cubic_value_interpolator.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
 import 'package:rive/src/rive_core/animation/keyframe_interpolation.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 
 export 'package:rive/src/generated/animation/interpolating_keyframe_base.dart';
 
@@ -12,7 +13,7 @@ abstract class InterpolatingKeyFrame extends InterpolatingKeyFrameBase {
   bool get canInterpolate => true;
 
   KeyFrameInterpolation get interpolation =>
-      KeyFrameInterpolation.values[interpolationType];
+      enumAt(KeyFrameInterpolation.values, interpolationType);
   set interpolation(KeyFrameInterpolation value) {
     interpolationType = value.index;
   }

@@ -1,6 +1,7 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/draw_target_base.dart';
 import 'package:rive/src/rive_core/drawable.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 
 export 'package:rive/src/generated/draw_target_base.dart';
 
@@ -23,7 +24,7 @@ class DrawTarget extends DrawTargetBase {
   }
 
   DrawTargetPlacement get placement =>
-      DrawTargetPlacement.values[placementValue];
+      enumAt(DrawTargetPlacement.values, placementValue);
   set placement(DrawTargetPlacement value) => placementValue = value.index;
 
   @override

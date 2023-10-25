@@ -43,8 +43,8 @@ class CubicEaseInterpolator extends CubicEaseInterpolatorBase {
       from + (to - from) * _ease.transform(value);
 
   @override
-  void updateStoredCubic() {
+  void updateInterpolator() {
     _ease = CubicEase.make(x1, y1, x2, y2);
-    super.updateStoredCubic();
+    super.updateInterpolator();
   }
 }
