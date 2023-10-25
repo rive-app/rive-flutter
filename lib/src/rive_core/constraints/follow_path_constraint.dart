@@ -32,6 +32,11 @@ class FollowPathConstraint extends FollowPathConstraintBase {
     // <0 and >1
     // Negative values follow path in reverse direction
     var actualDistance = distance % 1;
+    // This handles the case where distance is any whole number other than 0.
+    // In those cases we want actualDistance to return 1
+    if (distance != 0 && actualDistance == 0) {
+      actualDistance = 1;
+    }
     double distanceUnits = totalLength * actualDistance.clamp(0, 1);
     var itr = metrics.iterator;
 
