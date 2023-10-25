@@ -304,6 +304,8 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
   void reportEvent(Event event) {
     _reportedEvents.add(event);
+
+    isActive = true;
   }
 
   void reportNestedEvent(Event event, Node source) {
