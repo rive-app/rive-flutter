@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/nested_state_machine_base.dart';
+import 'package:rive/src/rive_core/animation/nested_bool.dart';
+import 'package:rive/src/rive_core/animation/nested_input.dart';
+import 'package:rive/src/rive_core/animation/nested_number.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive_common/math.dart';
 
@@ -33,6 +36,9 @@ class NestedStateMachine extends NestedStateMachineBase {
   @override
   bool get isEnabled => _stateMachineInstance?.isActive ?? false;
 
+  final Set<NestedInput> _nestedInputs = {};
+  Set<NestedInput> get nestedInputs => _nestedInputs;
+
   NestedStateMachineInstance? _stateMachineInstance;
   NestedStateMachineInstance? get stateMachineInstance => _stateMachineInstance;
   set stateMachineInstance(NestedStateMachineInstance? value) {
@@ -42,6 +48,12 @@ class NestedStateMachine extends NestedStateMachineBase {
     var from = _stateMachineInstance;
     _stateMachineInstance = value;
     stateMachineInstanceChanged(from, value);
+
+    for (final input in nestedInputs) {
+      if (input is NestedBool || input is NestedNumber) {
+        input.updateValue();
+      }
+    }
   }
 
   void stateMachineInstanceChanged(

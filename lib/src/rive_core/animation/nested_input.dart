@@ -1,6 +1,6 @@
-import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/nested_input_base.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
+import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 
 export 'package:rive/src/generated/animation/nested_input_base.dart';
@@ -19,6 +19,16 @@ abstract class NestedInput extends NestedInputBase {
 
   @override
   bool validate() => super.validate() && nestedStateMachine != null;
+
+  @override
+  void parentChanged(ContainerComponent? from, ContainerComponent? to) {
+    super.parentChanged(from, to);
+    if (nestedStateMachine != null) {
+      if (!nestedStateMachine!.nestedInputs.contains(this)) {
+        nestedStateMachine!.nestedInputs.add(this);
+      }
+    }
+  }
 
   void updateValue();
 
