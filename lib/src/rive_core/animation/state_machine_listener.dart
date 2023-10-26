@@ -6,8 +6,8 @@ import 'package:rive/src/rive_core/animation/listener_action.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_component.dart';
 import 'package:rive/src/rive_core/event.dart';
-import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart';
+import 'package:rive/src/rive_core/world_transform_component.dart';
 import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/animation/state_machine_listener_base.dart';
@@ -17,9 +17,9 @@ enum ListenerType { enter, exit, down, up, move, event }
 class StateMachineListener extends StateMachineListenerBase {
   final ListenerActions actions = ListenerActions();
 
-  Node? _target;
-  Node? get target => _target;
-  set target(Node? value) {
+  WorldTransformComponent? _target;
+  WorldTransformComponent? get target => _target;
+  set target(WorldTransformComponent? value) {
     if (_target == value) {
       return;
     }

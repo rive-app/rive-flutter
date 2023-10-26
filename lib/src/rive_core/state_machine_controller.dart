@@ -470,23 +470,27 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
       var listeners = stateMachine.listeners.whereType<StateMachineListener>();
       listeners.forEach((listener) {
+        var listenerTarget = artboard?.context.resolve(listener.targetId);
         if (listener.listenerType == ListenerType.event) {
-          // Handle events from this artboard
-          events.forEach((event) {
-            if (listener.eventId == event.id) {
-              listener.performChanges(this, Vec2D());
-            }
-          });
-          // Handle events from nested artboards
-          nestedEvents.forEach((targetId, eventList) {
-            if (listener.targetId == targetId) {
-              eventList.forEach((nestedEvent) {
-                if (listener.eventId == nestedEvent.id) {
-                  listener.performChanges(this, Vec2D());
-                }
-              });
-            }
-          });
+          // Handle events from this artboard if it is the target
+          if (listenerTarget == artboard) {
+            events.forEach((event) {
+              if (listener.eventId == event.id) {
+                listener.performChanges(this, Vec2D());
+              }
+            });
+          } else {
+            // Handle events from nested artboards
+            nestedEvents.forEach((targetId, eventList) {
+              if (listener.targetId == targetId) {
+                eventList.forEach((nestedEvent) {
+                  if (listener.eventId == nestedEvent.id) {
+                    listener.performChanges(this, Vec2D());
+                  }
+                });
+              }
+            });
+          }
         }
       });
 
