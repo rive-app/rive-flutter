@@ -2,10 +2,8 @@
 
 import 'dart:math';
 
-import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/elastic_interpolator_base.dart';
 import 'package:rive/src/rive_core/animation/interpolator.dart';
-import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/enum_helper.dart';
 
 export 'package:rive/src/generated/animation/elastic_interpolator_base.dart';
@@ -113,17 +111,6 @@ class ElasticInterpolator extends ElasticInterpolatorBase {
   double transformValue(double from, double to, double value) {
     var f = transform(value);
     return from + (to - from) * f;
-  }
-
-  @override
-  bool import(ImportStack stack) {
-    var artboardHelper = stack.latest<ArtboardImporter>(ArtboardBase.typeKey);
-    if (artboardHelper == null) {
-      return false;
-    }
-    artboardHelper.addComponent(this);
-
-    return super.import(stack);
   }
 
   Easing get easing => enumAt(Easing.values, easingValue);
