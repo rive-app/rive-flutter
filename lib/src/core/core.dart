@@ -53,8 +53,8 @@ abstract class Core<T extends CoreContext> {
 
   bool validate() => true;
 
-  /// Make a duplicate of this core object, N.B. that all properties including
-  /// id's are copied.
+  /// Make a duplicate of this core object, N.B. that all properties excluding
+  /// object id are copied.
   K? clone<K extends Core>() {
     var object = context.makeCoreInstance(coreType);
     object?.copy(this);
@@ -64,9 +64,7 @@ abstract class Core<T extends CoreContext> {
   /// Copies property values, currently doesn't trigger change callbacks. It's
   /// meant to be a helper for [clone].
   @protected
-  void copy(covariant Core source) {
-    id = source.id;
-  }
+  void copy(covariant Core source) {}
 }
 
 // ignore: avoid_classes_with_only_static_members
