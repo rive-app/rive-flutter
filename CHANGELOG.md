@@ -1,3 +1,8 @@
+## 0.12.2
+
+- Fixes an issue when importing interpolators.
+- Increase HTTP dependency range.
+
 ## 0.12.1
 
 - Elastic easing.
