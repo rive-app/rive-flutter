@@ -153,7 +153,12 @@ class StateMachineController extends core.StateMachineController {
   }) {
     for (final animation in artboard.animations) {
       if (animation is StateMachine && animation.name == stateMachineName) {
-        return StateMachineController(animation, onStateChange: onStateChange);
+        final controller =
+            StateMachineController(animation, onStateChange: onStateChange);
+        if (artboard is RuntimeArtboard) {
+          artboard.addNestedEventListener(controller);
+        }
+        return controller;
       }
     }
     return null;

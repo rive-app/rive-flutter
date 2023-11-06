@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -148,5 +149,23 @@ class RuntimeArtboard extends Artboard implements CoreContext {
     }
     artboard.clean();
     return artboard;
+  }
+
+  void addNestedEventListener(StateMachineController controller) {
+    activeNestedArtboards.forEach((artboard) {
+      if (artboard.mountedArtboard is RuntimeMountedArtboard) {
+        (artboard.mountedArtboard as RuntimeMountedArtboard).eventCallback =
+            (event, target) => _handleNestedEvent(event, target, controller);
+      }
+    });
+  }
+
+  void _handleNestedEvent(
+      Event event, NestedArtboard target, StateMachineController controller) {
+    if (controller.hasListenerWithTarget(target)) {
+      controller.reportNestedEvent(event, target);
+      SchedulerBinding.instance
+          .addPostFrameCallback((_) => controller.isActive = true);
+    }
   }
 }
