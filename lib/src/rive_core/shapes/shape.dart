@@ -72,6 +72,8 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   void pathChanged(Path path) => _markComposerDirty();
 
+  void pathCollapseChanged() => pathComposer.pathCollapseChanged();
+
   void paintChanged() {
     addDirt(ComponentDirt.path);
     _markBlendModeDirty();
@@ -313,5 +315,11 @@ class Shape extends ShapeBase with ShapePaintContainer {
       hitTester.transform = path.pathTransform;
       path.buildPath(hitTester);
     }
+  }
+
+  @override
+  bool propagateCollapse(bool collapse) {
+    propagateCollapseToChildren(collapse);
+    return super.propagateCollapse(collapse);
   }
 }

@@ -309,6 +309,15 @@ abstract class Path extends PathBase {
   void pathFlagsChanged(int from, int to) => markPathDirty();
 
   bool get isHidden => (pathFlags & ComponentFlags.hidden) != 0;
+
+  @override
+  bool propagateCollapse(bool collapse) {
+    bool changed = super.propagateCollapse(collapse);
+    if (changed && shape != null) {
+      shape!.pathCollapseChanged();
+    }
+    return changed;
+  }
 }
 
 enum _PathCommand { moveTo, lineTo, cubicTo, close }
