@@ -312,8 +312,10 @@ class Shape extends ShapeBase with ShapePaintContainer {
   /// shape.
   void fillHitTester(TransformingHitTester hitTester) {
     for (final path in paths) {
-      hitTester.transform = path.pathTransform;
-      path.buildPath(hitTester);
+      if (!path.isCollapsed) {
+        hitTester.transform = path.pathTransform;
+        path.buildPath(hitTester);
+      }
     }
   }
 
