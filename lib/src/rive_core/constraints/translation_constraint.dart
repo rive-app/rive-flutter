@@ -12,6 +12,9 @@ export 'package:rive/src/generated/constraints/translation_constraint_base.dart'
 class TranslationConstraint extends TranslationConstraintBase {
   @override
   void constrain(TransformComponent component) {
+    if (target?.isCollapsed ?? false) {
+      return;
+    }
     var transformA = component.worldTransform;
     var translationA = Vec2D.fromValues(transformA[4], transformA[5]);
     var translationB = Vec2D();

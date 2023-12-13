@@ -1,3 +1,8 @@
+## Upcoming
+
+- Collapsed nested artboards don't listen to pointer events anymore
+- Constraints pointing to collapsed targets are not applied
+
 ## 0.12.3
 
 - Support for Nested Inputs and Nested Events. See the docs on [Nested Artboards](https://help.rive.app/editor/fundamentals/nested-artboards).

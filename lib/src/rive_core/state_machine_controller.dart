@@ -575,6 +575,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       }
     }
     for (final nestedArtboard in hitNestedArtboards) {
+      if (nestedArtboard.isCollapsed) {
+        continue;
+      }
       var nestedPosition = nestedArtboard.worldToLocal(position);
       if (nestedPosition == null) {
         // Mounted artboard isn't ready or has a 0 scale transform.

@@ -79,7 +79,7 @@ class FollowPathConstraint extends FollowPathConstraintBase {
 
   @override
   void constrain(TransformComponent component) {
-    if (target == null) {
+    if (target == null || target!.isCollapsed) {
       return;
     }
     // Constrained component world transform

@@ -111,7 +111,7 @@ class IKConstraint extends IKConstraintBase {
 
   @override
   void constrain(TransformComponent component) {
-    if (target == null) {
+    if (target == null || target!.isCollapsed) {
       return;
     }
 

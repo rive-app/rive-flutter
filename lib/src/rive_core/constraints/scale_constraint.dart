@@ -12,6 +12,9 @@ export 'package:rive/src/generated/constraints/scale_constraint_base.dart';
 class ScaleConstraint extends ScaleConstraintBase {
   @override
   void constrain(TransformComponent component) {
+    if (target?.isCollapsed ?? false) {
+      return;
+    }
     var transformA = component.worldTransform;
     var transformB = Mat2D();
     Mat2D.decompose(transformA, componentsA);

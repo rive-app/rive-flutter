@@ -18,6 +18,7 @@ class Solo extends SoloBase {
     if (_activeComponent == value) {
       return;
     }
+
     _activeComponent = value;
     activeComponentId = value?.id ?? Core.missingId;
     propagateCollapseToChildren(isCollapsed);

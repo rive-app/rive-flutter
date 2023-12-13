@@ -15,7 +15,7 @@ const _distanceEpsilon = 0.001;
 class DistanceConstraint extends DistanceConstraintBase {
   @override
   void constrain(TransformComponent component) {
-    if (target == null) {
+    if (target == null || target!.isCollapsed) {
       return;
     }
     var targetTranslation = target!.worldTranslation;

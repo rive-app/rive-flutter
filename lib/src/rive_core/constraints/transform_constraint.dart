@@ -24,7 +24,7 @@ class TransformConstraint extends TransformConstraintBase {
 
   @override
   void constrain(TransformComponent component) {
-    if (target == null) {
+    if (target == null || target!.isCollapsed) {
       return;
     }
     var transformA = component.worldTransform;

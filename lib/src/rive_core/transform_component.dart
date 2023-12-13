@@ -212,4 +212,26 @@ abstract class TransformComponent extends TransformComponentBase {
 
   /// Bounds to use for constraining to object space.
   AABB get constraintBounds => AABB.collapsed(Vec2D());
+
+  void markDirtyIfConstrained() {
+    if (constraints.isNotEmpty) {
+      addDirt(ComponentDirt.worldTransform, recurse: true);
+    }
+  }
+
+  @override
+  bool propagateCollapse(bool collapse) {
+    if (!super.propagateCollapse(collapse)) {
+      return false;
+    }
+
+    // In the runtime, we have to iterate the dependents
+    dependents.forEach((element) {
+      if (element is TransformComponent) {
+        element.markDirtyIfConstrained();
+      }
+    });
+
+    return true;
+  }
 }
