@@ -16,6 +16,8 @@ abstract class NestedStateMachineInstance {
 
   void apply(covariant MountedArtboard artboard, double elapsedSeconds);
 
+  bool hitTest(Vec2D position);
+
   void pointerMove(Vec2D position);
 
   void pointerDown(Vec2D position, PointerDownEvent event);
@@ -73,6 +75,9 @@ class NestedStateMachine extends NestedStateMachineBase {
 
     _stateMachineInstance?.setInputValue(inputId, value);
   }
+
+  bool hitTest(Vec2D position) =>
+      _stateMachineInstance?.hitTest(position) ?? false;
 
   void pointerMove(Vec2D position) =>
       _stateMachineInstance?.pointerMove(position);

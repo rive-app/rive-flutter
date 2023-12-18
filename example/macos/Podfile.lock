@@ -39,9 +39,9 @@ SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   just_audio: 9b67ca7b97c61cfc9784ea23cd8cc55eb226d489
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  rive_common: acedcab7802c0ece4b0d838b71d7deb637e1309a
+  rive_common: 0f0aadf670f0c6a7872dfe3e6186f112a5319108
   url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
 
 PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.11.3

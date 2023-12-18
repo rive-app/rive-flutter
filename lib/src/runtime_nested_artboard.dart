@@ -120,6 +120,9 @@ class RuntimeNestedStateMachineInstance extends NestedStateMachineInstance {
       stateMachineController.isActiveChanged;
 
   @override
+  bool hitTest(Vec2D position) => stateMachineController.hitTest(position);
+
+  @override
   void pointerDown(Vec2D position, PointerDownEvent event) =>
       stateMachineController.pointerDown(position, event);
 

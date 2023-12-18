@@ -63,6 +63,9 @@ class RiveAnimation extends StatefulWidget {
   /// Headers for network requests
   final Map<String, String>? headers;
 
+  /// {@macro Rive.behavior}
+  final RiveHitTestBehavior behavior;
+
   /// Creates a new [RiveAnimation] from an asset bundle.
   ///
   /// *Example:*
@@ -82,6 +85,7 @@ class RiveAnimation extends StatefulWidget {
     this.clipRect,
     this.controllers = const [],
     this.onInit,
+    this.behavior = RiveHitTestBehavior.opaque,
     Key? key,
   })  : name = asset,
         file = null,
@@ -109,6 +113,7 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     this.headers,
+    this.behavior = RiveHitTestBehavior.opaque,
     Key? key,
   })  : name = url,
         file = null,
@@ -134,6 +139,7 @@ class RiveAnimation extends StatefulWidget {
     this.clipRect,
     this.controllers = const [],
     this.onInit,
+    this.behavior = RiveHitTestBehavior.opaque,
     Key? key,
   })  : name = path,
         file = null,
@@ -163,6 +169,7 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     Key? key,
+    this.behavior = RiveHitTestBehavior.opaque,
   })  : name = null,
         headers = null,
         src = _Source.direct,
@@ -327,6 +334,7 @@ class RiveAnimationState extends State<RiveAnimation> {
           useArtboardSize: widget.useArtboardSize,
           clipRect: widget.clipRect,
           enablePointerEvents: _shouldAddHitTesting,
+          behavior: widget.behavior,
         )
       : widget.placeHolder ?? const SizedBox();
 }

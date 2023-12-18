@@ -8,6 +8,23 @@ import 'package:rive/src/rive_render_box.dart';
 import 'package:rive/src/runtime_artboard.dart';
 import 'package:rive_common/math.dart';
 
+/// How to behave during hit tests on Rive Listeners (hit targets).
+enum RiveHitTestBehavior {
+  /// The bounds of the Rive animation will consume all hits, even if there is
+  /// no animation listener (hit area) at the target point. Content
+  /// behind the animation will not receive hits.
+  opaque,
+
+  /// Rive will only consume hits where there is a listener (hit area) at the
+  /// target point. Content behind the animation will only receive hits if
+  /// no animation listener was hit.
+  translucent,
+
+  /// All hits will pass through the animation, regardless of whether a
+  /// a Rive listener was hit. Rive listeners will still receive hits.
+  transparent,
+}
+
 class Rive extends LeafRenderObjectWidget {
   /// Artboard used for drawing
   final Artboard artboard;
@@ -58,6 +75,16 @@ class Rive extends LeafRenderObjectWidget {
   /// cursor to the next region behind it in hit-test order.
   final MouseCursor cursor;
 
+  /// {@template Rive.behavior}
+  /// How to behave during hit testing to consider targets behind this
+  /// animation.
+  ///
+  /// Defaults to [RiveHitTestBehavior.opaque].
+  ///
+  /// See [RiveHitTestBehavior] for the allowed values and their meanings.
+  /// {@endtemplate}
+  final RiveHitTestBehavior behavior;
+
   /// {@template Rive.clipRect}
   /// Clip the artboard to this rect.
   ///
@@ -73,6 +100,7 @@ class Rive extends LeafRenderObjectWidget {
     this.antialiasing = true,
     this.enablePointerEvents = false,
     this.cursor = MouseCursor.defer,
+    this.behavior = RiveHitTestBehavior.opaque,
     BoxFit? fit,
     Alignment? alignment,
     this.clipRect,
@@ -92,7 +120,8 @@ class Rive extends LeafRenderObjectWidget {
       ..clipRect = clipRect
       ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
-      ..cursor = cursor;
+      ..cursor = cursor
+      ..behavior = behavior;
   }
 
   @override
@@ -109,7 +138,8 @@ class Rive extends LeafRenderObjectWidget {
       ..clipRect = clipRect
       ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
-      ..cursor = cursor;
+      ..cursor = cursor
+      ..behavior = behavior;
   }
 }
 
@@ -117,6 +147,7 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   RuntimeArtboard _artboard;
   RiveRenderObject(
     this._artboard, {
+    this.behavior = RiveHitTestBehavior.opaque,
     MouseCursor cursor = MouseCursor.defer,
     bool validForMouseTracker = true,
   })  : _cursor = cursor,
@@ -151,6 +182,50 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
     for (final stateMachineController in stateMachineControllers) {
       callback(stateMachineController, artboardPosition);
     }
+  }
+
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    // super.hitTest(result, position: position)
+    bool hitTarget = false;
+    if (size.contains(position)) {
+      hitTarget = hitTestSelf(position);
+      if (hitTarget) {
+        // if hit add to results
+        result.add(BoxHitTestEntry(this, position));
+      }
+    }
+
+    // Let the hit continue to targets behind the animation.
+    if (behavior == RiveHitTestBehavior.transparent) {
+      return false;
+    }
+
+    // Opaque will always return true, translucent will return true if we
+    // hit a Rive listener target.
+    return hitTarget;
+  }
+
+  @override
+  bool hitTestSelf(Offset screenOffset) {
+    switch (behavior) {
+      case RiveHitTestBehavior.opaque:
+        return true; // Always hit
+      case RiveHitTestBehavior.translucent:
+      case RiveHitTestBehavior.transparent:
+        {
+          // test to see if any Rive animation listeners were hit
+          final artboardPosition = _toArtboard(screenOffset);
+          final stateMachineControllers = _artboard.animationControllers
+              .whereType<StateMachineController>();
+          for (final stateMachineController in stateMachineControllers) {
+            if (stateMachineController.hitTest(artboardPosition)) {
+              return true;
+            }
+          }
+        }
+    }
+    return false;
   }
 
   @override
@@ -224,6 +299,9 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   @override
   bool get validForMouseTracker => _validForMouseTracker;
   bool _validForMouseTracker;
+
+  /// {@macro Rive.behavior}
+  RiveHitTestBehavior behavior;
 
   @override
   void attach(PipelineOwner owner) {

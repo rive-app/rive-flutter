@@ -604,6 +604,70 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     return hitSomething;
   }
 
+  /// Hit testing. If any listeners were hit, returns true.
+  bool hitTest(
+    Vec2D position, {
+    PointerEvent? pointerEvent,
+    ListenerType? hitEvent,
+  }) {
+    var artboard = this.artboard;
+    if (artboard == null) {
+      return false;
+    }
+    if (artboard.frameOrigin) {
+      // ignore: parameter_assignments
+      position = position -
+          Vec2D.fromValues(
+            artboard.width * artboard.originX,
+            artboard.height * artboard.originY,
+          );
+    }
+    const hitRadius = 2;
+    var hitArea = IAABB(
+      (position.x - hitRadius).round(),
+      (position.y - hitRadius).round(),
+      (position.x + hitRadius).round(),
+      (position.y + hitRadius).round(),
+    );
+
+    for (final hitShape in hitShapes) {
+      var shape = hitShape.shape;
+      var bounds = shape.worldBounds;
+
+      // Quick reject
+      bool isOver = false;
+      if (bounds.contains(position)) {
+        // Make hit tester.
+        var hitTester = TransformingHitTester(hitArea);
+        shape.fillHitTester(hitTester);
+
+        isOver = hitTester.test();
+        if (isOver) {
+          return true; // exit early
+        }
+      }
+    }
+
+    for (final nestedArtboard in hitNestedArtboards) {
+      if (nestedArtboard.isCollapsed) {
+        continue;
+      }
+      var nestedPosition = nestedArtboard.worldToLocal(position);
+      if (nestedPosition == null) {
+        // Mounted artboard isn't ready or has a 0 scale transform.
+        continue;
+      }
+      for (final nestedStateMachine
+          in nestedArtboard.animations.whereType<NestedStateMachine>()) {
+        if (nestedStateMachine.hitTest(nestedPosition)) {
+          return true; // exit early
+        }
+      }
+    }
+
+    return false; // no hit targets found
+  }
+
   void pointerMove(Vec2D position) => _processEvent(
         position,
         hitEvent: ListenerType.move,
