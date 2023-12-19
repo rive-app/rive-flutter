@@ -1,5 +1,6 @@
-## Upcoming
+## 0.12.4
 
+- Adds `behavior` argument to `RiveAnimation` and `Rive`. An enum `RiveHitTestBehavior` specifies how to handle hit testing on an animation. Default is `RiveHitTestBehavior.opaque` - comsuming all hit events for the artboard bounds.
 - Collapsed nested artboards don't listen to pointer events anymore
 - Constraints pointing to collapsed targets are not applied
 
