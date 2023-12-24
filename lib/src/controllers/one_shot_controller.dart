@@ -11,6 +11,9 @@ T? _ambiguate<T>(T? value) => value;
 
 /// Controller tailored for managing one-shot animations
 class OneShotAnimation extends SimpleAnimation {
+  /// Prevents animation from resetting when animation stops being active
+  final bool resetOnStop;
+  
   /// Fires when the animation stops being active
   final VoidCallback? onStop;
 
@@ -21,6 +24,7 @@ class OneShotAnimation extends SimpleAnimation {
     String animationName, {
     double mix = 1,
     bool autoplay = true,
+    this.resetOnStop = true,
     this.onStop,
     this.onStart,
   }) : super(animationName, mix: mix, autoplay: autoplay) {
@@ -38,7 +42,7 @@ class OneShotAnimation extends SimpleAnimation {
   void onActiveChanged() {
     // If the animation stops and it is at the end of the one-shot, reset the
     // animation back to the starting time
-    if (!isActive) {
+    if (!isActive && resetOnStop) {
       reset();
     }
     // Fire any callbacks
