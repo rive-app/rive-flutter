@@ -198,11 +198,12 @@ class StateTransition extends StateTransitionBase {
 
         // Sometimes the time never reaches exitTime due to precision
         // differences on diff platforms
-        if (time < exitTime - 1 / 1000) {
+        if (time < exitTime) {
           return AllowTransition.waitingForExit;
         }
       }
     }
+
     return AllowTransition.yes;
   }
 
