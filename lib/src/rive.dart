@@ -231,7 +231,7 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   @override
   void handleEvent(PointerEvent event, HitTestEntry entry) {
     assert(debugHandleEvent(event, entry));
-    if (!enableHitTests) {
+    if (!enableHitTests || !attached) {
       return;
     }
     if (event is PointerDownEvent) {

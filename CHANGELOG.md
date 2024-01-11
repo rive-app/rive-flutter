@@ -1,3 +1,7 @@
+## Upcoming
+
+- Fix [[355](https://github.com/rive-app/rive-flutter/issues/355)] to ensure the Rive render object is attached before handling pointer events.
+
 ## 0.12.4
 
 - Adds `behavior` argument to `RiveAnimation` and `Rive`. An enum `RiveHitTestBehavior` specifies how to handle hit testing on an animation. Default is `RiveHitTestBehavior.opaque` - comsuming all hit events for the artboard bounds.
