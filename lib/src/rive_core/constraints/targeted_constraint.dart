@@ -1,15 +1,15 @@
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/transform_component.dart';
+import 'package:rive/src/rive_core/world_transform_component.dart';
 
 export 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
 
 /// A [Constraint] which uses an external target to help influence the computed
 /// transform.
 abstract class TargetedConstraint extends TargetedConstraintBase {
-  TransformComponent? _target;
-  TransformComponent? get target => _target;
-  set target(TransformComponent? value) {
+  WorldTransformComponent? _target;
+  WorldTransformComponent? get target => _target;
+  set target(WorldTransformComponent? value) {
     if (_target == value) {
       return;
     }

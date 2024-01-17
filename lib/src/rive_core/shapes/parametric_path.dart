@@ -1,11 +1,27 @@
+import 'dart:ui';
+
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';
+import 'package:rive/src/rive_core/bounds_provider.dart';
 import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/shapes/parametric_path_base.dart';
 
-abstract class ParametricPath extends ParametricPathBase {
+abstract class ParametricPath extends ParametricPathBase implements Sizable {
   @override
   bool get isClosed => true;
+
+  @override
+  Size computeIntrinsicSize(Size min, Size max) {
+    return Size(width, height);
+  }
+
+  @override
+  void controlSize(Size size) {
+    width = size.width;
+    height = size.height;
+
+    markPathDirty();
+  }
 
   @override
   Mat2D get pathTransform => worldTransform;

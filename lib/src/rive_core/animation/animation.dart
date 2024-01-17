@@ -7,6 +7,7 @@ export 'package:rive/src/generated/animation/animation_base.dart';
 class Animation extends AnimationBase<RuntimeArtboard> {
   Artboard? _artboard;
 
+  @override
   Artboard? get artboard => _artboard;
   set artboard(Artboard? value) {
     if (_artboard == value) {

@@ -68,6 +68,12 @@ function installRiveCpp {
         git checkout v2.6 .
         popd
     fi
+
+    if [ $FORCE == "true" ]; then
+        echo "Installing rustup"
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        $HOME/.cargo/bin/rustup component add rust-src --toolchain nightly-2023-05-27-aarch64-apple-darwin
+    fi
 }
 
 pushd macos

@@ -41,8 +41,6 @@ abstract class TransformComponent extends TransformComponentBase {
   final Mat2D transform = Mat2D();
 
   Vec2D get translation => Vec2D.fromValues(x, y);
-  Vec2D get worldTranslation =>
-      Vec2D.fromValues(worldTransform[4], worldTransform[5]);
 
   double get x;
   double get y;
@@ -211,6 +209,7 @@ abstract class TransformComponent extends TransformComponentBase {
   AABB get localBounds => AABB.collapsed(Vec2D());
 
   /// Bounds to use for constraining to object space.
+  @override
   AABB get constraintBounds => AABB.collapsed(Vec2D());
 
   void markDirtyIfConstrained() {

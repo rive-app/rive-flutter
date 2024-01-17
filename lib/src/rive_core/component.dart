@@ -68,6 +68,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   /// The artboard this component belongs to.
 
+  @override
   Artboard? get artboard => _artboard;
 
   // Note that this isn't a setter as we don't want anything externally changing
@@ -75,9 +76,6 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @protected
   @mustCallSuper
   void changeArtboard(Artboard? value) {
-    if (_artboard == value) {
-      return;
-    }
     _artboard?.removeComponent(this);
     _artboard = value;
     _artboard?.addComponent(this);
@@ -98,7 +96,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
         curr = curr.parent, sanity--) {
       visitAncestor(curr);
       if (curr is Artboard) {
-        changeArtboard(curr);
+        if (artboard != curr) {
+          changeArtboard(curr);
+        }
         return true;
       }
     }

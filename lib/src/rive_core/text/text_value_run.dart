@@ -15,6 +15,7 @@ class TextValueRun extends TextValueRunBase {
     if (_style == value) {
       return;
     }
+
     _style?.deref(this);
     _style = value;
     styleId = value?.id ?? Core.missingId;
@@ -45,7 +46,6 @@ class TextValueRun extends TextValueRunBase {
   @override
   void styleIdChanged(int from, int to) {
     style = context.resolve(to);
-    markShapeDirty();
   }
 
   @override

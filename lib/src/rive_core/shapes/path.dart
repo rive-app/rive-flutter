@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:rive/src/generated/shapes/path_base.dart';
+import 'package:rive/src/rive_core/bounds_provider.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/component_flags.dart';
@@ -17,7 +18,7 @@ enum Axis { horizontal, vertical }
 
 /// An abstract low level path that gets implemented by parametric and point
 /// based paths.
-abstract class Path extends PathBase {
+abstract class Path extends PathBase implements BoundsProvider {
   final Mat2D _inverseWorldTransform = Mat2D();
 
   final RenderPath _renderPath = RenderPath();
@@ -290,6 +291,7 @@ abstract class Path extends PathBase {
 
   @override
   AABB get localBounds => _renderPath.preciseComputeBounds();
+  @override
   AABB computeBounds(Mat2D relativeTo) => preciseComputeBounds(
         transform: Mat2D.multiply(
           Mat2D(),

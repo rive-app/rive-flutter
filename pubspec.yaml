@@ -21,7 +21,7 @@ dependencies:
   http: ">=0.13.3 <2.0.0"
   meta: ^1.3.0
   plugin_platform_interface: ^2.0.2
-  rive_common: 0.2.8
+  rive_common: 0.2.9
 dev_dependencies:
   flutter_test:
     sdk: flutter

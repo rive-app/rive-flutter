@@ -82,10 +82,12 @@ import 'package:rive/src/rive_core/animation/transition_bool_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_number_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/assets/audio_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 import 'package:rive/src/rive_core/assets/folder.dart';
 import 'package:rive/src/rive_core/assets/font_asset.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';
+import 'package:rive/src/rive_core/audio_event.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/bones/bone.dart';
 import 'package:rive/src/rive_core/bones/cubic_weight.dart';
@@ -107,6 +109,9 @@ import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
+import 'package:rive/src/rive_core/layout/grid_track_sizing_group.dart';
+import 'package:rive/src/rive_core/layout/track_sizing_function.dart';
+import 'package:rive/src/rive_core/layout_component.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/open_url_event.dart';
@@ -171,6 +176,10 @@ class RiveCoreContext {
         return NestedArtboard();
       case SoloBase.typeKey:
         return Solo();
+      case TrackSizingFunctionBase.typeKey:
+        return TrackSizingFunction();
+      case GridTrackSizingGroupBase.typeKey:
+        return GridTrackSizingGroup();
       case ListenerFireEventBase.typeKey:
         return ListenerFireEvent();
       case AnimationBase.typeKey:
@@ -317,6 +326,8 @@ class RiveCoreContext {
         return DrawRules();
       case CustomPropertyBooleanBase.typeKey:
         return CustomPropertyBoolean();
+      case LayoutComponentBase.typeKey:
+        return LayoutComponent();
       case ArtboardBase.typeKey:
         return Artboard();
       case JoystickBase.typeKey:
@@ -357,8 +368,12 @@ class RiveCoreContext {
         return ImageAsset();
       case FontAssetBase.typeKey:
         return FontAsset();
+      case AudioAssetBase.typeKey:
+        return AudioAsset();
       case FileAssetContentsBase.typeKey:
         return FileAssetContents();
+      case AudioEventBase.typeKey:
+        return AudioEvent();
       default:
         return null;
     }
@@ -579,6 +594,56 @@ class RiveCoreContext {
       case SoloBase.activeComponentIdPropertyKey:
         if (object is SoloBase && value is int) {
           object.activeComponentId = value;
+        }
+        break;
+      case TrackSizingFunctionBase.minTypeTagPropertyKey:
+        if (object is TrackSizingFunctionBase && value is int) {
+          object.minTypeTag = value;
+        }
+        break;
+      case TrackSizingFunctionBase.minValueTagPropertyKey:
+        if (object is TrackSizingFunctionBase && value is int) {
+          object.minValueTag = value;
+        }
+        break;
+      case TrackSizingFunctionBase.minValuePropertyKey:
+        if (object is TrackSizingFunctionBase && value is double) {
+          object.minValue = value;
+        }
+        break;
+      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
+        if (object is TrackSizingFunctionBase && value is int) {
+          object.maxTypeTag = value;
+        }
+        break;
+      case TrackSizingFunctionBase.maxValueTagPropertyKey:
+        if (object is TrackSizingFunctionBase && value is int) {
+          object.maxValueTag = value;
+        }
+        break;
+      case TrackSizingFunctionBase.maxValuePropertyKey:
+        if (object is TrackSizingFunctionBase && value is double) {
+          object.maxValue = value;
+        }
+        break;
+      case GridTrackSizingGroupBase.trackTagPropertyKey:
+        if (object is GridTrackSizingGroupBase && value is int) {
+          object.trackTag = value;
+        }
+        break;
+      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
+        if (object is GridTrackSizingGroupBase && value is bool) {
+          object.isRepeating = value;
+        }
+        break;
+      case GridTrackSizingGroupBase.repeatTagPropertyKey:
+        if (object is GridTrackSizingGroupBase && value is int) {
+          object.repeatTag = value;
+        }
+        break;
+      case GridTrackSizingGroupBase.repeatCountPropertyKey:
+        if (object is GridTrackSizingGroupBase && value is int) {
+          object.repeatCount = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:
@@ -1231,19 +1296,154 @@ class RiveCoreContext {
           object.propertyValue = value;
         }
         break;
-      case ArtboardBase.clipPropertyKey:
-        if (object is ArtboardBase && value is bool) {
-          object.clip = value;
+      case LayoutComponentBase.layoutFlags0PropertyKey:
+        if (object is LayoutComponentBase && value is int) {
+          object.layoutFlags0 = value;
         }
         break;
-      case ArtboardBase.widthPropertyKey:
-        if (object is ArtboardBase && value is double) {
+      case LayoutComponentBase.layoutFlags1PropertyKey:
+        if (object is LayoutComponentBase && value is int) {
+          object.layoutFlags1 = value;
+        }
+        break;
+      case LayoutComponentBase.layoutFlags2PropertyKey:
+        if (object is LayoutComponentBase && value is int) {
+          object.layoutFlags2 = value;
+        }
+        break;
+      case LayoutComponentBase.gapWidthPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.gapWidth = value;
+        }
+        break;
+      case LayoutComponentBase.gapHeightPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.gapHeight = value;
+        }
+        break;
+      case LayoutComponentBase.widthPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
           object.width = value;
         }
         break;
-      case ArtboardBase.heightPropertyKey:
-        if (object is ArtboardBase && value is double) {
+      case LayoutComponentBase.heightPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
           object.height = value;
+        }
+        break;
+      case LayoutComponentBase.maxWidthPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.maxWidth = value;
+        }
+        break;
+      case LayoutComponentBase.maxHeightPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.maxHeight = value;
+        }
+        break;
+      case LayoutComponentBase.minWidthPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.minWidth = value;
+        }
+        break;
+      case LayoutComponentBase.minHeightPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.minHeight = value;
+        }
+        break;
+      case LayoutComponentBase.marginLeftPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.marginLeft = value;
+        }
+        break;
+      case LayoutComponentBase.marginRightPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.marginRight = value;
+        }
+        break;
+      case LayoutComponentBase.marginTopPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.marginTop = value;
+        }
+        break;
+      case LayoutComponentBase.marginBottomPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.marginBottom = value;
+        }
+        break;
+      case LayoutComponentBase.paddingLeftPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.paddingLeft = value;
+        }
+        break;
+      case LayoutComponentBase.paddingRightPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.paddingRight = value;
+        }
+        break;
+      case LayoutComponentBase.paddingTopPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.paddingTop = value;
+        }
+        break;
+      case LayoutComponentBase.paddingBottomPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.paddingBottom = value;
+        }
+        break;
+      case LayoutComponentBase.insetLeftPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.insetLeft = value;
+        }
+        break;
+      case LayoutComponentBase.insetRightPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.insetRight = value;
+        }
+        break;
+      case LayoutComponentBase.insetTopPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.insetTop = value;
+        }
+        break;
+      case LayoutComponentBase.insetBottomPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.insetBottom = value;
+        }
+        break;
+      case LayoutComponentBase.flexGrowPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.flexGrow = value;
+        }
+        break;
+      case LayoutComponentBase.flexShrinkPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.flexShrink = value;
+        }
+        break;
+      case LayoutComponentBase.aspectRatioPropertyKey:
+        if (object is LayoutComponentBase && value is double) {
+          object.aspectRatio = value;
+        }
+        break;
+      case LayoutComponentBase.gridRowStartPropertyKey:
+        if (object is LayoutComponentBase && value is int) {
+          object.gridRowStart = value;
+        }
+        break;
+      case LayoutComponentBase.gridRowEndPropertyKey:
+        if (object is LayoutComponentBase && value is int) {
+          object.gridRowEnd = value;
+        }
+        break;
+      case LayoutComponentBase.gridColumnStartPropertyKey:
+        if (object is LayoutComponentBase && value is int) {
+          object.gridColumnStart = value;
+        }
+        break;
+      case LayoutComponentBase.gridColumnEndPropertyKey:
+        if (object is LayoutComponentBase && value is int) {
+          object.gridColumnEnd = value;
         }
         break;
       case ArtboardBase.xPropertyKey:
@@ -1666,6 +1866,11 @@ class RiveCoreContext {
           object.bytes = value;
         }
         break;
+      case AudioEventBase.assetIdPropertyKey:
+        if (object is AudioEventBase && value is int) {
+          object.assetId = value;
+        }
+        break;
     }
   }
 
@@ -1702,6 +1907,13 @@ class RiveCoreContext {
       case NestedArtboardBase.artboardIdPropertyKey:
       case NestedAnimationBase.animationIdPropertyKey:
       case SoloBase.activeComponentIdPropertyKey:
+      case TrackSizingFunctionBase.minTypeTagPropertyKey:
+      case TrackSizingFunctionBase.minValueTagPropertyKey:
+      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
+      case TrackSizingFunctionBase.maxValueTagPropertyKey:
+      case GridTrackSizingGroupBase.trackTagPropertyKey:
+      case GridTrackSizingGroupBase.repeatTagPropertyKey:
+      case GridTrackSizingGroupBase.repeatCountPropertyKey:
       case ListenerFireEventBase.eventIdPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
@@ -1755,6 +1967,13 @@ class RiveCoreContext {
       case PolygonBase.pointsPropertyKey:
       case ImageBase.assetIdPropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
+      case LayoutComponentBase.layoutFlags0PropertyKey:
+      case LayoutComponentBase.layoutFlags1PropertyKey:
+      case LayoutComponentBase.layoutFlags2PropertyKey:
+      case LayoutComponentBase.gridRowStartPropertyKey:
+      case LayoutComponentBase.gridRowEndPropertyKey:
+      case LayoutComponentBase.gridColumnStartPropertyKey:
+      case LayoutComponentBase.gridColumnEndPropertyKey:
       case ArtboardBase.defaultStateMachineIdPropertyKey:
       case JoystickBase.xIdPropertyKey:
       case JoystickBase.yIdPropertyKey:
@@ -1778,6 +1997,7 @@ class RiveCoreContext {
       case TextBase.originValuePropertyKey:
       case TextValueRunBase.styleIdPropertyKey:
       case FileAssetBase.assetIdPropertyKey:
+      case AudioEventBase.assetIdPropertyKey:
         return uintType;
       case CustomPropertyNumberBase.propertyValuePropertyKey:
       case ConstraintBase.strengthPropertyKey:
@@ -1797,6 +2017,8 @@ class RiveCoreContext {
       case TransformComponentBase.scaleYPropertyKey:
       case NodeBase.xPropertyKey:
       case NodeBase.yPropertyKey:
+      case TrackSizingFunctionBase.minValuePropertyKey:
+      case TrackSizingFunctionBase.maxValuePropertyKey:
       case LinearAnimationBase.speedPropertyKey:
       case NestedLinearAnimationBase.mixPropertyKey:
       case NestedSimpleAnimationBase.speedPropertyKey:
@@ -1855,8 +2077,29 @@ class RiveCoreContext {
       case CubicDetachedVertexBase.inDistancePropertyKey:
       case CubicDetachedVertexBase.outRotationPropertyKey:
       case CubicDetachedVertexBase.outDistancePropertyKey:
-      case ArtboardBase.widthPropertyKey:
-      case ArtboardBase.heightPropertyKey:
+      case LayoutComponentBase.gapWidthPropertyKey:
+      case LayoutComponentBase.gapHeightPropertyKey:
+      case LayoutComponentBase.widthPropertyKey:
+      case LayoutComponentBase.heightPropertyKey:
+      case LayoutComponentBase.maxWidthPropertyKey:
+      case LayoutComponentBase.maxHeightPropertyKey:
+      case LayoutComponentBase.minWidthPropertyKey:
+      case LayoutComponentBase.minHeightPropertyKey:
+      case LayoutComponentBase.marginLeftPropertyKey:
+      case LayoutComponentBase.marginRightPropertyKey:
+      case LayoutComponentBase.marginTopPropertyKey:
+      case LayoutComponentBase.marginBottomPropertyKey:
+      case LayoutComponentBase.paddingLeftPropertyKey:
+      case LayoutComponentBase.paddingRightPropertyKey:
+      case LayoutComponentBase.paddingTopPropertyKey:
+      case LayoutComponentBase.paddingBottomPropertyKey:
+      case LayoutComponentBase.insetLeftPropertyKey:
+      case LayoutComponentBase.insetRightPropertyKey:
+      case LayoutComponentBase.insetTopPropertyKey:
+      case LayoutComponentBase.insetBottomPropertyKey:
+      case LayoutComponentBase.flexGrowPropertyKey:
+      case LayoutComponentBase.flexShrinkPropertyKey:
+      case LayoutComponentBase.aspectRatioPropertyKey:
       case ArtboardBase.xPropertyKey:
       case ArtboardBase.yPropertyKey:
       case ArtboardBase.originXPropertyKey:
@@ -1921,6 +2164,7 @@ class RiveCoreContext {
       case IKConstraintBase.invertDirectionPropertyKey:
       case FollowPathConstraintBase.orientPropertyKey:
       case FollowPathConstraintBase.offsetPropertyKey:
+      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
       case LinearAnimationBase.enableWorkAreaPropertyKey:
       case LinearAnimationBase.quantizePropertyKey:
       case NestedSimpleAnimationBase.isPlayingPropertyKey:
@@ -1933,7 +2177,6 @@ class RiveCoreContext {
       case RectangleBase.linkCornerRadiusPropertyKey:
       case ClippingShapeBase.isVisiblePropertyKey:
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
-      case ArtboardBase.clipPropertyKey:
       case TextModifierRangeBase.clampPropertyKey:
         return boolType;
       case NestedTriggerBase.firePropertyKey:
@@ -2016,6 +2259,20 @@ class RiveCoreContext {
         return (object as NestedAnimationBase).animationId;
       case SoloBase.activeComponentIdPropertyKey:
         return (object as SoloBase).activeComponentId;
+      case TrackSizingFunctionBase.minTypeTagPropertyKey:
+        return (object as TrackSizingFunctionBase).minTypeTag;
+      case TrackSizingFunctionBase.minValueTagPropertyKey:
+        return (object as TrackSizingFunctionBase).minValueTag;
+      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
+        return (object as TrackSizingFunctionBase).maxTypeTag;
+      case TrackSizingFunctionBase.maxValueTagPropertyKey:
+        return (object as TrackSizingFunctionBase).maxValueTag;
+      case GridTrackSizingGroupBase.trackTagPropertyKey:
+        return (object as GridTrackSizingGroupBase).trackTag;
+      case GridTrackSizingGroupBase.repeatTagPropertyKey:
+        return (object as GridTrackSizingGroupBase).repeatTag;
+      case GridTrackSizingGroupBase.repeatCountPropertyKey:
+        return (object as GridTrackSizingGroupBase).repeatCount;
       case ListenerFireEventBase.eventIdPropertyKey:
         return (object as ListenerFireEventBase).eventId;
       case LinearAnimationBase.fpsPropertyKey:
@@ -2122,6 +2379,20 @@ class RiveCoreContext {
         return (object as ImageBase).assetId;
       case DrawRulesBase.drawTargetIdPropertyKey:
         return (object as DrawRulesBase).drawTargetId;
+      case LayoutComponentBase.layoutFlags0PropertyKey:
+        return (object as LayoutComponentBase).layoutFlags0;
+      case LayoutComponentBase.layoutFlags1PropertyKey:
+        return (object as LayoutComponentBase).layoutFlags1;
+      case LayoutComponentBase.layoutFlags2PropertyKey:
+        return (object as LayoutComponentBase).layoutFlags2;
+      case LayoutComponentBase.gridRowStartPropertyKey:
+        return (object as LayoutComponentBase).gridRowStart;
+      case LayoutComponentBase.gridRowEndPropertyKey:
+        return (object as LayoutComponentBase).gridRowEnd;
+      case LayoutComponentBase.gridColumnStartPropertyKey:
+        return (object as LayoutComponentBase).gridColumnStart;
+      case LayoutComponentBase.gridColumnEndPropertyKey:
+        return (object as LayoutComponentBase).gridColumnEnd;
       case ArtboardBase.defaultStateMachineIdPropertyKey:
         return (object as ArtboardBase).defaultStateMachineId;
       case JoystickBase.xIdPropertyKey:
@@ -2168,6 +2439,8 @@ class RiveCoreContext {
         return (object as TextValueRunBase).styleId;
       case FileAssetBase.assetIdPropertyKey:
         return (object as FileAssetBase).assetId;
+      case AudioEventBase.assetIdPropertyKey:
+        return (object as AudioEventBase).assetId;
     }
     return 0;
   }
@@ -2210,6 +2483,10 @@ class RiveCoreContext {
         return (object as NodeBase).x;
       case NodeBase.yPropertyKey:
         return (object as NodeBase).y;
+      case TrackSizingFunctionBase.minValuePropertyKey:
+        return (object as TrackSizingFunctionBase).minValue;
+      case TrackSizingFunctionBase.maxValuePropertyKey:
+        return (object as TrackSizingFunctionBase).maxValue;
       case LinearAnimationBase.speedPropertyKey:
         return (object as LinearAnimationBase).speed;
       case NestedLinearAnimationBase.mixPropertyKey:
@@ -2326,10 +2603,52 @@ class RiveCoreContext {
         return (object as CubicDetachedVertexBase).outRotation;
       case CubicDetachedVertexBase.outDistancePropertyKey:
         return (object as CubicDetachedVertexBase).outDistance;
-      case ArtboardBase.widthPropertyKey:
-        return (object as ArtboardBase).width;
-      case ArtboardBase.heightPropertyKey:
-        return (object as ArtboardBase).height;
+      case LayoutComponentBase.gapWidthPropertyKey:
+        return (object as LayoutComponentBase).gapWidth;
+      case LayoutComponentBase.gapHeightPropertyKey:
+        return (object as LayoutComponentBase).gapHeight;
+      case LayoutComponentBase.widthPropertyKey:
+        return (object as LayoutComponentBase).width;
+      case LayoutComponentBase.heightPropertyKey:
+        return (object as LayoutComponentBase).height;
+      case LayoutComponentBase.maxWidthPropertyKey:
+        return (object as LayoutComponentBase).maxWidth;
+      case LayoutComponentBase.maxHeightPropertyKey:
+        return (object as LayoutComponentBase).maxHeight;
+      case LayoutComponentBase.minWidthPropertyKey:
+        return (object as LayoutComponentBase).minWidth;
+      case LayoutComponentBase.minHeightPropertyKey:
+        return (object as LayoutComponentBase).minHeight;
+      case LayoutComponentBase.marginLeftPropertyKey:
+        return (object as LayoutComponentBase).marginLeft;
+      case LayoutComponentBase.marginRightPropertyKey:
+        return (object as LayoutComponentBase).marginRight;
+      case LayoutComponentBase.marginTopPropertyKey:
+        return (object as LayoutComponentBase).marginTop;
+      case LayoutComponentBase.marginBottomPropertyKey:
+        return (object as LayoutComponentBase).marginBottom;
+      case LayoutComponentBase.paddingLeftPropertyKey:
+        return (object as LayoutComponentBase).paddingLeft;
+      case LayoutComponentBase.paddingRightPropertyKey:
+        return (object as LayoutComponentBase).paddingRight;
+      case LayoutComponentBase.paddingTopPropertyKey:
+        return (object as LayoutComponentBase).paddingTop;
+      case LayoutComponentBase.paddingBottomPropertyKey:
+        return (object as LayoutComponentBase).paddingBottom;
+      case LayoutComponentBase.insetLeftPropertyKey:
+        return (object as LayoutComponentBase).insetLeft;
+      case LayoutComponentBase.insetRightPropertyKey:
+        return (object as LayoutComponentBase).insetRight;
+      case LayoutComponentBase.insetTopPropertyKey:
+        return (object as LayoutComponentBase).insetTop;
+      case LayoutComponentBase.insetBottomPropertyKey:
+        return (object as LayoutComponentBase).insetBottom;
+      case LayoutComponentBase.flexGrowPropertyKey:
+        return (object as LayoutComponentBase).flexGrow;
+      case LayoutComponentBase.flexShrinkPropertyKey:
+        return (object as LayoutComponentBase).flexShrink;
+      case LayoutComponentBase.aspectRatioPropertyKey:
+        return (object as LayoutComponentBase).aspectRatio;
       case ArtboardBase.xPropertyKey:
         return (object as ArtboardBase).x;
       case ArtboardBase.yPropertyKey:
@@ -2462,6 +2781,8 @@ class RiveCoreContext {
         return (object as FollowPathConstraintBase).orient;
       case FollowPathConstraintBase.offsetPropertyKey:
         return (object as FollowPathConstraintBase).offset;
+      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
+        return (object as GridTrackSizingGroupBase).isRepeating;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         return (object as LinearAnimationBase).enableWorkArea;
       case LinearAnimationBase.quantizePropertyKey:
@@ -2486,8 +2807,6 @@ class RiveCoreContext {
         return (object as ClippingShapeBase).isVisible;
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
         return (object as CustomPropertyBooleanBase).propertyValue;
-      case ArtboardBase.clipPropertyKey:
-        return (object as ArtboardBase).clip;
       case TextModifierRangeBase.clampPropertyKey:
         return (object as TextModifierRangeBase).clamp;
     }
@@ -2638,6 +2957,41 @@ class RiveCoreContext {
       case SoloBase.activeComponentIdPropertyKey:
         if (object is SoloBase) {
           object.activeComponentId = value;
+        }
+        break;
+      case TrackSizingFunctionBase.minTypeTagPropertyKey:
+        if (object is TrackSizingFunctionBase) {
+          object.minTypeTag = value;
+        }
+        break;
+      case TrackSizingFunctionBase.minValueTagPropertyKey:
+        if (object is TrackSizingFunctionBase) {
+          object.minValueTag = value;
+        }
+        break;
+      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
+        if (object is TrackSizingFunctionBase) {
+          object.maxTypeTag = value;
+        }
+        break;
+      case TrackSizingFunctionBase.maxValueTagPropertyKey:
+        if (object is TrackSizingFunctionBase) {
+          object.maxValueTag = value;
+        }
+        break;
+      case GridTrackSizingGroupBase.trackTagPropertyKey:
+        if (object is GridTrackSizingGroupBase) {
+          object.trackTag = value;
+        }
+        break;
+      case GridTrackSizingGroupBase.repeatTagPropertyKey:
+        if (object is GridTrackSizingGroupBase) {
+          object.repeatTag = value;
+        }
+        break;
+      case GridTrackSizingGroupBase.repeatCountPropertyKey:
+        if (object is GridTrackSizingGroupBase) {
+          object.repeatCount = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:
@@ -2905,6 +3259,41 @@ class RiveCoreContext {
           object.drawTargetId = value;
         }
         break;
+      case LayoutComponentBase.layoutFlags0PropertyKey:
+        if (object is LayoutComponentBase) {
+          object.layoutFlags0 = value;
+        }
+        break;
+      case LayoutComponentBase.layoutFlags1PropertyKey:
+        if (object is LayoutComponentBase) {
+          object.layoutFlags1 = value;
+        }
+        break;
+      case LayoutComponentBase.layoutFlags2PropertyKey:
+        if (object is LayoutComponentBase) {
+          object.layoutFlags2 = value;
+        }
+        break;
+      case LayoutComponentBase.gridRowStartPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.gridRowStart = value;
+        }
+        break;
+      case LayoutComponentBase.gridRowEndPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.gridRowEnd = value;
+        }
+        break;
+      case LayoutComponentBase.gridColumnStartPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.gridColumnStart = value;
+        }
+        break;
+      case LayoutComponentBase.gridColumnEndPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.gridColumnEnd = value;
+        }
+        break;
       case ArtboardBase.defaultStateMachineIdPropertyKey:
         if (object is ArtboardBase) {
           object.defaultStateMachineId = value;
@@ -3020,6 +3409,11 @@ class RiveCoreContext {
           object.assetId = value;
         }
         break;
+      case AudioEventBase.assetIdPropertyKey:
+        if (object is AudioEventBase) {
+          object.assetId = value;
+        }
+        break;
     }
   }
 
@@ -3113,6 +3507,16 @@ class RiveCoreContext {
       case NodeBase.yPropertyKey:
         if (object is NodeBase) {
           object.y = value;
+        }
+        break;
+      case TrackSizingFunctionBase.minValuePropertyKey:
+        if (object is TrackSizingFunctionBase) {
+          object.minValue = value;
+        }
+        break;
+      case TrackSizingFunctionBase.maxValuePropertyKey:
+        if (object is TrackSizingFunctionBase) {
+          object.maxValue = value;
         }
         break;
       case LinearAnimationBase.speedPropertyKey:
@@ -3405,14 +3809,119 @@ class RiveCoreContext {
           object.outDistance = value;
         }
         break;
-      case ArtboardBase.widthPropertyKey:
-        if (object is ArtboardBase) {
+      case LayoutComponentBase.gapWidthPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.gapWidth = value;
+        }
+        break;
+      case LayoutComponentBase.gapHeightPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.gapHeight = value;
+        }
+        break;
+      case LayoutComponentBase.widthPropertyKey:
+        if (object is LayoutComponentBase) {
           object.width = value;
         }
         break;
-      case ArtboardBase.heightPropertyKey:
-        if (object is ArtboardBase) {
+      case LayoutComponentBase.heightPropertyKey:
+        if (object is LayoutComponentBase) {
           object.height = value;
+        }
+        break;
+      case LayoutComponentBase.maxWidthPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.maxWidth = value;
+        }
+        break;
+      case LayoutComponentBase.maxHeightPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.maxHeight = value;
+        }
+        break;
+      case LayoutComponentBase.minWidthPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.minWidth = value;
+        }
+        break;
+      case LayoutComponentBase.minHeightPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.minHeight = value;
+        }
+        break;
+      case LayoutComponentBase.marginLeftPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.marginLeft = value;
+        }
+        break;
+      case LayoutComponentBase.marginRightPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.marginRight = value;
+        }
+        break;
+      case LayoutComponentBase.marginTopPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.marginTop = value;
+        }
+        break;
+      case LayoutComponentBase.marginBottomPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.marginBottom = value;
+        }
+        break;
+      case LayoutComponentBase.paddingLeftPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.paddingLeft = value;
+        }
+        break;
+      case LayoutComponentBase.paddingRightPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.paddingRight = value;
+        }
+        break;
+      case LayoutComponentBase.paddingTopPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.paddingTop = value;
+        }
+        break;
+      case LayoutComponentBase.paddingBottomPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.paddingBottom = value;
+        }
+        break;
+      case LayoutComponentBase.insetLeftPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.insetLeft = value;
+        }
+        break;
+      case LayoutComponentBase.insetRightPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.insetRight = value;
+        }
+        break;
+      case LayoutComponentBase.insetTopPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.insetTop = value;
+        }
+        break;
+      case LayoutComponentBase.insetBottomPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.insetBottom = value;
+        }
+        break;
+      case LayoutComponentBase.flexGrowPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.flexGrow = value;
+        }
+        break;
+      case LayoutComponentBase.flexShrinkPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.flexShrink = value;
+        }
+        break;
+      case LayoutComponentBase.aspectRatioPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.aspectRatio = value;
         }
         break;
       case ArtboardBase.xPropertyKey:
@@ -3735,6 +4244,11 @@ class RiveCoreContext {
           object.offset = value;
         }
         break;
+      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
+        if (object is GridTrackSizingGroupBase) {
+          object.isRepeating = value;
+        }
+        break;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         if (object is LinearAnimationBase) {
           object.enableWorkArea = value;
@@ -3793,11 +4307,6 @@ class RiveCoreContext {
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
         if (object is CustomPropertyBooleanBase) {
           object.propertyValue = value;
-        }
-        break;
-      case ArtboardBase.clipPropertyKey:
-        if (object is ArtboardBase) {
-          object.clip = value;
         }
         break;
       case TextModifierRangeBase.clampPropertyKey:

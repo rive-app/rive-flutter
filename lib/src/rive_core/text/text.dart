@@ -1,10 +1,12 @@
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:rive/src/generated/text/text_base.dart';
+import 'package:rive/src/rive_core/bounds_provider.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/enum_helper.dart';
+import 'package:rive/src/rive_core/layout_component.dart';
 import 'package:rive/src/rive_core/text/styled_text.dart';
 import 'package:rive/src/rive_core/text/text_modifier_group.dart';
 import 'package:rive/src/rive_core/text/text_style.dart' as rive;
@@ -33,7 +35,28 @@ enum TextOrigin {
   baseline,
 }
 
-class Text extends TextBase with TextStyleContainer {
+class Text extends TextBase with TextStyleContainer implements Sizable {
+  double? _layoutWidth;
+  double? _layoutHeight;
+
+  double get effectiveWidth => _layoutWidth ?? super.width;
+  double get effectiveHeight => _layoutHeight ?? super.height;
+
+  @override
+  Size computeIntrinsicSize(Size min, Size max) {
+    var size = _measure(max);
+    return size;
+  }
+
+  @override
+  void controlSize(Size size) {
+    if (_layoutWidth != size.width || _layoutHeight != size.height) {
+      _layoutWidth = size.width;
+      _layoutHeight = size.height;
+      markShapeDirty(sendToLayout: false);
+    }
+  }
+
   TextShapeResult? _shape;
   // A shape result specifically for modifiers.
   StyledText? _modifierStyledText;
@@ -229,6 +252,82 @@ class Text extends TextBase with TextStyleContainer {
 
   final List<rive.TextStyle> _renderStyles = [];
 
+  Size _measure(Size maxSize) {
+    var defaultFont = _defaultFont;
+    if (defaultFont == null) {
+      return Size.zero;
+    }
+    var styled = makeStyled(defaultFont, withModifiers: false);
+    var shape = defaultFont.shape(
+      styled.value,
+      styled.runs,
+    );
+    _cleanupShapes.add(shape);
+
+    var lines = shape.breakLines(
+        min(maxSize.width,
+            sizing == TextSizing.autoWidth ? double.infinity : width),
+        align);
+
+    double y = 0;
+    double minY = 0;
+    var paragraphIndex = 0;
+    double maxWidth = 0;
+    if (textOrigin == TextOrigin.baseline &&
+        lines.isNotEmpty &&
+        lines.first.isNotEmpty) {
+      y -= lines.first.first.baseline;
+      minY = y;
+    }
+
+    // We iterate in a pre-path building pass to compute dimensions.
+    for (final paragraphLines in lines) {
+      final paragraph = shape.paragraphs[paragraphIndex++];
+      for (final line in paragraphLines) {
+        var width = line.width(paragraph);
+        if (width > maxWidth) {
+          maxWidth = width;
+        }
+      }
+
+      if (paragraphLines.isNotEmpty) {
+        y += paragraphLines.last.bottom;
+      }
+
+      y += paragraphSpacing;
+    }
+
+    late AABB bounds;
+    switch (sizing) {
+      case TextSizing.autoWidth:
+        bounds = AABB.fromValues(
+          0.0,
+          minY,
+          maxWidth,
+          max(minY, y - paragraphSpacing),
+        );
+        break;
+      case TextSizing.autoHeight:
+        bounds = AABB.fromValues(
+          0.0,
+          minY,
+          width,
+          max(minY, y - paragraphSpacing),
+        );
+        break;
+      case TextSizing.fixed:
+        bounds = AABB.fromValues(
+          0.0,
+          minY,
+          width,
+          minY + height,
+        );
+        break;
+    }
+    lines.dispose();
+    return Size(bounds.width, bounds.height);
+  }
+
   void _buildRenderStyles() {
     var lines = _lines;
     var shape = _shape;
@@ -255,8 +354,8 @@ class Text extends TextBase with TextStyleContainer {
 
     // If we want an ellipsis we need to find the line to put the
     // ellipsis on (line before the one that overflows).
-    var wantEllipsis =
-        overflow == TextOverflow.ellipsis && sizing == TextSizing.fixed;
+    var wantEllipsis = overflow == TextOverflow.ellipsis &&
+        effectiveSizing == TextSizing.fixed;
 
     // We iterate in a pre-path building pass to compute dimensions.
     int lastLineIndex = -1;
@@ -268,7 +367,7 @@ class Text extends TextBase with TextStyleContainer {
           maxWidth = width;
         }
         lastLineIndex++;
-        if (wantEllipsis && y + line.bottom <= height) {
+        if (wantEllipsis && y + line.bottom <= effectiveHeight) {
           ellipsisLine++;
         }
       }
@@ -295,7 +394,7 @@ class Text extends TextBase with TextStyleContainer {
     int lineIndex = 0;
     paragraphIndex = 0;
 
-    switch (sizing) {
+    switch (effectiveSizing) {
       case TextSizing.autoWidth:
         _bounds = AABB.fromValues(
           0.0,
@@ -308,7 +407,7 @@ class Text extends TextBase with TextStyleContainer {
         _bounds = AABB.fromValues(
           0.0,
           minY,
-          width,
+          effectiveWidth,
           max(minY, y - paragraphSpacing),
         );
         break;
@@ -316,8 +415,8 @@ class Text extends TextBase with TextStyleContainer {
         _bounds = AABB.fromValues(
           0.0,
           minY,
-          width,
-          minY + height,
+          effectiveWidth,
+          minY + effectiveHeight,
         );
         break;
     }
@@ -336,12 +435,15 @@ class Text extends TextBase with TextStyleContainer {
       for (final line in paragraphLines) {
         switch (overflow) {
           case TextOverflow.hidden:
-            if (sizing == TextSizing.fixed && y + line.bottom > height) {
+            if (_layoutHeight == null ||
+                effectiveSizing == TextSizing.fixed &&
+                    y + line.bottom > effectiveHeight) {
               break outer;
             }
             break;
           case TextOverflow.clipped:
-            if (sizing == TextSizing.fixed && y + line.top > height) {
+            if (effectiveSizing == TextSizing.fixed &&
+                y + line.top > effectiveHeight) {
               break outer;
             }
             break;
@@ -352,7 +454,7 @@ class Text extends TextBase with TextStyleContainer {
         double x = -_bounds.width * originX + line.startX;
         for (final glyphInfo in lineIndex == ellipsisLine
             ? line.glyphsWithEllipsis(
-                width,
+                effectiveWidth,
                 paragraph: paragraph,
                 isLastLine: isEllipsisLineLast,
                 cleanupShapes: _cleanupShapes,
@@ -434,13 +536,22 @@ class Text extends TextBase with TextStyleContainer {
     canvas.restore();
   }
 
-  void markShapeDirty() {
+  void markShapeDirty({bool sendToLayout = true}) {
     _disposeShape();
     addDirt(ComponentDirt.path);
     for (final group in _modifierGroups) {
       group.clearRangeMaps();
     }
     markWorldTransformDirty();
+
+    if (sendToLayout) {
+      for (ContainerComponent? p = parent; p != null; p = p.parent) {
+        if (p is LayoutComponent) {
+          p.markTaffyNodeDirty();
+          // break;
+        }
+      }
+    }
   }
 
   /// Called when a modifier causes the text's shape to change.
@@ -468,6 +579,9 @@ class Text extends TextBase with TextStyleContainer {
       return;
     }
 
+    double breakWidth =
+        effectiveSizing == TextSizing.autoWidth ? -1 : effectiveWidth;
+
     // Question (max): is it safer to simply skip computing Shape if we
     // have no default font?
     assert(_defaultFont != null);
@@ -485,8 +599,7 @@ class Text extends TextBase with TextStyleContainer {
         _modifierStyledText!.value,
         _modifierStyledText!.runs,
       );
-      _modifierLines = _modifierShape?.breakLines(
-          sizing == TextSizing.autoWidth ? -1 : width, align);
+      _modifierLines = _modifierShape?.breakLines(breakWidth, align);
       _glyphLookup = GlyphLookup.fromShape(
           _modifierShape!, _modifierStyledText!.value.length);
       _unicharCount = _modifierStyledText!.value.length;
@@ -510,8 +623,7 @@ class Text extends TextBase with TextStyleContainer {
     );
     _unicharCount = styled.value.length;
     _cleanupShapes.add(_shape!);
-    _lines =
-        _shape?.breakLines(sizing == TextSizing.autoWidth ? -1 : width, align);
+    _lines = _shape?.breakLines(breakWidth, align);
 
     // If we did not pre-compute the range then we can do it now.
     if (!precomputeModifierCoverage && haveModifiers && _shape != null) {
@@ -525,10 +637,7 @@ class Text extends TextBase with TextStyleContainer {
   bool get modifierRangesNeedShape =>
       _modifierGroups.any((group) => group.needsShape);
 
-  @override
-  void update(int dirt) {
-    super.update(dirt);
-    bool rebuildRenderStyles = dirt & ComponentDirt.paint != 0;
+  bool _computeShapeWhenNecessary(int dirt) {
     if (dirt & ComponentDirt.path != 0) {
       // TODO: (Luigi) Hardcoded font for now
       if (_defaultFont == null) {
@@ -538,9 +647,17 @@ class Text extends TextBase with TextStyleContainer {
         }
       } else {
         computeShape();
-        rebuildRenderStyles = true;
+        return true;
       }
     }
+    return false;
+  }
+
+  @override
+  void update(int dirt) {
+    super.update(dirt);
+    bool rebuildRenderStyles =
+        _computeShapeWhenNecessary(dirt) || (dirt & ComponentDirt.paint != 0);
 
     // Could optimize this to do what the C++ runtime does by propagating
     // opacity to the styles instead of rebuilding render styles.
@@ -586,6 +703,9 @@ class Text extends TextBase with TextStyleContainer {
   }
 
   TextSizing get sizing => TextSizing.values[sizingValue];
+  TextSizing get effectiveSizing =>
+      _layoutHeight != null ? TextSizing.fixed : TextSizing.values[sizingValue];
+
   set sizing(TextSizing value) => sizingValue = value.index;
   TextOverflow get overflow {
     return enumAt(TextOverflow.values, overflowValue);

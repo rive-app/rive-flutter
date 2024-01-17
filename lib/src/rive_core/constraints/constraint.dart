@@ -40,7 +40,7 @@ abstract class Constraint extends ConstraintBase {
 
 /// Get the parent's world transform. Takes into consideration when the parent
 /// is an artboard.
-Mat2D parentWorld(TransformComponent component) {
+Mat2D parentWorld(WorldTransformComponent component) {
   var parent = component.parent;
   if (parent is WorldTransformComponent) {
     return parent.worldTransform;

@@ -16,16 +16,33 @@ import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
+import 'package:rive/src/rive_core/layout_component.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive_common/math.dart';
+import 'package:rive_common/rive_taffy.dart';
 import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
+  // Should probably change this to be nullable and make it only when necessary.
+  final Taffy _taffy = Taffy.make();
+  @override
+  Taffy get taffy => _taffy;
+  final Set<LayoutComponent> _dirtyLayout = {};
+
+  Artboard() {
+    _taffy.disableRounding();
+    makeTaffyNode(_taffy);
+  }
+
+  void markLayoutDirty(LayoutComponent layoutComponent) {
+    _dirtyLayout.add(layoutComponent);
+  }
+
   bool _frameOrigin = true;
 
   /// Returns true when the artboard will shift the origin from the top left to
@@ -193,6 +210,27 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// Update any dirty components in this artboard.
   bool advance(double elapsedSeconds, {bool nested = false}) {
+    if (_dirtyLayout.isNotEmpty && taffyNode != null) {
+      var dirtyLayout = _dirtyLayout.toList();
+      _dirtyLayout.clear();
+      for (final layoutComponent in dirtyLayout) {
+        layoutComponent.syncStyle(taffy);
+      }
+      // for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
+      //   if (layout.taffyNode != null) {
+      //     taffy.markDirty(node: layout.taffyNode!);
+      //   }
+      // }
+      var layoutResult = taffy.computeLayout(node: taffyNode!);
+      if (layoutResult.tag == TaffyResultTag.ok) {
+        // Need to sync all layout positions.
+        for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
+          layout.updateLayoutBounds(taffy);
+        }
+      } else {
+        print('error with layout');
+      }
+    }
     bool didUpdate = false;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
@@ -237,6 +275,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void heightChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     invalidateStrokeEffects();
+    super.heightChanged(from, to);
   }
 
   void onComponentDirty(Component component) {
@@ -297,6 +336,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void widthChanged(double from, double to) {
     addDirt(ComponentDirt.worldTransform);
     invalidateStrokeEffects();
+    super.widthChanged(from, to);
   }
 
   @override
@@ -313,6 +353,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     final wt = originWorld;
     return worldTranslation + wt;
   }
+
+  Mat2D get renderTransform => Mat2D.fromTranslate(x, y);
 
   /// Adds a component to the artboard. Good place for the artboard to check for
   /// components it'll later need to do stuff with (like draw them or sort them
