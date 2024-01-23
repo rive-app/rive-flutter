@@ -131,6 +131,7 @@ do
 
     defines {
         'WITH_RIVE_TEXT',
+        'WITH_RIVE_AUDIO',
         'HAVE_OT',
         'HB_NO_FALLBACK_SHAPE',
         'HB_NO_WIN1256'
