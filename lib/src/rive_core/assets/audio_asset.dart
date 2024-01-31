@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:rive/src/generated/assets/audio_asset_base.dart';
-import 'package:rive/src/rive_core/assets/file_asset.dart';
 
 export 'package:rive/src/generated/assets/audio_asset_base.dart';
 
