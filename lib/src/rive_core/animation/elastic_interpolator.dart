@@ -118,7 +118,7 @@ class ElasticInterpolator extends ElasticInterpolatorBase {
 
   @override
   void updateInterpolator() {
-    _elastic = ElasticEase(amplitude, period);
+    _elastic = ElasticEase(amplitude, period == 0 ? 0.5 : period);
     super.updateInterpolator();
   }
 

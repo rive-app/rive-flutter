@@ -115,6 +115,12 @@ class LayerController {
       _transition!.duration != 0 &&
       _mix != 1;
 
+  bool get isTransitionEnded =>
+      _transition != null &&
+      _stateFrom != null &&
+      _transition!.duration != 0 &&
+      _mix == 1;
+
   void _updateMix(double elapsedSeconds) {
     var transition = _transition;
     if (transition != null && _stateFrom != null && transition.duration != 0) {
@@ -164,6 +170,11 @@ class LayerController {
       }
     }
 
+    // When we exit a transition we want the currentState to apply its changes
+    // before moving to the next state
+    if (isTransitionEnded) {
+      _apply(core);
+    }
     for (int i = 0; updateState(i != 0); i++) {
       _apply(core);
 
