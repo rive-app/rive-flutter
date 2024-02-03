@@ -6,8 +6,8 @@ import 'package:rive/src/rive_core/draw_target.dart';
 export 'package:rive/src/generated/draw_rules_base.dart';
 
 class DrawRules extends DrawRulesBase {
-  final Set<DrawTarget> _targets = {};
-  Set<DrawTarget> get targets => _targets;
+  final List<DrawTarget> _targets = [];
+  List<DrawTarget> get targets => _targets;
 
   DrawTarget? _activeTarget;
   DrawTarget? get activeTarget => _activeTarget;
@@ -34,7 +34,7 @@ class DrawRules extends DrawRulesBase {
     super.childAdded(child);
     switch (child.coreType) {
       case DrawTargetBase.typeKey:
-        _targets.add(child as DrawTarget);
+        _addTarget(child as DrawTarget);
 
         break;
     }
@@ -51,6 +51,12 @@ class DrawRules extends DrawRulesBase {
         }
 
         break;
+    }
+  }
+
+  void _addTarget(DrawTarget child) {
+    if (!_targets.contains(child)) {
+      _targets.add(child);
     }
   }
 }
