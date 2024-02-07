@@ -1296,6 +1296,11 @@ class RiveCoreContext {
           object.propertyValue = value;
         }
         break;
+      case LayoutComponentBase.clipPropertyKey:
+        if (object is LayoutComponentBase && value is bool) {
+          object.clip = value;
+        }
+        break;
       case LayoutComponentBase.layoutFlags0PropertyKey:
         if (object is LayoutComponentBase && value is int) {
           object.layoutFlags0 = value;
@@ -2177,6 +2182,7 @@ class RiveCoreContext {
       case RectangleBase.linkCornerRadiusPropertyKey:
       case ClippingShapeBase.isVisiblePropertyKey:
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
+      case LayoutComponentBase.clipPropertyKey:
       case TextModifierRangeBase.clampPropertyKey:
         return boolType;
       case NestedTriggerBase.firePropertyKey:
@@ -2807,6 +2813,8 @@ class RiveCoreContext {
         return (object as ClippingShapeBase).isVisible;
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
         return (object as CustomPropertyBooleanBase).propertyValue;
+      case LayoutComponentBase.clipPropertyKey:
+        return (object as LayoutComponentBase).clip;
       case TextModifierRangeBase.clampPropertyKey:
         return (object as TextModifierRangeBase).clamp;
     }
@@ -4307,6 +4315,11 @@ class RiveCoreContext {
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
         if (object is CustomPropertyBooleanBase) {
           object.propertyValue = value;
+        }
+        break;
+      case LayoutComponentBase.clipPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.clip = value;
         }
         break;
       case TextModifierRangeBase.clampPropertyKey:

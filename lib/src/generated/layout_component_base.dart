@@ -19,9 +19,33 @@ abstract class LayoutComponentBase extends WorldTransformComponent {
       };
 
   /// --------------------------------------------------------------------------
-  /// LayoutFlags0 field with key 196.
-  static const int layoutFlags0PropertyKey = 196;
-  static const int layoutFlags0InitialValue = 0xAA001;
+  /// Clip field with key 196.
+  static const int clipPropertyKey = 196;
+  static const bool clipInitialValue = true;
+  bool _clip = clipInitialValue;
+
+  /// True when the layout component bounds clip its contents.
+  bool get clip => _clip;
+
+  /// Change the [_clip] field value.
+  /// [clipChanged] will be invoked only if the field's value has changed.
+  set clip(bool value) {
+    if (_clip == value) {
+      return;
+    }
+    bool from = _clip;
+    _clip = value;
+    if (hasValidated) {
+      clipChanged(from, value);
+    }
+  }
+
+  void clipChanged(bool from, bool to);
+
+  /// --------------------------------------------------------------------------
+  /// LayoutFlags0 field with key 414.
+  static const int layoutFlags0PropertyKey = 414;
+  static const int layoutFlags0InitialValue = 0x550008;
   int _layoutFlags0 = layoutFlags0InitialValue;
 
   /// First BitFlags for layout styles.
@@ -755,6 +779,7 @@ abstract class LayoutComponentBase extends WorldTransformComponent {
   void copy(Core source) {
     super.copy(source);
     if (source is LayoutComponentBase) {
+      _clip = source._clip;
       _layoutFlags0 = source._layoutFlags0;
       _layoutFlags1 = source._layoutFlags1;
       _layoutFlags2 = source._layoutFlags2;

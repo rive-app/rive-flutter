@@ -17,27 +17,26 @@ export 'package:rive/src/generated/layout_component_base.dart';
 
 class LayoutComponent extends LayoutComponentBase {
   // ---- Flags 0
-  static const BitFieldLoc clipBits = BitFieldLoc(0, 0);
-  static const BitFieldLoc displayBits = BitFieldLoc(1, 2);
-  static const BitFieldLoc positionBits = BitFieldLoc(3, 3);
+  static const BitFieldLoc displayBits = BitFieldLoc(0, 1);
+  static const BitFieldLoc positionBits = BitFieldLoc(2, 2);
 
-  static const BitFieldLoc flexDirectionBits = BitFieldLoc(4, 5);
-  static const BitFieldLoc gapWidthTypeBits = BitFieldLoc(6, 6);
-  static const BitFieldLoc gapHeightTypeBits = BitFieldLoc(7, 7);
-  static const BitFieldLoc widthTypeBits = BitFieldLoc(8, 9);
-  static const BitFieldLoc heightTypeBits = BitFieldLoc(10, 11);
-  static const BitFieldLoc maxWidthTypeBits = BitFieldLoc(12, 13);
-  static const BitFieldLoc maxHeightTypeBits = BitFieldLoc(14, 15);
-  static const BitFieldLoc minWidthTypeBits = BitFieldLoc(16, 17);
-  static const BitFieldLoc minHeightTypeBits = BitFieldLoc(18, 19);
+  static const BitFieldLoc flexDirectionBits = BitFieldLoc(3, 4);
+  static const BitFieldLoc gapWidthTypeBits = BitFieldLoc(5, 5);
+  static const BitFieldLoc gapHeightTypeBits = BitFieldLoc(6, 6);
+  static const BitFieldLoc widthTypeBits = BitFieldLoc(7, 8);
+  static const BitFieldLoc heightTypeBits = BitFieldLoc(9, 10);
+  static const BitFieldLoc maxWidthTypeBits = BitFieldLoc(11, 12);
+  static const BitFieldLoc maxHeightTypeBits = BitFieldLoc(13, 14);
+  static const BitFieldLoc minWidthTypeBits = BitFieldLoc(15, 16);
+  static const BitFieldLoc minHeightTypeBits = BitFieldLoc(17, 18);
 
-  static const BitFieldLoc marginLeftTypeBits = BitFieldLoc(20, 21);
-  static const BitFieldLoc marginRightTypeBits = BitFieldLoc(22, 23);
-  static const BitFieldLoc marginTopTypeBits = BitFieldLoc(24, 25);
-  static const BitFieldLoc marginBottomTypeBits = BitFieldLoc(26, 27);
+  static const BitFieldLoc marginLeftTypeBits = BitFieldLoc(19, 20);
+  static const BitFieldLoc marginRightTypeBits = BitFieldLoc(21, 22);
+  static const BitFieldLoc marginTopTypeBits = BitFieldLoc(23, 24);
+  static const BitFieldLoc marginBottomTypeBits = BitFieldLoc(25, 26);
 
-  static const BitFieldLoc intrinsicallySizedBits = BitFieldLoc(28, 28);
-  static const BitFieldLoc alignItemsBits = BitFieldLoc(29, 31);
+  static const BitFieldLoc intrinsicallySizedBits = BitFieldLoc(27, 27);
+  static const BitFieldLoc alignItemsBits = BitFieldLoc(28, 30);
 
   // ---- Flags 1
   static const BitFieldLoc alignSelfBits = BitFieldLoc(0, 2);
@@ -150,20 +149,6 @@ class LayoutComponent extends LayoutComponentBase {
       TaffyPosition.values[positionBits.read(layoutFlags0)];
   set position(TaffyPosition value) =>
       layoutFlags0 = positionBits.write(layoutFlags0, value.index);
-
-  bool get clip => clipBits.read(layoutFlags0) == 1;
-  set clip(bool value) {
-    if (clip == value) {
-      return;
-    }
-    bool from = clip;
-    layoutFlags0 = clipBits.write(layoutFlags0, value ? 1 : 0);
-    // The clip property was initially an Artboard prop, but moved here so we
-    // need to maintain the changed callback
-    clipChanged(from, value);
-  }
-
-  void clipChanged(bool from, bool to) {}
 
   TaffyDimensionTag get marginLeftType =>
       TaffyDimensionTag.values[marginLeftTypeBits.read(layoutFlags0)];
@@ -540,6 +525,9 @@ class LayoutComponent extends LayoutComponentBase {
       (parent as LayoutComponent).syncLayoutChildren();
     }
   }
+
+  @override
+  void clipChanged(bool from, bool to) => markTaffyNodeDirty();
 
   @override
   void gapHeightChanged(double from, double to) => markTaffyNodeDirty();
