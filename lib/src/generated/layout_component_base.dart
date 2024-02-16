@@ -45,7 +45,7 @@ abstract class LayoutComponentBase extends WorldTransformComponent {
   /// --------------------------------------------------------------------------
   /// LayoutFlags0 field with key 414.
   static const int layoutFlags0PropertyKey = 414;
-  static const int layoutFlags0InitialValue = 0x550008;
+  static const int layoutFlags0InitialValue = 0x55000;
   int _layoutFlags0 = layoutFlags0InitialValue;
 
   /// First BitFlags for layout styles.
