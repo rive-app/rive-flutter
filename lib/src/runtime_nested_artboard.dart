@@ -6,6 +6,8 @@ import 'package:rive/src/rive_core/animation/nested_linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart'
+    as state_machine_core;
 import 'package:rive/src/runtime_mounted_artboard.dart';
 import 'package:rive_common/math.dart';
 
@@ -123,15 +125,24 @@ class RuntimeNestedStateMachineInstance extends NestedStateMachineInstance {
   bool hitTest(Vec2D position) => stateMachineController.hitTest(position);
 
   @override
-  void pointerDown(Vec2D position, PointerDownEvent event) =>
-      stateMachineController.pointerDown(position, event);
+  state_machine_core.HitResult pointerDown(
+      Vec2D position, PointerDownEvent event) {
+    final result = stateMachineController.pointerDown(position, event);
+
+    return result;
+  }
 
   @override
-  void pointerMove(Vec2D position) =>
+  state_machine_core.HitResult pointerMove(Vec2D position) =>
       stateMachineController.pointerMove(position);
 
   @override
-  void pointerUp(Vec2D position) => stateMachineController.pointerUp(position);
+  state_machine_core.HitResult pointerUp(Vec2D position) =>
+      stateMachineController.pointerUp(position);
+
+  @override
+  state_machine_core.HitResult pointerExit(Vec2D position) =>
+      stateMachineController.pointerExit(position);
 
   @override
   dynamic getInputValue(int id) => stateMachineController.getInputValue(id);

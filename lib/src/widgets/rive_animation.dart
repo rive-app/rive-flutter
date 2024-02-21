@@ -320,8 +320,7 @@ class RiveAnimationState extends State<RiveAnimation> {
   bool get _shouldAddHitTesting => _artboard!.animationControllers.any(
         (controller) =>
             controller is StateMachineController &&
-            (controller.hitShapes.isNotEmpty ||
-                controller.hitNestedArtboards.isNotEmpty),
+            controller.hitComponents.isNotEmpty,
       );
 
   @override

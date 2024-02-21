@@ -6,6 +6,7 @@ import 'package:rive/src/rive_core/animation/nested_bool.dart';
 import 'package:rive/src/rive_core/animation/nested_input.dart';
 import 'package:rive/src/rive_core/animation/nested_number.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart';
 import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/animation/nested_state_machine_base.dart';
@@ -18,11 +19,13 @@ abstract class NestedStateMachineInstance {
 
   bool hitTest(Vec2D position);
 
-  void pointerMove(Vec2D position);
+  HitResult pointerMove(Vec2D position);
 
-  void pointerDown(Vec2D position, PointerDownEvent event);
+  HitResult pointerDown(Vec2D position, PointerDownEvent event);
 
-  void pointerUp(Vec2D position);
+  HitResult pointerUp(Vec2D position);
+
+  HitResult pointerExit(Vec2D position);
 
   dynamic getInputValue(int id);
   void setInputValue(int id, dynamic value);
@@ -79,13 +82,17 @@ class NestedStateMachine extends NestedStateMachineBase {
   bool hitTest(Vec2D position) =>
       _stateMachineInstance?.hitTest(position) ?? false;
 
-  void pointerMove(Vec2D position) =>
-      _stateMachineInstance?.pointerMove(position);
+  HitResult pointerMove(Vec2D position) =>
+      _stateMachineInstance?.pointerMove(position) ?? HitResult.none;
 
-  void pointerDown(Vec2D position, PointerDownEvent event) =>
-      _stateMachineInstance?.pointerDown(position, event);
+  HitResult pointerDown(Vec2D position, PointerDownEvent event) =>
+      _stateMachineInstance?.pointerDown(position, event) ?? HitResult.none;
 
-  void pointerUp(Vec2D position) => _stateMachineInstance?.pointerUp(position);
+  HitResult pointerUp(Vec2D position) =>
+      _stateMachineInstance?.pointerUp(position) ?? HitResult.none;
+
+  HitResult pointerExit(Vec2D position) =>
+      _stateMachineInstance?.pointerExit(position) ?? HitResult.none;
 
   void _isActiveChanged() {
     // When a nested state machine re-activates (usually when an input changes)

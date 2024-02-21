@@ -44,6 +44,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   bool _frameOrigin = true;
+  bool hasChangedDrawOrderInLastUpdate = false;
 
   /// Returns true when the artboard will shift the origin from the top left to
   /// the relative width/height of the artboard itself. This is what the editor
@@ -238,6 +239,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         didUpdate = true;
       }
     }
+    hasChangedDrawOrderInLastUpdate = false;
 
     // Joysticks can be applied before updating components if none of the
     // joysticks have "external" control. If they are controlled/moved by some
@@ -443,7 +445,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       fill.draw(canvas, path);
     }
 
-    for (var drawable = _firstDrawable;
+    for (var drawable = firstDrawable;
         drawable != null;
         drawable = drawable.prev) {
       if (drawable.isHidden || drawable.renderOpacity == 0) {
@@ -551,7 +553,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   Vec2D get worldTranslation => Vec2D();
 
-  Drawable? _firstDrawable;
+  Drawable? firstDrawable;
 
   void computeDrawOrder() {
     _drawables.clear();
@@ -589,12 +591,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   void sortDrawOrder() {
+    hasChangedDrawOrderInLastUpdate = true;
     // Clear out rule first/last items.
     for (final rule in _sortedDrawRules) {
       rule.first = rule.last = null;
     }
 
-    _firstDrawable = null;
+    firstDrawable = null;
     Drawable? lastDrawable;
     for (final drawable in _drawables) {
       var rules = drawable.flattenedDrawRules;
@@ -614,7 +617,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         drawable.prev = lastDrawable;
         drawable.next = null;
         if (lastDrawable == null) {
-          lastDrawable = _firstDrawable = drawable;
+          lastDrawable = firstDrawable = drawable;
         } else {
           lastDrawable.next = drawable;
           lastDrawable = drawable;
@@ -632,8 +635,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
             rule.drawable!.prev?.next = rule.first;
             rule.first?.prev = rule.drawable!.prev;
           }
-          if (rule.drawable == _firstDrawable) {
-            _firstDrawable = rule.first;
+          if (rule.drawable == firstDrawable) {
+            firstDrawable = rule.first;
           }
           rule.drawable?.prev = rule.last;
           rule.last?.next = rule.drawable;
@@ -652,7 +655,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
 
-    _firstDrawable = lastDrawable;
+    firstDrawable = lastDrawable;
   }
 
   // Make an instance of the artboard, clones internal objects and properties.

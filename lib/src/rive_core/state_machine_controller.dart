@@ -2,6 +2,7 @@ library rive_core;
 
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/src/core/core.dart';
@@ -22,6 +23,8 @@ import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
@@ -363,8 +366,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
         onStateChange?.call(stateMachine.name, stateName);
       });
 
-  late List<_HitShape> hitShapes;
-  late List<NestedArtboard> hitNestedArtboards;
+  late List<_HitComponent> hitComponents = [];
 
   Artboard? _artboard;
 
@@ -407,7 +409,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
           if (component is Shape) {
             var hitShape = hitShapeLookup[component];
             if (hitShape == null) {
-              hitShapeLookup[component] = hitShape = _HitShape(component);
+              hitShapeLookup[component] = hitShape = _HitShape(component, this);
             }
             hitShape.events.add(event);
           }
@@ -416,19 +418,18 @@ class StateMachineController extends RiveAnimationController<CoreContext>
         });
       }
     }
-    hitShapes = hitShapeLookup.values.toList();
+    hitShapeLookup.values.toList().forEach(hitComponents.add);
 
     _artboard = core as RuntimeArtboard;
 
-    List<NestedArtboard> nestedArtboards = [];
     if (_artboard != null) {
       for (final nestedArtboard in _artboard!.activeNestedArtboards) {
         if (nestedArtboard.hasNestedStateMachine) {
-          nestedArtboards.add(nestedArtboard);
+          hitComponents.add(_HitNestedArtboard(nestedArtboard, this));
         }
       }
     }
-    hitNestedArtboards = nestedArtboards;
+    _sortHittableComponents();
     return super.init(core);
   }
 
@@ -457,8 +458,40 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     }
   }
 
+  void _sortHittableComponents() {
+    Drawable? firstDrawable = artboard?.firstDrawable;
+    if (firstDrawable != null) {
+      // walk to the end, so we can visit in reverse-order
+      while (firstDrawable!.prev != null) {
+        firstDrawable = firstDrawable.prev;
+      }
+
+      int hitComponentsCount = hitComponents.length;
+      int currentSortedIndex = 0;
+      while (firstDrawable != null) {
+        for (var i = currentSortedIndex; i < hitComponentsCount; i++) {
+          if (hitComponents.elementAt(i).component == firstDrawable) {
+            if (currentSortedIndex != i) {
+              hitComponents.swap(i, currentSortedIndex);
+            }
+            currentSortedIndex++;
+            break;
+          }
+        }
+        if (currentSortedIndex == hitComponentsCount) {
+          break;
+        }
+        firstDrawable = firstDrawable.next;
+      }
+    }
+  }
+
   @override
   void apply(CoreContext core, double elapsedSeconds) {
+    if (artboard?.hasChangedDrawOrderInLastUpdate ?? false) {
+      _sortHittableComponents();
+    }
+
     bool keepGoing = false;
     for (final layerController in layerControllers) {
       if (layerController.apply(core, elapsedSeconds)) {
@@ -513,14 +546,14 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     }
   }
 
-  bool _processEvent(
+  HitResult _processEvent(
     Vec2D position, {
     PointerEvent? pointerEvent,
     ListenerType? hitEvent,
   }) {
     var artboard = this.artboard;
     if (artboard == null) {
-      return false;
+      return HitResult.none;
     }
     if (artboard.frameOrigin) {
       // ignore: parameter_assignments
@@ -530,89 +563,25 @@ class StateMachineController extends RiveAnimationController<CoreContext>
             artboard.height * artboard.originY,
           );
     }
-    const hitRadius = 2;
-    var hitArea = IAABB(
-      (position.x - hitRadius).round(),
-      (position.y - hitRadius).round(),
-      (position.x + hitRadius).round(),
-      (position.y + hitRadius).round(),
-    );
 
     bool hitSomething = false;
-    for (final hitShape in hitShapes) {
-      // for (final hitShape in event.shapes) {
-      var shape = hitShape.shape;
-      var bounds = shape.worldBounds;
-
-      // Quick reject
-      bool isOver = false;
-      if (bounds.contains(position)) {
-        // Make hit tester.
-
-        var hitTester = TransformingHitTester(hitArea);
-        shape.fillHitTester(hitTester);
-
-        // TODO: figure out where we get the fill rule. We could get it from
-        // the Shape's first fill or do we want to store it on the event as a
-        // user-selectable value in the inspector?
-
-        // Just use bounds for now
-        isOver = hitTester.test();
-        if (isOver) {
-          hitSomething = true;
-        }
-      }
-
-      bool hoverChange = hitShape.isHovered != isOver;
-      hitShape.isHovered = isOver;
-
-      // iterate all events associated with this hit shape
-      for (final event in hitShape.events) {
-        // Always update hover states regardless of which specific event type
-        // we're trying to trigger.
-        if (hoverChange) {
-          if (isOver && event.listenerType == ListenerType.enter) {
-            event.performChanges(this, position);
-            isActive = true;
-          } else if (!isOver && event.listenerType == ListenerType.exit) {
-            event.performChanges(this, position);
-            isActive = true;
-          }
-        }
-        if (isOver && hitEvent == event.listenerType) {
-          event.performChanges(this, position);
-          isActive = true;
+    bool hitOpaque = false;
+    HitResult hitResult = HitResult.none;
+    for (final hitComponent in hitComponents) {
+      hitResult = hitComponent.processEvent(position,
+          hitEvent: hitEvent, pointerEvent: pointerEvent, canHit: !hitOpaque);
+      if (hitResult != HitResult.none) {
+        hitSomething = true;
+        if (hitResult == HitResult.hitOpaque) {
+          hitOpaque = true;
         }
       }
     }
-    for (final nestedArtboard in hitNestedArtboards) {
-      if (nestedArtboard.isCollapsed) {
-        continue;
-      }
-      var nestedPosition = nestedArtboard.worldToLocal(position);
-      if (nestedPosition == null) {
-        // Mounted artboard isn't ready or has a 0 scale transform.
-        continue;
-      }
-      for (final nestedStateMachine
-          in nestedArtboard.animations.whereType<NestedStateMachine>()) {
-        switch (hitEvent) {
-          case ListenerType.down:
-            nestedStateMachine.pointerDown(
-              nestedPosition,
-              pointerEvent as PointerDownEvent,
-            );
-            break;
-          case ListenerType.up:
-            nestedStateMachine.pointerUp(nestedPosition);
-            break;
-          default:
-            nestedStateMachine.pointerMove(nestedPosition);
-            break;
-        }
-      }
-    }
-    return hitSomething;
+    return hitSomething
+        ? hitOpaque
+            ? HitResult.hitOpaque
+            : HitResult.hit
+        : HitResult.none;
   }
 
   /// Hit testing. If any listeners were hit, returns true.
@@ -633,78 +602,44 @@ class StateMachineController extends RiveAnimationController<CoreContext>
             artboard.height * artboard.originY,
           );
     }
-    const hitRadius = 2;
-    var hitArea = IAABB(
-      (position.x - hitRadius).round(),
-      (position.y - hitRadius).round(),
-      (position.x + hitRadius).round(),
-      (position.y + hitRadius).round(),
-    );
 
-    for (final hitShape in hitShapes) {
-      var shape = hitShape.shape;
-      var bounds = shape.worldBounds;
-
-      // Quick reject
-      bool isOver = false;
-      if (bounds.contains(position)) {
-        // Make hit tester.
-        var hitTester = TransformingHitTester(hitArea);
-        shape.fillHitTester(hitTester);
-
-        isOver = hitTester.test();
-        if (isOver) {
-          return true; // exit early
-        }
-      }
-    }
-
-    for (final nestedArtboard in hitNestedArtboards) {
-      if (nestedArtboard.isCollapsed) {
-        continue;
-      }
-      var nestedPosition = nestedArtboard.worldToLocal(position);
-      if (nestedPosition == null) {
-        // Mounted artboard isn't ready or has a 0 scale transform.
-        continue;
-      }
-      for (final nestedStateMachine
-          in nestedArtboard.animations.whereType<NestedStateMachine>()) {
-        if (nestedStateMachine.hitTest(nestedPosition)) {
-          return true; // exit early
-        }
+    for (final hitComponent in hitComponents) {
+      if (hitComponent.hitTest(position)) {
+        return true;
       }
     }
 
     return false; // no hit targets found
   }
 
-  void pointerMove(Vec2D position) => _processEvent(
+  HitResult pointerMove(Vec2D position) => _processEvent(
         position,
         hitEvent: ListenerType.move,
       );
 
-  void pointerDown(Vec2D position, PointerDownEvent event) {
-    if (_processEvent(
+  HitResult pointerDown(Vec2D position, PointerDownEvent event) {
+    final hitResult = _processEvent(
       position,
       hitEvent: ListenerType.down,
       pointerEvent: event,
-    )) {
+    );
+    if (hitResult != HitResult.none) {
       _recognizer.addPointer(event);
     }
+    return hitResult;
   }
 
-  void pointerUp(Vec2D position) => _processEvent(
+  HitResult pointerUp(Vec2D position) => _processEvent(
         position,
         hitEvent: ListenerType.up,
       );
 
-  void pointerExit(Vec2D position) => _processEvent(
+  HitResult pointerExit(Vec2D position) => _processEvent(
         position,
         hitEvent: ListenerType.exit,
       );
 
-  void pointerEnter(Vec2D position) => _processEvent(
+  HitResult pointerEnter(Vec2D position) => _processEvent(
         position,
         hitEvent: ListenerType.enter,
       );
@@ -725,14 +660,170 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   }
 }
 
+enum HitResult {
+  none,
+  hit,
+  hitOpaque,
+}
+
+class _HitComponent {
+  final Component component;
+  final StateMachineController controller;
+  HitResult processEvent(
+    Vec2D position, {
+    PointerEvent? pointerEvent,
+    ListenerType? hitEvent,
+    bool canHit = true,
+  }) {
+    return HitResult.none;
+  }
+
+  bool hitTest(Vec2D position) {
+    return false;
+  }
+
+  _HitComponent(this.component, this.controller);
+}
+
 /// Representation of a Shape from the Artboard Instance and all the events it
 /// triggers. Allows tracking hover and performing hit detection only once on
 /// shapes that trigger multiple events.
-class _HitShape {
-  Shape shape;
+class _HitShape extends _HitComponent {
+  final Shape shape;
+  double hitRadius = 2;
   bool isHovered = false;
   List<StateMachineListener> events = [];
-  _HitShape(this.shape);
+
+  _HitShape(this.shape, StateMachineController controller)
+      : super(shape, controller);
+
+  @override
+  bool hitTest(Vec2D position) {
+    var shape = component as Shape;
+    var bounds = shape.worldBounds;
+
+    // Quick reject
+    if (bounds.contains(position)) {
+      var hitArea = IAABB(
+        (position.x - hitRadius).round(),
+        (position.y - hitRadius).round(),
+        (position.x + hitRadius).round(),
+        (position.y + hitRadius).round(),
+      );
+      // Make hit tester.
+      var hitTester = TransformingHitTester(hitArea);
+      shape.fillHitTester(hitTester);
+      return hitTester.test(); // exit early
+    }
+    return false;
+  }
+
+  @override
+  HitResult processEvent(
+    Vec2D position, {
+    PointerEvent? pointerEvent,
+    ListenerType? hitEvent,
+    bool canHit = true,
+  }) {
+    var shape = component as Shape;
+    var isOver = false;
+    if (canHit) {
+      isOver = hitTest(position);
+    }
+    ////
+    bool hoverChange = isHovered != isOver;
+    isHovered = isOver;
+
+    // iterate all events associated with this hit shape
+    for (final event in events) {
+      // Always update hover states regardless of which specific event type
+      // we're trying to trigger.
+      if (hoverChange) {
+        if (isOver && event.listenerType == ListenerType.enter) {
+          event.performChanges(controller, position);
+          controller.isActive = true;
+        } else if (!isOver && event.listenerType == ListenerType.exit) {
+          event.performChanges(controller, position);
+          controller.isActive = true;
+        }
+      }
+      if (isOver && hitEvent == event.listenerType) {
+        event.performChanges(controller, position);
+        controller.isActive = true;
+      }
+    }
+    ////
+    return isOver
+        ? shape.isTargetOpaque
+            ? HitResult.hitOpaque
+            : HitResult.hit
+        : HitResult.none;
+  }
+}
+
+class _HitNestedArtboard extends _HitComponent {
+  final NestedArtboard nestedArtboard;
+  _HitNestedArtboard(this.nestedArtboard, StateMachineController controller)
+      : super(nestedArtboard, controller);
+
+  @override
+  bool hitTest(Vec2D position) {
+    var nestedPosition = nestedArtboard.worldToLocal(position);
+    if (nestedArtboard.isCollapsed) {
+      return false;
+    }
+    if (nestedPosition == null) {
+      // Mounted artboard isn't ready or has a 0 scale transform.
+      return false;
+    }
+    for (final nestedStateMachine
+        in nestedArtboard.animations.whereType<NestedStateMachine>()) {
+      if (nestedStateMachine.hitTest(nestedPosition)) {
+        return true; // exit early
+      }
+    }
+    return false;
+  }
+
+  @override
+  HitResult processEvent(
+    Vec2D position, {
+    PointerEvent? pointerEvent,
+    ListenerType? hitEvent,
+    bool canHit = true,
+  }) {
+    HitResult hitResult = HitResult.none;
+    if (nestedArtboard.isCollapsed) {
+      return hitResult;
+    }
+    var nestedPosition = nestedArtboard.worldToLocal(position);
+    if (nestedPosition == null) {
+      // Mounted artboard isn't ready or has a 0 scale transform.
+      return hitResult;
+    }
+    for (final nestedStateMachine
+        in nestedArtboard.animations.whereType<NestedStateMachine>()) {
+      if (canHit) {
+        switch (hitEvent) {
+          case ListenerType.down:
+            hitResult = nestedStateMachine.pointerDown(
+              nestedPosition,
+              pointerEvent as PointerDownEvent,
+            );
+            break;
+          case ListenerType.up:
+            hitResult = nestedStateMachine.pointerUp(nestedPosition);
+            break;
+          default:
+            hitResult = nestedStateMachine.pointerMove(nestedPosition);
+            break;
+        }
+      } else {
+        nestedStateMachine.pointerExit(nestedPosition);
+      }
+    }
+    return hitResult;
+  }
 }
 
 /// This allows a value of type T or T?

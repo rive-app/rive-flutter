@@ -9,4 +9,8 @@ class ComponentFlags {
   /// Whether this Component is disconnected from the hierarchy meaning it won't
   /// receive any update cycles nor will any drawables draw.
   static const int disconnected = 1 << 2;
+
+  /// Whether this Component lets hit events pass through to components behind
+  /// it (used by shapes at runtine)
+  static const int opaque = 1 << 3;
 }

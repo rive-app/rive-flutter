@@ -40,6 +40,9 @@ abstract class Drawable extends DrawableBase {
   @override
   void blendModeValueChanged(int from, int to) {}
 
+  @override
+  void isTargetOpaqueChanged(bool from, bool to) {}
+
   List<ClippingShape> _clippingShapes = [];
 
   bool clip(Canvas canvas) {
@@ -88,4 +91,8 @@ abstract class Drawable extends DrawableBase {
   bool get isHidden =>
       (drawableFlags & ComponentFlags.hidden) != 0 ||
       (dirt & ComponentDirt.collapsed) != 0;
+
+  bool get isTargetOpaque {
+    return (drawableFlags & ComponentFlags.opaque) != 0;
+  }
 }
