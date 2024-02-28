@@ -193,7 +193,7 @@ class RiveAnimationState extends State<RiveAnimation> {
   @override
   void initState() {
     super.initState();
-    _configure();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _configure());
   }
 
   /// Loads [RiveFile] and calls [_init]
@@ -209,6 +209,7 @@ class RiveAnimationState extends State<RiveAnimation> {
       case _Source.asset:
         return RiveFile.asset(
           widget.name!,
+          bundle: DefaultAssetBundle.of(context),
         );
       case _Source.network:
         return RiveFile.network(

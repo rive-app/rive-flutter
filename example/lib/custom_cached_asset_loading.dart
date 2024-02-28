@@ -175,6 +175,7 @@ class __RiveRandomCachedImageState extends State<_RiveRandomCachedImage> {
           return false;
         },
       ),
+      bundle: DefaultAssetBundle.of(context),
     );
 
     setState(() => _riveImageSampleFile = imageFile);
@@ -260,6 +261,7 @@ class __RiveRandomCachedFontState extends State<_RiveRandomCachedFont> {
           return false;
         },
       ),
+      bundle: DefaultAssetBundle.of(context),
     );
 
     setState(() {

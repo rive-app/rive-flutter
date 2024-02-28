@@ -268,5 +268,24 @@ void main() {
                 'https://public.uat.rive.app/cdn/uuid/69a03ce3-83f0-4fcb-94a5-0d401b8c030e'),
           )).called(1);
     });
+
+    testWidgets('Uses AssetBundle of context instead of rootBundle',
+        (WidgetTester tester) async {
+      await HttpOverrides.runZoned(() async {
+        final assetBundle = MockAssetBundle();
+        final riveBytes = loadFile('assets/image_asset_uat.riv');
+
+        when(() => assetBundle.load(any())).thenAnswer((_) async => riveBytes);
+
+        await tester.pumpWidget(
+          DefaultAssetBundle(
+            bundle: assetBundle,
+            child: const RiveAnimation.asset('assets/image_asset_uat.riv'),
+          ),
+        );
+
+        verify(() => assetBundle.load(any())).called(1);
+      }, createHttpClient: (_) => mockHttpClient);
+    });
   });
 }
