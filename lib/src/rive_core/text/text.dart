@@ -547,7 +547,6 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     if (sendToLayout) {
       for (ContainerComponent? p = parent; p != null; p = p.parent) {
         if (p is LayoutComponent) {
-          p.markTaffyNodeDirty();
           // break;
         }
       }

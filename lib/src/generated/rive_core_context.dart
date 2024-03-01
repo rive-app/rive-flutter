@@ -109,8 +109,6 @@ import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
-import 'package:rive/src/rive_core/layout/grid_track_sizing_group.dart';
-import 'package:rive/src/rive_core/layout/track_sizing_function.dart';
 import 'package:rive/src/rive_core/layout_component.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
@@ -176,10 +174,6 @@ class RiveCoreContext {
         return NestedArtboard();
       case SoloBase.typeKey:
         return Solo();
-      case TrackSizingFunctionBase.typeKey:
-        return TrackSizingFunction();
-      case GridTrackSizingGroupBase.typeKey:
-        return GridTrackSizingGroup();
       case ListenerFireEventBase.typeKey:
         return ListenerFireEvent();
       case AnimationBase.typeKey:
@@ -594,56 +588,6 @@ class RiveCoreContext {
       case SoloBase.activeComponentIdPropertyKey:
         if (object is SoloBase && value is int) {
           object.activeComponentId = value;
-        }
-        break;
-      case TrackSizingFunctionBase.minTypeTagPropertyKey:
-        if (object is TrackSizingFunctionBase && value is int) {
-          object.minTypeTag = value;
-        }
-        break;
-      case TrackSizingFunctionBase.minValueTagPropertyKey:
-        if (object is TrackSizingFunctionBase && value is int) {
-          object.minValueTag = value;
-        }
-        break;
-      case TrackSizingFunctionBase.minValuePropertyKey:
-        if (object is TrackSizingFunctionBase && value is double) {
-          object.minValue = value;
-        }
-        break;
-      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
-        if (object is TrackSizingFunctionBase && value is int) {
-          object.maxTypeTag = value;
-        }
-        break;
-      case TrackSizingFunctionBase.maxValueTagPropertyKey:
-        if (object is TrackSizingFunctionBase && value is int) {
-          object.maxValueTag = value;
-        }
-        break;
-      case TrackSizingFunctionBase.maxValuePropertyKey:
-        if (object is TrackSizingFunctionBase && value is double) {
-          object.maxValue = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.trackTagPropertyKey:
-        if (object is GridTrackSizingGroupBase && value is int) {
-          object.trackTag = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
-        if (object is GridTrackSizingGroupBase && value is bool) {
-          object.isRepeating = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.repeatTagPropertyKey:
-        if (object is GridTrackSizingGroupBase && value is int) {
-          object.repeatTag = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.repeatCountPropertyKey:
-        if (object is GridTrackSizingGroupBase && value is int) {
-          object.repeatCount = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:
@@ -1912,13 +1856,6 @@ class RiveCoreContext {
       case NestedArtboardBase.artboardIdPropertyKey:
       case NestedAnimationBase.animationIdPropertyKey:
       case SoloBase.activeComponentIdPropertyKey:
-      case TrackSizingFunctionBase.minTypeTagPropertyKey:
-      case TrackSizingFunctionBase.minValueTagPropertyKey:
-      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
-      case TrackSizingFunctionBase.maxValueTagPropertyKey:
-      case GridTrackSizingGroupBase.trackTagPropertyKey:
-      case GridTrackSizingGroupBase.repeatTagPropertyKey:
-      case GridTrackSizingGroupBase.repeatCountPropertyKey:
       case ListenerFireEventBase.eventIdPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
@@ -2022,8 +1959,6 @@ class RiveCoreContext {
       case TransformComponentBase.scaleYPropertyKey:
       case NodeBase.xPropertyKey:
       case NodeBase.yPropertyKey:
-      case TrackSizingFunctionBase.minValuePropertyKey:
-      case TrackSizingFunctionBase.maxValuePropertyKey:
       case LinearAnimationBase.speedPropertyKey:
       case NestedLinearAnimationBase.mixPropertyKey:
       case NestedSimpleAnimationBase.speedPropertyKey:
@@ -2169,7 +2104,6 @@ class RiveCoreContext {
       case IKConstraintBase.invertDirectionPropertyKey:
       case FollowPathConstraintBase.orientPropertyKey:
       case FollowPathConstraintBase.offsetPropertyKey:
-      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
       case LinearAnimationBase.enableWorkAreaPropertyKey:
       case LinearAnimationBase.quantizePropertyKey:
       case NestedSimpleAnimationBase.isPlayingPropertyKey:
@@ -2265,20 +2199,6 @@ class RiveCoreContext {
         return (object as NestedAnimationBase).animationId;
       case SoloBase.activeComponentIdPropertyKey:
         return (object as SoloBase).activeComponentId;
-      case TrackSizingFunctionBase.minTypeTagPropertyKey:
-        return (object as TrackSizingFunctionBase).minTypeTag;
-      case TrackSizingFunctionBase.minValueTagPropertyKey:
-        return (object as TrackSizingFunctionBase).minValueTag;
-      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
-        return (object as TrackSizingFunctionBase).maxTypeTag;
-      case TrackSizingFunctionBase.maxValueTagPropertyKey:
-        return (object as TrackSizingFunctionBase).maxValueTag;
-      case GridTrackSizingGroupBase.trackTagPropertyKey:
-        return (object as GridTrackSizingGroupBase).trackTag;
-      case GridTrackSizingGroupBase.repeatTagPropertyKey:
-        return (object as GridTrackSizingGroupBase).repeatTag;
-      case GridTrackSizingGroupBase.repeatCountPropertyKey:
-        return (object as GridTrackSizingGroupBase).repeatCount;
       case ListenerFireEventBase.eventIdPropertyKey:
         return (object as ListenerFireEventBase).eventId;
       case LinearAnimationBase.fpsPropertyKey:
@@ -2489,10 +2409,6 @@ class RiveCoreContext {
         return (object as NodeBase).x;
       case NodeBase.yPropertyKey:
         return (object as NodeBase).y;
-      case TrackSizingFunctionBase.minValuePropertyKey:
-        return (object as TrackSizingFunctionBase).minValue;
-      case TrackSizingFunctionBase.maxValuePropertyKey:
-        return (object as TrackSizingFunctionBase).maxValue;
       case LinearAnimationBase.speedPropertyKey:
         return (object as LinearAnimationBase).speed;
       case NestedLinearAnimationBase.mixPropertyKey:
@@ -2787,8 +2703,6 @@ class RiveCoreContext {
         return (object as FollowPathConstraintBase).orient;
       case FollowPathConstraintBase.offsetPropertyKey:
         return (object as FollowPathConstraintBase).offset;
-      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
-        return (object as GridTrackSizingGroupBase).isRepeating;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
         return (object as LinearAnimationBase).enableWorkArea;
       case LinearAnimationBase.quantizePropertyKey:
@@ -2965,41 +2879,6 @@ class RiveCoreContext {
       case SoloBase.activeComponentIdPropertyKey:
         if (object is SoloBase) {
           object.activeComponentId = value;
-        }
-        break;
-      case TrackSizingFunctionBase.minTypeTagPropertyKey:
-        if (object is TrackSizingFunctionBase) {
-          object.minTypeTag = value;
-        }
-        break;
-      case TrackSizingFunctionBase.minValueTagPropertyKey:
-        if (object is TrackSizingFunctionBase) {
-          object.minValueTag = value;
-        }
-        break;
-      case TrackSizingFunctionBase.maxTypeTagPropertyKey:
-        if (object is TrackSizingFunctionBase) {
-          object.maxTypeTag = value;
-        }
-        break;
-      case TrackSizingFunctionBase.maxValueTagPropertyKey:
-        if (object is TrackSizingFunctionBase) {
-          object.maxValueTag = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.trackTagPropertyKey:
-        if (object is GridTrackSizingGroupBase) {
-          object.trackTag = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.repeatTagPropertyKey:
-        if (object is GridTrackSizingGroupBase) {
-          object.repeatTag = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.repeatCountPropertyKey:
-        if (object is GridTrackSizingGroupBase) {
-          object.repeatCount = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:
@@ -3515,16 +3394,6 @@ class RiveCoreContext {
       case NodeBase.yPropertyKey:
         if (object is NodeBase) {
           object.y = value;
-        }
-        break;
-      case TrackSizingFunctionBase.minValuePropertyKey:
-        if (object is TrackSizingFunctionBase) {
-          object.minValue = value;
-        }
-        break;
-      case TrackSizingFunctionBase.maxValuePropertyKey:
-        if (object is TrackSizingFunctionBase) {
-          object.maxValue = value;
         }
         break;
       case LinearAnimationBase.speedPropertyKey:
@@ -4250,11 +4119,6 @@ class RiveCoreContext {
       case FollowPathConstraintBase.offsetPropertyKey:
         if (object is FollowPathConstraintBase) {
           object.offset = value;
-        }
-        break;
-      case GridTrackSizingGroupBase.isRepeatingPropertyKey:
-        if (object is GridTrackSizingGroupBase) {
-          object.isRepeating = value;
         }
         break;
       case LinearAnimationBase.enableWorkAreaPropertyKey:
