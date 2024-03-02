@@ -116,6 +116,18 @@ do
         'HAVE_OT',
         'HB_NO_FALLBACK_SHAPE',
         'HB_NO_WIN1256',
+        'HB_NO_EXTERN_HELPERS',
+        'HB_DISABLE_DEPRECATED',
+        'HB_NO_COLOR',
+        'HB_NO_BITMAP',
+        'HB_NO_BUFFER_SERIALIZE',
+        'HB_NO_SETLOCALE',
+        'HB_NO_STYLE',
+        'HB_NO_VERTICAL',
+        'HB_NO_LAYOUT_COLLECT_GLYPHS',
+        'HB_NO_LAYOUT_RARELY_USED',
+        'HB_NO_LAYOUT_UNUSED',
+        'HB_NO_OT_FONT_GLYPH_NAMES',
     })
 
     includedirs({
