@@ -435,9 +435,8 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
       for (final line in paragraphLines) {
         switch (overflow) {
           case TextOverflow.hidden:
-            if (_layoutHeight == null ||
-                effectiveSizing == TextSizing.fixed &&
-                    y + line.bottom > effectiveHeight) {
+            if (effectiveSizing == TextSizing.fixed &&
+                y + line.bottom > effectiveHeight) {
               break outer;
             }
             break;

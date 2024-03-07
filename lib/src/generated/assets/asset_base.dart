@@ -36,6 +36,7 @@ abstract class AssetBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is AssetBase) {
       _name = source._name;
     }

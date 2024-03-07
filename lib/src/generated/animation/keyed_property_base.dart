@@ -38,6 +38,7 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is KeyedPropertyBase) {
       _propertyKey = source._propertyKey;
     }

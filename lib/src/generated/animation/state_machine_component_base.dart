@@ -39,6 +39,7 @@ abstract class StateMachineComponentBase<T extends CoreContext>
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is StateMachineComponentBase) {
       _name = source._name;
     }

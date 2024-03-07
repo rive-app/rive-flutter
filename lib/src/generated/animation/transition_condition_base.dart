@@ -37,6 +37,7 @@ abstract class TransitionConditionBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is TransitionConditionBase) {
       _inputId = source._inputId;
     }

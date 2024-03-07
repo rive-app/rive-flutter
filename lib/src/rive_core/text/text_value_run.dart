@@ -46,6 +46,7 @@ class TextValueRun extends TextValueRunBase {
   @override
   void styleIdChanged(int from, int to) {
     style = context.resolve(to);
+    markShapeDirty();
   }
 
   @override

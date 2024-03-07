@@ -81,11 +81,8 @@ class Stroke extends StrokeBase {
   void invalidateEffects() => _effect?.invalidateEffect();
 
   @override
-  bool get isVisible => thickness > 0 && super.isVisible;
-
-  @override
   void draw(Canvas canvas, Path path) {
-    if (!isVisible || renderOpacity == 0) {
+    if (!isVisible || renderOpacity == 0 || thickness <= 0) {
       return;
     }
 

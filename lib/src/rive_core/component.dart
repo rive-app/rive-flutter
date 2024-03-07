@@ -68,7 +68,6 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
 
   /// The artboard this component belongs to.
 
-  @override
   Artboard? get artboard => _artboard;
 
   // Note that this isn't a setter as we don't want anything externally changing
@@ -143,8 +142,11 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     from?.children.remove(this);
     from?.childRemoved(this);
 
-    to?.children.add(this);
-    to?.childAdded(this);
+    if (to != null) {
+      to.children.add(this);
+
+      to.childAdded(this);
+    }
 
     // We need to resolve our artboard.
     markRebuildDependencies();

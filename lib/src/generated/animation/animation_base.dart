@@ -37,6 +37,7 @@ abstract class AnimationBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is AnimationBase) {
       _name = source._name;
     }

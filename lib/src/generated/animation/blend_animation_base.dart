@@ -38,6 +38,7 @@ abstract class BlendAnimationBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is BlendAnimationBase) {
       _animationId = source._animationId;
     }

@@ -37,6 +37,7 @@ abstract class FileAssetContentsBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is FileAssetContentsBase) {
       _bytes = source._bytes;
     }

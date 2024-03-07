@@ -195,7 +195,6 @@ class StateTransition extends StateTransitionBase {
           exitTime += (lastTime / animationFrom.durationSeconds).floor() *
               animationFrom.durationSeconds;
         }
-
         // Sometimes the time never reaches exitTime due to precision
         // differences on diff platforms
         if (time < exitTime) {
@@ -203,7 +202,6 @@ class StateTransition extends StateTransitionBase {
         }
       }
     }
-
     return AllowTransition.yes;
   }
 

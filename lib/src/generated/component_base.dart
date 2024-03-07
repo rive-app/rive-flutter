@@ -61,6 +61,7 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is ComponentBase) {
       _name = source._name;
       _parentId = source._parentId;

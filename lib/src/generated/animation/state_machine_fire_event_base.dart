@@ -63,6 +63,7 @@ abstract class StateMachineFireEventBase<T extends CoreContext>
 
   @override
   void copy(Core source) {
+    super.copy(source);
     if (source is StateMachineFireEventBase) {
       _eventId = source._eventId;
       _occursValue = source._occursValue;
