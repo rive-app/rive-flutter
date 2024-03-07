@@ -24,6 +24,7 @@ jobs:
       - name: Setup flutter
         run: |
           flutter channel stable
+          flutter downgrade v3.19.0
           flutter doctor
 
       - name: Run tests
