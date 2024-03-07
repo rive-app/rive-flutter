@@ -10,19 +10,13 @@ jobs:
     steps:
       - name: Configure git-lfs to ignore most files
         run: |
-          git config --global lfs.fetchinclude 'packages/rive_flutter/**'
+          git config --global lfs.fetchinclude '**'
       - uses: actions/checkout@v3
         with:
           lfs: true
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.19.0"
-
-      - name: Build Shared Lib
-        run: |
-          cd shared_lib
-          ./build_shared.sh
-          cd ../
 
       - name: Run Flutter doctor
         run: flutter doctor
