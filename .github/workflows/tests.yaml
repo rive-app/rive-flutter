@@ -14,6 +14,7 @@ jobs:
 
       - name: Checkout and install Flutter
         run: git clone https://github.com/flutter/flutter.git
+        run: git checkout tags/3.19.0
 
       - name: Add the Flutter path
         run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
@@ -23,8 +24,6 @@ jobs:
 
       - name: Setup flutter
         run: |
-          flutter channel stable
-          flutter downgrade v3.19.0
           flutter doctor
 
       - name: Run tests
