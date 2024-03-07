@@ -8,21 +8,21 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Configure git-lfs to ignore most files
+        run: |
+          git config --global lfs.fetchinclude 'packages/rive_flutter/**'
+      - uses: actions/checkout@v3
         with:
           lfs: true
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.19.0"
 
-      - name: Clone and checkout Flutter version
+      - name: Build Shared Lib
         run: |
-          git clone https://github.com/flutter/flutter.git
-          cd flutter
-          git checkout tags/3.19.0
-
-      - name: Add the Flutter path
-        run: echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-
-      - name: Set Flutter root
-        run: echo "FLUTTER_ROOT=$GITHUB_WORKSPACE/flutter" >> $GITHUB_ENV
+          cd shared_lib
+          ./build_shared.sh
+          cd ../
 
       - name: Run Flutter doctor
         run: flutter doctor
