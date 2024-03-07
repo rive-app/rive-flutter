@@ -38,8 +38,12 @@ jobs:
           ./update_dependencies.sh force
           pushd shared_lib
           ./build_shared.sh
+          RIVE_TEXT_DYLIB=$PWD/build/bin/debug/librive_text.dylib
           popd
           popd
+          mkdir -p shared_lib/build/bin/debug/
+          echo $RIVE_TEXT_DYLIB
+          cp $RIVE_TEXT_DYLIB shared_lib/build/bin/debug/
 
       - name: Run tests
         run: flutter test
