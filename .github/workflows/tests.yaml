@@ -35,12 +35,7 @@ jobs:
           VERSION=$(dart pub deps -s list | grep rive_common | sed 's/[^0-9.]*//g')
           echo "Rive Common Version: $VERSION"
           pushd ~/.pub-cache/hosted/pub.dev/rive_common-$VERSION
-          ls -l
-          ls -l macos
-          ./update_dependencies.sh
-          ls -l macos
-          ls -l macos/rive-cpp
-          ls -l macos/rive-cpp/build
+          ./update_dependencies.sh force
           pushd shared_lib
           ./build_shared.sh
           popd
