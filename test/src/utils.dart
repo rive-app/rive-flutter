@@ -16,19 +16,22 @@ List<FileTesterWrapper> batchRiveFilesToTest() {
   final directory = Directory('test/assets/batch_rivs');
 
   final files = directory.listSync();
-  return files.map((e) {
-    try {
-      final file = e as File;
-      return FileTesterWrapper(
-        file: file,
-        fileName: basename(file.path),
-      );
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e, st) {
-      debugPrintStack(stackTrace: st);
-      throw Exception('Not a Rive file');
-    }
-  }).toList();
+  return files
+      .map((e) {
+        try {
+          final file = e as File;
+          return FileTesterWrapper(
+            file: file,
+            fileName: basename(file.path),
+          );
+          // ignore: avoid_catches_without_on_clauses
+        } catch (e, st) {
+          debugPrintStack(stackTrace: st);
+          throw Exception('Not a Rive file');
+        }
+      })
+      .where((element) => extension(element.fileName) == '.riv')
+      .toList();
 }
 
 class FileTesterWrapper {

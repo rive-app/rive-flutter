@@ -8,7 +8,11 @@ class MockHttpClient extends Mock implements HttpClient {}
 
 class MockHttpClientRequest extends Mock implements HttpClientRequest {}
 
-class MockHttpClientResponse extends Mock implements HttpClientResponse {}
+// no clue but our tester seems unhappy?
+class MockHttpClientResponse extends Mock implements HttpClientResponse {
+  @override
+  List<RedirectInfo> get redirects => [];
+}
 
 class MockHttpHeaders extends Mock implements HttpHeaders {}
 
