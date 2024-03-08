@@ -66,6 +66,11 @@ class RiveAnimation extends StatefulWidget {
   /// {@macro Rive.behavior}
   final RiveHitTestBehavior behavior;
 
+  /// Rive object generator to override built-in types and methods to, for
+  /// example, interject custom rendering functionality interleaved with Rive
+  /// rendering.
+  final ObjectGenerator? objectGenerator;
+
   /// Creates a new [RiveAnimation] from an asset bundle.
   ///
   /// *Example:*
@@ -86,6 +91,7 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     this.behavior = RiveHitTestBehavior.opaque,
+    this.objectGenerator,
     Key? key,
   })  : name = asset,
         file = null,
@@ -114,6 +120,7 @@ class RiveAnimation extends StatefulWidget {
     this.onInit,
     this.headers,
     this.behavior = RiveHitTestBehavior.opaque,
+    this.objectGenerator,
     Key? key,
   })  : name = url,
         file = null,
@@ -140,6 +147,7 @@ class RiveAnimation extends StatefulWidget {
     this.controllers = const [],
     this.onInit,
     this.behavior = RiveHitTestBehavior.opaque,
+    this.objectGenerator,
     Key? key,
   })  : name = path,
         file = null,
@@ -172,6 +180,7 @@ class RiveAnimation extends StatefulWidget {
     this.behavior = RiveHitTestBehavior.opaque,
   })  : name = null,
         headers = null,
+        objectGenerator = null,
         src = _Source.direct,
         super(key: key);
 
@@ -209,15 +218,18 @@ class RiveAnimationState extends State<RiveAnimation> {
       case _Source.asset:
         return RiveFile.asset(
           widget.name!,
+          objectGenerator: widget.objectGenerator,
         );
       case _Source.network:
         return RiveFile.network(
           widget.name!,
           headers: widget.headers,
+          objectGenerator: widget.objectGenerator,
         );
       case _Source.file:
         return RiveFile.file(
           widget.name!,
+          objectGenerator: widget.objectGenerator,
         );
       case _Source.direct:
         return Future.value(

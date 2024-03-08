@@ -40,17 +40,21 @@ import 'package:rive_common/rive_text.dart';
 
 import 'package:rive_common/utilities.dart';
 
-Core<CoreContext>? _readRuntimeObject(
-    BinaryReader reader, HashMap<int, CoreFieldType> propertyToField) {
+typedef Core<CoreContext>? ObjectGenerator(int coreTypeKey);
+
+Core<CoreContext>? _readRuntimeObject(BinaryReader reader,
+    HashMap<int, CoreFieldType> propertyToField, ObjectGenerator? generator) {
   int coreObjectKey = reader.readVarUint();
-  Core<CoreContext>? instance;
-  switch (coreObjectKey) {
-    case ArtboardBase.typeKey:
-      instance = RuntimeArtboard();
-      break;
-    case NestedArtboardBase.typeKey:
-      instance = RuntimeNestedArtboard();
-      break;
+  Core<CoreContext>? instance = generator?.call(coreObjectKey);
+  if (instance == null) {
+    switch (coreObjectKey) {
+      case ArtboardBase.typeKey:
+        instance = RuntimeArtboard();
+        break;
+      case NestedArtboardBase.typeKey:
+        instance = RuntimeNestedArtboard();
+        break;
+    }
   }
   var object = instance ?? RiveCoreContext.makeCoreInstance(coreObjectKey);
 
@@ -153,6 +157,7 @@ class RiveFile {
   RiveFile._(
     BinaryReader reader,
     this.header,
+    ObjectGenerator? generator,
     this._assetLoader,
   ) {
     /// Property fields table of contents
@@ -162,7 +167,7 @@ class RiveFile {
     var artboardLookup = HashMap<int, Artboard>();
     var importStack = ImportStack();
     while (!reader.isEOF) {
-      final object = _readRuntimeObject(reader, propertyToField);
+      final object = _readRuntimeObject(reader, propertyToField, generator);
       if (object == null) {
         // See if there's an artboard on the stack, need to track the null
         // object as it'll still hold an id.
@@ -320,18 +325,23 @@ class RiveFile {
   /// Loading assets documentation: https://help.rive.app/runtimes/loading-assets
   /// {@endtemplate}
   ///
+  /// Provide an [objectGenerator] if you want to override any built-in Rive
+  /// types.
+  ///
   /// Will throw [RiveFormatErrorException] if data is malformed. Will throw
   /// [RiveUnsupportedVersionException] if the version is not supported.
   factory RiveFile.import(
     ByteData bytes, {
     @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
     FileAssetLoader? assetLoader,
+    ObjectGenerator? objectGenerator,
     bool loadCdnAssets = true,
   }) {
     var reader = BinaryReader(bytes);
     return RiveFile._(
       reader,
       RuntimeHeader.read(reader),
+      objectGenerator,
       FallbackAssetLoader(
         [
           if (assetLoader != null) assetLoader,
@@ -355,6 +365,7 @@ class RiveFile {
     ByteData bytes, {
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
+    ObjectGenerator? objectGenerator,
   }) async {
     if (!_initializedText) {
       /// If the file looks like needs the text runtime, let's load it.
@@ -367,6 +378,7 @@ class RiveFile {
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
+      objectGenerator: objectGenerator,
     );
   }
 
@@ -384,6 +396,7 @@ class RiveFile {
     AssetBundle? bundle,
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
+    ObjectGenerator? objectGenerator,
   }) async {
     final bytes = await (bundle ?? rootBundle).load(
       bundleKey,
@@ -393,6 +406,7 @@ class RiveFile {
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
+      objectGenerator: objectGenerator,
     );
   }
 
@@ -410,6 +424,7 @@ class RiveFile {
     @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
+    ObjectGenerator? objectGenerator,
   }) async {
     final res = await http.get(Uri.parse(url), headers: headers);
     final bytes = ByteData.view(res.bodyBytes.buffer);
@@ -417,6 +432,7 @@ class RiveFile {
       bytes,
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
+      objectGenerator: objectGenerator,
     );
   }
 
@@ -430,12 +446,14 @@ class RiveFile {
     String path, {
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
+    ObjectGenerator? objectGenerator,
   }) async {
     final bytes = await localFileBytes(path);
     return _initTextAndImport(
       ByteData.view(bytes!.buffer),
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
+      objectGenerator: objectGenerator,
     );
   }
 
