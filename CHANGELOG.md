@@ -1,5 +1,7 @@
-## Upcoming
+## 0.13.0
 
+- Adds support for Audio.
+- Object Generator adds the ability to override built-in objects with custom objects.
 - Fix [[355](https://github.com/rive-app/rive-flutter/issues/355)] to ensure the Rive render object is attached before handling pointer events.
 
 ## 0.12.4
