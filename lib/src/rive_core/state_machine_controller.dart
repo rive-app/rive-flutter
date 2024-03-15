@@ -207,7 +207,7 @@ class LayerController {
   double _holdTime = 0;
 
   bool updateState(bool ignoreTriggers) {
-    if (isTransitioning) {
+    if (isTransitioning && _transition!.enableEarlyExit == false) {
       return false;
     }
     _waitingForExit = false;

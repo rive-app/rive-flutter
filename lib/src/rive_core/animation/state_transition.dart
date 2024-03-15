@@ -71,6 +71,8 @@ class StateTransition extends StateTransitionBase {
   bool get isDisabled => (flags & StateTransitionFlags.disabled) != 0;
   bool get pauseOnExit => (flags & StateTransitionFlags.pauseOnExit) != 0;
   bool get enableExitTime => (flags & StateTransitionFlags.enableExitTime) != 0;
+  bool get enableEarlyExit =>
+      (flags & StateTransitionFlags.enableEarlyExit) != 0;
 
   /// The amount of time to mix the outgoing animation onto the incoming one
   /// when changing state. Only applies when going out from an AnimationState.

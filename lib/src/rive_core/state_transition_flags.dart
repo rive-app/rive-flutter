@@ -14,4 +14,7 @@ class StateTransitionFlags {
   /// Whether the animation is held at exit or if it keeps advancing during
   /// mixing.
   static const int pauseOnExit = 1 << 4;
+
+  /// Whether the transition can exit before it is complete.
+  static const int enableEarlyExit = 1 << 5;
 }
