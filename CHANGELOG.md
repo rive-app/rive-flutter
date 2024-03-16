@@ -1,3 +1,7 @@
+## 0.13.1
+
+- Fixed an issue causing crashes on 32 bit devices
+
 ## 0.13.0
 
 - Adds support for Audio.
