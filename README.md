@@ -35,11 +35,12 @@ For more information, check out the following resources:
 ## Getting started
 
 To get started with Rive Flutter, check out the following resources:
-- [Getting Started with Rive in Flutter](https://help.rive.app/runtimes/overview/flutter)
 
+- [Getting Started with Rive in Flutter](https://help.rive.app/runtimes/overview/flutter)
 - [Alternative Widget Setup](https://help.rive.app/runtimes/overview/flutter/alternative-widget-setup)
 
 For additional help, see the Runtime sections of the Rive help documentation, such as:
+
 - [Animation Playback](https://help.rive.app/runtimes/playback)
 - [State Machines](https://help.rive.app/runtimes/state-machines)
 
