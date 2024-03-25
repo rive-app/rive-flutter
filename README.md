@@ -13,10 +13,10 @@ This library allows you to fully control Rive files with a high-level API for si
 
 ## Table of contents
 
-- :star: [Rive Overview](#rive-overview)
+- :star: [Rive Overview](#overview-of-rive)
 - 🚀 [Getting Started & API docs](#getting-started)
 - :mag: [Supported Platforms](#supported-platforms)
-- :books: [Examples](#examples)
+- :books: [Examples](#awesome-rive)
 - 👨‍💻 [Contributing](#contributing)
 - :question: [Issues](#issues)
 
