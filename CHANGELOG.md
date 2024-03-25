@@ -10,7 +10,7 @@
 
 ## 0.12.4
 
-- Adds `behavior` argument to `RiveAnimation` and `Rive`. An enum `RiveHitTestBehavior` specifies how to handle hit testing on an animation. Default is `RiveHitTestBehavior.opaque` - comsuming all hit events for the artboard bounds.
+- Adds `behavior` argument to `RiveAnimation` and `Rive`. An enum `RiveHitTestBehavior` specifies how to handle hit testing on an animation. Default is `RiveHitTestBehavior.opaque` - consuming all hit events for the artboard bounds.
 - Collapsed nested artboards don't listen to pointer events anymore
 - Constraints pointing to collapsed targets are not applied
 
@@ -142,7 +142,7 @@ Deprecated:
 
 ## 0.10.1
 
-- Fix [[277](https://github.com/rive-app/rive-flutter/issues/277)] and [[278](https://github.com/rive-app/rive-flutter/issues/278)] that resuled in `onInit` being called with each `setState` - thank you [xuelongqy](https://github.com/xuelongqy).
+- Fix [[277](https://github.com/rive-app/rive-flutter/issues/277)] and [[278](https://github.com/rive-app/rive-flutter/issues/278)] that resulted in `onInit` being called with each `setState` - thank you [xuelongqy](https://github.com/xuelongqy).
 
 ## 0.10.0
 
@@ -238,7 +238,7 @@ Fix for setState being called while mounted in RiveAnimation. [`#172`](https://g
 
 - Adds ability to pass controllers into RiveAnimation widgets
 - Adds autoplay option to SimpleAnimation controller
-- Adds one-shot animation contoller
+- Adds one-shot animation controller
 - Updates examples
 
 ## 0.7.17 - (2021-06-11)
