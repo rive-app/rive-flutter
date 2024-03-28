@@ -7,4 +7,11 @@ class NestedNumber extends NestedNumberBase {
 
   @override
   void updateValue() => nestedStateMachine?.setInputValue(inputId, nestedValue);
+
+  @override
+  set nestedValue(double value) {
+    super.nestedValue = value;
+
+    updateValue();
+  }
 }

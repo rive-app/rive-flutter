@@ -7,4 +7,11 @@ class NestedBool extends NestedBoolBase {
 
   @override
   void updateValue() => nestedStateMachine?.setInputValue(inputId, nestedValue);
+
+  @override
+  set nestedValue(bool value) {
+    super.nestedValue = value;
+
+    updateValue();
+  }
 }
