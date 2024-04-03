@@ -29,6 +29,7 @@ import 'package:rive/src/rive_core/animation/state_machine_layer_component.dart'
 import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/assets/audio_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
@@ -239,6 +240,7 @@ class RiveFile {
             stackType = StateTransitionBase.typeKey;
             break;
           }
+        case AudioAssetBase.typeKey:
         case ImageAssetBase.typeKey:
         case FontAssetBase.typeKey:
           // all these stack objects are resolvers. they get resolved.

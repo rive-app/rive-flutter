@@ -462,7 +462,8 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
           var run = glyphInfo.run;
           var font = run.font;
 
-          var path = font.getUiPath(run.glyphIdAt(glyphInfo.index));
+          final glyphId = run.glyphIdAt(glyphInfo.index);
+          var path = font.getUiPath(glyphId);
 
           late Float64List pathTransform;
           if (haveModifiers) {
@@ -546,6 +547,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     if (sendToLayout) {
       for (ContainerComponent? p = parent; p != null; p = p.parent) {
         if (p is LayoutComponent) {
+          p.markLayoutNodeDirty();
           // break;
         }
       }
@@ -656,7 +658,6 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     super.update(dirt);
     bool rebuildRenderStyles =
         _computeShapeWhenNecessary(dirt) || (dirt & ComponentDirt.paint != 0);
-
     // Could optimize this to do what the C++ runtime does by propagating
     // opacity to the styles instead of rebuilding render styles.
     if (dirt & ComponentDirt.worldTransform != 0) {

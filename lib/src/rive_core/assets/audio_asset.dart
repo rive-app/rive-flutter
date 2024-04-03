@@ -34,6 +34,15 @@ class AudioAsset extends AudioAssetBase {
     return 'wav';
   }
 
-  @override
-  void onAssetError() {}
+  static AudioContainerFormat containerFormatFromName(String name) {
+    switch (name) {
+      case 'flac':
+        return AudioContainerFormat.flac;
+      case 'mp3':
+        return AudioContainerFormat.mp3;
+      case 'wav':
+        return AudioContainerFormat.wav;
+    }
+    return AudioContainerFormat.unknown;
+  }
 }

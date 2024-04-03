@@ -16,16 +16,24 @@ import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
+import 'package:rive/src/rive_core/layout_component.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
+import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
+  final Set<LayoutComponent> _dirtyLayout = {};
+
+  void markLayoutDirty(LayoutComponent layoutComponent) {
+    _dirtyLayout.add(layoutComponent);
+  }
+
   bool _frameOrigin = true;
   bool hasChangedDrawOrderInLastUpdate = false;
 
@@ -194,7 +202,21 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// Update any dirty components in this artboard.
   bool advance(double elapsedSeconds, {bool nested = false}) {
+    if (_dirtyLayout.isNotEmpty) {
+      var dirtyLayout = _dirtyLayout.toList();
+      _dirtyLayout.clear();
+      syncStyle();
+      for (final layoutComponent in dirtyLayout) {
+        layoutComponent.syncStyle();
+      }
+      layoutNode.calculateLayout(width, height, LayoutDirection.ltr);
+      // Need to sync all layout positions.
+      for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
+        layout.updateLayoutBounds();
+      }
+    }
     bool didUpdate = false;
+
     for (final controller in _animationControllers) {
       if (controller.isActive) {
         controller.apply(context, elapsedSeconds);

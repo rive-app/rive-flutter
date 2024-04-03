@@ -109,6 +109,7 @@ import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
+import 'package:rive/src/rive_core/layout/layout_component_style.dart';
 import 'package:rive/src/rive_core/layout_component.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
@@ -174,6 +175,8 @@ class RiveCoreContext {
         return NestedArtboard();
       case SoloBase.typeKey:
         return Solo();
+      case LayoutComponentStyleBase.typeKey:
+        return LayoutComponentStyle();
       case ListenerFireEventBase.typeKey:
         return ListenerFireEvent();
       case AnimationBase.typeKey:
@@ -588,6 +591,156 @@ class RiveCoreContext {
       case SoloBase.activeComponentIdPropertyKey:
         if (object is SoloBase && value is int) {
           object.activeComponentId = value;
+        }
+        break;
+      case LayoutComponentStyleBase.layoutFlags0PropertyKey:
+        if (object is LayoutComponentStyleBase && value is int) {
+          object.layoutFlags0 = value;
+        }
+        break;
+      case LayoutComponentStyleBase.layoutFlags1PropertyKey:
+        if (object is LayoutComponentStyleBase && value is int) {
+          object.layoutFlags1 = value;
+        }
+        break;
+      case LayoutComponentStyleBase.layoutFlags2PropertyKey:
+        if (object is LayoutComponentStyleBase && value is int) {
+          object.layoutFlags2 = value;
+        }
+        break;
+      case LayoutComponentStyleBase.gapHorizontalPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.gapHorizontal = value;
+        }
+        break;
+      case LayoutComponentStyleBase.gapVerticalPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.gapVertical = value;
+        }
+        break;
+      case LayoutComponentStyleBase.maxWidthPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.maxWidth = value;
+        }
+        break;
+      case LayoutComponentStyleBase.maxHeightPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.maxHeight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.minWidthPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.minWidth = value;
+        }
+        break;
+      case LayoutComponentStyleBase.minHeightPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.minHeight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderLeftPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.borderLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderRightPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.borderRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderTopPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.borderTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderBottomPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.borderBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginLeftPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.marginLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginRightPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.marginRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginTopPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.marginTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginBottomPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.marginBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingLeftPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.paddingLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingRightPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.paddingRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingTopPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.paddingTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingBottomPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.paddingBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionLeftPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.positionLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionRightPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.positionRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionTopPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.positionTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionBottomPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.positionBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.flex = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexGrowPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.flexGrow = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexShrinkPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.flexShrink = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexBasisPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.flexBasis = value;
+        }
+        break;
+      case LayoutComponentStyleBase.aspectRatioPropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.aspectRatio = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:
@@ -1245,31 +1398,6 @@ class RiveCoreContext {
           object.clip = value;
         }
         break;
-      case LayoutComponentBase.layoutFlags0PropertyKey:
-        if (object is LayoutComponentBase && value is int) {
-          object.layoutFlags0 = value;
-        }
-        break;
-      case LayoutComponentBase.layoutFlags1PropertyKey:
-        if (object is LayoutComponentBase && value is int) {
-          object.layoutFlags1 = value;
-        }
-        break;
-      case LayoutComponentBase.layoutFlags2PropertyKey:
-        if (object is LayoutComponentBase && value is int) {
-          object.layoutFlags2 = value;
-        }
-        break;
-      case LayoutComponentBase.gapWidthPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.gapWidth = value;
-        }
-        break;
-      case LayoutComponentBase.gapHeightPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.gapHeight = value;
-        }
-        break;
       case LayoutComponentBase.widthPropertyKey:
         if (object is LayoutComponentBase && value is double) {
           object.width = value;
@@ -1280,119 +1408,9 @@ class RiveCoreContext {
           object.height = value;
         }
         break;
-      case LayoutComponentBase.maxWidthPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.maxWidth = value;
-        }
-        break;
-      case LayoutComponentBase.maxHeightPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.maxHeight = value;
-        }
-        break;
-      case LayoutComponentBase.minWidthPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.minWidth = value;
-        }
-        break;
-      case LayoutComponentBase.minHeightPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.minHeight = value;
-        }
-        break;
-      case LayoutComponentBase.marginLeftPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.marginLeft = value;
-        }
-        break;
-      case LayoutComponentBase.marginRightPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.marginRight = value;
-        }
-        break;
-      case LayoutComponentBase.marginTopPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.marginTop = value;
-        }
-        break;
-      case LayoutComponentBase.marginBottomPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.marginBottom = value;
-        }
-        break;
-      case LayoutComponentBase.paddingLeftPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.paddingLeft = value;
-        }
-        break;
-      case LayoutComponentBase.paddingRightPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.paddingRight = value;
-        }
-        break;
-      case LayoutComponentBase.paddingTopPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.paddingTop = value;
-        }
-        break;
-      case LayoutComponentBase.paddingBottomPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.paddingBottom = value;
-        }
-        break;
-      case LayoutComponentBase.insetLeftPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.insetLeft = value;
-        }
-        break;
-      case LayoutComponentBase.insetRightPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.insetRight = value;
-        }
-        break;
-      case LayoutComponentBase.insetTopPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.insetTop = value;
-        }
-        break;
-      case LayoutComponentBase.insetBottomPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.insetBottom = value;
-        }
-        break;
-      case LayoutComponentBase.flexGrowPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.flexGrow = value;
-        }
-        break;
-      case LayoutComponentBase.flexShrinkPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.flexShrink = value;
-        }
-        break;
-      case LayoutComponentBase.aspectRatioPropertyKey:
-        if (object is LayoutComponentBase && value is double) {
-          object.aspectRatio = value;
-        }
-        break;
-      case LayoutComponentBase.gridRowStartPropertyKey:
+      case LayoutComponentBase.styleIdPropertyKey:
         if (object is LayoutComponentBase && value is int) {
-          object.gridRowStart = value;
-        }
-        break;
-      case LayoutComponentBase.gridRowEndPropertyKey:
-        if (object is LayoutComponentBase && value is int) {
-          object.gridRowEnd = value;
-        }
-        break;
-      case LayoutComponentBase.gridColumnStartPropertyKey:
-        if (object is LayoutComponentBase && value is int) {
-          object.gridColumnStart = value;
-        }
-        break;
-      case LayoutComponentBase.gridColumnEndPropertyKey:
-        if (object is LayoutComponentBase && value is int) {
-          object.gridColumnEnd = value;
+          object.styleId = value;
         }
         break;
       case ArtboardBase.xPropertyKey:
@@ -1856,6 +1874,9 @@ class RiveCoreContext {
       case NestedArtboardBase.artboardIdPropertyKey:
       case NestedAnimationBase.animationIdPropertyKey:
       case SoloBase.activeComponentIdPropertyKey:
+      case LayoutComponentStyleBase.layoutFlags0PropertyKey:
+      case LayoutComponentStyleBase.layoutFlags1PropertyKey:
+      case LayoutComponentStyleBase.layoutFlags2PropertyKey:
       case ListenerFireEventBase.eventIdPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
@@ -1909,13 +1930,7 @@ class RiveCoreContext {
       case PolygonBase.pointsPropertyKey:
       case ImageBase.assetIdPropertyKey:
       case DrawRulesBase.drawTargetIdPropertyKey:
-      case LayoutComponentBase.layoutFlags0PropertyKey:
-      case LayoutComponentBase.layoutFlags1PropertyKey:
-      case LayoutComponentBase.layoutFlags2PropertyKey:
-      case LayoutComponentBase.gridRowStartPropertyKey:
-      case LayoutComponentBase.gridRowEndPropertyKey:
-      case LayoutComponentBase.gridColumnStartPropertyKey:
-      case LayoutComponentBase.gridColumnEndPropertyKey:
+      case LayoutComponentBase.styleIdPropertyKey:
       case ArtboardBase.defaultStateMachineIdPropertyKey:
       case JoystickBase.xIdPropertyKey:
       case JoystickBase.yIdPropertyKey:
@@ -1959,6 +1974,33 @@ class RiveCoreContext {
       case TransformComponentBase.scaleYPropertyKey:
       case NodeBase.xPropertyKey:
       case NodeBase.yPropertyKey:
+      case LayoutComponentStyleBase.gapHorizontalPropertyKey:
+      case LayoutComponentStyleBase.gapVerticalPropertyKey:
+      case LayoutComponentStyleBase.maxWidthPropertyKey:
+      case LayoutComponentStyleBase.maxHeightPropertyKey:
+      case LayoutComponentStyleBase.minWidthPropertyKey:
+      case LayoutComponentStyleBase.minHeightPropertyKey:
+      case LayoutComponentStyleBase.borderLeftPropertyKey:
+      case LayoutComponentStyleBase.borderRightPropertyKey:
+      case LayoutComponentStyleBase.borderTopPropertyKey:
+      case LayoutComponentStyleBase.borderBottomPropertyKey:
+      case LayoutComponentStyleBase.marginLeftPropertyKey:
+      case LayoutComponentStyleBase.marginRightPropertyKey:
+      case LayoutComponentStyleBase.marginTopPropertyKey:
+      case LayoutComponentStyleBase.marginBottomPropertyKey:
+      case LayoutComponentStyleBase.paddingLeftPropertyKey:
+      case LayoutComponentStyleBase.paddingRightPropertyKey:
+      case LayoutComponentStyleBase.paddingTopPropertyKey:
+      case LayoutComponentStyleBase.paddingBottomPropertyKey:
+      case LayoutComponentStyleBase.positionLeftPropertyKey:
+      case LayoutComponentStyleBase.positionRightPropertyKey:
+      case LayoutComponentStyleBase.positionTopPropertyKey:
+      case LayoutComponentStyleBase.positionBottomPropertyKey:
+      case LayoutComponentStyleBase.flexPropertyKey:
+      case LayoutComponentStyleBase.flexGrowPropertyKey:
+      case LayoutComponentStyleBase.flexShrinkPropertyKey:
+      case LayoutComponentStyleBase.flexBasisPropertyKey:
+      case LayoutComponentStyleBase.aspectRatioPropertyKey:
       case LinearAnimationBase.speedPropertyKey:
       case NestedLinearAnimationBase.mixPropertyKey:
       case NestedSimpleAnimationBase.speedPropertyKey:
@@ -2017,29 +2059,8 @@ class RiveCoreContext {
       case CubicDetachedVertexBase.inDistancePropertyKey:
       case CubicDetachedVertexBase.outRotationPropertyKey:
       case CubicDetachedVertexBase.outDistancePropertyKey:
-      case LayoutComponentBase.gapWidthPropertyKey:
-      case LayoutComponentBase.gapHeightPropertyKey:
       case LayoutComponentBase.widthPropertyKey:
       case LayoutComponentBase.heightPropertyKey:
-      case LayoutComponentBase.maxWidthPropertyKey:
-      case LayoutComponentBase.maxHeightPropertyKey:
-      case LayoutComponentBase.minWidthPropertyKey:
-      case LayoutComponentBase.minHeightPropertyKey:
-      case LayoutComponentBase.marginLeftPropertyKey:
-      case LayoutComponentBase.marginRightPropertyKey:
-      case LayoutComponentBase.marginTopPropertyKey:
-      case LayoutComponentBase.marginBottomPropertyKey:
-      case LayoutComponentBase.paddingLeftPropertyKey:
-      case LayoutComponentBase.paddingRightPropertyKey:
-      case LayoutComponentBase.paddingTopPropertyKey:
-      case LayoutComponentBase.paddingBottomPropertyKey:
-      case LayoutComponentBase.insetLeftPropertyKey:
-      case LayoutComponentBase.insetRightPropertyKey:
-      case LayoutComponentBase.insetTopPropertyKey:
-      case LayoutComponentBase.insetBottomPropertyKey:
-      case LayoutComponentBase.flexGrowPropertyKey:
-      case LayoutComponentBase.flexShrinkPropertyKey:
-      case LayoutComponentBase.aspectRatioPropertyKey:
       case ArtboardBase.xPropertyKey:
       case ArtboardBase.yPropertyKey:
       case ArtboardBase.originXPropertyKey:
@@ -2199,6 +2220,12 @@ class RiveCoreContext {
         return (object as NestedAnimationBase).animationId;
       case SoloBase.activeComponentIdPropertyKey:
         return (object as SoloBase).activeComponentId;
+      case LayoutComponentStyleBase.layoutFlags0PropertyKey:
+        return (object as LayoutComponentStyleBase).layoutFlags0;
+      case LayoutComponentStyleBase.layoutFlags1PropertyKey:
+        return (object as LayoutComponentStyleBase).layoutFlags1;
+      case LayoutComponentStyleBase.layoutFlags2PropertyKey:
+        return (object as LayoutComponentStyleBase).layoutFlags2;
       case ListenerFireEventBase.eventIdPropertyKey:
         return (object as ListenerFireEventBase).eventId;
       case LinearAnimationBase.fpsPropertyKey:
@@ -2305,20 +2332,8 @@ class RiveCoreContext {
         return (object as ImageBase).assetId;
       case DrawRulesBase.drawTargetIdPropertyKey:
         return (object as DrawRulesBase).drawTargetId;
-      case LayoutComponentBase.layoutFlags0PropertyKey:
-        return (object as LayoutComponentBase).layoutFlags0;
-      case LayoutComponentBase.layoutFlags1PropertyKey:
-        return (object as LayoutComponentBase).layoutFlags1;
-      case LayoutComponentBase.layoutFlags2PropertyKey:
-        return (object as LayoutComponentBase).layoutFlags2;
-      case LayoutComponentBase.gridRowStartPropertyKey:
-        return (object as LayoutComponentBase).gridRowStart;
-      case LayoutComponentBase.gridRowEndPropertyKey:
-        return (object as LayoutComponentBase).gridRowEnd;
-      case LayoutComponentBase.gridColumnStartPropertyKey:
-        return (object as LayoutComponentBase).gridColumnStart;
-      case LayoutComponentBase.gridColumnEndPropertyKey:
-        return (object as LayoutComponentBase).gridColumnEnd;
+      case LayoutComponentBase.styleIdPropertyKey:
+        return (object as LayoutComponentBase).styleId;
       case ArtboardBase.defaultStateMachineIdPropertyKey:
         return (object as ArtboardBase).defaultStateMachineId;
       case JoystickBase.xIdPropertyKey:
@@ -2409,6 +2424,60 @@ class RiveCoreContext {
         return (object as NodeBase).x;
       case NodeBase.yPropertyKey:
         return (object as NodeBase).y;
+      case LayoutComponentStyleBase.gapHorizontalPropertyKey:
+        return (object as LayoutComponentStyleBase).gapHorizontal;
+      case LayoutComponentStyleBase.gapVerticalPropertyKey:
+        return (object as LayoutComponentStyleBase).gapVertical;
+      case LayoutComponentStyleBase.maxWidthPropertyKey:
+        return (object as LayoutComponentStyleBase).maxWidth;
+      case LayoutComponentStyleBase.maxHeightPropertyKey:
+        return (object as LayoutComponentStyleBase).maxHeight;
+      case LayoutComponentStyleBase.minWidthPropertyKey:
+        return (object as LayoutComponentStyleBase).minWidth;
+      case LayoutComponentStyleBase.minHeightPropertyKey:
+        return (object as LayoutComponentStyleBase).minHeight;
+      case LayoutComponentStyleBase.borderLeftPropertyKey:
+        return (object as LayoutComponentStyleBase).borderLeft;
+      case LayoutComponentStyleBase.borderRightPropertyKey:
+        return (object as LayoutComponentStyleBase).borderRight;
+      case LayoutComponentStyleBase.borderTopPropertyKey:
+        return (object as LayoutComponentStyleBase).borderTop;
+      case LayoutComponentStyleBase.borderBottomPropertyKey:
+        return (object as LayoutComponentStyleBase).borderBottom;
+      case LayoutComponentStyleBase.marginLeftPropertyKey:
+        return (object as LayoutComponentStyleBase).marginLeft;
+      case LayoutComponentStyleBase.marginRightPropertyKey:
+        return (object as LayoutComponentStyleBase).marginRight;
+      case LayoutComponentStyleBase.marginTopPropertyKey:
+        return (object as LayoutComponentStyleBase).marginTop;
+      case LayoutComponentStyleBase.marginBottomPropertyKey:
+        return (object as LayoutComponentStyleBase).marginBottom;
+      case LayoutComponentStyleBase.paddingLeftPropertyKey:
+        return (object as LayoutComponentStyleBase).paddingLeft;
+      case LayoutComponentStyleBase.paddingRightPropertyKey:
+        return (object as LayoutComponentStyleBase).paddingRight;
+      case LayoutComponentStyleBase.paddingTopPropertyKey:
+        return (object as LayoutComponentStyleBase).paddingTop;
+      case LayoutComponentStyleBase.paddingBottomPropertyKey:
+        return (object as LayoutComponentStyleBase).paddingBottom;
+      case LayoutComponentStyleBase.positionLeftPropertyKey:
+        return (object as LayoutComponentStyleBase).positionLeft;
+      case LayoutComponentStyleBase.positionRightPropertyKey:
+        return (object as LayoutComponentStyleBase).positionRight;
+      case LayoutComponentStyleBase.positionTopPropertyKey:
+        return (object as LayoutComponentStyleBase).positionTop;
+      case LayoutComponentStyleBase.positionBottomPropertyKey:
+        return (object as LayoutComponentStyleBase).positionBottom;
+      case LayoutComponentStyleBase.flexPropertyKey:
+        return (object as LayoutComponentStyleBase).flex;
+      case LayoutComponentStyleBase.flexGrowPropertyKey:
+        return (object as LayoutComponentStyleBase).flexGrow;
+      case LayoutComponentStyleBase.flexShrinkPropertyKey:
+        return (object as LayoutComponentStyleBase).flexShrink;
+      case LayoutComponentStyleBase.flexBasisPropertyKey:
+        return (object as LayoutComponentStyleBase).flexBasis;
+      case LayoutComponentStyleBase.aspectRatioPropertyKey:
+        return (object as LayoutComponentStyleBase).aspectRatio;
       case LinearAnimationBase.speedPropertyKey:
         return (object as LinearAnimationBase).speed;
       case NestedLinearAnimationBase.mixPropertyKey:
@@ -2525,52 +2594,10 @@ class RiveCoreContext {
         return (object as CubicDetachedVertexBase).outRotation;
       case CubicDetachedVertexBase.outDistancePropertyKey:
         return (object as CubicDetachedVertexBase).outDistance;
-      case LayoutComponentBase.gapWidthPropertyKey:
-        return (object as LayoutComponentBase).gapWidth;
-      case LayoutComponentBase.gapHeightPropertyKey:
-        return (object as LayoutComponentBase).gapHeight;
       case LayoutComponentBase.widthPropertyKey:
         return (object as LayoutComponentBase).width;
       case LayoutComponentBase.heightPropertyKey:
         return (object as LayoutComponentBase).height;
-      case LayoutComponentBase.maxWidthPropertyKey:
-        return (object as LayoutComponentBase).maxWidth;
-      case LayoutComponentBase.maxHeightPropertyKey:
-        return (object as LayoutComponentBase).maxHeight;
-      case LayoutComponentBase.minWidthPropertyKey:
-        return (object as LayoutComponentBase).minWidth;
-      case LayoutComponentBase.minHeightPropertyKey:
-        return (object as LayoutComponentBase).minHeight;
-      case LayoutComponentBase.marginLeftPropertyKey:
-        return (object as LayoutComponentBase).marginLeft;
-      case LayoutComponentBase.marginRightPropertyKey:
-        return (object as LayoutComponentBase).marginRight;
-      case LayoutComponentBase.marginTopPropertyKey:
-        return (object as LayoutComponentBase).marginTop;
-      case LayoutComponentBase.marginBottomPropertyKey:
-        return (object as LayoutComponentBase).marginBottom;
-      case LayoutComponentBase.paddingLeftPropertyKey:
-        return (object as LayoutComponentBase).paddingLeft;
-      case LayoutComponentBase.paddingRightPropertyKey:
-        return (object as LayoutComponentBase).paddingRight;
-      case LayoutComponentBase.paddingTopPropertyKey:
-        return (object as LayoutComponentBase).paddingTop;
-      case LayoutComponentBase.paddingBottomPropertyKey:
-        return (object as LayoutComponentBase).paddingBottom;
-      case LayoutComponentBase.insetLeftPropertyKey:
-        return (object as LayoutComponentBase).insetLeft;
-      case LayoutComponentBase.insetRightPropertyKey:
-        return (object as LayoutComponentBase).insetRight;
-      case LayoutComponentBase.insetTopPropertyKey:
-        return (object as LayoutComponentBase).insetTop;
-      case LayoutComponentBase.insetBottomPropertyKey:
-        return (object as LayoutComponentBase).insetBottom;
-      case LayoutComponentBase.flexGrowPropertyKey:
-        return (object as LayoutComponentBase).flexGrow;
-      case LayoutComponentBase.flexShrinkPropertyKey:
-        return (object as LayoutComponentBase).flexShrink;
-      case LayoutComponentBase.aspectRatioPropertyKey:
-        return (object as LayoutComponentBase).aspectRatio;
       case ArtboardBase.xPropertyKey:
         return (object as ArtboardBase).x;
       case ArtboardBase.yPropertyKey:
@@ -2881,6 +2908,21 @@ class RiveCoreContext {
           object.activeComponentId = value;
         }
         break;
+      case LayoutComponentStyleBase.layoutFlags0PropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.layoutFlags0 = value;
+        }
+        break;
+      case LayoutComponentStyleBase.layoutFlags1PropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.layoutFlags1 = value;
+        }
+        break;
+      case LayoutComponentStyleBase.layoutFlags2PropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.layoutFlags2 = value;
+        }
+        break;
       case ListenerFireEventBase.eventIdPropertyKey:
         if (object is ListenerFireEventBase) {
           object.eventId = value;
@@ -3146,39 +3188,9 @@ class RiveCoreContext {
           object.drawTargetId = value;
         }
         break;
-      case LayoutComponentBase.layoutFlags0PropertyKey:
+      case LayoutComponentBase.styleIdPropertyKey:
         if (object is LayoutComponentBase) {
-          object.layoutFlags0 = value;
-        }
-        break;
-      case LayoutComponentBase.layoutFlags1PropertyKey:
-        if (object is LayoutComponentBase) {
-          object.layoutFlags1 = value;
-        }
-        break;
-      case LayoutComponentBase.layoutFlags2PropertyKey:
-        if (object is LayoutComponentBase) {
-          object.layoutFlags2 = value;
-        }
-        break;
-      case LayoutComponentBase.gridRowStartPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.gridRowStart = value;
-        }
-        break;
-      case LayoutComponentBase.gridRowEndPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.gridRowEnd = value;
-        }
-        break;
-      case LayoutComponentBase.gridColumnStartPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.gridColumnStart = value;
-        }
-        break;
-      case LayoutComponentBase.gridColumnEndPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.gridColumnEnd = value;
+          object.styleId = value;
         }
         break;
       case ArtboardBase.defaultStateMachineIdPropertyKey:
@@ -3394,6 +3406,141 @@ class RiveCoreContext {
       case NodeBase.yPropertyKey:
         if (object is NodeBase) {
           object.y = value;
+        }
+        break;
+      case LayoutComponentStyleBase.gapHorizontalPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.gapHorizontal = value;
+        }
+        break;
+      case LayoutComponentStyleBase.gapVerticalPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.gapVertical = value;
+        }
+        break;
+      case LayoutComponentStyleBase.maxWidthPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.maxWidth = value;
+        }
+        break;
+      case LayoutComponentStyleBase.maxHeightPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.maxHeight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.minWidthPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.minWidth = value;
+        }
+        break;
+      case LayoutComponentStyleBase.minHeightPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.minHeight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderLeftPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.borderLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderRightPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.borderRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderTopPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.borderTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.borderBottomPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.borderBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginLeftPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.marginLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginRightPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.marginRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginTopPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.marginTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.marginBottomPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.marginBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingLeftPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.paddingLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingRightPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.paddingRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingTopPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.paddingTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.paddingBottomPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.paddingBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionLeftPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.positionLeft = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionRightPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.positionRight = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionTopPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.positionTop = value;
+        }
+        break;
+      case LayoutComponentStyleBase.positionBottomPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.positionBottom = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.flex = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexGrowPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.flexGrow = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexShrinkPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.flexShrink = value;
+        }
+        break;
+      case LayoutComponentStyleBase.flexBasisPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.flexBasis = value;
+        }
+        break;
+      case LayoutComponentStyleBase.aspectRatioPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.aspectRatio = value;
         }
         break;
       case LinearAnimationBase.speedPropertyKey:
@@ -3686,16 +3833,6 @@ class RiveCoreContext {
           object.outDistance = value;
         }
         break;
-      case LayoutComponentBase.gapWidthPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.gapWidth = value;
-        }
-        break;
-      case LayoutComponentBase.gapHeightPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.gapHeight = value;
-        }
-        break;
       case LayoutComponentBase.widthPropertyKey:
         if (object is LayoutComponentBase) {
           object.width = value;
@@ -3704,101 +3841,6 @@ class RiveCoreContext {
       case LayoutComponentBase.heightPropertyKey:
         if (object is LayoutComponentBase) {
           object.height = value;
-        }
-        break;
-      case LayoutComponentBase.maxWidthPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.maxWidth = value;
-        }
-        break;
-      case LayoutComponentBase.maxHeightPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.maxHeight = value;
-        }
-        break;
-      case LayoutComponentBase.minWidthPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.minWidth = value;
-        }
-        break;
-      case LayoutComponentBase.minHeightPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.minHeight = value;
-        }
-        break;
-      case LayoutComponentBase.marginLeftPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.marginLeft = value;
-        }
-        break;
-      case LayoutComponentBase.marginRightPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.marginRight = value;
-        }
-        break;
-      case LayoutComponentBase.marginTopPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.marginTop = value;
-        }
-        break;
-      case LayoutComponentBase.marginBottomPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.marginBottom = value;
-        }
-        break;
-      case LayoutComponentBase.paddingLeftPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.paddingLeft = value;
-        }
-        break;
-      case LayoutComponentBase.paddingRightPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.paddingRight = value;
-        }
-        break;
-      case LayoutComponentBase.paddingTopPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.paddingTop = value;
-        }
-        break;
-      case LayoutComponentBase.paddingBottomPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.paddingBottom = value;
-        }
-        break;
-      case LayoutComponentBase.insetLeftPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.insetLeft = value;
-        }
-        break;
-      case LayoutComponentBase.insetRightPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.insetRight = value;
-        }
-        break;
-      case LayoutComponentBase.insetTopPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.insetTop = value;
-        }
-        break;
-      case LayoutComponentBase.insetBottomPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.insetBottom = value;
-        }
-        break;
-      case LayoutComponentBase.flexGrowPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.flexGrow = value;
-        }
-        break;
-      case LayoutComponentBase.flexShrinkPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.flexShrink = value;
-        }
-        break;
-      case LayoutComponentBase.aspectRatioPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.aspectRatio = value;
         }
         break;
       case ArtboardBase.xPropertyKey:

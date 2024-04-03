@@ -23,6 +23,8 @@ import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/audio_event.dart';
+import 'package:rive/src/rive_core/audio_player.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/event.dart';
@@ -118,12 +120,6 @@ class LayerController {
       _transition!.duration != 0 &&
       _mix != 1;
 
-  bool get isTransitionEnded =>
-      _transition != null &&
-      _stateFrom != null &&
-      _transition!.duration != 0 &&
-      _mix == 1;
-
   void _updateMix(double elapsedSeconds) {
     var transition = _transition;
     if (transition != null && _stateFrom != null && transition.duration != 0) {
@@ -172,12 +168,8 @@ class LayerController {
         _stateFrom!.advance(elapsedSeconds, controller);
       }
     }
+    _apply(core);
 
-    // When we exit a transition we want the currentState to apply its changes
-    // before moving to the next state
-    if (isTransitionEnded) {
-      _apply(core);
-    }
     for (int i = 0; updateState(i != 0); i++) {
       _apply(core);
 
@@ -189,8 +181,6 @@ class LayerController {
         return false;
       }
     }
-
-    _apply(core);
 
     // give the current state the oportunity to clear spilled time, so that we
     // do not carry this over into another iteration.
@@ -298,6 +288,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   OnInputValueChange? onInputValueChange;
 
   final _eventListeners = <OnEvent>{};
+  AudioPlayer? _audioPlayer;
 
   List<Event> get reportedEvents => _reportedEvents;
 
@@ -437,6 +428,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   void dispose() {
     _clearLayerControllers();
     super.dispose();
+
+    _audioPlayer?.dispose();
+    _audioPlayer = null;
   }
 
   @protected
@@ -538,10 +532,17 @@ class StateMachineController extends RiveAnimationController<CoreContext>
         }
       });
 
-      _eventListeners.toList().forEach((listener) {
-        for (final event in events) {
-          listener(RiveEvent.fromCoreEvent(event));
+      var riveEvents = <RiveEvent>[];
+
+      for (final event in events) {
+        if (event is AudioEvent) {
+          _audioPlayer ??= AudioPlayer.make();
+          event.play(_audioPlayer!);
         }
+        riveEvents.add(RiveEvent.fromCoreEvent(event));
+      }
+      _eventListeners.toList().forEach((listener) {
+        riveEvents.forEach(listener);
       });
     }
   }

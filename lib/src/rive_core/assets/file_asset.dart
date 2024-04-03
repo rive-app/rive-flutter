@@ -84,7 +84,9 @@ abstract class FileAssetReferencer<T extends FileAsset> {
   int get assetId;
   set assetId(int value);
 
-  set asset(T? value) {
+  set asset(T? value) => setAsset(value);
+
+  void setAsset(T? value, {bool changeId = true}) {
     if (_asset == value) {
       return;
     }
@@ -92,8 +94,9 @@ abstract class FileAssetReferencer<T extends FileAsset> {
     _asset = value;
 
     _asset?.registerFileAssetReferencer(this);
-
-    assetId = value?.id ?? Core.missingId;
+    if (changeId) {
+      assetId = value?.id ?? Core.missingId;
+    }
   }
 
   /// Get the Core typeKey for the property that stores the assetId on the
