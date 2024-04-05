@@ -100,14 +100,14 @@ class PathComposer extends Component {
     artboard?.onComponentDirty(this);
   }
 
-  // Instead of adding dirt and rely on the recursive behavior of the addDirt method,
-  // we need to explicitly add dirt to the dependents. The reason is that a collapsed
-  // shape will not clear its dirty path flag in the current frame since it is collapsed.
-  // So in a future frame if it is uncollapsed, we mark its path flag as dirty again,
-  // but since it was already dirty, the recursive part will not kick in and the dependents
-  // won't update.
-  // This scenario is not common, but it can happen when a solo toggles between an empty
-  // group and a path for example.
+  // Instead of adding dirt and rely on the recursive behavior of the addDirt
+  // method, we need to explicitly add dirt to the dependents. The reason is
+  // that a collapsed shape will not clear its dirty path flag in the current
+  // frame since it is collapsed. So in a future frame if it is uncollapsed, we
+  // mark its path flag as dirty again, but since it was already dirty, the
+  // recursive part will not kick in and the dependents won't update. This
+  // scenario is not common, but it can happen when a solo toggles between an
+  // empty group and a path for example.
   void pathCollapseChanged() {
     addDirt(ComponentDirt.path);
     for (final d in dependents) {

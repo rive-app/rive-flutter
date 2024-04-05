@@ -326,7 +326,4 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
 
   @override
   void update(int dirt) {}
-
-  @override
-  String get defaultName => 'Layout Style';
 }

@@ -52,14 +52,23 @@ class AudioPlayer {
 
     isPlaying.value = true;
 
-    var sound = engine.play(source, engineTime, 0,
+    var sound = engine.play(
+        source,
+        engineTime,
+        endTime == null
+            ? 0
+            : (engineTime +
+                    (endTime - startTime).inMicroseconds *
+                        1e-6 *
+                        engine.sampleRate)
+                .round(),
         (startTime.inMicroseconds * 1e-6 * engine.sampleRate).round());
     _sounds.add(sound);
     _soundDuration = source.duration;
     _soundStartTime = engineTime -
         (startTime.inMicroseconds * 1e-6 * engine.sampleRate).round();
     _soundEndTime = endTime;
-    _timer = Timer.periodic(const Duration(milliseconds: 0), _frameCallback);
+    _timer ??= Timer.periodic(const Duration(milliseconds: 0), _frameCallback);
   }
 
   bool playSource(AudioAsset? audio) {

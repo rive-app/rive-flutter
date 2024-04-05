@@ -8,7 +8,6 @@ analyzer:
 linter:
   rules:
     - always_put_required_named_parameters_first
-    - always_require_non_null_named_parameters
     - annotate_overrides
     # - avoid_annotating_with_dynamic
     - avoid_bool_literals_in_conditional_expressions
@@ -24,8 +23,6 @@ linter:
     - avoid_null_checks_in_equality_operators
     - avoid_relative_lib_imports
     - avoid_return_types_on_setters
-    - avoid_returning_null
-    - avoid_returning_null_for_future
     - avoid_returning_null_for_void
     - avoid_returning_this
     - avoid_setters_without_getters

@@ -40,9 +40,6 @@ abstract class Drawable extends DrawableBase {
   @override
   void blendModeValueChanged(int from, int to) {}
 
-  @override
-  void isTargetOpaqueChanged(bool from, bool to) {}
-
   List<ClippingShape> _clippingShapes = [];
 
   bool clip(Canvas canvas) {
