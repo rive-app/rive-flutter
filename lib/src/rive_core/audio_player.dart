@@ -23,6 +23,7 @@ class AudioPlayer {
     if (engine == null) {
       return null;
     }
+
     return AudioPlayer(engine: engine);
   }
 
@@ -38,6 +39,7 @@ class AudioPlayer {
     BufferedAudioSource source, {
     Duration startTime = Duration.zero,
     Duration? endTime,
+    double volume = 1,
   }) {
     var engine = this.engine;
     if (engine == null) {
@@ -63,6 +65,9 @@ class AudioPlayer {
                         engine.sampleRate)
                 .round(),
         (startTime.inMicroseconds * 1e-6 * engine.sampleRate).round());
+    if (volume != 1) {
+      sound.volume = volume;
+    }
     _sounds.add(sound);
     _soundDuration = source.duration;
     _soundStartTime = engineTime -
@@ -84,6 +89,9 @@ class AudioPlayer {
     var engineTime = engine.timeInFrames;
 
     var sound = engine.play(source, engineTime, 0, 0);
+    if (audio?.volume != 1) {
+      sound.volume = audio?.volume ?? 1;
+    }
     _sounds.add(sound);
     return true;
   }

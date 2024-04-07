@@ -289,6 +289,8 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
   final _eventListeners = <OnEvent>{};
   AudioPlayer? _audioPlayer;
+  AudioPlayer get audioPlayer => (_audioPlayer ??= AudioPlayer.make())!;
+  AudioPlayer? get peekAudioPlayer => _audioPlayer;
 
   List<Event> get reportedEvents => _reportedEvents;
 
@@ -536,8 +538,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
       for (final event in events) {
         if (event is AudioEvent) {
-          _audioPlayer ??= AudioPlayer.make();
-          event.play(_audioPlayer!);
+          event.play(audioPlayer);
         }
         riveEvents.add(RiveEvent.fromCoreEvent(event));
       }

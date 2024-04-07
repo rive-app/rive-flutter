@@ -21,6 +21,7 @@ import 'package:rive/src/generated/animation/transition_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/generated/assets/drawable_asset_base.dart';
+import 'package:rive/src/generated/assets/export_audio_base.dart';
 import 'package:rive/src/generated/assets/file_asset_base.dart';
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
@@ -1818,6 +1819,11 @@ class RiveCoreContext {
           object.cdnBaseUrl = value;
         }
         break;
+      case ExportAudioBase.volumePropertyKey:
+        if (object is ExportAudioBase && value is double) {
+          object.volume = value;
+        }
+        break;
       case DrawableAssetBase.heightPropertyKey:
         if (object is DrawableAssetBase && value is double) {
           object.height = value;
@@ -2112,6 +2118,7 @@ class RiveCoreContext {
       case TextBase.originXPropertyKey:
       case TextBase.originYPropertyKey:
       case TextBase.paragraphSpacingPropertyKey:
+      case ExportAudioBase.volumePropertyKey:
       case DrawableAssetBase.heightPropertyKey:
       case DrawableAssetBase.widthPropertyKey:
         return doubleType;
@@ -2700,6 +2707,8 @@ class RiveCoreContext {
         return (object as TextBase).originY;
       case TextBase.paragraphSpacingPropertyKey:
         return (object as TextBase).paragraphSpacing;
+      case ExportAudioBase.volumePropertyKey:
+        return (object as ExportAudioBase).volume;
       case DrawableAssetBase.heightPropertyKey:
         return (object as DrawableAssetBase).height;
       case DrawableAssetBase.widthPropertyKey:
@@ -4096,6 +4105,11 @@ class RiveCoreContext {
       case TextBase.paragraphSpacingPropertyKey:
         if (object is TextBase) {
           object.paragraphSpacing = value;
+        }
+        break;
+      case ExportAudioBase.volumePropertyKey:
+        if (object is ExportAudioBase) {
+          object.volume = value;
         }
         break;
       case DrawableAssetBase.heightPropertyKey:

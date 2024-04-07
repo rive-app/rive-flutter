@@ -1,3 +1,7 @@
+## 0.13.2
+
+- Support for asset audio volume.
+
 ## 0.13.1
 
 - Fixed an issue causing crashes on 32 bit devices
