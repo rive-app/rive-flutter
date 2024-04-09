@@ -13,7 +13,7 @@ class AudioPlayer {
   final List<AudioSound> _sounds = [];
   int _soundStartTime = 0;
   Duration _soundDuration = Duration.zero;
-  Duration? _soundEndTime;
+
   Timer? _timer;
 
   AudioPlayer({required AudioEngine? engine}) : _engine = engine;
@@ -72,7 +72,7 @@ class AudioPlayer {
     _soundDuration = source.duration;
     _soundStartTime = engineTime -
         (startTime.inMicroseconds * 1e-6 * engine.sampleRate).round();
-    _soundEndTime = endTime;
+
     _timer ??= Timer.periodic(const Duration(milliseconds: 0), _frameCallback);
   }
 
@@ -93,6 +93,7 @@ class AudioPlayer {
       sound.volume = audio?.volume ?? 1;
     }
     _sounds.add(sound);
+    _timer ??= Timer.periodic(const Duration(milliseconds: 0), _frameCallback);
     return true;
   }
 
@@ -109,14 +110,11 @@ class AudioPlayer {
         : (time.value.inMicroseconds / _soundDuration.inMicroseconds)
             .clamp(0, 1);
 
-    if (_soundEndTime != null) {
-      if (time.value > _soundEndTime!) {
-        stop();
-      }
-    }
+    var completed = _sounds.where((sound) => sound.completed).toList();
 
-    if (time.value > _soundDuration && _sounds.length == 1) {
-      stop();
+    _sounds.removeWhere((sound) => sound.completed);
+    for (final sound in completed) {
+      sound.dispose();
     }
   }
 
@@ -124,7 +122,7 @@ class AudioPlayer {
     isPlaying.value = false;
     _timer?.cancel();
     _timer = null;
-    _soundEndTime = null;
+
     time.value = Duration.zero;
     normalizedTime.value = 0;
     for (final sound in _sounds) {

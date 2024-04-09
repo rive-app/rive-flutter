@@ -29,7 +29,7 @@ class AnimationStateInstance extends StateInstance<AnimationState> {
       .apply(animationInstance.time, coreContext: core, mix: mix);
 
   @override
-  bool get keepGoing => animationInstance.keepGoing;
+  bool get keepGoing => animationInstance.shouldKeepGoing(state.speed);
 
   @override
   void clearSpilledTime() => animationInstance.clearSpilledTime();

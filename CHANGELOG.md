@@ -1,6 +1,7 @@
 ## 0.13.2
 
 - Support for asset audio volume.
+- Fixed an issue with audio decoder in web build.
 
 ## 0.13.1
 

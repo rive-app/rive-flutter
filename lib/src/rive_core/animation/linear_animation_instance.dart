@@ -64,6 +64,14 @@ class LinearAnimationInstance {
       (directedSpeed > 0 && _time < animation.endSeconds) ||
       (directedSpeed < 0 && _time > animation.startSeconds);
 
+  // We estimate whether the animation should keep playing using the speed
+  // multiplier provided by the caller
+  bool shouldKeepGoing(double speedMultiplier) {
+    return animation.loop != Loop.oneShot ||
+        (speedMultiplier * directedSpeed > 0 && _time < animation.endSeconds) ||
+        (speedMultiplier * directedSpeed < 0 && _time > animation.startSeconds);
+  }
+
   /// Apply the changes incurred during advance, also automatically fires any
   /// accrued events.
   void apply(CoreContext core, {double mix = 1}) {
