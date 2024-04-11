@@ -149,6 +149,11 @@ class RiveFile {
       final coreType = _peekRuntimeObjectType(reader, propertyToField);
       switch (coreType) {
         case TextBase.typeKey:
+        // Since all rive_common wasm modules are currently bundled together
+        // we need to check for existance of any of these. And since Artboard
+        // extends LayoutComponent, we will always need to load it
+        case ArtboardBase.typeKey:
+        case AudioAssetBase.typeKey:
           return true;
       }
     }
