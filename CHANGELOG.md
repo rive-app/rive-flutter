@@ -2,6 +2,7 @@
 
 - Support for asset audio volume.
 - Fixed an issue with audio decoder in web build.
+- Adds `play()`/`pause()` and `isPlaying` to an `Artboard`. This completely stops the artboard from playing (including nested artboards) and stops/starts the animation ticker. Pausing an artboard can be used to reduce resources used for Rive graphics that aren't visible on screen.
 
 ## 0.13.1
 

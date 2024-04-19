@@ -333,7 +333,7 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
 
   @override
   bool advance(double elapsedSeconds) =>
-      _artboard.advance(elapsedSeconds, nested: true);
+      _artboard.isPlaying && _artboard.advance(elapsedSeconds, nested: true);
 
   @override
   void beforeDraw(Canvas canvas, Offset offset) {

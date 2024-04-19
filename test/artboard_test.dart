@@ -39,4 +39,13 @@ void main() {
     expect(artboard.linearAnimations.toList().length, 2);
     expect(artboard.stateMachines.toList().length, 1);
   });
+
+  test('Pausing/Playing an artboard', () {
+    final artboard = riveFile.mainArtboard.instance();
+    expect(artboard.isPlaying, true, reason: "Should be true by default");
+    artboard.pause();
+    expect(artboard.isPlaying, false, reason: "Should be false after pause");
+    artboard.play();
+    expect(artboard.isPlaying, true, reason: "Should be true after play");
+  });
 }

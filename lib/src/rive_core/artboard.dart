@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:meta/meta.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/artboard_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
@@ -533,6 +534,26 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   @override
   void onStrokesChanged() {}
+
+  /// Sets `isPlaying` to true. Animations and state machines will play.
+  ///
+  /// See [pause], to pause the artboard from advancing/drawing.
+  @mustBeOverridden
+  void play() {}
+
+  /// Sets `isPlaying` to false. Animations and state machines will not play.
+  /// This can be used to reduce resources when the animation is not visible
+  /// in the app.
+  ///
+  /// See [play], to play the artboard and continue advancing/drawing.
+  @mustBeOverridden
+  void pause() {}
+
+  /// Indicates if the runtime artboard is active/playing. When `false` no
+  /// artboard animation or state machine will advance. The underlying animation
+  /// ticker is paused.
+  @mustBeOverridden
+  bool get isPlaying => true;
 
   @override
   Vec2D get worldTranslation => Vec2D();

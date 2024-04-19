@@ -11,20 +11,21 @@ class PlayPauseAnimation extends StatefulWidget {
 }
 
 class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
-  /// Controller for playback
-  late RiveAnimationController _controller;
+  Artboard? _artboard;
 
-  /// Toggles between play and pause animation states
-  void _togglePlay() =>
-      setState(() => _controller.isActive = !_controller.isActive);
+  bool get isPlaying => _artboard?.isPlaying ?? true;
 
-  /// Tracks if the animation is playing by whether controller is running
-  bool get isPlaying => _controller.isActive;
+  /// Toggles between play and pause on the artboard
+  void _togglePlay() {
+    if (isPlaying) {
+      _artboard?.pause();
+    } else {
+      _artboard?.play();
+    }
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = SimpleAnimation('idle');
+    // We call set state to update the Play/Pause Icon. This isn't needed
+    // to update Rive.
+    setState(() {});
   }
 
   @override
@@ -35,10 +36,11 @@ class _PlayPauseAnimationState extends State<PlayPauseAnimation> {
       ),
       body: RiveAnimation.asset(
         'assets/off_road_car.riv',
+        animations: const ["idle"],
         fit: BoxFit.cover,
-        controllers: [_controller],
-        // Update the play state when the widget's initialized
-        onInit: (_) => setState(() {}),
+        onInit: (artboard) {
+          _artboard = artboard;
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _togglePlay,

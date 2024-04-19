@@ -29,6 +29,9 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   Iterable<Core?> get objects => _objects;
   final Set<Component> _needDependenciesBuilt = {};
 
+  // Indicates if this artboard is playing or paused
+  bool _isPlaying = true;
+
   @override
   T? addObject<T extends Core>(T? object) {
     object?.context = this;
@@ -168,4 +171,18 @@ class RuntimeArtboard extends Artboard implements CoreContext {
           .addPostFrameCallback((_) => controller.isActive = true);
     }
   }
+
+  @override
+  void pause() {
+    _isPlaying = false;
+  }
+
+  @override
+  void play() {
+    _isPlaying = true;
+    markNeedsAdvance();
+  }
+
+  @override
+  bool get isPlaying => _isPlaying;
 }
