@@ -12,6 +12,8 @@ import 'package:rive_example/liquid_download.dart';
 import 'package:rive_example/little_machine.dart';
 import 'package:rive_example/play_one_shot_animation.dart';
 import 'package:rive_example/play_pause_animation.dart';
+import 'package:rive_example/rive_audio.dart';
+import 'package:rive_example/rive_audio_out_of_band.dart';
 import 'package:rive_example/simple_animation.dart';
 import 'package:rive_example/simple_animation_network.dart';
 import 'package:rive_example/simple_machine_listener.dart';
@@ -43,7 +45,7 @@ class RiveExampleApp extends StatefulWidget {
 }
 
 class _RiveExampleAppState extends State<RiveExampleApp> {
-  // Example animations
+  // Examples
   final _pages = [
     const _Page('Simple Animation - Asset', SimpleAssetAnimation()),
     const _Page('Simple Animation - Network', SimpleNetworkAnimation()),
@@ -64,6 +66,8 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     const _Page('Event Open URL Button', EventOpenUrlButton()),
     const _Page('Event Sounds', EventSounds()),
     const _Page('Event Star Rating', EventStarRating()),
+    const _Page('Rive Audio', RiveAudioExample()),
+    const _Page('Rive Audio [Out-of-Band]', RiveAudioOutOfBandExample()),
   ];
 
   @override

@@ -2,10 +2,27 @@ import 'package:rive/src/rive_core/assets/file_asset.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
-/// TODO: do we prefer this, or do we want to wrap our FileAssets
-/// into a custom asset class.
+const _deprecationExtensionMessage =
+    '''This Extension is no longer maintained. Similar behaviour can
+be re-created with a custom extension.
+
+Example: https://gist.github.com/HayesGordon/5d37d3fb26f54b2c231760c2c8685963
+
+''';
+
+const _deprecationEnumMessage =
+    '''This Enum is no longer maintained. Similar behaviour can
+be re-created with a custom Enum.
+
+Example: https://gist.github.com/HayesGordon/5d37d3fb26f54b2c231760c2c8685963
+
+''';
+
+@Deprecated(_deprecationExtensionMessage)
 extension FileAssetExtension on FileAsset {
+  @Deprecated(_deprecationExtensionMessage)
   Extension get extension => _getExtension(fileExtension);
+  @Deprecated(_deprecationExtensionMessage)
   Type get type => _getType(fileExtension);
 }
 
@@ -38,6 +55,7 @@ Type _getType(String ext) {
   return Type.unknown;
 }
 
+@Deprecated(_deprecationEnumMessage)
 enum Extension {
   otf,
   ttf,
@@ -47,6 +65,7 @@ enum Extension {
   unknown,
 }
 
+@Deprecated(_deprecationEnumMessage)
 enum Type {
   font,
   image,

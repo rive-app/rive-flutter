@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:rive/src/asset.dart';
+import 'package:rive/rive.dart';
 import 'package:rive/src/debug.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/utilities/utilities.dart';
@@ -68,17 +68,37 @@ class CDNAssetLoader extends FileAssetLoader {
 
 /// Convenience class for loading assets from the local file system.
 ///
-/// Specify the [fontPath] and [imagePath] to load assets from the asset bundle.
+/// Specify the [fontPath], [imagePath], and [audioPath] to load assets from the
+/// asset bundle for a specific asset type. Or use [path] as a general
+/// fallback instead. [path] will only be used for an asset type if the
+/// corresponding asset path is null.
+///
+/// For example, to provide an audio asset path:
+/// ```dart
+/// final riveFile = await RiveFile.asset(
+///   'assets/ping_pong_audio_demo.riv',
+///   assetLoader: LocalAssetLoader(
+///     audioPath: 'assets/some/path',
+///     // path: 'assets/some/path', // or provide fallback/general
+///   ),
+/// );
+/// ```
+///
+/// Be sure to provide the correct path where the file is located.
 ///
 /// If more control is desired, extend [FileAssetLoader] and override [load].
 class LocalAssetLoader extends FileAssetLoader {
-  final String fontPath;
-  final String imagePath;
+  final String? audioPath;
+  final String? fontPath;
+  final String? imagePath;
+  final String? path;
   final AssetBundle _assetBundle;
 
   LocalAssetLoader({
-    required this.fontPath,
-    required this.imagePath,
+    this.audioPath,
+    this.fontPath,
+    this.imagePath,
+    this.path,
     AssetBundle? assetBundle,
   }) : _assetBundle = assetBundle ?? rootBundle;
 
@@ -89,17 +109,35 @@ class LocalAssetLoader extends FileAssetLoader {
       return false;
     }
     String? assetPath;
-    switch (asset.type) {
-      case Type.unknown:
+
+    String filePath;
+
+    switch (asset.runtimeType) {
+      case AudioAsset:
+        assert(audioPath != null || path != null,
+            '''Audio asset not found. Be sure to provide either `audioPath` or `path` in `LocalAssetLoader`.''');
+        if (audioPath == null && path == null) return false;
+        filePath = audioPath ?? path!;
+        break;
+      case FontAsset:
+        assert(fontPath != null || path != null,
+            '''Font asset not found. Be sure to provide either `fontPath` or `path` in `LocalAssetLoader`.''');
+        if (fontPath == null && path == null) return false;
+        filePath = fontPath ?? path!;
+        break;
+      case ImageAsset:
+        assert(imagePath != null || path != null,
+            '''Image asset not found. Be sure to provide either `imagePath` or `path` in `LocalAssetLoader`.''');
+        if (imagePath == null && path == null) return false;
+        filePath = imagePath ?? path!;
+        break;
+      default:
         return false;
-      case Type.image:
-        assetPath = imagePath + asset.uniqueFilename;
-        break;
-      case Type.font:
-        assetPath = fontPath + asset.uniqueFilename;
-        break;
     }
 
+    filePath = filePath.endsWith("/") ? filePath : "$filePath/";
+
+    assetPath = filePath + asset.uniqueFilename;
     final bytes = await _assetBundle.load(assetPath);
     await asset.decode(Uint8List.view(bytes.buffer));
     return true;

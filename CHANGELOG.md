@@ -1,5 +1,8 @@
 ## 0.13.2
 
+- DEPRECATED: `Extension` and `Type` enum on `FileAsset`. You can create a custom maintained version, see example: https://gist.github.com/HayesGordon/5d37d3fb26f54b2c231760c2c8685963
+- BREAKING: Removal of previously deprecated methods `assetResolver` on `RiveFile.network` and class `NetworkAssetResolver`
+- Add Audio out-of-band, with examples.
 - Support for asset audio volume.
 - Fixed an issue with audio decoder in web build.
 - Adds `play()`/`pause()` and `isPlaying` to an `Artboard`. This completely stops the artboard from playing (including nested artboards) and stops/starts the animation ticker. Pausing an artboard can be used to reduce resources used for Rive graphics that aren't visible on screen.

@@ -339,7 +339,6 @@ class RiveFile {
   /// [RiveUnsupportedVersionException] if the version is not supported.
   factory RiveFile.import(
     ByteData bytes, {
-    @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
     FileAssetLoader? assetLoader,
     ObjectGenerator? objectGenerator,
     bool loadCdnAssets = true,
@@ -428,7 +427,6 @@ class RiveFile {
   static Future<RiveFile> network(
     String url, {
     Map<String, String>? headers,
-    @Deprecated('Use `assetLoader` instead.') FileAssetResolver? assetResolver,
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
     ObjectGenerator? objectGenerator,
@@ -474,19 +472,4 @@ class RiveFile {
   /// that name exists in the file
   Artboard? artboardByName(String name) =>
       _artboards.firstWhereOrNull((a) => a.name == name);
-}
-
-// TODO: remove in v0.13.0
-
-/// Resolves a Rive asset from the network provided a [baseUrl].
-@Deprecated('Use `CallbackAssetLoader` instead. Will be removed in v0.13.0')
-class NetworkAssetResolver extends FileAssetResolver {
-  final String baseUrl;
-  NetworkAssetResolver(this.baseUrl);
-
-  @override
-  Future<Uint8List> loadContents(FileAsset asset) async {
-    final res = await http.get(Uri.parse(baseUrl + asset.uniqueFilename));
-    return Uint8List.view(res.bodyBytes.buffer);
-  }
 }

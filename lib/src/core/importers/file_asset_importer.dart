@@ -4,12 +4,6 @@ import 'package:rive/src/debug.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
 
-// TODO: Deprecated. Remove this in the next major version (0.12.0).
-// ignore: one_member_abstracts
-abstract class FileAssetResolver {
-  Future<Uint8List> loadContents(FileAsset asset);
-}
-
 class FileAssetImporter extends ImportStackObject {
   final FileAssetLoader? assetLoader;
   final FileAsset fileAsset;
