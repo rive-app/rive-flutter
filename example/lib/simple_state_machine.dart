@@ -17,7 +17,7 @@ class _SimpleStateMachineState extends State<SimpleStateMachine> {
   void _onRiveInit(Artboard artboard) {
     final controller = StateMachineController.fromArtboard(artboard, 'bumpy');
     artboard.addController(controller!);
-    _bump = controller.findInput<bool>('bump') as SMITrigger;
+    _bump = controller.getTriggerInput('bump');
   }
 
   void _hitBump() => _bump?.fire();

@@ -16,8 +16,8 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
 
   Artboard? _riveArtboard;
   StateMachineController? _controller;
-  SMIInput<bool>? _hoverInput;
-  SMIInput<bool>? _pressInput;
+  SMIBool? _hoverInput;
+  SMIBool? _pressInput;
 
   @override
   void initState() {
@@ -37,8 +37,8 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
             StateMachineController.fromArtboard(artboard, 'Button');
         if (controller != null) {
           artboard.addController(controller);
-          _hoverInput = controller.findInput('Hover');
-          _pressInput = controller.findInput('Press');
+          _hoverInput = controller.getBoolInput('Hover');
+          _pressInput = controller.getBoolInput('Press');
         }
         setState(() => _riveArtboard = artboard);
       },

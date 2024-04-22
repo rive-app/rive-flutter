@@ -43,7 +43,7 @@ void main() {
           )!;
           controller.isActive = false;
           artboard.addController(controller);
-          trigger = controller.findInput<bool>('Trigger 1') as SMITrigger;
+          trigger = controller.getTriggerInput('Trigger 1')!;
         },
       );
       await tester.pumpWidget(widget);
@@ -96,7 +96,7 @@ void main() {
           )!;
           controller.isActive = false;
           artboard.addController(controller);
-          trigger = controller.findInput<bool>('Trigger 1') as SMITrigger;
+          trigger = controller.getTriggerInput('Trigger 1')!;
         },
       );
       await tester.pumpWidget(widget);
@@ -131,7 +131,7 @@ void main() {
           )!;
           controller.isActive = false;
           artboard.addController(controller);
-          trigger = controller.findInput<bool>('Trigger 1') as SMITrigger;
+          trigger = controller.getTriggerInput('Trigger 1')!;
         },
       );
       await tester.pumpWidget(widget);

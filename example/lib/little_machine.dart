@@ -19,7 +19,7 @@ class _LittleMachineState extends State<LittleMachine> {
 
   Artboard? _riveArtboard;
   StateMachineController? _controller;
-  SMIInput<bool>? _trigger;
+  SMITrigger? _trigger;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _LittleMachineState extends State<LittleMachine> {
         );
         if (controller != null) {
           artboard.addController(controller);
-          _trigger = controller.findInput('Trigger 1');
+          _trigger = controller.getTriggerInput('Trigger 1');
         }
         setState(() => _riveArtboard = artboard);
       },
@@ -64,7 +64,7 @@ class _LittleMachineState extends State<LittleMachine> {
           _riveArtboard == null
               ? const SizedBox()
               : GestureDetector(
-                  onTapDown: (_) => _trigger?.value = true,
+                  onTapDown: (_) => _trigger?.fire(),
                   child: Rive(
                     artboard: _riveArtboard!,
                     fit: BoxFit.cover,

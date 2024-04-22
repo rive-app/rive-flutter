@@ -339,8 +339,8 @@ class RiveAnimationState extends State<RiveAnimation> {
   Widget build(BuildContext context) => _artboard != null
       ? Rive(
           artboard: _artboard!,
-          fit: widget.fit,
-          alignment: widget.alignment,
+          fit: widget.fit ?? BoxFit.contain,
+          alignment: widget.alignment ?? Alignment.center,
           antialiasing: widget.antialiasing,
           useArtboardSize: widget.useArtboardSize,
           clipRect: widget.clipRect,

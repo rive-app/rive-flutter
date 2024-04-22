@@ -23,7 +23,7 @@ void main() {
           )!;
           controller.isActive = false;
           artboard.addController(controller);
-          trigger = controller.findInput<bool>('Skin') as SMITrigger;
+          trigger = controller.getTriggerInput('Skin')!;
         },
       );
 

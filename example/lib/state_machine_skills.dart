@@ -16,7 +16,7 @@ class _StateMachineSkillsState extends State<StateMachineSkills> {
 
   Artboard? _riveArtboard;
   StateMachineController? _controller;
-  SMIInput<double>? _levelInput;
+  SMINumber? _levelInput;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _StateMachineSkillsState extends State<StateMachineSkills> {
             StateMachineController.fromArtboard(artboard, 'Designer\'s Test');
         if (controller != null) {
           artboard.addController(controller);
-          _levelInput = controller.findInput('Level');
+          _levelInput = controller.getNumberInput('Level');
         }
         setState(() => _riveArtboard = artboard);
       },

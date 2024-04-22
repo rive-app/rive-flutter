@@ -101,11 +101,10 @@ class Rive extends LeafRenderObjectWidget {
     this.enablePointerEvents = false,
     this.cursor = MouseCursor.defer,
     this.behavior = RiveHitTestBehavior.opaque,
-    BoxFit? fit,
-    Alignment? alignment,
+    this.fit = BoxFit.contain,
+    this.alignment = Alignment.center,
     this.clipRect,
-  })  : fit = fit ?? BoxFit.contain,
-        alignment = alignment ?? Alignment.center;
+  });
 
   @override
   RenderObject createRenderObject(BuildContext context) {

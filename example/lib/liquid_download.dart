@@ -17,8 +17,8 @@ class _LiquidDownloadState extends State<LiquidDownload> {
 
   Artboard? _riveArtboard;
   StateMachineController? _controller;
-  SMIInput<bool>? _start;
-  SMIInput<double>? _progress;
+  SMITrigger? _start;
+  SMINumber? _progress;
 
   @override
   void initState() {
@@ -38,8 +38,8 @@ class _LiquidDownloadState extends State<LiquidDownload> {
             StateMachineController.fromArtboard(artboard, 'Download');
         if (controller != null) {
           artboard.addController(controller);
-          _start = controller.findInput('Download');
-          _progress = controller.findInput('Progress');
+          _start = controller.getTriggerInput('Download');
+          _progress = controller.getNumberInput('Progress');
         }
         setState(() => _riveArtboard = artboard);
       },

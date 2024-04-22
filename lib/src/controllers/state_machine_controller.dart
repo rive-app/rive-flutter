@@ -165,6 +165,9 @@ class StateMachineController extends core.StateMachineController {
   }
 
   /// Find an input with a specific backing type and a given name.
+  ///
+  /// For easier to use methods, see [getBoolInput], [getTriggerInput],
+  /// [getNumberInput].
   SMIInput<T>? findInput<T>(String name) {
     for (final input in _inputs) {
       if (input._is<T>() && input.name == name) {
@@ -175,6 +178,9 @@ class StateMachineController extends core.StateMachineController {
   }
 
   /// Find an input of specific concrete input type, with a given name.
+  ///
+  /// For easier to use methods, see [getBoolInput], [getTriggerInput],
+  /// [getNumberInput].
   T? findSMI<T>(String name) {
     for (final input in _inputs) {
       if (input is T && input.name == name) {
@@ -183,6 +189,24 @@ class StateMachineController extends core.StateMachineController {
     }
     return null;
   }
+
+  /// Find a boolean input with a given name.
+  SMIBool? getBoolInput(String name) => findSMI<SMIBool>(name);
+
+  /// Find a trigger input with a given name.
+  SMITrigger? getTriggerInput(String name) => findSMI<SMITrigger>(name);
+
+  /// Find a number input with a given name.
+  ///
+  /// See [triggerInput] to directly fire a trigger by its name.
+  SMINumber? getNumberInput(String name) => findSMI<SMINumber>(name);
+
+  /// Convenience method for firing a trigger input with a given name.
+  ///
+  /// Also see [getTriggerInput] to get a reference to the trigger input. If the
+  /// trigger happens frequently, it's more efficient to get a reference to the
+  /// trigger input and call `trigger.fire()` directly.
+  void triggerInput(String name) => getTriggerInput(name)?.fire();
 
   @override
   void advanceInputs() {

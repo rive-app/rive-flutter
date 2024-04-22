@@ -6,6 +6,7 @@
 - Support for asset audio volume.
 - Fixed an issue with audio decoder in web build.
 - Adds `play()`/`pause()` and `isPlaying` to an `Artboard`. This completely stops the artboard from playing (including nested artboards) and stops/starts the animation ticker. Pausing an artboard can be used to reduce resources used for Rive graphics that aren't visible on screen.
+- Adds `getBoolInput`, `getTriggerInput`, `getNumberInput`, and `triggerInput` on `StateMachineController` to easily retrieve state machine inputs and fire triggers. This can be used instead of `findInput` and `findSMI`, to easily retrieve an `SMIBool`, `SMINumber`, and `SMITrigger` to manipulate a Rive state machine.
 
 ## 0.13.1
 

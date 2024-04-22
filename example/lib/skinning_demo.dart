@@ -31,7 +31,7 @@ class _SkinningDemoState extends State<SkinningDemo> {
     );
 
     artboard.addController(controller!);
-    _skin = controller.findInput<bool>('Skin') as SMITrigger;
+    _skin = controller.getTriggerInput('Skin');
   }
 
   void _onStateChange(String stateMachineName, String stateName) {
