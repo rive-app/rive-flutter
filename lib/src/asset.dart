@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
