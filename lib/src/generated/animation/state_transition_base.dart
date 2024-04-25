@@ -161,6 +161,31 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
 
   void interpolatorIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// RandomWeight field with key 537.
+  static const int randomWeightPropertyKey = 537;
+  static const int randomWeightInitialValue = 1;
+  int _randomWeight = randomWeightInitialValue;
+
+  /// Weight of the transition in the overall random options
+  int get randomWeight => _randomWeight;
+
+  /// Change the [_randomWeight] field value.
+  /// [randomWeightChanged] will be invoked only if the field's value has
+  /// changed.
+  set randomWeight(int value) {
+    if (_randomWeight == value) {
+      return;
+    }
+    int from = _randomWeight;
+    _randomWeight = value;
+    if (hasValidated) {
+      randomWeightChanged(from, value);
+    }
+  }
+
+  void randomWeightChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
@@ -171,6 +196,7 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
       _exitTime = source._exitTime;
       _interpolationType = source._interpolationType;
       _interpolatorId = source._interpolatorId;
+      _randomWeight = source._randomWeight;
     }
   }
 }

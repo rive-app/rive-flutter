@@ -28,6 +28,7 @@ class StateTransition extends StateTransitionBase {
 
   static final StateTransition unknown = StateTransition();
 
+  int evaluatedRandomWeight = 0;
   Interpolator? _interpolator;
   Interpolator? get interpolator => _interpolator;
   set interpolator(Interpolator? value) {
@@ -159,6 +160,9 @@ class StateTransition extends StateTransitionBase {
 
   @override
   void durationChanged(int from, int to) {}
+
+  @override
+  void randomWeightChanged(int from, int to) {}
 
   @override
   void exitTimeChanged(int from, int to) {}

@@ -26,6 +26,9 @@ abstract class LayerState extends LayerStateBase {
     _transitions.remove(transition);
   }
 
+  @override
+  void flagsChanged(int from, int to) {}
+
   StateInstance makeInstance();
 
   @override

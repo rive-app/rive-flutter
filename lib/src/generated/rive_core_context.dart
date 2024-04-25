@@ -13,6 +13,7 @@ import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
 import 'package:rive/src/generated/animation/interpolating_keyframe_base.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
 import 'package:rive/src/generated/animation/keyframe_string_base.dart';
+import 'package:rive/src/generated/animation/layer_state_base.dart';
 import 'package:rive/src/generated/animation/listener_input_change_base.dart';
 import 'package:rive/src/generated/animation/nested_input_base.dart';
 import 'package:rive/src/generated/animation/nested_linear_animation_base.dart';
@@ -30,6 +31,7 @@ import 'package:rive/src/generated/constraints/transform_component_constraint_ba
 import 'package:rive/src/generated/constraints/transform_component_constraint_y_base.dart';
 import 'package:rive/src/generated/constraints/transform_space_constraint_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
+import 'package:rive/src/generated/layout_component_absolute_base.dart';
 import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';
@@ -112,6 +114,7 @@ import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
 import 'package:rive/src/rive_core/layout/layout_component_style.dart';
 import 'package:rive/src/rive_core/layout_component.dart';
+import 'package:rive/src/rive_core/layout_component_absolute.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/open_url_event.dart';
@@ -332,6 +335,8 @@ class RiveCoreContext {
         return Joystick();
       case BackboardBase.typeKey:
         return Backboard();
+      case AbsoluteLayoutComponentBase.typeKey:
+        return AbsoluteLayoutComponent();
       case OpenUrlEventBase.typeKey:
         return OpenUrlEvent();
       case BoneBase.typeKey:
@@ -749,6 +754,11 @@ class RiveCoreContext {
           object.eventId = value;
         }
         break;
+      case LayerStateBase.flagsPropertyKey:
+        if (object is LayerStateBase && value is int) {
+          object.flags = value;
+        }
+        break;
       case AnimationBase.namePropertyKey:
         if (object is AnimationBase && value is String) {
           object.name = value;
@@ -1017,6 +1027,11 @@ class RiveCoreContext {
       case StateTransitionBase.interpolatorIdPropertyKey:
         if (object is StateTransitionBase && value is int) {
           object.interpolatorId = value;
+        }
+        break;
+      case StateTransitionBase.randomWeightPropertyKey:
+        if (object is StateTransitionBase && value is int) {
+          object.randomWeight = value;
         }
         break;
       case NestedBoolBase.nestedValuePropertyKey:
@@ -1884,6 +1899,7 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.layoutFlags1PropertyKey:
       case LayoutComponentStyleBase.layoutFlags2PropertyKey:
       case ListenerFireEventBase.eventIdPropertyKey:
+      case LayerStateBase.flagsPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
       case LinearAnimationBase.loopValuePropertyKey:
@@ -1915,6 +1931,7 @@ class RiveCoreContext {
       case StateTransitionBase.exitTimePropertyKey:
       case StateTransitionBase.interpolationTypePropertyKey:
       case StateTransitionBase.interpolatorIdPropertyKey:
+      case StateTransitionBase.randomWeightPropertyKey:
       case StateMachineFireEventBase.eventIdPropertyKey:
       case StateMachineFireEventBase.occursValuePropertyKey:
       case ElasticInterpolatorBase.easingValuePropertyKey:
@@ -2235,6 +2252,8 @@ class RiveCoreContext {
         return (object as LayoutComponentStyleBase).layoutFlags2;
       case ListenerFireEventBase.eventIdPropertyKey:
         return (object as ListenerFireEventBase).eventId;
+      case LayerStateBase.flagsPropertyKey:
+        return (object as LayerStateBase).flags;
       case LinearAnimationBase.fpsPropertyKey:
         return (object as LinearAnimationBase).fps;
       case LinearAnimationBase.durationPropertyKey:
@@ -2297,6 +2316,8 @@ class RiveCoreContext {
         return (object as StateTransitionBase).interpolationType;
       case StateTransitionBase.interpolatorIdPropertyKey:
         return (object as StateTransitionBase).interpolatorId;
+      case StateTransitionBase.randomWeightPropertyKey:
+        return (object as StateTransitionBase).randomWeight;
       case StateMachineFireEventBase.eventIdPropertyKey:
         return (object as StateMachineFireEventBase).eventId;
       case StateMachineFireEventBase.occursValuePropertyKey:
@@ -2937,6 +2958,11 @@ class RiveCoreContext {
           object.eventId = value;
         }
         break;
+      case LayerStateBase.flagsPropertyKey:
+        if (object is LayerStateBase) {
+          object.flags = value;
+        }
+        break;
       case LinearAnimationBase.fpsPropertyKey:
         if (object is LinearAnimationBase) {
           object.fps = value;
@@ -3090,6 +3116,11 @@ class RiveCoreContext {
       case StateTransitionBase.interpolatorIdPropertyKey:
         if (object is StateTransitionBase) {
           object.interpolatorId = value;
+        }
+        break;
+      case StateTransitionBase.randomWeightPropertyKey:
+        if (object is StateTransitionBase) {
+          object.randomWeight = value;
         }
         break;
       case StateMachineFireEventBase.eventIdPropertyKey:

@@ -1,6 +1,7 @@
 library rive_core;
 
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
@@ -28,6 +29,7 @@ import 'package:rive/src/rive_core/audio_player.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/event.dart';
+import 'package:rive/src/rive_core/layer_state_flags.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
@@ -86,12 +88,14 @@ class LayerController {
     }
   }
 
-  bool _changeState(LayerState? state, {StateTransition? transition}) {
+  bool _canChangeState(LayerState? state) {
+    return state != _currentState?.state;
+  }
+
+  void _changeState(LayerState? state, {StateTransition? transition}) {
     assert(state is! AnyState,
         'We don\'t allow making the AnyState an active state.');
-    if (state == _currentState?.state) {
-      return false;
-    }
+    assert(state != _currentState?.state, 'Cannot change to state to self.');
     var currentState = _currentState;
     if (currentState != null) {
       _fireEvents(currentState.state.eventsAt(StateMachineFireOccurance.atEnd));
@@ -105,8 +109,6 @@ class LayerController {
     } else {
       _currentState = null;
     }
-
-    return true;
   }
 
   void dispose() {
@@ -208,64 +210,118 @@ class LayerController {
     return tryChangeState(_currentState, ignoreTriggers);
   }
 
+  StateTransition? _findRandomTransition(
+      StateInstance stateFrom, bool ignoreTriggers) {
+    double totalWeight = 0;
+    final transitions = stateFrom.state.transitions;
+    for (final transition in transitions) {
+      var allowed = transition.allowed(
+          stateFrom, controller._inputValues, ignoreTriggers);
+      if (allowed == AllowTransition.yes &&
+          _canChangeState(transition.stateTo)) {
+        transition.evaluatedRandomWeight = transition.randomWeight;
+        totalWeight += transition.randomWeight;
+        // If random is not active we don't search for more candidates
+      } else {
+        transition.evaluatedRandomWeight = 0;
+        if (allowed == AllowTransition.waitingForExit) {
+          _waitingForExit = true;
+        }
+      }
+    }
+    if (totalWeight > 0) {
+      final random = Random().nextDouble() * totalWeight;
+      double currentWeight = 0;
+      int index = 0;
+      while (index < transitions.length) {
+        final transitionWeight =
+            transitions.elementAt(index).evaluatedRandomWeight;
+        if (currentWeight + transitionWeight > random) {
+          break;
+        }
+        currentWeight += transitionWeight;
+        index += 1;
+      }
+      assert(index < transitions.length);
+      final transition = transitions.elementAt(index);
+      return transition;
+    }
+    return null;
+  }
+
+  StateTransition? _findAllowedTransition(
+      StateInstance stateFrom, bool ignoreTriggers) {
+    if (stateFrom.state.flags & LayerStateFlags.random ==
+        LayerStateFlags.random) {
+      return _findRandomTransition(stateFrom, ignoreTriggers);
+    }
+    final transitions = stateFrom.state.transitions;
+    for (final transition in transitions) {
+      var allowed = transition.allowed(
+          stateFrom, controller._inputValues, ignoreTriggers);
+      if (allowed == AllowTransition.yes &&
+          _canChangeState(transition.stateTo)) {
+        return transition;
+      } else if (allowed == AllowTransition.waitingForExit) {
+        _waitingForExit = true;
+      }
+    }
+    return null;
+  }
+
   bool tryChangeState(StateInstance? stateFrom, bool ignoreTriggers) {
     if (stateFrom == null) {
       return false;
     }
 
     var outState = _currentState;
-    for (final transition in stateFrom.state.transitions) {
-      var allowed = transition.allowed(
-          stateFrom, controller._inputValues, ignoreTriggers);
-      if (allowed == AllowTransition.yes &&
-          _changeState(transition.stateTo, transition: transition)) {
-        // Take transition
-        _transition = transition;
+    final transition = _findAllowedTransition(stateFrom, ignoreTriggers);
+    if (transition != null) {
+      _changeState(transition.stateTo, transition: transition);
+      // Take transition
+      _transition = transition;
 
-        _fireEvents(transition.eventsAt(StateMachineFireOccurance.atStart));
-        // Immediately fire end events if transition has no duration.
-        if (transition.duration == 0) {
-          _transitionCompleted = true;
-          _fireEvents(transition.eventsAt(StateMachineFireOccurance.atEnd));
-        } else {
-          _transitionCompleted = false;
-        }
-
-        _stateFrom = outState;
-
-        // If we had an exit time and wanted to pause on exit, make sure to hold
-        // the exit time. Delegate this to the transition by telling it that it
-        // was completed.
-        if (outState != null && transition.applyExitCondition(outState)) {
-          // Make sure we apply this state.
-          var inst = (outState as AnimationStateInstance).animationInstance;
-          _holdAnimation = inst.animation;
-          _holdTime = inst.time;
-        }
-        _mixFrom = _mix;
-
-        // Keep mixing last animation that was mixed in.
-        if (_mix != 0) {
-          _holdAnimationFrom = transition.pauseOnExit;
-        }
-        if (outState is AnimationStateInstance) {
-          var spilledTime = outState.animationInstance.spilledTime;
-          _currentState?.advance(spilledTime, controller);
-        }
-
-        _mix = 0;
-        _updateMix(0);
-        // Make sure to reset _waitingForExit to false if we succeed at taking a
-        // transition.
-        _waitingForExit = false;
-        // State has changed, fire the callback if there's one
-        if (_currentState != null) {
-          onLayerStateChange?.call(_currentState!.state);
-        }
-        return true;
-      } else if (allowed == AllowTransition.waitingForExit) {
-        _waitingForExit = true;
+      _fireEvents(transition.eventsAt(StateMachineFireOccurance.atStart));
+      // Immediately fire end events if transition has no duration.
+      if (transition.duration == 0) {
+        _transitionCompleted = true;
+        _fireEvents(transition.eventsAt(StateMachineFireOccurance.atEnd));
+      } else {
+        _transitionCompleted = false;
       }
+
+      _stateFrom = outState;
+
+      // If we had an exit time and wanted to pause on exit, make sure to hold
+      // the exit time. Delegate this to the transition by telling it that it
+      // was completed.
+      if (outState != null && transition.applyExitCondition(outState)) {
+        // Make sure we apply this state.
+        var inst = (outState as AnimationStateInstance).animationInstance;
+        _holdAnimation = inst.animation;
+        _holdTime = inst.time;
+      }
+      _mixFrom = _mix;
+
+      // Keep mixing last animation that was mixed in.
+      if (_mix != 0) {
+        _holdAnimationFrom = transition.pauseOnExit;
+      }
+      if (outState is AnimationStateInstance) {
+        var spilledTime = outState.animationInstance.spilledTime;
+        _currentState?.advance(spilledTime, controller);
+      }
+
+      _mix = 0;
+      _updateMix(0);
+      // Make sure to reset _waitingForExit to false if we succeed at taking a
+      // transition.
+      _waitingForExit = false;
+      // State has changed, fire the callback if there's one
+      if (_currentState != null) {
+        onLayerStateChange?.call(_currentState!.state);
+      }
+      return true;
     }
     return false;
   }
@@ -289,7 +345,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
   final _eventListeners = <OnEvent>{};
   AudioPlayer? _audioPlayer;
+
   AudioPlayer get audioPlayer => (_audioPlayer ??= AudioPlayer.make())!;
+
   AudioPlayer? get peekAudioPlayer => _audioPlayer;
 
   List<Event> get reportedEvents => _reportedEvents;

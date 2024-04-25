@@ -29,11 +29,6 @@ class AudioAsset extends AudioAssetBase {
     audioBytes = bytes;
   }
 
-  @override
-  String get fileExtension {
-    return 'wav';
-  }
-
   static AudioContainerFormat containerFormatFromName(String name) {
     switch (name) {
       case 'flac':
@@ -45,4 +40,8 @@ class AudioAsset extends AudioAssetBase {
     }
     return AudioContainerFormat.unknown;
   }
+
+  // See comment in font_asset.dart
+  @override
+  String get fileExtension => 'wav';
 }

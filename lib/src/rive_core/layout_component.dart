@@ -30,6 +30,17 @@ class LayoutComponent extends LayoutComponentBase {
   final LayoutNode _layoutNode = LayoutNode.make();
   LayoutNode get layoutNode => _layoutNode;
 
+  LayoutComponent? get layoutParent {
+    var p = parent;
+    while (p != null) {
+      if (p is LayoutComponent) {
+        return p;
+      }
+      p = p.parent;
+    }
+    return artboard;
+  }
+
   void markLayoutNodeDirty() {
     _layoutNode.markDirty();
     artboard?.markLayoutDirty(this);
@@ -250,6 +261,24 @@ class LayoutComponent extends LayoutComponentBase {
       0,
       _layoutSize.width,
       _layoutSize.height,
+    );
+  }
+
+  AABB get layoutBounds {
+    return AABB.fromValues(
+      _layoutLocation.dx,
+      _layoutLocation.dy,
+      _layoutLocation.dx + _layoutSize.width,
+      _layoutLocation.dy + _layoutSize.height,
+    );
+  }
+
+  AABB get worldBounds {
+    return AABB.fromValues(
+      worldTransform[4],
+      worldTransform[5],
+      worldTransform[4] + _layoutSize.width,
+      worldTransform[5] + _layoutSize.height,
     );
   }
 

@@ -238,7 +238,9 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
   void layoutFlags0Changed(int from, int to) => markLayoutNodeDirty();
 
   @override
-  void layoutFlags1Changed(int from, int to) => markLayoutNodeDirty();
+  void layoutFlags1Changed(int from, int to) {
+    markLayoutNodeDirty();
+  }
 
   @override
   void layoutFlags2Changed(int from, int to) => markLayoutNodeDirty();

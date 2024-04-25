@@ -72,7 +72,6 @@ class AudioPlayer {
     _soundDuration = source.duration;
     _soundStartTime = engineTime -
         (startTime.inMicroseconds * 1e-6 * engine.sampleRate).round();
-
     _timer ??= Timer.periodic(const Duration(milliseconds: 0), _frameCallback);
   }
 
