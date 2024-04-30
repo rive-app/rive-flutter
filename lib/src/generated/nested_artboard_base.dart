@@ -48,11 +48,61 @@ abstract class NestedArtboardBase extends Drawable {
 
   void artboardIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// Fit field with key 538.
+  static const int fitPropertyKey = 538;
+  static const int fitInitialValue = 0;
+  int _fit = fitInitialValue;
+
+  /// Fit type for the nested artboard's runtime artboard.
+  int get fit => _fit;
+
+  /// Change the [_fit] field value.
+  /// [fitChanged] will be invoked only if the field's value has changed.
+  set fit(int value) {
+    if (_fit == value) {
+      return;
+    }
+    int from = _fit;
+    _fit = value;
+    if (hasValidated) {
+      fitChanged(from, value);
+    }
+  }
+
+  void fitChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// Alignment field with key 539.
+  static const int alignmentPropertyKey = 539;
+  static const int alignmentInitialValue = 0;
+  int _alignment = alignmentInitialValue;
+
+  /// Alignment type for the nested artboard's runtime artboard.
+  int get alignment => _alignment;
+
+  /// Change the [_alignment] field value.
+  /// [alignmentChanged] will be invoked only if the field's value has changed.
+  set alignment(int value) {
+    if (_alignment == value) {
+      return;
+    }
+    int from = _alignment;
+    _alignment = value;
+    if (hasValidated) {
+      alignmentChanged(from, value);
+    }
+  }
+
+  void alignmentChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is NestedArtboardBase) {
       _artboardId = source._artboardId;
+      _fit = source._fit;
+      _alignment = source._alignment;
     }
   }
 }

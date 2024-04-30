@@ -9,11 +9,15 @@ class RuntimeMountedArtboard extends MountedArtboard {
   NestedArtboard nestedArtboard;
   final RuntimeArtboard artboardInstance;
   StateMachineController? controller;
+  Size originalArtboardInstanceSize = const Size(0, 0);
 
   // The callback used for bubbling events up from nested artboards
   Function(Event, NestedArtboard)? eventCallback;
 
   RuntimeMountedArtboard(this.artboardInstance, this.nestedArtboard) {
+    // Store the initial w/h of the artboard and use that as the starting point
+    originalArtboardInstanceSize =
+        Size(artboardInstance.width, artboardInstance.height);
     artboardInstance.frameOrigin = false;
     artboardInstance.advance(0, nested: true);
   }
@@ -37,9 +41,9 @@ class RuntimeMountedArtboard extends MountedArtboard {
 
   @override
   AABB get bounds {
-    var width = artboardInstance.width;
+    var width = originalArtboardWidth;
 
-    var height = artboardInstance.height;
+    var height = originalArtboardHeight;
     var x = -artboardInstance.originX * width;
     var y = -artboardInstance.originY * height;
     return AABB.fromValues(x, y, x + width, y + height);
@@ -47,6 +51,28 @@ class RuntimeMountedArtboard extends MountedArtboard {
 
   @override
   double get renderOpacity => artboardInstance.opacity;
+
+  @override
+  double get artboardWidth => artboardInstance.width;
+
+  @override
+  set artboardWidth(double width) {
+    artboardInstance.width = width;
+  }
+
+  @override
+  double get artboardHeight => artboardInstance.height;
+
+  @override
+  set artboardHeight(double height) {
+    artboardInstance.height = height;
+  }
+
+  @override
+  double get originalArtboardWidth => originalArtboardInstanceSize.width;
+
+  @override
+  double get originalArtboardHeight => originalArtboardInstanceSize.height;
 
   @override
   set renderOpacity(double value) {

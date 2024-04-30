@@ -589,6 +589,16 @@ class RiveCoreContext {
           object.artboardId = value;
         }
         break;
+      case NestedArtboardBase.fitPropertyKey:
+        if (object is NestedArtboardBase && value is int) {
+          object.fit = value;
+        }
+        break;
+      case NestedArtboardBase.alignmentPropertyKey:
+        if (object is NestedArtboardBase && value is int) {
+          object.alignment = value;
+        }
+        break;
       case NestedAnimationBase.animationIdPropertyKey:
         if (object is NestedAnimationBase && value is int) {
           object.animationId = value;
@@ -1893,6 +1903,8 @@ class RiveCoreContext {
       case DrawableBase.blendModeValuePropertyKey:
       case DrawableBase.drawableFlagsPropertyKey:
       case NestedArtboardBase.artboardIdPropertyKey:
+      case NestedArtboardBase.fitPropertyKey:
+      case NestedArtboardBase.alignmentPropertyKey:
       case NestedAnimationBase.animationIdPropertyKey:
       case SoloBase.activeComponentIdPropertyKey:
       case LayoutComponentStyleBase.layoutFlags0PropertyKey:
@@ -2240,6 +2252,10 @@ class RiveCoreContext {
         return (object as DrawableBase).drawableFlags;
       case NestedArtboardBase.artboardIdPropertyKey:
         return (object as NestedArtboardBase).artboardId;
+      case NestedArtboardBase.fitPropertyKey:
+        return (object as NestedArtboardBase).fit;
+      case NestedArtboardBase.alignmentPropertyKey:
+        return (object as NestedArtboardBase).alignment;
       case NestedAnimationBase.animationIdPropertyKey:
         return (object as NestedAnimationBase).animationId;
       case SoloBase.activeComponentIdPropertyKey:
@@ -2926,6 +2942,16 @@ class RiveCoreContext {
       case NestedArtboardBase.artboardIdPropertyKey:
         if (object is NestedArtboardBase) {
           object.artboardId = value;
+        }
+        break;
+      case NestedArtboardBase.fitPropertyKey:
+        if (object is NestedArtboardBase) {
+          object.fit = value;
+        }
+        break;
+      case NestedArtboardBase.alignmentPropertyKey:
+        if (object is NestedArtboardBase) {
+          object.alignment = value;
         }
         break;
       case NestedAnimationBase.animationIdPropertyKey:

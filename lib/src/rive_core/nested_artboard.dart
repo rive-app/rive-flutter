@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:rive/src/core/core.dart';
@@ -13,6 +14,28 @@ import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/nested_artboard_base.dart';
 
+enum NestedArtboardFitType {
+  fill, // Default value - scales to fill available view without maintaining aspect ratio
+  contain,
+  cover,
+  fitWidth,
+  fitHeight,
+  resizeArtboard,
+  none,
+}
+
+enum NestedArtboardAlignmentType {
+  center, // Default value
+  topLeft,
+  topCenter,
+  topRight,
+  centerLeft,
+  centerRight,
+  bottomLeft,
+  bottomCenter,
+  bottomRight,
+}
+
 /// Represents the nested Artboard that'll actually be mounted and placed into
 /// the [NestedArtboard] component.
 abstract class MountedArtboard {
@@ -23,6 +46,12 @@ abstract class MountedArtboard {
   double get renderOpacity;
   set renderOpacity(double value);
   bool advance(double seconds);
+  set artboardWidth(double width);
+  double get artboardWidth;
+  set artboardHeight(double height);
+  double get artboardHeight;
+  double get originalArtboardWidth;
+  double get originalArtboardHeight;
   void dispose();
 }
 
@@ -30,6 +59,10 @@ class NestedArtboard extends NestedArtboardBase {
   /// [NestedAnimation]s applied to this [NestedArtboard].
   final List<NestedAnimation> _animations = [];
   Iterable<NestedAnimation> get animations => _animations;
+
+  NestedArtboardFitType get fitType => NestedArtboardFitType.values[fit];
+  NestedArtboardAlignmentType get alignmentType =>
+      NestedArtboardAlignmentType.values[alignment];
 
   bool get hasNestedStateMachine =>
       _animations.any((animation) => animation is NestedStateMachine);
@@ -65,6 +98,16 @@ class NestedArtboard extends NestedArtboardBase {
   void artboardIdChanged(int from, int to) {}
 
   @override
+  void fitChanged(int from, int to) {
+    _updateMountedTransform();
+  }
+
+  @override
+  void alignmentChanged(int from, int to) {
+    _updateMountedTransform();
+  }
+
+  @override
   void childAdded(Component child) {
     super.childAdded(child);
     switch (child.coreType) {
@@ -92,7 +135,87 @@ class NestedArtboard extends NestedArtboardBase {
   void _updateMountedTransform() {
     var mountedArtboard = _mountedArtboard;
     if (mountedArtboard != null) {
-      mountedArtboard.worldTransform = worldTransform;
+      Mat2D transform = Mat2D();
+      Mat2D.copy(transform, worldTransform);
+      if (fitType == NestedArtboardFitType.resizeArtboard) {
+        // resizeArtboard is a special case because we actually change the
+        // width/height of the RuntimeArtboard rather than scaling it
+        mountedArtboard.artboardWidth =
+            scaleX * mountedArtboard.originalArtboardWidth;
+        mountedArtboard.artboardHeight =
+            scaleY * mountedArtboard.originalArtboardHeight;
+        double computedScaleX = scaleX == 0 ? 0 : (1 / scaleX);
+        double computedScaleY = scaleY == 0 ? 0 : (1 / scaleY);
+        Mat2D.scaleByValues(transform, computedScaleX, computedScaleY);
+      } else {
+        // For all others we scale
+        mountedArtboard.artboardWidth = mountedArtboard.originalArtboardWidth;
+        mountedArtboard.artboardHeight = mountedArtboard.originalArtboardHeight;
+        double? scaleMultiplier;
+        switch (fitType) {
+          case NestedArtboardFitType.cover:
+            scaleMultiplier = max(scaleX, scaleY);
+            break;
+          case NestedArtboardFitType.contain:
+            scaleMultiplier = min(scaleX, scaleY);
+            break;
+          case NestedArtboardFitType.fitWidth:
+            scaleMultiplier = scaleX;
+            break;
+          case NestedArtboardFitType.fitHeight:
+            scaleMultiplier = scaleY;
+            break;
+          case NestedArtboardFitType.none:
+            scaleMultiplier = 1;
+            break;
+          default:
+            break;
+        }
+        if (scaleMultiplier != null) {
+          double computedScaleX =
+              scaleX == 0 ? 0 : (1 / scaleX) * scaleMultiplier;
+          double computedScaleY =
+              scaleY == 0 ? 0 : (1 / scaleY) * scaleMultiplier;
+          Mat2D.scaleByValues(transform, computedScaleX, computedScaleY);
+          // Only do alignment if we are not using fit type Fill
+          double translateX = 0;
+          double translateY = 0;
+          double artboardWidth = mountedArtboard.originalArtboardWidth;
+          double artboardHeight = mountedArtboard.originalArtboardHeight;
+          // Adjust x position if we're aligned center or right
+          if (alignmentType == NestedArtboardAlignmentType.topCenter ||
+              alignmentType == NestedArtboardAlignmentType.center ||
+              alignmentType == NestedArtboardAlignmentType.bottomCenter) {
+            translateX =
+                (artboardWidth * scaleX - artboardWidth * scaleMultiplier) / 2;
+          } else if (alignmentType == NestedArtboardAlignmentType.topRight ||
+              alignmentType == NestedArtboardAlignmentType.centerRight ||
+              alignmentType == NestedArtboardAlignmentType.bottomRight) {
+            translateX =
+                artboardWidth * scaleX - artboardWidth * scaleMultiplier;
+          }
+          // Adjust y position if we're aligned center or bottom
+          if (alignmentType == NestedArtboardAlignmentType.centerLeft ||
+              alignmentType == NestedArtboardAlignmentType.center ||
+              alignmentType == NestedArtboardAlignmentType.centerRight) {
+            translateY =
+                (artboardHeight * scaleY - artboardHeight * scaleMultiplier) /
+                    2;
+          } else if (alignmentType == NestedArtboardAlignmentType.bottomLeft ||
+              alignmentType == NestedArtboardAlignmentType.bottomCenter ||
+              alignmentType == NestedArtboardAlignmentType.bottomRight) {
+            translateY =
+                artboardHeight * scaleY - artboardHeight * scaleMultiplier;
+          }
+          if (translateX != 0) {
+            transform[4] += translateX;
+          }
+          if (translateY != 0) {
+            transform[5] += translateY;
+          }
+        }
+      }
+      mountedArtboard.worldTransform = transform;
     }
   }
 
