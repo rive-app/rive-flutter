@@ -1,3 +1,6 @@
+## UPCOMING
+- Fixed an issue with [TickerMode](https://api.flutter.dev/flutter/widgets/TickerMode-class.html) value not pausing a Rive graphic. Thanks to 'jaggernod' for the [contribution](https://github.com/rive-app/rive-flutter/pull/380).
+
 ## 0.13.2
 
 - DEPRECATED: `Extension` and `Type` enum on `FileAsset`. You can create a custom maintained version, see example: https://gist.github.com/HayesGordon/5d37d3fb26f54b2c231760c2c8685963

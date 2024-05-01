@@ -203,7 +203,9 @@ abstract class RiveRenderBox extends RenderBox {
     super.attach(owner);
 
     _ticker = Ticker(_frameCallback);
-    _startTicker();
+    if (tickerModeEnabled) {
+      _startTicker();
+    }
   }
 
   void _stopTicker() {
@@ -225,7 +227,7 @@ abstract class RiveRenderBox extends RenderBox {
   }
 
   void _restartTickerIfStopped() {
-    if (_ticker != null && !_ticker!.isActive) {
+    if (_ticker != null && !_ticker!.isActive && tickerModeEnabled) {
       _startTicker();
     }
   }
