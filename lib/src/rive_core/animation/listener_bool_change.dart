@@ -10,7 +10,8 @@ class ListenerBoolChange extends ListenerBoolChangeBase {
   void valueChanged(int from, int to) {}
 
   @override
-  void perform(StateMachineController controller, Vec2D position) {
+  void perform(StateMachineController controller, Vec2D position,
+      Vec2D previousPosition) {
     var nestedInput = nestedInputForController(controller);
     bool? newValue;
     switch (value) {

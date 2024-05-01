@@ -10,7 +10,8 @@ class ListenerNumberChange extends ListenerNumberChangeBase {
   void valueChanged(double from, double to) {}
 
   @override
-  void perform(StateMachineController controller, Vec2D position) {
+  void perform(StateMachineController controller, Vec2D position,
+      Vec2D previousPosition) {
     var nestedInput = nestedInputForController(controller);
     if (nestedInput != null && nestedInput is NestedNumber) {
       nestedInput.nestedValue = value;

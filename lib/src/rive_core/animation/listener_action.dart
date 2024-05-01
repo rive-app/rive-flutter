@@ -14,7 +14,8 @@ abstract class ListenerAction extends ListenerActionBase {
   void onAddedDirty() {}
 
   /// Perform the action.
-  void perform(StateMachineController controller, Vec2D position);
+  void perform(StateMachineController controller, Vec2D position,
+      Vec2D previousPosition);
 
   @override
   bool import(ImportStack importStack) {

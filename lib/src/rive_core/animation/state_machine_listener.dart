@@ -83,9 +83,10 @@ class StateMachineListener extends StateMachineListenerBase {
     return removed;
   }
 
-  void performChanges(StateMachineController controller, Vec2D position) {
+  void performChanges(StateMachineController controller, Vec2D position,
+      Vec2D previousPosition) {
     for (final action in actions) {
-      action.perform(controller, position);
+      action.perform(controller, position, previousPosition);
     }
   }
 }

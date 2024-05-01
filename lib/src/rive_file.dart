@@ -362,8 +362,11 @@ class RiveFile {
   /// Initialize Rive's text engine if it hasn't been yet.
   static Future<void> initializeText() async {
     if (!_initializedText) {
-      await Font.initialize();
-      _initializedText = true;
+      final status = await Font.initialize();
+      if (status == FontInitStatus.success ||
+          status == FontInitStatus.alreadyInitialized) {
+        _initializedText = true;
+      }
     }
   }
 
@@ -373,12 +376,9 @@ class RiveFile {
     bool loadCdnAssets = true,
     ObjectGenerator? objectGenerator,
   }) async {
-    if (!_initializedText) {
-      /// If the file looks like needs the text runtime, let's load it.
-      if (RiveFile.needsTextRuntime(bytes)) {
-        await Font.initialize();
-        _initializedText = true;
-      }
+    /// If the file looks like it needs the text runtime, let's load it.
+    if (!_initializedText && RiveFile.needsTextRuntime(bytes)) {
+      await initializeText();
     }
     return RiveFile.import(
       bytes,

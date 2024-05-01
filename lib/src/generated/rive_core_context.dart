@@ -969,6 +969,11 @@ class RiveCoreContext {
           object.targetId = value;
         }
         break;
+      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
+        if (object is ListenerAlignTargetBase && value is bool) {
+          object.preserveOffset = value;
+        }
+        break;
       case TransitionValueConditionBase.opValuePropertyKey:
         if (object is TransitionValueConditionBase && value is int) {
           object.opValue = value;
@@ -2165,6 +2170,7 @@ class RiveCoreContext {
       case LinearAnimationBase.quantizePropertyKey:
       case NestedSimpleAnimationBase.isPlayingPropertyKey:
       case KeyFrameBoolBase.valuePropertyKey:
+      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
       case NestedBoolBase.nestedValuePropertyKey:
       case StateMachineBoolBase.valuePropertyKey:
       case ShapePaintBase.isVisiblePropertyKey:
@@ -2784,6 +2790,8 @@ class RiveCoreContext {
         return (object as NestedSimpleAnimationBase).isPlaying;
       case KeyFrameBoolBase.valuePropertyKey:
         return (object as KeyFrameBoolBase).value;
+      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
+        return (object as ListenerAlignTargetBase).preserveOffset;
       case NestedBoolBase.nestedValuePropertyKey:
         return (object as NestedBoolBase).nestedValue;
       case StateMachineBoolBase.valuePropertyKey:
@@ -4252,6 +4260,11 @@ class RiveCoreContext {
       case KeyFrameBoolBase.valuePropertyKey:
         if (object is KeyFrameBoolBase) {
           object.value = value;
+        }
+        break;
+      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
+        if (object is ListenerAlignTargetBase) {
+          object.preserveOffset = value;
         }
         break;
       case NestedBoolBase.nestedValuePropertyKey:

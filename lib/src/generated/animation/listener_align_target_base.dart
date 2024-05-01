@@ -38,11 +38,37 @@ abstract class ListenerAlignTargetBase extends ListenerAction {
 
   void targetIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// PreserveOffset field with key 541.
+  static const int preserveOffsetPropertyKey = 541;
+  static const bool preserveOffsetInitialValue = false;
+  bool _preserveOffset = preserveOffsetInitialValue;
+
+  /// Whether to preserve offset between mouse position and target position.
+  bool get preserveOffset => _preserveOffset;
+
+  /// Change the [_preserveOffset] field value.
+  /// [preserveOffsetChanged] will be invoked only if the field's value has
+  /// changed.
+  set preserveOffset(bool value) {
+    if (_preserveOffset == value) {
+      return;
+    }
+    bool from = _preserveOffset;
+    _preserveOffset = value;
+    if (hasValidated) {
+      preserveOffsetChanged(from, value);
+    }
+  }
+
+  void preserveOffsetChanged(bool from, bool to);
+
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is ListenerAlignTargetBase) {
       _targetId = source._targetId;
+      _preserveOffset = source._preserveOffset;
     }
   }
 }

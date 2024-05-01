@@ -12,7 +12,8 @@ class ListenerFireEvent extends ListenerFireEventBase {
   void eventIdChanged(int from, int to) {}
 
   @override
-  void perform(StateMachineController controller, Vec2D position) {
+  void perform(StateMachineController controller, Vec2D position,
+      Vec2D previousPosition) {
     Event? event = controller.artboard?.context.resolve(eventId);
     if (event != null) {
       controller.reportEvent(event);

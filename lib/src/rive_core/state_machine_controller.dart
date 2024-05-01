@@ -574,7 +574,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
           if (listenerTarget == artboard) {
             events.forEach((event) {
               if (listener.eventId == event.id) {
-                listener.performChanges(this, Vec2D());
+                listener.performChanges(this, Vec2D(), Vec2D());
               }
             });
           } else {
@@ -583,7 +583,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
               if (listener.targetId == targetId) {
                 eventList.forEach((nestedEvent) {
                   if (listener.eventId == nestedEvent.id) {
-                    listener.performChanges(this, Vec2D());
+                    listener.performChanges(this, Vec2D(), Vec2D());
                   }
                 });
               }
@@ -752,6 +752,7 @@ class _HitShape extends _HitComponent {
   final Shape shape;
   double hitRadius = 2;
   bool isHovered = false;
+  final Vec2D previousPosition = Vec2D();
   List<StateMachineListener> events = [];
 
   _HitShape(this.shape, StateMachineController controller)
@@ -790,9 +791,12 @@ class _HitShape extends _HitComponent {
     if (canHit) {
       isOver = hitTest(position);
     }
-    ////
     bool hoverChange = isHovered != isOver;
     isHovered = isOver;
+    if (hoverChange && isHovered) {
+      previousPosition.x = position.x;
+      previousPosition.y = position.y;
+    }
 
     // iterate all events associated with this hit shape
     for (final event in events) {
@@ -800,19 +804,20 @@ class _HitShape extends _HitComponent {
       // we're trying to trigger.
       if (hoverChange) {
         if (isOver && event.listenerType == ListenerType.enter) {
-          event.performChanges(controller, position);
+          event.performChanges(controller, position, previousPosition);
           controller.isActive = true;
         } else if (!isOver && event.listenerType == ListenerType.exit) {
-          event.performChanges(controller, position);
+          event.performChanges(controller, position, previousPosition);
           controller.isActive = true;
         }
       }
       if (isOver && hitEvent == event.listenerType) {
-        event.performChanges(controller, position);
+        event.performChanges(controller, position, previousPosition);
         controller.isActive = true;
       }
     }
-    ////
+    previousPosition.x = position.x;
+    previousPosition.y = position.y;
     return isOver
         ? shape.isTargetOpaque
             ? HitResult.hitOpaque
