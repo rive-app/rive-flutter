@@ -7,6 +7,7 @@ import 'package:rive/src/rive_core/animation/nested_remap_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_simple_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
 import 'package:rive/src/rive_core/backboard.dart';
+import 'package:rive/src/rive_core/bounds_provider.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/nested_animation.dart';
@@ -55,7 +56,7 @@ abstract class MountedArtboard {
   void dispose();
 }
 
-class NestedArtboard extends NestedArtboardBase {
+class NestedArtboard extends NestedArtboardBase implements Sizable {
   /// [NestedAnimation]s applied to this [NestedArtboard].
   final List<NestedAnimation> _animations = [];
   Iterable<NestedAnimation> get animations => _animations;
@@ -86,6 +87,10 @@ class NestedArtboard extends NestedArtboardBase {
     _mountedArtboard?.renderOpacity = renderOpacity;
     _mountedArtboard?.advance(0);
     addDirt(ComponentDirt.paint);
+
+    if (cachedSize != null) {
+      controlSize(cachedSize!);
+    }
   }
 
   @override
@@ -130,6 +135,36 @@ class NestedArtboard extends NestedArtboardBase {
 
         break;
     }
+  }
+
+  // When used with layouts, we cache the size of the NestedArtboard
+  // because the mountedArtboard gets replaced when changes are made to the
+  // NestedArtboard's artboard, and we need to maintain size when that happens
+  Size? cachedSize;
+
+  @override
+  Size computeIntrinsicSize(Size min, Size max) {
+    final bounds = mountedArtboard?.bounds;
+    if (bounds == null) {
+      return min;
+    }
+    return Size(bounds.width * scaleX, bounds.height * scaleY);
+  }
+
+  @override
+  void controlSize(Size size) {
+    cachedSize = size;
+    if (mountedArtboard == null) {
+      return;
+    }
+    // Since NestedArtboards only use scale, not width/height, we have to do
+    // a bit of a conversion here. There may be a better way.
+
+    scaleX = size.width / mountedArtboard!.originalArtboardWidth;
+    scaleY = size.height / mountedArtboard!.originalArtboardHeight;
+
+    updateTransform();
+    updateWorldTransform();
   }
 
   void _updateMountedTransform() {
