@@ -1,5 +1,6 @@
-## UPCOMING
+## 0.13.4
 - Fixed an issue with [TickerMode](https://api.flutter.dev/flutter/widgets/TickerMode-class.html) value not pausing a Rive graphic. Thanks to 'jaggernod' for the [contribution](https://github.com/rive-app/rive-flutter/pull/380).
+- Bump rive_common to pick up the Privacy manifest for iOS & macOS runtimes
 
 ## 0.13.2
 
