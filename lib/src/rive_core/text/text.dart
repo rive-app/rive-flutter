@@ -325,7 +325,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         break;
     }
     lines.dispose();
-    return Size(bounds.width, bounds.height);
+    return Size(bounds.width.ceilToDouble(), bounds.height.ceilToDouble());
   }
 
   void _buildRenderStyles() {

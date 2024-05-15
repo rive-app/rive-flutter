@@ -7,6 +7,7 @@ import 'package:rive/src/rive_core/bounds_provider.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/layout/layout_component_style.dart';
+import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
@@ -241,10 +242,11 @@ class LayoutComponent extends LayoutComponentBase {
     style = context.resolve(styleId);
   }
 
-  void createLayoutStyle() {
+  LayoutComponentStyle createLayoutStyle() {
     var newStyle = LayoutComponentStyle();
     context.addObject(newStyle);
     style = newStyle;
+    return newStyle;
   }
 
   void setupStyle(LayoutComponentStyle style) {
@@ -291,7 +293,9 @@ class LayoutComponent extends LayoutComponentBase {
       return;
     }
     forEachChild((child) {
-      if (child is LayoutComponent) {
+      // Don't propagate down to children of nested layout components
+      // or groups
+      if (child is LayoutComponent || child.coreType == NodeBase.typeKey) {
         return false;
       }
       if (child is Sizable) {

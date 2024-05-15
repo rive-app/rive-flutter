@@ -235,7 +235,9 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
   void onAddedDirty() {}
 
   @override
-  void layoutFlags0Changed(int from, int to) => markLayoutNodeDirty();
+  void layoutFlags0Changed(int from, int to) {
+    markLayoutNodeDirty();
+  }
 
   @override
   void layoutFlags1Changed(int from, int to) {
@@ -243,7 +245,9 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
   }
 
   @override
-  void layoutFlags2Changed(int from, int to) => markLayoutNodeDirty();
+  void layoutFlags2Changed(int from, int to) {
+    markLayoutNodeDirty();
+  }
 
   @override
   void flexChanged(double from, double to) => markLayoutNodeDirty();
