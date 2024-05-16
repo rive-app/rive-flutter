@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:rive/src/generated/layout_component_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/bounds_provider.dart';
+import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/layout/layout_component_style.dart';
@@ -13,6 +14,19 @@ import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/layout_component_base.dart';
+
+extension ComponentExtension on Component {
+  LayoutComponent? get layoutParent {
+    var p = parent;
+    while (p != null) {
+      if (p is LayoutComponent) {
+        return p;
+      }
+      p = p.parent;
+    }
+    return artboard;
+  }
+}
 
 class LayoutComponent extends LayoutComponentBase {
   LayoutComponentStyle? _style;
@@ -30,17 +44,6 @@ class LayoutComponent extends LayoutComponentBase {
   LayoutStyle get layoutStyle => _layoutStyle;
   final LayoutNode _layoutNode = LayoutNode.make();
   LayoutNode get layoutNode => _layoutNode;
-
-  LayoutComponent? get layoutParent {
-    var p = parent;
-    while (p != null) {
-      if (p is LayoutComponent) {
-        return p;
-      }
-      p = p.parent;
-    }
-    return artboard;
-  }
 
   void markLayoutNodeDirty() {
     _layoutNode.markDirty();
