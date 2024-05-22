@@ -71,7 +71,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     double secondsFrom,
     double secondsTo, {
     required KeyedCallbackReporter reporter,
-    int secondsFromExactOffset = 1,
+    bool isAtStartFrame = false,
   }) {
     for (final keyedProperty
         in _keyedProperties.values.where((property) => property.isCallback)) {
@@ -80,7 +80,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
         secondsFrom,
         secondsTo,
         reporter: reporter,
-        secondsFromExactOffset: secondsFromExactOffset,
+        isAtStartFrame: isAtStartFrame,
       );
     }
   }

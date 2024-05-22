@@ -115,13 +115,17 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   KeyFrame getFrameAt(int index) => _keyframes[index];
 
   int closestFrameIndex(double seconds, {int exactOffset = 0}) {
-    int idx = 0;
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
     int mid = 0;
     double closestSeconds = 0;
     int start = 0;
     int end = _keyframes.length - 1;
+
+    // If it's the last keyframe, we skip the binary search
+    if (seconds > _keyframes[end].seconds) {
+      return end + 1;
+    }
 
     while (start <= end) {
       mid = (start + end) >> 1;
@@ -133,9 +137,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       } else {
         return mid + exactOffset;
       }
-      idx = start;
     }
-    return idx;
+    return start;
   }
 
   bool get isCallback => RiveCoreContext.isCallback(propertyKey);
@@ -146,11 +149,25 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     double secondsFrom,
     double secondsTo, {
     required KeyedCallbackReporter reporter,
-    int secondsFromExactOffset = 1,
+    bool isAtStartFrame = false,
   }) {
-    int idx =
-        closestFrameIndex(secondsFrom, exactOffset: secondsFromExactOffset);
-    int idxTo = closestFrameIndex(secondsTo, exactOffset: 1);
+    if (secondsFrom == secondsTo) {
+      return;
+    }
+    bool isForward = secondsFrom <= secondsTo;
+    int fromExactOffset = 0;
+    int toExactOffset = isForward ? 1 : 0;
+    if (isForward) {
+      if (!isAtStartFrame) {
+        fromExactOffset = 1;
+      }
+    } else {
+      if (isAtStartFrame) {
+        fromExactOffset = 1;
+      }
+    }
+    int idx = closestFrameIndex(secondsFrom, exactOffset: fromExactOffset);
+    int idxTo = closestFrameIndex(secondsTo, exactOffset: toExactOffset);
 
     // going backwards?
     if (idxTo < idx) {

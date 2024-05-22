@@ -77,18 +77,23 @@ class LinearAnimation extends LinearAnimationBase {
     double secondsFrom,
     double secondsTo, {
     required KeyedCallbackReporter reporter,
+    int speedDirection = 1,
+    bool fromPong = false,
   }) {
-    int secondsFromExactOffset = startTime == secondsFrom &&
-            (speed >= 0 ? secondsFrom < secondsTo : secondsFrom < secondsTo)
-        ? 0
-        : 1;
-    for (final keyedObject in _keyedObjects.values) {
-      keyedObject.reportKeyedCallbacks(
-        secondsFrom,
-        secondsTo,
-        reporter: reporter,
-        secondsFromExactOffset: secondsFromExactOffset,
-      );
+    // We have to account for the state machine speed multiplier and the speed
+    double startingTime =
+        ((speed * speedDirection) >= 0) ? startSeconds : endSeconds;
+    bool isAtStartFrame = startingTime == secondsFrom;
+
+    if (!isAtStartFrame || !fromPong) {
+      for (final keyedObject in _keyedObjects.values) {
+        keyedObject.reportKeyedCallbacks(
+          secondsFrom,
+          secondsTo,
+          reporter: reporter,
+          isAtStartFrame: isAtStartFrame,
+        );
+      }
     }
   }
 

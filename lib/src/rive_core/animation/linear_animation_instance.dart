@@ -5,6 +5,7 @@ import 'package:rive/src/rive_core/animation/loop.dart';
 
 class LinearAnimationInstance {
   final LinearAnimation animation;
+  final int _speedDirection;
 
   double _time = 0;
   double _totalTime = 0;
@@ -20,7 +21,8 @@ class LinearAnimationInstance {
 
   LinearAnimationInstance(this.animation, {double speedMultiplier = 1.0})
       : _time =
-            (speedMultiplier >= 0) ? animation.startTime : animation.endTime;
+            (speedMultiplier >= 0) ? animation.startTime : animation.endTime,
+        _speedDirection = (speedMultiplier >= 0) ? 1 : -1;
 
   /// NOTE: that when time is set, the direction will be changed to 1
   set time(double value) {
@@ -107,6 +109,7 @@ class LinearAnimationInstance {
         lastTime,
         _time,
         reporter: callbackReporter,
+        speedDirection: _speedDirection,
       );
     }
 
@@ -146,6 +149,7 @@ class LinearAnimationInstance {
               lastTime,
               _time,
               reporter: callbackReporter,
+              speedDirection: _speedDirection,
             );
           }
           didLoop = true;
@@ -160,6 +164,7 @@ class LinearAnimationInstance {
               lastTime,
               _time,
               reporter: callbackReporter,
+              speedDirection: _speedDirection,
             );
           }
           didLoop = true;
@@ -167,6 +172,8 @@ class LinearAnimationInstance {
         break;
       case Loop.pingPong:
         // ignore: literal_only_boolean_expressions
+        // In ping-pong we only want to report callbacks once per side
+        bool fromPong = true;
         while (true) {
           if (direction == 1 && frames >= end) {
             _spilledTime = (frames - end) / animation.fps;
@@ -193,8 +200,11 @@ class LinearAnimationInstance {
               lastTime,
               _time,
               reporter: callbackReporter,
+              speedDirection: _speedDirection,
+              fromPong: fromPong,
             );
           }
+          fromPong = !fromPong;
         }
         break;
     }
