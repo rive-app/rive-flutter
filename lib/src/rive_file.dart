@@ -15,7 +15,7 @@ import 'package:rive/src/generated/assets/font_asset_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/local_file_io.dart'
-    if (dart.library.html) 'package:rive/src/local_file_web.dart';
+    if (dart.library.js_interop) 'package:rive/src/local_file_web.dart';
 import 'package:rive/src/rive_core/animation/blend_state_1d.dart';
 import 'package:rive/src/rive_core/animation/blend_state_direct.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';

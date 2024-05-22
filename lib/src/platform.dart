@@ -1,4 +1,4 @@
-import 'platform_native.dart' if (dart.library.html) 'platform_web.dart';
+import 'platform_native.dart' if (dart.library.js_interop) 'platform_web.dart';
 
 abstract class Platform {
   bool get isTesting;
