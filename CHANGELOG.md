@@ -1,4 +1,9 @@
+## 0.13.5
+- Migrates to `dart:js_interop` and `package:web` APIs.
+- DEPRECATED: `RiveFile.initializeText` - use `RiveFile.initialize` instead. This now initializes the Rive audio, text, and layout engine. Call `await RiveFile.initialize()` before doing `RiveFile.import`. `RiveFile.asset`, `RiveFile.network`, and `RiveFile.file` will call initialize automatically if it has not been initialized. Alternatively, you can also call `unawaited(RiveFile.initialize());` in the `main` method on app start to make the first graphic load faster.
+
 ## 0.13.4
+
 - Fixed an issue with [TickerMode](https://api.flutter.dev/flutter/widgets/TickerMode-class.html) value not pausing a Rive graphic. Thanks to 'jaggernod' for the [contribution](https://github.com/rive-app/rive-flutter/pull/380).
 - Bump rive_common to pick up the Privacy manifest for iOS & macOS runtimes
 

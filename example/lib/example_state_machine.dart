@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
 
 /// An example showing how to drive two boolean state machine inputs.
@@ -11,11 +10,7 @@ class ExampleStateMachine extends StatefulWidget {
 }
 
 class _ExampleStateMachineState extends State<ExampleStateMachine> {
-  /// Tracks if the animation is playing by whether controller is running.
-  bool get isPlaying => _controller?.isActive ?? false;
-
   Artboard? _riveArtboard;
-  StateMachineController? _controller;
   SMIBool? _hoverInput;
   SMIBool? _pressInput;
 
@@ -23,26 +18,23 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
   void initState() {
     super.initState();
 
-    // Load the animation file from the bundle, note that you could also
-    // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/rocket.riv').then(
-      (data) async {
-        // Load the RiveFile from the binary data.
-        final file = RiveFile.import(data);
+    _loadRiveFile();
+  }
 
-        // The artboard is the root of the animation and gets drawn in the
-        // Rive widget.
-        final artboard = file.mainArtboard;
-        var controller =
-            StateMachineController.fromArtboard(artboard, 'Button');
-        if (controller != null) {
-          artboard.addController(controller);
-          _hoverInput = controller.getBoolInput('Hover');
-          _pressInput = controller.getBoolInput('Press');
-        }
-        setState(() => _riveArtboard = artboard);
-      },
-    );
+  Future<void> _loadRiveFile() async {
+    // Load the animation file from the bundle.
+    final riveFile = await RiveFile.asset('assets/rocket.riv');
+
+    // The artboard is the root of the animation and gets drawn in the
+    // Rive widget.
+    final artboard = riveFile.mainArtboard;
+    var controller = StateMachineController.fromArtboard(artboard, 'Button');
+    if (controller != null) {
+      artboard.addController(controller);
+      _hoverInput = controller.getBoolInput('Hover');
+      _pressInput = controller.getBoolInput('Press');
+    }
+    setState(() => _riveArtboard = artboard);
   }
 
   @override

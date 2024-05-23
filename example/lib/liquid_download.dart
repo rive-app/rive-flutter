@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
 
 /// An example showing how to drive a StateMachine via a trigger and number
@@ -12,38 +11,28 @@ class LiquidDownload extends StatefulWidget {
 }
 
 class _LiquidDownloadState extends State<LiquidDownload> {
-  /// Tracks if the animation is playing by whether controller is running.
-  bool get isPlaying => _controller?.isActive ?? false;
-
   Artboard? _riveArtboard;
-  StateMachineController? _controller;
   SMITrigger? _start;
   SMINumber? _progress;
 
   @override
   void initState() {
     super.initState();
+    _loadRiveFile();
+  }
 
-    // Load the animation file from the bundle, note that you could also
-    // download this. The RiveFile just expects a list of bytes.
-    rootBundle.load('assets/liquid_download.riv').then(
-      (data) async {
-        // Load the RiveFile from the binary data.
-        final file = RiveFile.import(data);
-
-        // The artboard is the root of the animation and gets drawn in the
-        // Rive widget.
-        final artboard = file.mainArtboard;
-        var controller =
-            StateMachineController.fromArtboard(artboard, 'Download');
-        if (controller != null) {
-          artboard.addController(controller);
-          _start = controller.getTriggerInput('Download');
-          _progress = controller.getNumberInput('Progress');
-        }
-        setState(() => _riveArtboard = artboard);
-      },
-    );
+  Future<void> _loadRiveFile() async {
+    final file = await RiveFile.asset('assets/liquid_download.riv');
+    // The artboard is the root of the animation and gets drawn in the
+    // Rive widget.
+    final artboard = file.mainArtboard;
+    var controller = StateMachineController.fromArtboard(artboard, 'Download');
+    if (controller != null) {
+      artboard.addController(controller);
+      _start = controller.getTriggerInput('Download');
+      _progress = controller.getNumberInput('Progress');
+    }
+    setState(() => _riveArtboard = artboard);
   }
 
   @override

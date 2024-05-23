@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 import 'package:rive_example/custom_asset_loading.dart';
 import 'package:rive_example/custom_cached_asset_loading.dart';
@@ -22,19 +25,27 @@ import 'package:rive_example/skinning_demo.dart';
 import 'package:rive_example/state_machine_skills.dart';
 import 'package:rive_example/basic_text.dart';
 
-void main() => runApp(
-      MaterialApp(
-        title: 'Rive Example',
-        home: const RiveExampleApp(),
-        darkTheme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: _backgroundColor,
-          appBarTheme: const AppBarTheme(backgroundColor: _appBarColor),
-          colorScheme:
-              ColorScheme.fromSwatch().copyWith(primary: _primaryColor),
-        ),
-        themeMode: ThemeMode.dark,
+void main() {
+  /// Initialize Rive's text, audio, and layout engines.
+  /// This will automatically be called the first time a RiveFile is loaded if
+  /// it has not been initialized. And does not need to be called.
+  ///
+  /// However, calling it early here makes the first
+  /// visible Rive graphic load faster.
+  unawaited(RiveFile.initialize());
+  runApp(
+    MaterialApp(
+      title: 'Rive Example',
+      home: const RiveExampleApp(),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: _backgroundColor,
+        appBarTheme: const AppBarTheme(backgroundColor: _appBarColor),
+        colorScheme: ColorScheme.fromSwatch().copyWith(primary: _primaryColor),
       ),
-    );
+      themeMode: ThemeMode.dark,
+    ),
+  );
+}
 
 /// An example application demoing Rive.
 class RiveExampleApp extends StatefulWidget {

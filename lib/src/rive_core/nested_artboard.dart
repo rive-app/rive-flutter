@@ -16,6 +16,7 @@ import 'package:rive_common/math.dart';
 export 'package:rive/src/generated/nested_artboard_base.dart';
 
 enum NestedArtboardFitType {
+  // ignore: lines_longer_than_80_chars
   fill, // Default value - scales to fill available view without maintaining aspect ratio
   contain,
   cover,

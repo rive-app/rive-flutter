@@ -38,7 +38,6 @@ import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exceptio
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive_common/rive_text.dart';
-
 import 'package:rive_common/utilities.dart';
 
 typedef Core<CoreContext>? ObjectGenerator(int coreTypeKey);
@@ -137,6 +136,7 @@ class RiveFile {
     return propertyToField;
   }
 
+  @Deprecated('This method will always return true and is no longer accurate')
   // Peek into the bytes to see if we're going to need to use the text runtime.
   static bool needsTextRuntime(ByteData bytes) {
     var reader = BinaryReader(bytes);
@@ -343,6 +343,14 @@ class RiveFile {
     ObjectGenerator? objectGenerator,
     bool loadCdnAssets = true,
   }) {
+    // TODO: in the next major version add an assert here to make this a
+    // requirement
+    if (!_initializedText) {
+      debugPrint('''Rive: RiveFile.import called before RiveFile.initialize()
+
+Consider calling `await RiveFile.initialize()` before using `RiveFile.import`''');
+    }
+
     var reader = BinaryReader(bytes);
     return RiveFile._(
       reader,
@@ -359,8 +367,18 @@ class RiveFile {
 
   static bool _initializedText = false;
 
-  /// Initialize Rive's text engine if it hasn't been yet.
-  static Future<void> initializeText() async {
+  /// Initialize Rive's text, audio, and layout engines.
+  ///
+  /// This method is automatically called when using `RiveFile.asset`,
+  /// `RiveFile.network`, and `RiveFile.file`.
+  ///
+  /// When using `RiveFile.import` then `RiveFile.initialize()` should be
+  /// called manually.
+  ///
+  /// Consider calling `unawaited(RiveFile.initialize());` in the `main` method
+  /// to ensure the engine has initialized before displaying the first Rive
+  /// graphic.
+  static Future<void> initialize() async {
     if (!_initializedText) {
       final status = await Font.initialize();
       if (status == FontInitStatus.success ||
@@ -370,6 +388,12 @@ class RiveFile {
     }
   }
 
+  /// Initialize Rive's text engine if it hasn't been yet.
+  @Deprecated('Use `initialize()` instead')
+  static Future<void> initializeText() async {
+    await initialize();
+  }
+
   static Future<RiveFile> _initTextAndImport(
     ByteData bytes, {
     FileAssetLoader? assetLoader,
@@ -377,8 +401,8 @@ class RiveFile {
     ObjectGenerator? objectGenerator,
   }) async {
     /// If the file looks like it needs the text runtime, let's load it.
-    if (!_initializedText && RiveFile.needsTextRuntime(bytes)) {
-      await initializeText();
+    if (!_initializedText) {
+      await initialize();
     }
     return RiveFile.import(
       bytes,
