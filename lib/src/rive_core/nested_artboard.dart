@@ -47,7 +47,7 @@ abstract class MountedArtboard {
   AABB get bounds;
   double get renderOpacity;
   set renderOpacity(double value);
-  bool advance(double seconds);
+  bool advance(double seconds, {bool nested});
   set artboardWidth(double width);
   double get artboardWidth;
   set artboardHeight(double height);

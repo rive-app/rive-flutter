@@ -80,8 +80,8 @@ class RuntimeMountedArtboard extends MountedArtboard {
   }
 
   @override
-  bool advance(double seconds) =>
-      artboardInstance.advance(seconds, nested: true);
+  bool advance(double seconds, {bool nested = true}) =>
+      artboardInstance.advance(seconds, nested: nested);
 
   void addEventListener(StateMachineController listener) {
     controller = listener;
