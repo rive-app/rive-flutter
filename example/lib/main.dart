@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
+import 'package:rive_example/artboard_nested_inputs.dart';
 import 'package:rive_example/custom_asset_loading.dart';
 import 'package:rive_example/custom_cached_asset_loading.dart';
 import 'package:rive_example/carousel.dart';
@@ -65,6 +66,7 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     const _Page('Button State Machine', ExampleStateMachine()),
     const _Page('Skills Machine', StateMachineSkills()),
     const _Page('Little Machine', LittleMachine()),
+    const _Page('Nested Inputs', ArtboardNestedInputs()),
     const _Page('Liquid Download', LiquidDownload()),
     const _Page('Custom Controller - Speed', SpeedyAnimation()),
     const _Page('Simple State Machine', SimpleStateMachine()),

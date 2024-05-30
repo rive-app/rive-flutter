@@ -11,6 +11,16 @@ import 'package:rive/src/rive_core/state_machine_controller.dart'
 import 'package:rive/src/runtime_mounted_artboard.dart';
 import 'package:rive_common/math.dart';
 
+extension NestedArtboardRuntimeExtension on NestedArtboard {
+  NestedArtboard? nestedArtboardAtPath(String path) {
+    if (mountedArtboard is RuntimeMountedArtboard) {
+      final runtimeMountedArtboard = mountedArtboard as RuntimeMountedArtboard;
+      return runtimeMountedArtboard.artboardInstance.nestedArtboardAtPath(path);
+    }
+    return null;
+  }
+}
+
 class RuntimeNestedArtboard extends NestedArtboard {
   Artboard? sourceArtboard;
   @override

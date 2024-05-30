@@ -15,6 +15,78 @@ extension RuntimeArtboardGetters on RuntimeArtboard {
       animations.whereType<StateMachine>();
 }
 
+extension ArtboardRuntimeExtensions on Artboard {
+  NestedArtboard? nestedArtboard(String name) {
+    for (final artboard in activeNestedArtboards) {
+      if (artboard.name == name) {
+        return artboard;
+      }
+    }
+    return null;
+  }
+
+  NestedArtboard? nestedArtboardAtPath(String path) {
+    const delimiter = '/';
+    final dIndex = path.indexOf(delimiter);
+    final artboardName = dIndex == -1 ? path : path.substring(0, dIndex);
+    final restOfPath =
+        dIndex == -1 ? '' : path.substring(dIndex + 1, path.length);
+    if (artboardName.isNotEmpty) {
+      final nested = nestedArtboard(artboardName);
+      if (nested != null) {
+        if (restOfPath.isEmpty) {
+          return nested;
+        } else {
+          return nested.nestedArtboardAtPath(restOfPath);
+        }
+      }
+    }
+    return null;
+  }
+
+  T? findSMI<T>(String name, String path) {
+    final nested = nestedArtboardAtPath(path);
+    if (nested != null) {
+      if (nested.mountedArtboard is RuntimeMountedArtboard) {
+        final runtimeMountedArtboard =
+            nested.mountedArtboard as RuntimeMountedArtboard;
+        final controller = runtimeMountedArtboard.controller;
+        if (controller != null) {
+          for (final input in controller.inputs) {
+            if (input is T && input.name == name) {
+              return input as T;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Find a boolean input with a given name on a nested artboard at path.
+  SMIBool? getBoolInput(String name, String path) =>
+      findSMI<SMIBool>(name, path);
+
+  /// Find a trigger input with a given name on a nested artboard at path.
+  SMITrigger? getTriggerInput(String name, String path) =>
+      findSMI<SMITrigger>(name, path);
+
+  /// Find a number input with a given name on a nested artboard at path.
+  ///
+  /// See [triggerInput] to directly fire a trigger by its name.
+  SMINumber? getNumberInput(String name, String path) =>
+      findSMI<SMINumber>(name, path);
+
+  /// Convenience method for firing a trigger input with a given name
+  /// on a nested artboard at path.
+  ///
+  /// Also see [getTriggerInput] to get a reference to the trigger input. If the
+  /// trigger happens frequently, it's more efficient to get a reference to the
+  /// trigger input and call `trigger.fire()` directly.
+  void triggerInput(String name, String path) =>
+      getTriggerInput(name, path)?.fire();
+}
+
 /// This artboard type is purely for use by the runtime system and should not be
 /// directly referenced. Use the Artboard type for any direct interactions with
 /// an artboard, and use extension methods to add functionality to Artboard.
