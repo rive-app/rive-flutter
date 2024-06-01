@@ -81,8 +81,8 @@ class LayerController {
 
   void _fireEvents(Iterable<StateMachineFireEvent> fireEvents) {
     for (final fireEvent in fireEvents) {
-      Event event = core.resolveWithDefault(fireEvent.eventId, Event.unknown);
-      if (event != Event.unknown) {
+      var event = core.resolve(fireEvent.eventId);
+      if (event != null) {
         controller.reportEvent(event);
       }
     }

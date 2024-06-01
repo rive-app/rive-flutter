@@ -31,7 +31,6 @@ import 'package:rive/src/generated/constraints/transform_component_constraint_ba
 import 'package:rive/src/generated/constraints/transform_component_constraint_y_base.dart';
 import 'package:rive/src/generated/constraints/transform_space_constraint_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
-import 'package:rive/src/generated/layout_component_absolute_base.dart';
 import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';

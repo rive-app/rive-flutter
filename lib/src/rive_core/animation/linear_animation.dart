@@ -85,6 +85,8 @@ class LinearAnimation extends LinearAnimationBase {
         ((speed * speedDirection) >= 0) ? startSeconds : endSeconds;
     bool isAtStartFrame = startingTime == secondsFrom;
 
+    // Do not report a callback twice if it comes from the "pong" part of a
+    // "ping pong" loop
     if (!isAtStartFrame || !fromPong) {
       for (final keyedObject in _keyedObjects.values) {
         keyedObject.reportKeyedCallbacks(

@@ -44,8 +44,6 @@ class Event extends EventBase {
     _syncCustomProperties();
   }
 
-  static final _UnknownEvent unknown = _UnknownEvent();
-
   @override
   void trigger(CallbackData data) {
     if (data.context is StateMachineController) {
@@ -55,5 +53,3 @@ class Event extends EventBase {
     }
   }
 }
-
-class _UnknownEvent extends Event {}
