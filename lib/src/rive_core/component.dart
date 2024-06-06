@@ -269,9 +269,6 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   }
 
   @override
-  void exportNameChanged(bool from, bool to) {}
-
-  @override
   void nameChanged(String from, String to) {
     /// Changing name doesn't really do anything.
   }

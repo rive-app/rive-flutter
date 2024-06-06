@@ -1,3 +1,6 @@
+## 0.13.6
+- Add `getBoolInput(name, path)`, `getTriggerInput(name, path)`, and `getNumberInput(name, path` on `Artboard` to set nested inputs (inputs on nested artboards), see [the documentation](https://rive.app/community/doc/state-machines/docxeznG7iiK#nested-inputs).
+
 ## 0.13.5
 - Migrates to `dart:js_interop` and `package:web` APIs.
 - DEPRECATED: `RiveFile.initializeText` - use `RiveFile.initialize` instead. This now initializes the Rive audio, text, and layout engine. Call `await RiveFile.initialize()` before doing `RiveFile.import`. `RiveFile.asset`, `RiveFile.network`, and `RiveFile.file` will call initialize automatically if it has not been initialized. Alternatively, you can also call `unawaited(RiveFile.initialize());` in the `main` method on app start to make the first graphic load faster.
