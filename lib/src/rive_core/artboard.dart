@@ -115,8 +115,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// Find a component of a specific type with a specific name.
   T? component<T>(String name) {
+    return getComponentWhereOrNull((component) => component.name == name);
+  }
+
+  /// Find a component that matches the given predicate.
+  T? getComponentWhereOrNull<T>(bool Function(Component) callback) {
     for (final component in _components) {
-      if (component is T && component.name == name) {
+      if (component is T && callback(component)) {
         return component as T;
       }
     }
