@@ -27,7 +27,7 @@ class _LittleMachineState extends State<LittleMachine> {
 
     // The artboard is the root of the animation and gets drawn in the
     // Rive widget.
-    final artboard = file.mainArtboard;
+    final artboard = file.mainArtboard.instance();
     var controller = StateMachineController.fromArtboard(
       artboard,
       'State Machine 1',

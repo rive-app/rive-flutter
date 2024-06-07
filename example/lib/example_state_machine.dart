@@ -27,7 +27,7 @@ class _ExampleStateMachineState extends State<ExampleStateMachine> {
 
     // The artboard is the root of the animation and gets drawn in the
     // Rive widget.
-    final artboard = riveFile.mainArtboard;
+    final artboard = riveFile.mainArtboard.instance();
     var controller = StateMachineController.fromArtboard(artboard, 'Button');
     if (controller != null) {
       artboard.addController(controller);

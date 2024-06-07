@@ -25,7 +25,7 @@ class _LiquidDownloadState extends State<LiquidDownload> {
     final file = await RiveFile.asset('assets/liquid_download.riv');
     // The artboard is the root of the animation and gets drawn in the
     // Rive widget.
-    final artboard = file.mainArtboard;
+    final artboard = file.mainArtboard.instance();
     var controller = StateMachineController.fromArtboard(artboard, 'Download');
     if (controller != null) {
       artboard.addController(controller);

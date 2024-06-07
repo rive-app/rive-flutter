@@ -25,7 +25,7 @@ class _StateMachineSkillsState extends State<StateMachineSkills> {
 
     // The artboard is the root of the animation and gets drawn in the
     // Rive widget.
-    final artboard = file.mainArtboard;
+    final artboard = file.mainArtboard.instance();
     var controller =
         StateMachineController.fromArtboard(artboard, 'Designer\'s Test');
     if (controller != null) {

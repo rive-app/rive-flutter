@@ -1,3 +1,6 @@
+## 0.13.7
+- Add `getComponentWhereOrNull` on `Artboard`, to find a component that matches the given predicate. This can be used instead of `forEachComponent` as it allows exiting early.
+
 ## 0.13.6
 - Add `getBoolInput(name, path)`, `getTriggerInput(name, path)`, and `getNumberInput(name, path` on `Artboard` to set nested inputs (inputs on nested artboards), see [the documentation](https://rive.app/community/doc/state-machines/docxeznG7iiK#nested-inputs).
 
