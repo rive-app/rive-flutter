@@ -50,8 +50,8 @@ extension ArtboardRuntimeExtensions on Artboard {
       if (nested.mountedArtboard is RuntimeMountedArtboard) {
         final runtimeMountedArtboard =
             nested.mountedArtboard as RuntimeMountedArtboard;
-        final controller = runtimeMountedArtboard.controller;
-        if (controller != null) {
+        final controllers = runtimeMountedArtboard.controllers;
+        for (final controller in controllers) {
           for (final input in controller.inputs) {
             if (input is T && input.name == name) {
               return input as T;

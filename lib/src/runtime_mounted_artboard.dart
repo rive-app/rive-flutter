@@ -19,6 +19,9 @@ class RuntimeMountedArtboard extends MountedArtboard {
   final Set<RuntimeEventReporter> _runtimeEventListeners = {};
   Size originalArtboardInstanceSize = const Size(0, 0);
 
+  Set<StateMachineController> get controllers =>
+      _runtimeEventListeners.whereType<StateMachineController>().toSet();
+
   // The callback used for bubbling events up from nested artboards
   Function(Event, NestedArtboard)? eventCallback;
 
