@@ -2,6 +2,7 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
+import 'package:rive/src/rive_core/event.dart';
 
 class LinearAnimationInstance {
   final LinearAnimation animation;
@@ -216,4 +217,8 @@ class LinearAnimationInstance {
     _didLoop = didLoop;
     return keepGoing;
   }
+
+  // Used by runtime to report events from linear animations in nested artboards
+  // when not played in state machine
+  void reportEvent(Event event) {}
 }

@@ -1,4 +1,5 @@
 import 'package:rive/src/generated/event_base.dart';
+import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/container_component.dart';
@@ -50,6 +51,9 @@ class Event extends EventBase {
       var controller = data.context as StateMachineController;
       _secondsDelay = data.delay;
       controller.reportEvent(this);
+    } else if (data.context is LinearAnimationInstance) {
+      var animation = data.context as LinearAnimationInstance;
+      animation.reportEvent(this);
     }
   }
 }

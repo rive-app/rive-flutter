@@ -5,10 +5,18 @@ import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive_common/math.dart';
 
+/// Callback signature for events firing.
+typedef OnRuntimeEvent = void Function(Event);
+
+abstract class RuntimeEventReporter {
+  void addRuntimeEventListener(OnRuntimeEvent callback);
+  void removeRuntimeEventListener(OnRuntimeEvent callback);
+}
+
 class RuntimeMountedArtboard extends MountedArtboard {
   NestedArtboard nestedArtboard;
   final RuntimeArtboard artboardInstance;
-  StateMachineController? controller;
+  final Set<RuntimeEventReporter> _runtimeEventListeners = {};
   Size originalArtboardInstanceSize = const Size(0, 0);
 
   // The callback used for bubbling events up from nested artboards
@@ -24,7 +32,7 @@ class RuntimeMountedArtboard extends MountedArtboard {
 
   @override
   void dispose() {
-    controller = null;
+    _runtimeEventListeners.clear();
     eventCallback = null;
   }
 
@@ -83,9 +91,9 @@ class RuntimeMountedArtboard extends MountedArtboard {
   bool advance(double seconds, {bool nested = true}) =>
       artboardInstance.advance(seconds, nested: nested);
 
-  void addEventListener(StateMachineController listener) {
-    controller = listener;
-    controller?.addRuntimeEventListener(_handleRuntimeEvent);
+  void addEventListener(RuntimeEventReporter listener) {
+    _runtimeEventListeners.add(listener);
+    listener.addRuntimeEventListener(_handleRuntimeEvent);
     // Pass an event callback into the child nested artboard's
     // mounted artboard so we get an event bubbled up to us
     artboardInstance.activeNestedArtboards.forEach((artboard) {
@@ -96,8 +104,10 @@ class RuntimeMountedArtboard extends MountedArtboard {
     });
   }
 
-  void removeEventListener() {
-    controller?.removeRuntimeEventListener(_handleRuntimeEvent);
+  void removeEventListeners() {
+    _runtimeEventListeners.forEach(
+        (listener) => listener.removeRuntimeEventListener(_handleRuntimeEvent));
+    _runtimeEventListeners.clear();
   }
 
   void _handleRuntimeEvent(Event event) {
@@ -107,9 +117,12 @@ class RuntimeMountedArtboard extends MountedArtboard {
   }
 
   void _handleNestedEvent(Event event, NestedArtboard target) {
-    if (controller?.hasListenerWithTarget(target) ?? false) {
-      controller?.reportNestedEvent(event, target);
-      controller?.isActive = true;
-    }
+    _runtimeEventListeners.forEach((listener) {
+      if (listener is StateMachineController &&
+          listener.hasListenerWithTarget(target)) {
+        listener.reportNestedEvent(event, target);
+        listener.isActive = true;
+      }
+    });
   }
 }

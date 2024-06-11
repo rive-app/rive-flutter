@@ -1,8 +1,8 @@
 /// Extensions to the runtime core classes
 import 'package:collection/collection.dart';
+import 'package:rive/src/controllers/linear_animation_controller.dart';
 import 'package:rive/src/controllers/state_machine_controller.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
-import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 

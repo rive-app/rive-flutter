@@ -1,14 +1,10 @@
 import 'package:flutter/rendering.dart';
-import 'package:rive/src/controllers/state_machine_controller.dart';
+import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/animation/nested_linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
-import 'package:rive/src/rive_core/artboard.dart';
-import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart'
     as state_machine_core;
-import 'package:rive/src/runtime_mounted_artboard.dart';
 import 'package:rive_common/math.dart';
 
 extension NestedArtboardRuntimeExtension on NestedArtboard {
@@ -53,9 +49,16 @@ class RuntimeNestedArtboard extends NestedArtboard {
       if (animation is NestedLinearAnimation) {
         var animationId = animation.animationId;
         if (animationId >= 0 && animationId < runtimeLinearAnimations.length) {
+          final linearAnimationInstance = LinearAnimationInstance(
+              runtimeLinearAnimations[animationId],
+              context:
+                  (mountedArtboard as RuntimeMountedArtboard).artboardInstance);
           animation.linearAnimationInstance =
-              RuntimeNestedLinearAnimationInstance(LinearAnimationInstance(
-                  runtimeLinearAnimations[animationId]));
+              RuntimeNestedLinearAnimationInstance(linearAnimationInstance);
+          if (mountedArtboard is RuntimeMountedArtboard) {
+            (mountedArtboard as RuntimeMountedArtboard)
+                .addEventListener(linearAnimationInstance);
+          }
         }
       } else if (animation is NestedStateMachine) {
         var animationId = animation.animationId;
@@ -91,7 +94,8 @@ class RuntimeNestedLinearAnimationInstance
 
   @override
   bool advance(double elapsedSeconds) {
-    linearAnimation.advance(elapsedSeconds * speed);
+    linearAnimation.advance(elapsedSeconds * speed,
+        callbackReporter: linearAnimation);
     return linearAnimation.keepGoing;
   }
 
