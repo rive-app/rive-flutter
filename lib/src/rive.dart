@@ -96,6 +96,7 @@ class Rive extends LeafRenderObjectWidget {
 
   const Rive({
     required this.artboard,
+    super.key,
     this.useArtboardSize = false,
     this.antialiasing = true,
     this.enablePointerEvents = false,

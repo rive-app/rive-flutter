@@ -1,3 +1,7 @@
+## 0.13.8
+- Add `key` property to `Rive` widget.
+- Nested linear animations report events up to parent artboards. Previously, only nested state machines could report events so that listeners in parent artboards could listen for them.
+
 ## 0.13.7
 - Add `getComponentWhereOrNull` on `Artboard`, to find a component that matches the given predicate. This can be used instead of `forEachComponent` as it allows exiting early.
 
