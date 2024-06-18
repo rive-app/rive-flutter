@@ -5,6 +5,14 @@ import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/layout/layout_component_style_base.dart';
 
+enum ScaleType {
+  fixed,
+  fill,
+  hug;
+
+  String get label => name[0].toUpperCase() + name.substring(1);
+}
+
 class LayoutComponentStyle extends LayoutComponentStyleBase {
   Notifier valueChanged = Notifier();
 
@@ -49,6 +57,9 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
   static const BitFieldLoc minHeightUnitsBits = BitFieldLoc(6, 7);
   static const BitFieldLoc maxWidthUnitsBits = BitFieldLoc(8, 9);
   static const BitFieldLoc maxHeightUnitsBits = BitFieldLoc(10, 11);
+
+  static const BitFieldLoc widthScaleTypeBits = BitFieldLoc(0, 3);
+  static const BitFieldLoc heightScaleTypeBits = BitFieldLoc(4, 7);
 
   LayoutDisplay get display =>
       LayoutDisplay.values[displayBits.read(layoutFlags0)];
@@ -218,6 +229,18 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
   set maxHeightUnits(LayoutUnit value) =>
       layoutFlags2 = maxHeightUnitsBits.write(layoutFlags2, value.index);
 
+  ScaleType get widthScaleType =>
+      ScaleType.values[widthScaleTypeBits.read(scaleType)];
+
+  set widthScaleType(ScaleType value) =>
+      scaleType = widthScaleTypeBits.write(scaleType, value.index);
+
+  ScaleType get heightScaleType =>
+      ScaleType.values[heightScaleTypeBits.read(scaleType)];
+
+  set heightScaleType(ScaleType value) =>
+      scaleType = heightScaleTypeBits.write(scaleType, value.index);
+
   void markLayoutNodeDirty() {
     valueChanged.notify();
   }
@@ -329,6 +352,9 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
 
   @override
   void positionBottomChanged(double from, double to) => markLayoutNodeDirty();
+
+  @override
+  void scaleTypeChanged(int from, int to) {}
 
   @override
   void update(int dirt) {}

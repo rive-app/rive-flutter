@@ -750,6 +750,28 @@ abstract class LayoutComponentStyleBase extends Component {
 
   void aspectRatioChanged(double from, double to);
 
+  /// --------------------------------------------------------------------------
+  /// ScaleType field with key 546.
+  static const int scaleTypePropertyKey = 546;
+  static const int scaleTypeInitialValue = 0;
+  int _scaleType = scaleTypeInitialValue;
+  int get scaleType => _scaleType;
+
+  /// Change the [_scaleType] field value.
+  /// [scaleTypeChanged] will be invoked only if the field's value has changed.
+  set scaleType(int value) {
+    if (_scaleType == value) {
+      return;
+    }
+    int from = _scaleType;
+    _scaleType = value;
+    if (hasValidated) {
+      scaleTypeChanged(from, value);
+    }
+  }
+
+  void scaleTypeChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
@@ -784,6 +806,7 @@ abstract class LayoutComponentStyleBase extends Component {
       _flexShrink = source._flexShrink;
       _flexBasis = source._flexBasis;
       _aspectRatio = source._aspectRatio;
+      _scaleType = source._scaleType;
     }
   }
 }

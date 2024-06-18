@@ -113,7 +113,6 @@ import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/joystick.dart';
 import 'package:rive/src/rive_core/layout/layout_component_style.dart';
 import 'package:rive/src/rive_core/layout_component.dart';
-import 'package:rive/src/rive_core/layout_component_absolute.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/open_url_event.dart';
@@ -334,8 +333,6 @@ class RiveCoreContext {
         return Joystick();
       case BackboardBase.typeKey:
         return Backboard();
-      case AbsoluteLayoutComponentBase.typeKey:
-        return AbsoluteLayoutComponent();
       case OpenUrlEventBase.typeKey:
         return OpenUrlEvent();
       case BoneBase.typeKey:
@@ -756,6 +753,11 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.aspectRatioPropertyKey:
         if (object is LayoutComponentStyleBase && value is double) {
           object.aspectRatio = value;
+        }
+        break;
+      case LayoutComponentStyleBase.scaleTypePropertyKey:
+        if (object is LayoutComponentStyleBase && value is int) {
+          object.scaleType = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:
@@ -1914,6 +1916,7 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.layoutFlags0PropertyKey:
       case LayoutComponentStyleBase.layoutFlags1PropertyKey:
       case LayoutComponentStyleBase.layoutFlags2PropertyKey:
+      case LayoutComponentStyleBase.scaleTypePropertyKey:
       case ListenerFireEventBase.eventIdPropertyKey:
       case LayerStateBase.flagsPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
@@ -2271,6 +2274,8 @@ class RiveCoreContext {
         return (object as LayoutComponentStyleBase).layoutFlags1;
       case LayoutComponentStyleBase.layoutFlags2PropertyKey:
         return (object as LayoutComponentStyleBase).layoutFlags2;
+      case LayoutComponentStyleBase.scaleTypePropertyKey:
+        return (object as LayoutComponentStyleBase).scaleType;
       case ListenerFireEventBase.eventIdPropertyKey:
         return (object as ListenerFireEventBase).eventId;
       case LayerStateBase.flagsPropertyKey:
@@ -2984,6 +2989,11 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.layoutFlags2PropertyKey:
         if (object is LayoutComponentStyleBase) {
           object.layoutFlags2 = value;
+        }
+        break;
+      case LayoutComponentStyleBase.scaleTypePropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.scaleType = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:

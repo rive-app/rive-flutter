@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
@@ -29,7 +30,7 @@ import 'package:rive_common/utilities.dart';
 export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
-  final Set<LayoutComponent> _dirtyLayout = {};
+  final HashSet<LayoutComponent> _dirtyLayout = HashSet<LayoutComponent>();
 
   void markLayoutDirty(LayoutComponent layoutComponent) {
     _dirtyLayout.add(layoutComponent);

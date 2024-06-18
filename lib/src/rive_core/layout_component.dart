@@ -51,6 +51,9 @@ class LayoutComponent extends LayoutComponentBase {
   }
 
   @override
+  bool isValidParent(Component parent) => parent is LayoutComponent;
+
+  @override
   void changeArtboard(Artboard? value) {
     super.changeArtboard(value);
     artboard?.markLayoutDirty(this);
@@ -151,6 +154,53 @@ class LayoutComponent extends LayoutComponentBase {
           LayoutValue(unit: style.heightUnits, value: height));
     }
 
+    final isRow = [
+      LayoutFlexDirection.row,
+      LayoutFlexDirection.rowReverse,
+    ].contains(layoutParent?.style?.flexDirection);
+    switch (style.widthScaleType) {
+      case ScaleType.fixed:
+        if (isRow) {
+          layoutStyle.flexGrow = 0;
+        }
+        break;
+      case ScaleType.fill:
+        isRow
+            ? layoutStyle.flexGrow = 1
+            : layoutStyle.alignSelf = LayoutAlign.stretch;
+        break;
+      case ScaleType.hug:
+        isRow
+            ? layoutStyle.flexGrow = 0
+            : layoutStyle.alignSelf = LayoutAlign.auto;
+        break;
+      default:
+        break;
+    }
+    final isColumn = [
+      LayoutFlexDirection.column,
+      LayoutFlexDirection.columnReverse,
+    ].contains(layoutParent?.style?.flexDirection);
+    switch (style.heightScaleType) {
+      case ScaleType.fixed:
+        if (isColumn) {
+          layoutStyle.flexGrow = 0;
+        }
+        break;
+      case ScaleType.fill:
+        isColumn
+            ? layoutStyle.flexGrow = 1
+            : layoutStyle.alignSelf = LayoutAlign.stretch;
+        break;
+      case ScaleType.hug:
+        isColumn
+            ? layoutStyle.flexGrow = 0
+            : layoutStyle.alignSelf = LayoutAlign.auto;
+        break;
+      default:
+        break;
+    }
+
     layoutStyle.setMinDimension(LayoutDimension.width,
         LayoutValue(unit: style.minWidthUnits, value: style.minWidth));
     layoutStyle.setMinDimension(LayoutDimension.height,
@@ -212,14 +262,14 @@ class LayoutComponent extends LayoutComponentBase {
     layoutStyle.display = style.display;
     layoutStyle.positionType = style.positionType;
     layoutStyle.flex = style.flex;
-    layoutStyle.flexGrow = style.flexGrow;
-    layoutStyle.flexShrink = style.flexShrink;
+    //layoutStyle.flexGrow = style.flexGrow;
+    //layoutStyle.flexShrink = style.flexShrink;
     //layoutStyle.flexBasis = style.flexBasis;
     layoutStyle.flexDirection = style.flexDirection;
     layoutStyle.flexWrap = style.flexWrap;
     layoutStyle.alignItems = style.alignItems;
     layoutStyle.alignContent = style.alignContent;
-    layoutStyle.alignSelf = style.alignSelf;
+    //layoutStyle.alignSelf = style.alignSelf;
     layoutStyle.justifyContent = style.justifyContent;
 
     layoutNode.setStyle(layoutStyle);
@@ -243,13 +293,6 @@ class LayoutComponent extends LayoutComponentBase {
   void onAddedDirty() {
     super.onAddedDirty();
     style = context.resolve(styleId);
-  }
-
-  LayoutComponentStyle createLayoutStyle() {
-    var newStyle = LayoutComponentStyle();
-    context.addObject(newStyle);
-    style = newStyle;
-    return newStyle;
   }
 
   void setupStyle(LayoutComponentStyle style) {
