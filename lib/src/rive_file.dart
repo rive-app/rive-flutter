@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:rive/src/asset_loader.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
+import 'package:rive/src/core/importers/viewmodel_instance_importer.dart';
 import 'package:rive/src/generated/animation/animation_state_base.dart';
 import 'package:rive/src/generated/animation/any_state_base.dart';
 import 'package:rive/src/generated/animation/blend_state_transition_base.dart';
@@ -36,6 +37,7 @@ import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive_common/rive_text.dart';
 import 'package:rive_common/utilities.dart';
@@ -254,6 +256,13 @@ class RiveFile {
             _assetLoader,
           );
           stackType = FileAssetBase.typeKey;
+          break;
+        case ViewModelInstanceBase.typeKey:
+          // all these stack objects are resolvers. they get resolved.
+          stackObject = ViewModelInstanceImporter(
+            object as ViewModelInstance,
+          );
+          stackType = ViewModelInstanceBase.typeKey;
           break;
         default:
           if (object is Component) {

@@ -96,6 +96,31 @@ abstract class NestedArtboardBase extends Drawable {
 
   void alignmentChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// DataBindPathIds field with key 582.
+  static const int dataBindPathIdsPropertyKey = 582;
+  static final Uint8List dataBindPathIdsInitialValue = Uint8List(0);
+  Uint8List _dataBindPathIds = dataBindPathIdsInitialValue;
+
+  /// Path to the selected property.
+  Uint8List get dataBindPathIds => _dataBindPathIds;
+
+  /// Change the [_dataBindPathIds] field value.
+  /// [dataBindPathIdsChanged] will be invoked only if the field's value has
+  /// changed.
+  set dataBindPathIds(Uint8List value) {
+    if (listEquals(_dataBindPathIds, value)) {
+      return;
+    }
+    Uint8List from = _dataBindPathIds;
+    _dataBindPathIds = value;
+    if (hasValidated) {
+      dataBindPathIdsChanged(from, value);
+    }
+  }
+
+  void dataBindPathIdsChanged(Uint8List from, Uint8List to);
+
   @override
   void copy(Core source) {
     super.copy(source);
@@ -103,6 +128,7 @@ abstract class NestedArtboardBase extends Drawable {
       _artboardId = source._artboardId;
       _fit = source._fit;
       _alignment = source._alignment;
+      _dataBindPathIds = source._dataBindPathIds;
     }
   }
 }

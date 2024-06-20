@@ -24,6 +24,7 @@ export 'package:rive/src/core/importers/state_machine_layer_component_importer.d
 export 'package:rive/src/core/importers/state_machine_layer_importer.dart';
 export 'package:rive/src/core/importers/state_machine_listener_importer.dart';
 export 'package:rive/src/core/importers/state_transition_importer.dart';
+export 'package:rive/src/data_enum_values.dart';
 export 'package:rive/src/event_list.dart';
 export 'package:rive/src/generated/rive_core_context.dart';
 export 'package:rive/src/layer_component_events.dart';
@@ -32,6 +33,8 @@ export 'package:rive/src/runtime_artboard.dart';
 export 'package:rive/src/state_machine_components.dart';
 export 'package:rive/src/state_transition_conditions.dart';
 export 'package:rive/src/state_transitions.dart';
+export 'package:rive/src/viewmodel_list_items.dart';
+export 'package:rive/src/viewmodel_properties.dart';
 
 typedef PropertyChangeCallback = void Function(dynamic from, dynamic to);
 typedef BatchAddCallback = void Function();

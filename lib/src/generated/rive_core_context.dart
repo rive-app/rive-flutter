@@ -37,6 +37,7 @@ import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
 import 'package:rive/src/generated/shapes/vertex_base.dart';
 import 'package:rive/src/generated/transform_component_base.dart';
+import 'package:rive/src/generated/viewmodel/viewmodel_instance_value_base.dart';
 import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
@@ -107,6 +108,8 @@ import 'package:rive/src/rive_core/constraints/translation_constraint.dart';
 import 'package:rive/src/rive_core/custom_property_boolean.dart';
 import 'package:rive/src/rive_core/custom_property_number.dart';
 import 'package:rive/src/rive_core/custom_property_string.dart';
+import 'package:rive/src/rive_core/data_bind/data_bind.dart';
+import 'package:rive/src/rive_core/data_bind/data_bind_context.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/event.dart';
@@ -148,11 +151,68 @@ import 'package:rive/src/rive_core/text/text_style_axis.dart';
 import 'package:rive/src/rive_core/text/text_style_feature.dart';
 import 'package:rive/src/rive_core/text/text_value_run.dart';
 import 'package:rive/src/rive_core/text/text_variation_modifier.dart';
+import 'package:rive/src/rive_core/viewmodel/data_enum.dart';
+import 'package:rive/src/rive_core/viewmodel/data_enum_value.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_component.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_color.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_enum.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_list.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_list_item.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_number.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_string.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_viewmodel.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property_color.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property_enum.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property_list.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property_number.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property_string.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property_viewmodel.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class RiveCoreContext {
   static Core? makeCoreInstance(int typeKey) {
     switch (typeKey) {
+      case ViewModelInstanceListItemBase.typeKey:
+        return ViewModelInstanceListItem();
+      case ViewModelInstanceColorBase.typeKey:
+        return ViewModelInstanceColor();
+      case ViewModelComponentBase.typeKey:
+        return ViewModelComponent();
+      case ViewModelPropertyBase.typeKey:
+        return ViewModelProperty();
+      case ViewModelPropertyNumberBase.typeKey:
+        return ViewModelPropertyNumber();
+      case ViewModelInstanceEnumBase.typeKey:
+        return ViewModelInstanceEnum();
+      case ViewModelInstanceStringBase.typeKey:
+        return ViewModelInstanceString();
+      case ViewModelPropertyListBase.typeKey:
+        return ViewModelPropertyList();
+      case ViewModelBase.typeKey:
+        return ViewModel();
+      case ViewModelPropertyViewModelBase.typeKey:
+        return ViewModelPropertyViewModel();
+      case ViewModelInstanceBase.typeKey:
+        return ViewModelInstance();
+      case DataEnumBase.typeKey:
+        return DataEnum();
+      case ViewModelPropertyEnumBase.typeKey:
+        return ViewModelPropertyEnum();
+      case ViewModelPropertyColorBase.typeKey:
+        return ViewModelPropertyColor();
+      case ViewModelInstanceListBase.typeKey:
+        return ViewModelInstanceList();
+      case ViewModelInstanceNumberBase.typeKey:
+        return ViewModelInstanceNumber();
+      case ViewModelPropertyStringBase.typeKey:
+        return ViewModelPropertyString();
+      case ViewModelInstanceViewModelBase.typeKey:
+        return ViewModelInstanceViewModel();
+      case DataEnumValueBase.typeKey:
+        return DataEnumValue();
       case DrawTargetBase.typeKey:
         return DrawTarget();
       case CustomPropertyNumberBase.typeKey:
@@ -335,6 +395,10 @@ class RiveCoreContext {
         return Backboard();
       case OpenUrlEventBase.typeKey:
         return OpenUrlEvent();
+      case DataBindBase.typeKey:
+        return DataBind();
+      case DataBindContextBase.typeKey:
+        return DataBindContext();
       case BoneBase.typeKey:
         return Bone();
       case RootBoneBase.typeKey:
@@ -380,6 +444,61 @@ class RiveCoreContext {
 
   static void setObjectProperty(Core object, int propertyKey, Object value) {
     switch (propertyKey) {
+      case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
+        if (object is ViewModelInstanceListItemBase && value is bool) {
+          object.useLinkedArtboard = value;
+        }
+        break;
+      case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
+        if (object is ViewModelInstanceListItemBase && value is int) {
+          object.viewModelId = value;
+        }
+        break;
+      case ViewModelInstanceListItemBase.viewModelInstanceIdPropertyKey:
+        if (object is ViewModelInstanceListItemBase && value is int) {
+          object.viewModelInstanceId = value;
+        }
+        break;
+      case ViewModelInstanceListItemBase.artboardIdPropertyKey:
+        if (object is ViewModelInstanceListItemBase && value is int) {
+          object.artboardId = value;
+        }
+        break;
+      case ViewModelInstanceValueBase.viewModelPropertyIdPropertyKey:
+        if (object is ViewModelInstanceValueBase && value is int) {
+          object.viewModelPropertyId = value;
+        }
+        break;
+      case ViewModelInstanceColorBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceColorBase && value is int) {
+          object.propertyValue = value;
+        }
+        break;
+      case ViewModelComponentBase.namePropertyKey:
+        if (object is ViewModelComponentBase && value is String) {
+          object.name = value;
+        }
+        break;
+      case ViewModelInstanceEnumBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceEnumBase && value is int) {
+          object.propertyValue = value;
+        }
+        break;
+      case ViewModelInstanceStringBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceStringBase && value is String) {
+          object.propertyValue = value;
+        }
+        break;
+      case ViewModelBase.defaultInstanceIdPropertyKey:
+        if (object is ViewModelBase && value is int) {
+          object.defaultInstanceId = value;
+        }
+        break;
+      case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
+        if (object is ViewModelPropertyViewModelBase && value is int) {
+          object.viewModelReferenceId = value;
+        }
+        break;
       case ComponentBase.namePropertyKey:
         if (object is ComponentBase && value is String) {
           object.name = value;
@@ -388,6 +507,36 @@ class RiveCoreContext {
       case ComponentBase.parentIdPropertyKey:
         if (object is ComponentBase && value is int) {
           object.parentId = value;
+        }
+        break;
+      case ViewModelInstanceBase.viewModelIdPropertyKey:
+        if (object is ViewModelInstanceBase && value is int) {
+          object.viewModelId = value;
+        }
+        break;
+      case ViewModelPropertyEnumBase.enumIdPropertyKey:
+        if (object is ViewModelPropertyEnumBase && value is int) {
+          object.enumId = value;
+        }
+        break;
+      case ViewModelInstanceNumberBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceNumberBase && value is double) {
+          object.propertyValue = value;
+        }
+        break;
+      case ViewModelInstanceViewModelBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceViewModelBase && value is int) {
+          object.propertyValue = value;
+        }
+        break;
+      case DataEnumValueBase.keyPropertyKey:
+        if (object is DataEnumValueBase && value is String) {
+          object.key = value;
+        }
+        break;
+      case DataEnumValueBase.valuePropertyKey:
+        if (object is DataEnumValueBase && value is String) {
+          object.value = value;
         }
         break;
       case DrawTargetBase.drawableIdPropertyKey:
@@ -593,6 +742,11 @@ class RiveCoreContext {
       case NestedArtboardBase.alignmentPropertyKey:
         if (object is NestedArtboardBase && value is int) {
           object.alignment = value;
+        }
+        break;
+      case NestedArtboardBase.dataBindPathIdsPropertyKey:
+        if (object is NestedArtboardBase && value is Uint8List) {
+          object.dataBindPathIds = value;
         }
         break;
       case NestedAnimationBase.animationIdPropertyKey:
@@ -1470,6 +1624,11 @@ class RiveCoreContext {
           object.defaultStateMachineId = value;
         }
         break;
+      case ArtboardBase.viewModelIdPropertyKey:
+        if (object is ArtboardBase && value is int) {
+          object.viewModelId = value;
+        }
+        break;
       case JoystickBase.xPropertyKey:
         if (object is JoystickBase && value is double) {
           object.x = value;
@@ -1538,6 +1697,26 @@ class RiveCoreContext {
       case OpenUrlEventBase.targetValuePropertyKey:
         if (object is OpenUrlEventBase && value is int) {
           object.targetValue = value;
+        }
+        break;
+      case DataBindBase.targetIdPropertyKey:
+        if (object is DataBindBase && value is int) {
+          object.targetId = value;
+        }
+        break;
+      case DataBindBase.propertyKeyPropertyKey:
+        if (object is DataBindBase && value is int) {
+          object.propertyKey = value;
+        }
+        break;
+      case DataBindBase.modeValuePropertyKey:
+        if (object is DataBindBase && value is int) {
+          object.modeValue = value;
+        }
+        break;
+      case DataBindContextBase.sourcePathIdsPropertyKey:
+        if (object is DataBindContextBase && value is Uint8List) {
+          object.sourcePathIds = value;
         }
         break;
       case BoneBase.lengthPropertyKey:
@@ -1878,26 +2057,53 @@ class RiveCoreContext {
     }
   }
 
-  static CoreFieldType stringType = CoreStringType();
-  static CoreFieldType uintType = CoreUintType();
-  static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType boolType = CoreBoolType();
-  static CoreFieldType callbackType = CoreCallbackType();
+  static CoreFieldType uintType = CoreUintType();
   static CoreFieldType colorType = CoreColorType();
+  static CoreFieldType stringType = CoreStringType();
+  static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType bytesType = CoreBytesType();
+  static CoreFieldType callbackType = CoreCallbackType();
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
-      case ComponentBase.namePropertyKey:
-      case AnimationBase.namePropertyKey:
-      case StateMachineComponentBase.namePropertyKey:
-      case KeyFrameStringBase.valuePropertyKey:
-      case OpenUrlEventBase.urlPropertyKey:
-      case TextValueRunBase.textPropertyKey:
-      case CustomPropertyStringBase.propertyValuePropertyKey:
-      case AssetBase.namePropertyKey:
-      case FileAssetBase.cdnBaseUrlPropertyKey:
-        return stringType;
+      case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
+      case TransformComponentConstraintBase.offsetPropertyKey:
+      case TransformComponentConstraintBase.doesCopyPropertyKey:
+      case TransformComponentConstraintBase.minPropertyKey:
+      case TransformComponentConstraintBase.maxPropertyKey:
+      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
+      case TransformComponentConstraintYBase.minYPropertyKey:
+      case TransformComponentConstraintYBase.maxYPropertyKey:
+      case IKConstraintBase.invertDirectionPropertyKey:
+      case FollowPathConstraintBase.orientPropertyKey:
+      case FollowPathConstraintBase.offsetPropertyKey:
+      case LinearAnimationBase.enableWorkAreaPropertyKey:
+      case LinearAnimationBase.quantizePropertyKey:
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+      case KeyFrameBoolBase.valuePropertyKey:
+      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
+      case NestedBoolBase.nestedValuePropertyKey:
+      case StateMachineBoolBase.valuePropertyKey:
+      case ShapePaintBase.isVisiblePropertyKey:
+      case StrokeBase.transformAffectsStrokePropertyKey:
+      case PointsPathBase.isClosedPropertyKey:
+      case RectangleBase.linkCornerRadiusPropertyKey:
+      case ClippingShapeBase.isVisiblePropertyKey:
+      case CustomPropertyBooleanBase.propertyValuePropertyKey:
+      case LayoutComponentBase.clipPropertyKey:
+      case TextModifierRangeBase.clampPropertyKey:
+        return boolType;
+      case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
+      case ViewModelInstanceListItemBase.viewModelInstanceIdPropertyKey:
+      case ViewModelInstanceListItemBase.artboardIdPropertyKey:
+      case ViewModelInstanceValueBase.viewModelPropertyIdPropertyKey:
+      case ViewModelInstanceEnumBase.propertyValuePropertyKey:
+      case ViewModelBase.defaultInstanceIdPropertyKey:
+      case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
       case ComponentBase.parentIdPropertyKey:
+      case ViewModelInstanceBase.viewModelIdPropertyKey:
+      case ViewModelPropertyEnumBase.enumIdPropertyKey:
+      case ViewModelInstanceViewModelBase.propertyValuePropertyKey:
       case DrawTargetBase.drawableIdPropertyKey:
       case DrawTargetBase.placementValuePropertyKey:
       case TargetedConstraintBase.targetIdPropertyKey:
@@ -1974,11 +2180,15 @@ class RiveCoreContext {
       case DrawRulesBase.drawTargetIdPropertyKey:
       case LayoutComponentBase.styleIdPropertyKey:
       case ArtboardBase.defaultStateMachineIdPropertyKey:
+      case ArtboardBase.viewModelIdPropertyKey:
       case JoystickBase.xIdPropertyKey:
       case JoystickBase.yIdPropertyKey:
       case JoystickBase.joystickFlagsPropertyKey:
       case JoystickBase.handleSourceIdPropertyKey:
       case OpenUrlEventBase.targetValuePropertyKey:
+      case DataBindBase.targetIdPropertyKey:
+      case DataBindBase.propertyKeyPropertyKey:
+      case DataBindBase.modeValuePropertyKey:
       case TendonBase.boneIdPropertyKey:
       case TextModifierRangeBase.unitsValuePropertyKey:
       case TextModifierRangeBase.typeValuePropertyKey:
@@ -1998,6 +2208,26 @@ class RiveCoreContext {
       case FileAssetBase.assetIdPropertyKey:
       case AudioEventBase.assetIdPropertyKey:
         return uintType;
+      case ViewModelInstanceColorBase.propertyValuePropertyKey:
+      case KeyFrameColorBase.valuePropertyKey:
+      case SolidColorBase.colorValuePropertyKey:
+      case GradientStopBase.colorValuePropertyKey:
+        return colorType;
+      case ViewModelComponentBase.namePropertyKey:
+      case ViewModelInstanceStringBase.propertyValuePropertyKey:
+      case ComponentBase.namePropertyKey:
+      case DataEnumValueBase.keyPropertyKey:
+      case DataEnumValueBase.valuePropertyKey:
+      case AnimationBase.namePropertyKey:
+      case StateMachineComponentBase.namePropertyKey:
+      case KeyFrameStringBase.valuePropertyKey:
+      case OpenUrlEventBase.urlPropertyKey:
+      case TextValueRunBase.textPropertyKey:
+      case CustomPropertyStringBase.propertyValuePropertyKey:
+      case AssetBase.namePropertyKey:
+      case FileAssetBase.cdnBaseUrlPropertyKey:
+        return stringType;
+      case ViewModelInstanceNumberBase.propertyValuePropertyKey:
       case CustomPropertyNumberBase.propertyValuePropertyKey:
       case ConstraintBase.strengthPropertyKey:
       case DistanceConstraintBase.distancePropertyKey:
@@ -2158,43 +2388,15 @@ class RiveCoreContext {
       case DrawableAssetBase.heightPropertyKey:
       case DrawableAssetBase.widthPropertyKey:
         return doubleType;
-      case TransformComponentConstraintBase.offsetPropertyKey:
-      case TransformComponentConstraintBase.doesCopyPropertyKey:
-      case TransformComponentConstraintBase.minPropertyKey:
-      case TransformComponentConstraintBase.maxPropertyKey:
-      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
-      case TransformComponentConstraintYBase.minYPropertyKey:
-      case TransformComponentConstraintYBase.maxYPropertyKey:
-      case IKConstraintBase.invertDirectionPropertyKey:
-      case FollowPathConstraintBase.orientPropertyKey:
-      case FollowPathConstraintBase.offsetPropertyKey:
-      case LinearAnimationBase.enableWorkAreaPropertyKey:
-      case LinearAnimationBase.quantizePropertyKey:
-      case NestedSimpleAnimationBase.isPlayingPropertyKey:
-      case KeyFrameBoolBase.valuePropertyKey:
-      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
-      case NestedBoolBase.nestedValuePropertyKey:
-      case StateMachineBoolBase.valuePropertyKey:
-      case ShapePaintBase.isVisiblePropertyKey:
-      case StrokeBase.transformAffectsStrokePropertyKey:
-      case PointsPathBase.isClosedPropertyKey:
-      case RectangleBase.linkCornerRadiusPropertyKey:
-      case ClippingShapeBase.isVisiblePropertyKey:
-      case CustomPropertyBooleanBase.propertyValuePropertyKey:
-      case LayoutComponentBase.clipPropertyKey:
-      case TextModifierRangeBase.clampPropertyKey:
-        return boolType;
-      case NestedTriggerBase.firePropertyKey:
-      case EventBase.triggerPropertyKey:
-        return callbackType;
-      case KeyFrameColorBase.valuePropertyKey:
-      case SolidColorBase.colorValuePropertyKey:
-      case GradientStopBase.colorValuePropertyKey:
-        return colorType;
+      case NestedArtboardBase.dataBindPathIdsPropertyKey:
       case MeshBase.triangleIndexBytesPropertyKey:
+      case DataBindContextBase.sourcePathIdsPropertyKey:
       case FileAssetBase.cdnUuidPropertyKey:
       case FileAssetContentsBase.bytesPropertyKey:
         return bytesType;
+      case NestedTriggerBase.firePropertyKey:
+      case EventBase.triggerPropertyKey:
+        return callbackType;
       default:
         return null;
     }
@@ -2210,34 +2412,88 @@ class RiveCoreContext {
     }
   }
 
-  static String getString(Core object, int propertyKey) {
+  static bool getBool(Core object, int propertyKey) {
     switch (propertyKey) {
-      case ComponentBase.namePropertyKey:
-        return (object as ComponentBase).name;
-      case AnimationBase.namePropertyKey:
-        return (object as AnimationBase).name;
-      case StateMachineComponentBase.namePropertyKey:
-        return (object as StateMachineComponentBase).name;
-      case KeyFrameStringBase.valuePropertyKey:
-        return (object as KeyFrameStringBase).value;
-      case OpenUrlEventBase.urlPropertyKey:
-        return (object as OpenUrlEventBase).url;
-      case TextValueRunBase.textPropertyKey:
-        return (object as TextValueRunBase).text;
-      case CustomPropertyStringBase.propertyValuePropertyKey:
-        return (object as CustomPropertyStringBase).propertyValue;
-      case AssetBase.namePropertyKey:
-        return (object as AssetBase).name;
-      case FileAssetBase.cdnBaseUrlPropertyKey:
-        return (object as FileAssetBase).cdnBaseUrl;
+      case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
+        return (object as ViewModelInstanceListItemBase).useLinkedArtboard;
+      case TransformComponentConstraintBase.offsetPropertyKey:
+        return (object as TransformComponentConstraintBase).offset;
+      case TransformComponentConstraintBase.doesCopyPropertyKey:
+        return (object as TransformComponentConstraintBase).doesCopy;
+      case TransformComponentConstraintBase.minPropertyKey:
+        return (object as TransformComponentConstraintBase).min;
+      case TransformComponentConstraintBase.maxPropertyKey:
+        return (object as TransformComponentConstraintBase).max;
+      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
+        return (object as TransformComponentConstraintYBase).doesCopyY;
+      case TransformComponentConstraintYBase.minYPropertyKey:
+        return (object as TransformComponentConstraintYBase).minY;
+      case TransformComponentConstraintYBase.maxYPropertyKey:
+        return (object as TransformComponentConstraintYBase).maxY;
+      case IKConstraintBase.invertDirectionPropertyKey:
+        return (object as IKConstraintBase).invertDirection;
+      case FollowPathConstraintBase.orientPropertyKey:
+        return (object as FollowPathConstraintBase).orient;
+      case FollowPathConstraintBase.offsetPropertyKey:
+        return (object as FollowPathConstraintBase).offset;
+      case LinearAnimationBase.enableWorkAreaPropertyKey:
+        return (object as LinearAnimationBase).enableWorkArea;
+      case LinearAnimationBase.quantizePropertyKey:
+        return (object as LinearAnimationBase).quantize;
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+        return (object as NestedSimpleAnimationBase).isPlaying;
+      case KeyFrameBoolBase.valuePropertyKey:
+        return (object as KeyFrameBoolBase).value;
+      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
+        return (object as ListenerAlignTargetBase).preserveOffset;
+      case NestedBoolBase.nestedValuePropertyKey:
+        return (object as NestedBoolBase).nestedValue;
+      case StateMachineBoolBase.valuePropertyKey:
+        return (object as StateMachineBoolBase).value;
+      case ShapePaintBase.isVisiblePropertyKey:
+        return (object as ShapePaintBase).isVisible;
+      case StrokeBase.transformAffectsStrokePropertyKey:
+        return (object as StrokeBase).transformAffectsStroke;
+      case PointsPathBase.isClosedPropertyKey:
+        return (object as PointsPathBase).isClosed;
+      case RectangleBase.linkCornerRadiusPropertyKey:
+        return (object as RectangleBase).linkCornerRadius;
+      case ClippingShapeBase.isVisiblePropertyKey:
+        return (object as ClippingShapeBase).isVisible;
+      case CustomPropertyBooleanBase.propertyValuePropertyKey:
+        return (object as CustomPropertyBooleanBase).propertyValue;
+      case LayoutComponentBase.clipPropertyKey:
+        return (object as LayoutComponentBase).clip;
+      case TextModifierRangeBase.clampPropertyKey:
+        return (object as TextModifierRangeBase).clamp;
     }
-    return '';
+    return false;
   }
 
   static int getUint(Core object, int propertyKey) {
     switch (propertyKey) {
+      case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
+        return (object as ViewModelInstanceListItemBase).viewModelId;
+      case ViewModelInstanceListItemBase.viewModelInstanceIdPropertyKey:
+        return (object as ViewModelInstanceListItemBase).viewModelInstanceId;
+      case ViewModelInstanceListItemBase.artboardIdPropertyKey:
+        return (object as ViewModelInstanceListItemBase).artboardId;
+      case ViewModelInstanceValueBase.viewModelPropertyIdPropertyKey:
+        return (object as ViewModelInstanceValueBase).viewModelPropertyId;
+      case ViewModelInstanceEnumBase.propertyValuePropertyKey:
+        return (object as ViewModelInstanceEnumBase).propertyValue;
+      case ViewModelBase.defaultInstanceIdPropertyKey:
+        return (object as ViewModelBase).defaultInstanceId;
+      case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
+        return (object as ViewModelPropertyViewModelBase).viewModelReferenceId;
       case ComponentBase.parentIdPropertyKey:
         return (object as ComponentBase).parentId;
+      case ViewModelInstanceBase.viewModelIdPropertyKey:
+        return (object as ViewModelInstanceBase).viewModelId;
+      case ViewModelPropertyEnumBase.enumIdPropertyKey:
+        return (object as ViewModelPropertyEnumBase).enumId;
+      case ViewModelInstanceViewModelBase.propertyValuePropertyKey:
+        return (object as ViewModelInstanceViewModelBase).propertyValue;
       case DrawTargetBase.drawableIdPropertyKey:
         return (object as DrawTargetBase).drawableId;
       case DrawTargetBase.placementValuePropertyKey:
@@ -2390,6 +2646,8 @@ class RiveCoreContext {
         return (object as LayoutComponentBase).styleId;
       case ArtboardBase.defaultStateMachineIdPropertyKey:
         return (object as ArtboardBase).defaultStateMachineId;
+      case ArtboardBase.viewModelIdPropertyKey:
+        return (object as ArtboardBase).viewModelId;
       case JoystickBase.xIdPropertyKey:
         return (object as JoystickBase).xId;
       case JoystickBase.yIdPropertyKey:
@@ -2400,6 +2658,12 @@ class RiveCoreContext {
         return (object as JoystickBase).handleSourceId;
       case OpenUrlEventBase.targetValuePropertyKey:
         return (object as OpenUrlEventBase).targetValue;
+      case DataBindBase.targetIdPropertyKey:
+        return (object as DataBindBase).targetId;
+      case DataBindBase.propertyKeyPropertyKey:
+        return (object as DataBindBase).propertyKey;
+      case DataBindBase.modeValuePropertyKey:
+        return (object as DataBindBase).modeValue;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
       case TextModifierRangeBase.unitsValuePropertyKey:
@@ -2440,8 +2704,56 @@ class RiveCoreContext {
     return 0;
   }
 
+  static int getColor(Core object, int propertyKey) {
+    switch (propertyKey) {
+      case ViewModelInstanceColorBase.propertyValuePropertyKey:
+        return (object as ViewModelInstanceColorBase).propertyValue;
+      case KeyFrameColorBase.valuePropertyKey:
+        return (object as KeyFrameColorBase).value;
+      case SolidColorBase.colorValuePropertyKey:
+        return (object as SolidColorBase).colorValue;
+      case GradientStopBase.colorValuePropertyKey:
+        return (object as GradientStopBase).colorValue;
+    }
+    return 0;
+  }
+
+  static String getString(Core object, int propertyKey) {
+    switch (propertyKey) {
+      case ViewModelComponentBase.namePropertyKey:
+        return (object as ViewModelComponentBase).name;
+      case ViewModelInstanceStringBase.propertyValuePropertyKey:
+        return (object as ViewModelInstanceStringBase).propertyValue;
+      case ComponentBase.namePropertyKey:
+        return (object as ComponentBase).name;
+      case DataEnumValueBase.keyPropertyKey:
+        return (object as DataEnumValueBase).key;
+      case DataEnumValueBase.valuePropertyKey:
+        return (object as DataEnumValueBase).value;
+      case AnimationBase.namePropertyKey:
+        return (object as AnimationBase).name;
+      case StateMachineComponentBase.namePropertyKey:
+        return (object as StateMachineComponentBase).name;
+      case KeyFrameStringBase.valuePropertyKey:
+        return (object as KeyFrameStringBase).value;
+      case OpenUrlEventBase.urlPropertyKey:
+        return (object as OpenUrlEventBase).url;
+      case TextValueRunBase.textPropertyKey:
+        return (object as TextValueRunBase).text;
+      case CustomPropertyStringBase.propertyValuePropertyKey:
+        return (object as CustomPropertyStringBase).propertyValue;
+      case AssetBase.namePropertyKey:
+        return (object as AssetBase).name;
+      case FileAssetBase.cdnBaseUrlPropertyKey:
+        return (object as FileAssetBase).cdnBaseUrl;
+    }
+    return '';
+  }
+
   static double getDouble(Core object, int propertyKey) {
     switch (propertyKey) {
+      case ViewModelInstanceNumberBase.propertyValuePropertyKey:
+        return (object as ViewModelInstanceNumberBase).propertyValue;
       case CustomPropertyNumberBase.propertyValuePropertyKey:
         return (object as CustomPropertyNumberBase).propertyValue;
       case ConstraintBase.strengthPropertyKey:
@@ -2764,78 +3076,14 @@ class RiveCoreContext {
     return 0.0;
   }
 
-  static bool getBool(Core object, int propertyKey) {
-    switch (propertyKey) {
-      case TransformComponentConstraintBase.offsetPropertyKey:
-        return (object as TransformComponentConstraintBase).offset;
-      case TransformComponentConstraintBase.doesCopyPropertyKey:
-        return (object as TransformComponentConstraintBase).doesCopy;
-      case TransformComponentConstraintBase.minPropertyKey:
-        return (object as TransformComponentConstraintBase).min;
-      case TransformComponentConstraintBase.maxPropertyKey:
-        return (object as TransformComponentConstraintBase).max;
-      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
-        return (object as TransformComponentConstraintYBase).doesCopyY;
-      case TransformComponentConstraintYBase.minYPropertyKey:
-        return (object as TransformComponentConstraintYBase).minY;
-      case TransformComponentConstraintYBase.maxYPropertyKey:
-        return (object as TransformComponentConstraintYBase).maxY;
-      case IKConstraintBase.invertDirectionPropertyKey:
-        return (object as IKConstraintBase).invertDirection;
-      case FollowPathConstraintBase.orientPropertyKey:
-        return (object as FollowPathConstraintBase).orient;
-      case FollowPathConstraintBase.offsetPropertyKey:
-        return (object as FollowPathConstraintBase).offset;
-      case LinearAnimationBase.enableWorkAreaPropertyKey:
-        return (object as LinearAnimationBase).enableWorkArea;
-      case LinearAnimationBase.quantizePropertyKey:
-        return (object as LinearAnimationBase).quantize;
-      case NestedSimpleAnimationBase.isPlayingPropertyKey:
-        return (object as NestedSimpleAnimationBase).isPlaying;
-      case KeyFrameBoolBase.valuePropertyKey:
-        return (object as KeyFrameBoolBase).value;
-      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
-        return (object as ListenerAlignTargetBase).preserveOffset;
-      case NestedBoolBase.nestedValuePropertyKey:
-        return (object as NestedBoolBase).nestedValue;
-      case StateMachineBoolBase.valuePropertyKey:
-        return (object as StateMachineBoolBase).value;
-      case ShapePaintBase.isVisiblePropertyKey:
-        return (object as ShapePaintBase).isVisible;
-      case StrokeBase.transformAffectsStrokePropertyKey:
-        return (object as StrokeBase).transformAffectsStroke;
-      case PointsPathBase.isClosedPropertyKey:
-        return (object as PointsPathBase).isClosed;
-      case RectangleBase.linkCornerRadiusPropertyKey:
-        return (object as RectangleBase).linkCornerRadius;
-      case ClippingShapeBase.isVisiblePropertyKey:
-        return (object as ClippingShapeBase).isVisible;
-      case CustomPropertyBooleanBase.propertyValuePropertyKey:
-        return (object as CustomPropertyBooleanBase).propertyValue;
-      case LayoutComponentBase.clipPropertyKey:
-        return (object as LayoutComponentBase).clip;
-      case TextModifierRangeBase.clampPropertyKey:
-        return (object as TextModifierRangeBase).clamp;
-    }
-    return false;
-  }
-
-  static int getColor(Core object, int propertyKey) {
-    switch (propertyKey) {
-      case KeyFrameColorBase.valuePropertyKey:
-        return (object as KeyFrameColorBase).value;
-      case SolidColorBase.colorValuePropertyKey:
-        return (object as SolidColorBase).colorValue;
-      case GradientStopBase.colorValuePropertyKey:
-        return (object as GradientStopBase).colorValue;
-    }
-    return 0;
-  }
-
   static Uint8List getBytes(Core object, int propertyKey) {
     switch (propertyKey) {
+      case NestedArtboardBase.dataBindPathIdsPropertyKey:
+        return (object as NestedArtboardBase).dataBindPathIds;
       case MeshBase.triangleIndexBytesPropertyKey:
         return (object as MeshBase).triangleIndexBytes;
+      case DataBindContextBase.sourcePathIdsPropertyKey:
+        return (object as DataBindContextBase).sourcePathIds;
       case FileAssetBase.cdnUuidPropertyKey:
         return (object as FileAssetBase).cdnUuid;
       case FileAssetContentsBase.bytesPropertyKey:
@@ -2844,51 +3092,136 @@ class RiveCoreContext {
     return Uint8List(0);
   }
 
-  static void setString(Core object, int propertyKey, String value) {
+  static void setBool(Core object, int propertyKey, bool value) {
     switch (propertyKey) {
-      case ComponentBase.namePropertyKey:
-        if (object is ComponentBase) {
-          object.name = value;
+      case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
+        if (object is ViewModelInstanceListItemBase) {
+          object.useLinkedArtboard = value;
         }
         break;
-      case AnimationBase.namePropertyKey:
-        if (object is AnimationBase) {
-          object.name = value;
+      case TransformComponentConstraintBase.offsetPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.offset = value;
         }
         break;
-      case StateMachineComponentBase.namePropertyKey:
-        if (object is StateMachineComponentBase) {
-          object.name = value;
+      case TransformComponentConstraintBase.doesCopyPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.doesCopy = value;
         }
         break;
-      case KeyFrameStringBase.valuePropertyKey:
-        if (object is KeyFrameStringBase) {
+      case TransformComponentConstraintBase.minPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.min = value;
+        }
+        break;
+      case TransformComponentConstraintBase.maxPropertyKey:
+        if (object is TransformComponentConstraintBase) {
+          object.max = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.doesCopyY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.minYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.minY = value;
+        }
+        break;
+      case TransformComponentConstraintYBase.maxYPropertyKey:
+        if (object is TransformComponentConstraintYBase) {
+          object.maxY = value;
+        }
+        break;
+      case IKConstraintBase.invertDirectionPropertyKey:
+        if (object is IKConstraintBase) {
+          object.invertDirection = value;
+        }
+        break;
+      case FollowPathConstraintBase.orientPropertyKey:
+        if (object is FollowPathConstraintBase) {
+          object.orient = value;
+        }
+        break;
+      case FollowPathConstraintBase.offsetPropertyKey:
+        if (object is FollowPathConstraintBase) {
+          object.offset = value;
+        }
+        break;
+      case LinearAnimationBase.enableWorkAreaPropertyKey:
+        if (object is LinearAnimationBase) {
+          object.enableWorkArea = value;
+        }
+        break;
+      case LinearAnimationBase.quantizePropertyKey:
+        if (object is LinearAnimationBase) {
+          object.quantize = value;
+        }
+        break;
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+        if (object is NestedSimpleAnimationBase) {
+          object.isPlaying = value;
+        }
+        break;
+      case KeyFrameBoolBase.valuePropertyKey:
+        if (object is KeyFrameBoolBase) {
           object.value = value;
         }
         break;
-      case OpenUrlEventBase.urlPropertyKey:
-        if (object is OpenUrlEventBase) {
-          object.url = value;
+      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
+        if (object is ListenerAlignTargetBase) {
+          object.preserveOffset = value;
         }
         break;
-      case TextValueRunBase.textPropertyKey:
-        if (object is TextValueRunBase) {
-          object.text = value;
+      case NestedBoolBase.nestedValuePropertyKey:
+        if (object is NestedBoolBase) {
+          object.nestedValue = value;
         }
         break;
-      case CustomPropertyStringBase.propertyValuePropertyKey:
-        if (object is CustomPropertyStringBase) {
+      case StateMachineBoolBase.valuePropertyKey:
+        if (object is StateMachineBoolBase) {
+          object.value = value;
+        }
+        break;
+      case ShapePaintBase.isVisiblePropertyKey:
+        if (object is ShapePaintBase) {
+          object.isVisible = value;
+        }
+        break;
+      case StrokeBase.transformAffectsStrokePropertyKey:
+        if (object is StrokeBase) {
+          object.transformAffectsStroke = value;
+        }
+        break;
+      case PointsPathBase.isClosedPropertyKey:
+        if (object is PointsPathBase) {
+          object.isClosed = value;
+        }
+        break;
+      case RectangleBase.linkCornerRadiusPropertyKey:
+        if (object is RectangleBase) {
+          object.linkCornerRadius = value;
+        }
+        break;
+      case ClippingShapeBase.isVisiblePropertyKey:
+        if (object is ClippingShapeBase) {
+          object.isVisible = value;
+        }
+        break;
+      case CustomPropertyBooleanBase.propertyValuePropertyKey:
+        if (object is CustomPropertyBooleanBase) {
           object.propertyValue = value;
         }
         break;
-      case AssetBase.namePropertyKey:
-        if (object is AssetBase) {
-          object.name = value;
+      case LayoutComponentBase.clipPropertyKey:
+        if (object is LayoutComponentBase) {
+          object.clip = value;
         }
         break;
-      case FileAssetBase.cdnBaseUrlPropertyKey:
-        if (object is FileAssetBase) {
-          object.cdnBaseUrl = value;
+      case TextModifierRangeBase.clampPropertyKey:
+        if (object is TextModifierRangeBase) {
+          object.clamp = value;
         }
         break;
     }
@@ -2896,9 +3229,59 @@ class RiveCoreContext {
 
   static void setUint(Core object, int propertyKey, int value) {
     switch (propertyKey) {
+      case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
+        if (object is ViewModelInstanceListItemBase) {
+          object.viewModelId = value;
+        }
+        break;
+      case ViewModelInstanceListItemBase.viewModelInstanceIdPropertyKey:
+        if (object is ViewModelInstanceListItemBase) {
+          object.viewModelInstanceId = value;
+        }
+        break;
+      case ViewModelInstanceListItemBase.artboardIdPropertyKey:
+        if (object is ViewModelInstanceListItemBase) {
+          object.artboardId = value;
+        }
+        break;
+      case ViewModelInstanceValueBase.viewModelPropertyIdPropertyKey:
+        if (object is ViewModelInstanceValueBase) {
+          object.viewModelPropertyId = value;
+        }
+        break;
+      case ViewModelInstanceEnumBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceEnumBase) {
+          object.propertyValue = value;
+        }
+        break;
+      case ViewModelBase.defaultInstanceIdPropertyKey:
+        if (object is ViewModelBase) {
+          object.defaultInstanceId = value;
+        }
+        break;
+      case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
+        if (object is ViewModelPropertyViewModelBase) {
+          object.viewModelReferenceId = value;
+        }
+        break;
       case ComponentBase.parentIdPropertyKey:
         if (object is ComponentBase) {
           object.parentId = value;
+        }
+        break;
+      case ViewModelInstanceBase.viewModelIdPropertyKey:
+        if (object is ViewModelInstanceBase) {
+          object.viewModelId = value;
+        }
+        break;
+      case ViewModelPropertyEnumBase.enumIdPropertyKey:
+        if (object is ViewModelPropertyEnumBase) {
+          object.enumId = value;
+        }
+        break;
+      case ViewModelInstanceViewModelBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceViewModelBase) {
+          object.propertyValue = value;
         }
         break;
       case DrawTargetBase.drawableIdPropertyKey:
@@ -3281,6 +3664,11 @@ class RiveCoreContext {
           object.defaultStateMachineId = value;
         }
         break;
+      case ArtboardBase.viewModelIdPropertyKey:
+        if (object is ArtboardBase) {
+          object.viewModelId = value;
+        }
+        break;
       case JoystickBase.xIdPropertyKey:
         if (object is JoystickBase) {
           object.xId = value;
@@ -3304,6 +3692,21 @@ class RiveCoreContext {
       case OpenUrlEventBase.targetValuePropertyKey:
         if (object is OpenUrlEventBase) {
           object.targetValue = value;
+        }
+        break;
+      case DataBindBase.targetIdPropertyKey:
+        if (object is DataBindBase) {
+          object.targetId = value;
+        }
+        break;
+      case DataBindBase.propertyKeyPropertyKey:
+        if (object is DataBindBase) {
+          object.propertyKey = value;
+        }
+        break;
+      case DataBindBase.modeValuePropertyKey:
+        if (object is DataBindBase) {
+          object.modeValue = value;
         }
         break;
       case TendonBase.boneIdPropertyKey:
@@ -3399,8 +3802,108 @@ class RiveCoreContext {
     }
   }
 
+  static void setColor(Core object, int propertyKey, int value) {
+    switch (propertyKey) {
+      case ViewModelInstanceColorBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceColorBase) {
+          object.propertyValue = value;
+        }
+        break;
+      case KeyFrameColorBase.valuePropertyKey:
+        if (object is KeyFrameColorBase) {
+          object.value = value;
+        }
+        break;
+      case SolidColorBase.colorValuePropertyKey:
+        if (object is SolidColorBase) {
+          object.colorValue = value;
+        }
+        break;
+      case GradientStopBase.colorValuePropertyKey:
+        if (object is GradientStopBase) {
+          object.colorValue = value;
+        }
+        break;
+    }
+  }
+
+  static void setString(Core object, int propertyKey, String value) {
+    switch (propertyKey) {
+      case ViewModelComponentBase.namePropertyKey:
+        if (object is ViewModelComponentBase) {
+          object.name = value;
+        }
+        break;
+      case ViewModelInstanceStringBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceStringBase) {
+          object.propertyValue = value;
+        }
+        break;
+      case ComponentBase.namePropertyKey:
+        if (object is ComponentBase) {
+          object.name = value;
+        }
+        break;
+      case DataEnumValueBase.keyPropertyKey:
+        if (object is DataEnumValueBase) {
+          object.key = value;
+        }
+        break;
+      case DataEnumValueBase.valuePropertyKey:
+        if (object is DataEnumValueBase) {
+          object.value = value;
+        }
+        break;
+      case AnimationBase.namePropertyKey:
+        if (object is AnimationBase) {
+          object.name = value;
+        }
+        break;
+      case StateMachineComponentBase.namePropertyKey:
+        if (object is StateMachineComponentBase) {
+          object.name = value;
+        }
+        break;
+      case KeyFrameStringBase.valuePropertyKey:
+        if (object is KeyFrameStringBase) {
+          object.value = value;
+        }
+        break;
+      case OpenUrlEventBase.urlPropertyKey:
+        if (object is OpenUrlEventBase) {
+          object.url = value;
+        }
+        break;
+      case TextValueRunBase.textPropertyKey:
+        if (object is TextValueRunBase) {
+          object.text = value;
+        }
+        break;
+      case CustomPropertyStringBase.propertyValuePropertyKey:
+        if (object is CustomPropertyStringBase) {
+          object.propertyValue = value;
+        }
+        break;
+      case AssetBase.namePropertyKey:
+        if (object is AssetBase) {
+          object.name = value;
+        }
+        break;
+      case FileAssetBase.cdnBaseUrlPropertyKey:
+        if (object is FileAssetBase) {
+          object.cdnBaseUrl = value;
+        }
+        break;
+    }
+  }
+
   static void setDouble(Core object, int propertyKey, double value) {
     switch (propertyKey) {
+      case ViewModelInstanceNumberBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceNumberBase) {
+          object.propertyValue = value;
+        }
+        break;
       case CustomPropertyNumberBase.propertyValuePropertyKey:
         if (object is CustomPropertyNumberBase) {
           object.propertyValue = value;
@@ -4199,131 +4702,31 @@ class RiveCoreContext {
     }
   }
 
-  static void setBool(Core object, int propertyKey, bool value) {
+  static void setBytes(Core object, int propertyKey, Uint8List value) {
     switch (propertyKey) {
-      case TransformComponentConstraintBase.offsetPropertyKey:
-        if (object is TransformComponentConstraintBase) {
-          object.offset = value;
+      case NestedArtboardBase.dataBindPathIdsPropertyKey:
+        if (object is NestedArtboardBase) {
+          object.dataBindPathIds = value;
         }
         break;
-      case TransformComponentConstraintBase.doesCopyPropertyKey:
-        if (object is TransformComponentConstraintBase) {
-          object.doesCopy = value;
+      case MeshBase.triangleIndexBytesPropertyKey:
+        if (object is MeshBase) {
+          object.triangleIndexBytes = value;
         }
         break;
-      case TransformComponentConstraintBase.minPropertyKey:
-        if (object is TransformComponentConstraintBase) {
-          object.min = value;
+      case DataBindContextBase.sourcePathIdsPropertyKey:
+        if (object is DataBindContextBase) {
+          object.sourcePathIds = value;
         }
         break;
-      case TransformComponentConstraintBase.maxPropertyKey:
-        if (object is TransformComponentConstraintBase) {
-          object.max = value;
+      case FileAssetBase.cdnUuidPropertyKey:
+        if (object is FileAssetBase) {
+          object.cdnUuid = value;
         }
         break;
-      case TransformComponentConstraintYBase.doesCopyYPropertyKey:
-        if (object is TransformComponentConstraintYBase) {
-          object.doesCopyY = value;
-        }
-        break;
-      case TransformComponentConstraintYBase.minYPropertyKey:
-        if (object is TransformComponentConstraintYBase) {
-          object.minY = value;
-        }
-        break;
-      case TransformComponentConstraintYBase.maxYPropertyKey:
-        if (object is TransformComponentConstraintYBase) {
-          object.maxY = value;
-        }
-        break;
-      case IKConstraintBase.invertDirectionPropertyKey:
-        if (object is IKConstraintBase) {
-          object.invertDirection = value;
-        }
-        break;
-      case FollowPathConstraintBase.orientPropertyKey:
-        if (object is FollowPathConstraintBase) {
-          object.orient = value;
-        }
-        break;
-      case FollowPathConstraintBase.offsetPropertyKey:
-        if (object is FollowPathConstraintBase) {
-          object.offset = value;
-        }
-        break;
-      case LinearAnimationBase.enableWorkAreaPropertyKey:
-        if (object is LinearAnimationBase) {
-          object.enableWorkArea = value;
-        }
-        break;
-      case LinearAnimationBase.quantizePropertyKey:
-        if (object is LinearAnimationBase) {
-          object.quantize = value;
-        }
-        break;
-      case NestedSimpleAnimationBase.isPlayingPropertyKey:
-        if (object is NestedSimpleAnimationBase) {
-          object.isPlaying = value;
-        }
-        break;
-      case KeyFrameBoolBase.valuePropertyKey:
-        if (object is KeyFrameBoolBase) {
-          object.value = value;
-        }
-        break;
-      case ListenerAlignTargetBase.preserveOffsetPropertyKey:
-        if (object is ListenerAlignTargetBase) {
-          object.preserveOffset = value;
-        }
-        break;
-      case NestedBoolBase.nestedValuePropertyKey:
-        if (object is NestedBoolBase) {
-          object.nestedValue = value;
-        }
-        break;
-      case StateMachineBoolBase.valuePropertyKey:
-        if (object is StateMachineBoolBase) {
-          object.value = value;
-        }
-        break;
-      case ShapePaintBase.isVisiblePropertyKey:
-        if (object is ShapePaintBase) {
-          object.isVisible = value;
-        }
-        break;
-      case StrokeBase.transformAffectsStrokePropertyKey:
-        if (object is StrokeBase) {
-          object.transformAffectsStroke = value;
-        }
-        break;
-      case PointsPathBase.isClosedPropertyKey:
-        if (object is PointsPathBase) {
-          object.isClosed = value;
-        }
-        break;
-      case RectangleBase.linkCornerRadiusPropertyKey:
-        if (object is RectangleBase) {
-          object.linkCornerRadius = value;
-        }
-        break;
-      case ClippingShapeBase.isVisiblePropertyKey:
-        if (object is ClippingShapeBase) {
-          object.isVisible = value;
-        }
-        break;
-      case CustomPropertyBooleanBase.propertyValuePropertyKey:
-        if (object is CustomPropertyBooleanBase) {
-          object.propertyValue = value;
-        }
-        break;
-      case LayoutComponentBase.clipPropertyKey:
-        if (object is LayoutComponentBase) {
-          object.clip = value;
-        }
-        break;
-      case TextModifierRangeBase.clampPropertyKey:
-        if (object is TextModifierRangeBase) {
-          object.clamp = value;
+      case FileAssetContentsBase.bytesPropertyKey:
+        if (object is FileAssetContentsBase) {
+          object.bytes = value;
         }
         break;
     }
@@ -4339,46 +4742,6 @@ class RiveCoreContext {
       case EventBase.triggerPropertyKey:
         if (object is EventBase) {
           object.trigger(value);
-        }
-        break;
-    }
-  }
-
-  static void setColor(Core object, int propertyKey, int value) {
-    switch (propertyKey) {
-      case KeyFrameColorBase.valuePropertyKey:
-        if (object is KeyFrameColorBase) {
-          object.value = value;
-        }
-        break;
-      case SolidColorBase.colorValuePropertyKey:
-        if (object is SolidColorBase) {
-          object.colorValue = value;
-        }
-        break;
-      case GradientStopBase.colorValuePropertyKey:
-        if (object is GradientStopBase) {
-          object.colorValue = value;
-        }
-        break;
-    }
-  }
-
-  static void setBytes(Core object, int propertyKey, Uint8List value) {
-    switch (propertyKey) {
-      case MeshBase.triangleIndexBytesPropertyKey:
-        if (object is MeshBase) {
-          object.triangleIndexBytes = value;
-        }
-        break;
-      case FileAssetBase.cdnUuidPropertyKey:
-        if (object is FileAssetBase) {
-          object.cdnUuid = value;
-        }
-        break;
-      case FileAssetContentsBase.bytesPropertyKey:
-        if (object is FileAssetContentsBase) {
-          object.bytes = value;
         }
         break;
     }

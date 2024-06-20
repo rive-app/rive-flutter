@@ -51,6 +51,9 @@ class ComponentDirt {
   /// Set when blend modes need to be updated.
   static const int blendMode = 1 << 12;
 
+  /// Used by data binds to track  the value has changed.
+  static const int bindings = 1 << 13;
+
   /// All dirty. Every flag (apart from Collapsed) is set.
   static const int filthy = 0xFFFE;
 }

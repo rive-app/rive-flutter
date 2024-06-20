@@ -142,6 +142,31 @@ abstract class ArtboardBase extends LayoutComponent {
 
   void defaultStateMachineIdChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// ViewModelId field with key 583.
+  static const int viewModelIdPropertyKey = 583;
+  static const int viewModelIdInitialValue = -1;
+  int _viewModelId = viewModelIdInitialValue;
+
+  /// The view model attached to this artboard data context.
+  int get viewModelId => _viewModelId;
+
+  /// Change the [_viewModelId] field value.
+  /// [viewModelIdChanged] will be invoked only if the field's value has
+  /// changed.
+  set viewModelId(int value) {
+    if (_viewModelId == value) {
+      return;
+    }
+    int from = _viewModelId;
+    _viewModelId = value;
+    if (hasValidated) {
+      viewModelIdChanged(from, value);
+    }
+  }
+
+  void viewModelIdChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
@@ -151,6 +176,7 @@ abstract class ArtboardBase extends LayoutComponent {
       _originX = source._originX;
       _originY = source._originY;
       _defaultStateMachineId = source._defaultStateMachineId;
+      _viewModelId = source._viewModelId;
     }
   }
 }

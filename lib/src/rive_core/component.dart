@@ -2,6 +2,7 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
+import 'package:rive/src/rive_core/dependency_helper.dart';
 import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/component_base.dart';
@@ -10,6 +11,8 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     implements DependencyGraphNode<Component>, Parentable<Component> {
   Artboard? _artboard;
   dynamic _userData;
+  final DependencyHelper<Artboard, Component> _dependencyHelper =
+      DependencyHelper();
 
   /// Whether this Component's update processes at all.
   bool get isCollapsed => (dirt & ComponentDirt.collapsed) != 0;
@@ -24,7 +27,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
       dirt &= ~ComponentDirt.collapsed;
     }
     onDirty(dirt);
-    artboard?.onComponentDirty(this);
+    _dependencyHelper.onComponentDirty(this);
     return true;
   }
 
@@ -51,20 +54,26 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     dirt |= value;
 
     onDirty(dirt);
-    artboard?.onComponentDirty(this);
+    _dependencyHelper.onComponentDirty(this);
 
     if (!recurse) {
       return true;
     }
 
-    for (final d in dependents) {
-      d.addDirt(value, recurse: recurse);
-    }
+    _dependencyHelper.addDirt(value, recurse: recurse);
     return true;
   }
 
   void onDirty(int mask) {}
   void update(int dirt);
+
+  Artboard? get dependencyRoot {
+    return _dependencyHelper.dependencyRoot;
+  }
+
+  set dependencyRoot(Artboard? component) {
+    _dependencyHelper.dependencyRoot = component;
+  }
 
   /// The artboard this component belongs to.
 
@@ -77,6 +86,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void changeArtboard(Artboard? value) {
     _artboard?.removeComponent(this);
     _artboard = value;
+    dependencyRoot = _artboard;
     _artboard?.addComponent(this);
   }
 
@@ -152,14 +162,11 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     markRebuildDependencies();
   }
 
-  /// Components that depend on this component.
-  final Set<Component> _dependents = {};
-
   /// Components that this component depends on.
   final Set<Component> _dependsOn = {};
 
   @override
-  Set<Component> get dependents => _dependents;
+  Set<Component> get dependents => _dependencyHelper.dependents;
 
   Set<Component> get dependencies {
     Set<Component> components = {};
@@ -183,7 +190,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     assert(artboard == dependent.artboard,
         'Components must be in the same artboard.');
 
-    if (!_dependents.add(dependent)) {
+    if (!_dependencyHelper.addDependent(dependent)) {
       return false;
     }
     dependent._dependsOn.add(this);
@@ -199,14 +206,14 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
       return;
     }
 
-    for (final dependent in _dependents) {
+    for (final dependent in dependents) {
       dependent.markRebuildDependencies();
     }
   }
 
   void clearDependencies() {
     for (final parentDep in _dependsOn) {
-      parentDep._dependents.remove(this);
+      parentDep.dependents.remove(this);
     }
     _dependsOn.clear();
   }
@@ -238,14 +245,14 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   void onRemoved() {
     super.onRemoved();
     for (final parentDep in _dependsOn) {
-      parentDep._dependents.remove(this);
+      parentDep.dependents.remove(this);
     }
     _dependsOn.clear();
 
-    for (final dependent in _dependents) {
+    for (final dependent in dependents) {
       dependent.onDependencyRemoved(this);
     }
-    _dependents.clear();
+    dependents.clear();
 
     // silently clear from the parent in order to not cause any further undo
     // stack changes

@@ -13,6 +13,9 @@ import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/data_bind/data_bind.dart';
+import 'package:rive/src/rive_core/data_bind/data_bind_context.dart';
+import 'package:rive/src/rive_core/data_bind/data_context.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
 import 'package:rive/src/rive_core/draw_target.dart';
 import 'package:rive/src/rive_core/drawable.dart';
@@ -23,6 +26,7 @@ import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/utilities.dart';
@@ -100,6 +104,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// List of events in the artboard.
   EventList get events => _events;
 
+  DataContext? dataContext;
+  final List<DataBind> globalDataBinds = [];
+
   /// List of linear animations in the artboard.
   Iterable<LinearAnimation> get linearAnimations =>
       _animations.whereType<LinearAnimation>();
@@ -143,6 +150,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool updateComponents() {
     bool didUpdate = false;
 
+    if ((dirt & ComponentDirt.bindings) != 0) {
+      computeBindings(true);
+      dirt &= ~ComponentDirt.bindings;
+      didUpdate = true;
+    }
     if ((dirt & ComponentDirt.drawOrder) != 0) {
       sortDrawOrder();
       dirt &= ~ComponentDirt.drawOrder;
@@ -184,6 +196,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   final List<Joystick> _joysticks = [];
   Iterable<Joystick> get joysticks => _joysticks;
 
+  final List<DataBind> _dataBinds = [];
+  Iterable<DataBind> get dataBinds => _dataBinds;
+
   bool canPreApplyJoysticks() {
     if (_joysticks.isEmpty) {
       return false;
@@ -194,11 +209,26 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return true;
   }
 
-  bool applyJoysticks() {
+  void updateDataBinds() {
+    for (final dataBind in globalDataBinds) {
+      dataBind.updateSourceBinding();
+      final dirt = dataBind.dirt;
+      if (dirt == 0) {
+        continue;
+      }
+      dataBind.update(dirt);
+      dataBind.dirt = 0;
+    }
+  }
+
+  bool applyJoysticks({bool isRoot = false}) {
     if (_joysticks.isEmpty) {
       return false;
     }
     for (final joystick in _joysticks) {
+      if (isRoot) {
+        updateDataBinds();
+      }
       if (joystick.isComplex) {
         updateComponents();
       }
@@ -208,7 +238,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   /// Update any dirty components in this artboard.
-  bool advance(double elapsedSeconds, {bool nested = false}) {
+  bool advanceInternal(double elapsedSeconds,
+      {bool nested = false, bool isRoot = false}) {
     if (_dirtyLayout.isNotEmpty) {
       var dirtyLayout = _dirtyLayout.toList();
       _dirtyLayout.clear();
@@ -238,15 +269,18 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     // less efficient.
     var canApplyJoysticksEarly = canPreApplyJoysticks();
     if (canApplyJoysticksEarly) {
-      applyJoysticks();
+      applyJoysticks(isRoot: isRoot);
     }
 
+    if (isRoot) {
+      updateDataBinds();
+    }
     if (updateComponents() || didUpdate) {
       didUpdate = true;
     }
 
     // If joysticks applied, run the update again for the animation changes.
-    if (!canApplyJoysticksEarly && applyJoysticks()) {
+    if (!canApplyJoysticksEarly && applyJoysticks(isRoot: isRoot)) {
       if (updateComponents()) {
         didUpdate = true;
       }
@@ -262,6 +296,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
 
     return didUpdate;
+  }
+
+  bool advance(double elapsedSeconds, {bool nested = false}) {
+    return advanceInternal(elapsedSeconds, nested: nested, isRoot: true);
   }
 
   @override
@@ -342,6 +380,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     addDirt(ComponentDirt.worldTransform);
   }
 
+  @override
+  void viewModelIdChanged(int from, int to) {}
+
   Vec2D renderTranslation(Vec2D worldTranslation) {
     final wt = originWorld;
     return worldTranslation + wt;
@@ -367,6 +408,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       case JoystickBase.typeKey:
         _joysticks.add(component as Joystick);
         break;
+      case DataBindBase.typeKey:
+      case DataBindContextBase.typeKey:
+        _dataBinds.add(component as DataBind);
+        break;
     }
   }
 
@@ -384,6 +429,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         break;
       case JoystickBase.typeKey:
         _joysticks.remove(component as Joystick);
+        break;
+      case DataBindBase.typeKey:
+      case DataBindContextBase.typeKey:
+        _dataBinds.remove(component as DataBind);
         break;
     }
   }
@@ -590,6 +639,39 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     sortDrawOrder();
   }
 
+  void populateDataBinds(List<DataBind> globalDataBinds) {
+    dataBinds.forEach((dataBind) {
+      globalDataBinds.add(dataBind);
+    });
+
+    for (final nestedArtboard in _activeNestedArtboards) {
+      final mountedArtboard = nestedArtboard.mountedArtboard;
+      if (mountedArtboard != null) {
+        mountedArtboard.populateDataBinds(globalDataBinds);
+      }
+    }
+  }
+
+  void sortDataBinds() {
+    globalDataBinds.sort((a, b) => a.modeValue.compareTo(b.modeValue) * -1);
+  }
+
+  void computeBindings(bool isRoot) {
+    if (dataContext == null) {
+      return;
+    }
+    for (final dataBind in dataBinds) {
+      if (dataBind is DataBindContext) {
+        dataBind.bindToContext();
+      }
+    }
+    if (isRoot) {
+      globalDataBinds.clear();
+      populateDataBinds(globalDataBinds);
+      sortDataBinds();
+    }
+  }
+
   void sortDrawOrder() {
     hasChangedDrawOrderInLastUpdate = true;
     // Clear out rule first/last items.
@@ -698,6 +780,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   void onAddedDirty() {
     super.onAddedDirty();
+    dependencyRoot = this;
     defaultStateMachine = defaultStateMachineId == Core.missingId
         ? null
         : context.resolve(defaultStateMachineId);
@@ -706,5 +789,32 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @override
   void defaultStateMachineIdChanged(int from, int to) {
     defaultStateMachine = to == Core.missingId ? null : context.resolve(to);
+  }
+
+  void internalDataContext(DataContext dataContextValue,
+      DataContext? parentDataContext, bool isRoot) {
+    dataContext = dataContextValue;
+    dataContext!.parent = parentDataContext;
+    for (final nestedArtboard in _activeNestedArtboards) {
+      final mountedArtboard = nestedArtboard.mountedArtboard;
+      if (mountedArtboard != null) {
+        ViewModelInstance? nestedViewModelInstance =
+            dataContext!.getViewModelInstance(nestedArtboard.dataBindPath);
+        if (nestedViewModelInstance != null) {
+          mountedArtboard.dataContextFromInstance(
+              nestedViewModelInstance, dataContext, false);
+        } else {
+          mountedArtboard.internalDataContext(
+              dataContext!, dataContext!.parent, false);
+        }
+      }
+    }
+    computeBindings(isRoot);
+  }
+
+  void dataContextFromInstance(
+      ViewModelInstance viewModelInstance, DataContext? parent, bool isRoot) {
+    final dataContext = DataContext(viewModelInstance);
+    internalDataContext(dataContext, parent, isRoot);
   }
 }

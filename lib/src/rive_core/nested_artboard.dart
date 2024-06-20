@@ -10,8 +10,12 @@ import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/bounds_provider.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
+import 'package:rive/src/rive_core/data_bind/data_bind.dart';
+import 'package:rive/src/rive_core/data_bind/data_context.dart';
 import 'package:rive/src/rive_core/nested_animation.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/math.dart';
+import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/nested_artboard_base.dart';
 
@@ -55,12 +59,19 @@ abstract class MountedArtboard {
   double get originalArtboardWidth;
   double get originalArtboardHeight;
   void dispose();
+  void dataContextFromInstance(ViewModelInstance viewModelInstance,
+      DataContext? dataContextValue, bool isRoot);
+  void internalDataContext(DataContext dataContextValue,
+      DataContext? parentDataContext, bool isRoot);
+  void populateDataBinds(List<DataBind> globalDataBinds);
 }
 
 class NestedArtboard extends NestedArtboardBase implements Sizable {
   /// [NestedAnimation]s applied to this [NestedArtboard].
   final List<NestedAnimation> _animations = [];
   Iterable<NestedAnimation> get animations => _animations;
+
+  List<int> dataBindPath = [];
 
   NestedArtboardFitType get fitType => NestedArtboardFitType.values[fit];
   NestedArtboardAlignmentType get alignmentType =>
@@ -104,6 +115,9 @@ class NestedArtboard extends NestedArtboardBase implements Sizable {
   void artboardIdChanged(int from, int to) {}
 
   @override
+  void dataBindPathIdsChanged(List<int> from, List<int> to) {}
+
+  @override
   void fitChanged(int from, int to) {
     _updateMountedTransform();
   }
@@ -111,6 +125,15 @@ class NestedArtboard extends NestedArtboardBase implements Sizable {
   @override
   void alignmentChanged(int from, int to) {
     _updateMountedTransform();
+  }
+
+  @override
+  void onAddedDirty() {
+    super.onAddedDirty();
+    var reader = BinaryReader.fromList(dataBindPathIds);
+    while (!reader.isEOF) {
+      dataBindPath.add(reader.readVarUint());
+    }
   }
 
   @override
