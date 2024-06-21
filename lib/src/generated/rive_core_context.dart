@@ -156,6 +156,7 @@ import 'package:rive/src/rive_core/viewmodel/data_enum_value.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_component.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_boolean.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_color.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_enum.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_list.dart';
@@ -164,6 +165,7 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_number.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_string.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_viewmodel.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_property.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_property_boolean.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_property_color.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_property_enum.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_property_list.dart';
@@ -197,12 +199,16 @@ class RiveCoreContext {
         return ViewModelPropertyViewModel();
       case ViewModelInstanceBase.typeKey:
         return ViewModelInstance();
+      case ViewModelPropertyBooleanBase.typeKey:
+        return ViewModelPropertyBoolean();
       case DataEnumBase.typeKey:
         return DataEnum();
       case ViewModelPropertyEnumBase.typeKey:
         return ViewModelPropertyEnum();
       case ViewModelPropertyColorBase.typeKey:
         return ViewModelPropertyColor();
+      case ViewModelInstanceBooleanBase.typeKey:
+        return ViewModelInstanceBoolean();
       case ViewModelInstanceListBase.typeKey:
         return ViewModelInstanceList();
       case ViewModelInstanceNumberBase.typeKey:
@@ -517,6 +523,11 @@ class RiveCoreContext {
       case ViewModelPropertyEnumBase.enumIdPropertyKey:
         if (object is ViewModelPropertyEnumBase && value is int) {
           object.enumId = value;
+        }
+        break;
+      case ViewModelInstanceBooleanBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceBooleanBase && value is bool) {
+          object.propertyValue = value;
         }
         break;
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
@@ -2087,6 +2098,7 @@ class RiveCoreContext {
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
+      case ViewModelInstanceBooleanBase.propertyValuePropertyKey:
       case TransformComponentConstraintBase.offsetPropertyKey:
       case TransformComponentConstraintBase.doesCopyPropertyKey:
       case TransformComponentConstraintBase.minPropertyKey:
@@ -2440,6 +2452,8 @@ class RiveCoreContext {
     switch (propertyKey) {
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
         return (object as ViewModelInstanceListItemBase).useLinkedArtboard;
+      case ViewModelInstanceBooleanBase.propertyValuePropertyKey:
+        return (object as ViewModelInstanceBooleanBase).propertyValue;
       case TransformComponentConstraintBase.offsetPropertyKey:
         return (object as TransformComponentConstraintBase).offset;
       case TransformComponentConstraintBase.doesCopyPropertyKey:
@@ -3129,6 +3143,11 @@ class RiveCoreContext {
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
         if (object is ViewModelInstanceListItemBase) {
           object.useLinkedArtboard = value;
+        }
+        break;
+      case ViewModelInstanceBooleanBase.propertyValuePropertyKey:
+        if (object is ViewModelInstanceBooleanBase) {
+          object.propertyValue = value;
         }
         break;
       case TransformComponentConstraintBase.offsetPropertyKey:

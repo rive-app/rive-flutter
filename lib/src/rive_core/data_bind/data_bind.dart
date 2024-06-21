@@ -1,9 +1,11 @@
 import 'package:rive/src/generated/data_bind/data_bind_base.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value.dart';
+import 'package:rive/src/rive_core/data_bind/context/context_value_boolean.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value_color.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value_number.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value_string.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_boolean.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_color.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_enum.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_list.dart';
@@ -67,6 +69,9 @@ class DataBind extends DataBindBase {
         break;
       case ViewModelInstanceColorBase.typeKey:
         contextValue = ContextValueColor(source);
+        break;
+      case ViewModelInstanceBooleanBase.typeKey:
+        contextValue = ContextValueBoolean(source);
         break;
     }
   }

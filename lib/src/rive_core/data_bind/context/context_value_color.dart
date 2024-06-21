@@ -17,5 +17,9 @@ class ContextValueColor extends ContextValue {
   }
 
   @override
-  void applyToSource(Core<CoreContext> core, int propertyKey) {}
+  void applyToSource(Core<CoreContext> core, int propertyKey) {
+    final value = RiveCoreContext.getColor(core, propertyKey);
+    final sourceColor = source as ViewModelInstanceColor;
+    sourceColor.propertyValue = value;
+  }
 }
