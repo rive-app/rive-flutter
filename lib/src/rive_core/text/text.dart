@@ -407,7 +407,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         _bounds = AABB.fromValues(
           0.0,
           minY,
-          effectiveWidth,
+          effectiveWidth == 0 ? maxWidth : effectiveWidth,
           max(minY, y - paragraphSpacing),
         );
         break;
@@ -415,7 +415,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         _bounds = AABB.fromValues(
           0.0,
           minY,
-          effectiveWidth,
+          effectiveWidth == 0 ? maxWidth : effectiveWidth,
           minY + effectiveHeight,
         );
         break;

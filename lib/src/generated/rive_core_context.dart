@@ -914,6 +914,26 @@ class RiveCoreContext {
           object.scaleType = value;
         }
         break;
+      case LayoutComponentStyleBase.animationStyleTypePropertyKey:
+        if (object is LayoutComponentStyleBase && value is int) {
+          object.animationStyleType = value;
+        }
+        break;
+      case LayoutComponentStyleBase.interpolationTypePropertyKey:
+        if (object is LayoutComponentStyleBase && value is int) {
+          object.interpolationType = value;
+        }
+        break;
+      case LayoutComponentStyleBase.interpolatorIdPropertyKey:
+        if (object is LayoutComponentStyleBase && value is int) {
+          object.interpolatorId = value;
+        }
+        break;
+      case LayoutComponentStyleBase.interpolationTimePropertyKey:
+        if (object is LayoutComponentStyleBase && value is double) {
+          object.interpolationTime = value;
+        }
+        break;
       case ListenerFireEventBase.eventIdPropertyKey:
         if (object is ListenerFireEventBase && value is int) {
           object.eventId = value;
@@ -2123,6 +2143,9 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.layoutFlags1PropertyKey:
       case LayoutComponentStyleBase.layoutFlags2PropertyKey:
       case LayoutComponentStyleBase.scaleTypePropertyKey:
+      case LayoutComponentStyleBase.animationStyleTypePropertyKey:
+      case LayoutComponentStyleBase.interpolationTypePropertyKey:
+      case LayoutComponentStyleBase.interpolatorIdPropertyKey:
       case ListenerFireEventBase.eventIdPropertyKey:
       case LayerStateBase.flagsPropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
@@ -2273,6 +2296,7 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.flexShrinkPropertyKey:
       case LayoutComponentStyleBase.flexBasisPropertyKey:
       case LayoutComponentStyleBase.aspectRatioPropertyKey:
+      case LayoutComponentStyleBase.interpolationTimePropertyKey:
       case LinearAnimationBase.speedPropertyKey:
       case NestedLinearAnimationBase.mixPropertyKey:
       case NestedSimpleAnimationBase.speedPropertyKey:
@@ -2532,6 +2556,12 @@ class RiveCoreContext {
         return (object as LayoutComponentStyleBase).layoutFlags2;
       case LayoutComponentStyleBase.scaleTypePropertyKey:
         return (object as LayoutComponentStyleBase).scaleType;
+      case LayoutComponentStyleBase.animationStyleTypePropertyKey:
+        return (object as LayoutComponentStyleBase).animationStyleType;
+      case LayoutComponentStyleBase.interpolationTypePropertyKey:
+        return (object as LayoutComponentStyleBase).interpolationType;
+      case LayoutComponentStyleBase.interpolatorIdPropertyKey:
+        return (object as LayoutComponentStyleBase).interpolatorId;
       case ListenerFireEventBase.eventIdPropertyKey:
         return (object as ListenerFireEventBase).eventId;
       case LayerStateBase.flagsPropertyKey:
@@ -2844,6 +2874,8 @@ class RiveCoreContext {
         return (object as LayoutComponentStyleBase).flexBasis;
       case LayoutComponentStyleBase.aspectRatioPropertyKey:
         return (object as LayoutComponentStyleBase).aspectRatio;
+      case LayoutComponentStyleBase.interpolationTimePropertyKey:
+        return (object as LayoutComponentStyleBase).interpolationTime;
       case LinearAnimationBase.speedPropertyKey:
         return (object as LinearAnimationBase).speed;
       case NestedLinearAnimationBase.mixPropertyKey:
@@ -3377,6 +3409,21 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.scaleTypePropertyKey:
         if (object is LayoutComponentStyleBase) {
           object.scaleType = value;
+        }
+        break;
+      case LayoutComponentStyleBase.animationStyleTypePropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.animationStyleType = value;
+        }
+        break;
+      case LayoutComponentStyleBase.interpolationTypePropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.interpolationType = value;
+        }
+        break;
+      case LayoutComponentStyleBase.interpolatorIdPropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.interpolatorId = value;
         }
         break;
       case ListenerFireEventBase.eventIdPropertyKey:
@@ -4127,6 +4174,11 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.aspectRatioPropertyKey:
         if (object is LayoutComponentStyleBase) {
           object.aspectRatio = value;
+        }
+        break;
+      case LayoutComponentStyleBase.interpolationTimePropertyKey:
+        if (object is LayoutComponentStyleBase) {
+          object.interpolationTime = value;
         }
         break;
       case LinearAnimationBase.speedPropertyKey:

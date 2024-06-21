@@ -1,4 +1,8 @@
 import 'package:rive/src/generated/layout/layout_component_style_base.dart';
+import 'package:rive/src/rive_core/animation/keyframe_interpolation.dart';
+import 'package:rive/src/rive_core/animation/keyframe_interpolator.dart';
+import 'package:rive/src/rive_core/container_component.dart';
+import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/notifier.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
@@ -13,8 +17,52 @@ enum ScaleType {
   String get label => name[0].toUpperCase() + name.substring(1);
 }
 
+enum LayoutAnimationStyle { none, custom, inherit }
+
+enum LayoutStyleInterpolation { hold, linear, cubic, elastic }
+
+extension LayoutStyleInterpolationExtension on LayoutStyleInterpolation {
+  // Converts to KeyFrameInterpolation to we can be compatible with
+  // InterpolationViewModel
+  KeyFrameInterpolation toKeyFrameInterpolation() {
+    switch (this) {
+      case LayoutStyleInterpolation.hold:
+        return KeyFrameInterpolation.hold;
+      case LayoutStyleInterpolation.linear:
+        return KeyFrameInterpolation.linear;
+      case LayoutStyleInterpolation.cubic:
+        return KeyFrameInterpolation.cubic;
+      case LayoutStyleInterpolation.elastic:
+        return KeyFrameInterpolation.elastic;
+    }
+  }
+}
+
 class LayoutComponentStyle extends LayoutComponentStyleBase {
   Notifier valueChanged = Notifier();
+  Notifier interpolationChanged = Notifier();
+
+  KeyFrameInterpolator? _interpolator;
+  KeyFrameInterpolator? get interpolator => _interpolator;
+  set interpolator(KeyFrameInterpolator? value) {
+    if (_interpolator == value) {
+      return;
+    }
+    _interpolator = value;
+    interpolatorId = value?.id ?? Core.missingId;
+  }
+
+  LayoutStyleInterpolation get interpolation =>
+      enumAt(LayoutStyleInterpolation.values, interpolationType);
+  set interpolation(LayoutStyleInterpolation value) {
+    interpolationType = value.index;
+  }
+
+  LayoutAnimationStyle get animationStyle =>
+      enumAt(LayoutAnimationStyle.values, animationStyleType);
+  set animationStyle(LayoutAnimationStyle value) {
+    animationStyleType = value.index;
+  }
 
   // ---- Flags 0
   static const BitFieldLoc displayBits = BitFieldLoc(0, 0);
@@ -245,6 +293,10 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
     valueChanged.notify();
   }
 
+  void markLayoutStyleDirty() {
+    interpolationChanged.notify();
+  }
+
   @override
   void buildDependencies() {
     super.buildDependencies();
@@ -255,7 +307,9 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
   void onAdded() {}
 
   @override
-  void onAddedDirty() {}
+  void onAddedDirty() {
+    interpolator = context.resolve(interpolatorId);
+  }
 
   @override
   void layoutFlags0Changed(int from, int to) {
@@ -354,7 +408,31 @@ class LayoutComponentStyle extends LayoutComponentStyleBase {
   void positionBottomChanged(double from, double to) => markLayoutNodeDirty();
 
   @override
-  void scaleTypeChanged(int from, int to) {}
+  void animationStyleTypeChanged(int from, int to) {
+    markLayoutNodeDirty();
+  }
+
+  @override
+  void interpolationTypeChanged(int from, int to) {
+    markLayoutStyleDirty();
+    markLayoutNodeDirty();
+  }
+
+  @override
+  void interpolatorIdChanged(int from, int to) {
+    interpolator = context.resolve(interpolatorId);
+    markLayoutStyleDirty();
+    markLayoutNodeDirty();
+  }
+
+  @override
+  void interpolationTimeChanged(double from, double to) {
+    markLayoutStyleDirty();
+    markLayoutNodeDirty();
+  }
+
+  @override
+  void scaleTypeChanged(int from, int to) => markLayoutNodeDirty();
 
   @override
   void update(int dirt) {}

@@ -772,6 +772,107 @@ abstract class LayoutComponentStyleBase extends Component {
 
   void scaleTypeChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// AnimationStyleType field with key 589.
+  static const int animationStyleTypePropertyKey = 589;
+  static const int animationStyleTypeInitialValue = 0;
+  int _animationStyleType = animationStyleTypeInitialValue;
+
+  /// The type of animation none|custom|inherit applied to this layout.
+  int get animationStyleType => _animationStyleType;
+
+  /// Change the [_animationStyleType] field value.
+  /// [animationStyleTypeChanged] will be invoked only if the field's value has
+  /// changed.
+  set animationStyleType(int value) {
+    if (_animationStyleType == value) {
+      return;
+    }
+    int from = _animationStyleType;
+    _animationStyleType = value;
+    if (hasValidated) {
+      animationStyleTypeChanged(from, value);
+    }
+  }
+
+  void animationStyleTypeChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// InterpolationType field with key 590.
+  static const int interpolationTypePropertyKey = 590;
+  static const int interpolationTypeInitialValue = 0;
+  int _interpolationType = interpolationTypeInitialValue;
+
+  /// The type of interpolation index in KeyframeInterpolation applied to this
+  /// layout.
+  int get interpolationType => _interpolationType;
+
+  /// Change the [_interpolationType] field value.
+  /// [interpolationTypeChanged] will be invoked only if the field's value has
+  /// changed.
+  set interpolationType(int value) {
+    if (_interpolationType == value) {
+      return;
+    }
+    int from = _interpolationType;
+    _interpolationType = value;
+    if (hasValidated) {
+      interpolationTypeChanged(from, value);
+    }
+  }
+
+  void interpolationTypeChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// InterpolatorId field with key 591.
+  static const int interpolatorIdPropertyKey = 591;
+  static const int interpolatorIdInitialValue = -1;
+  int _interpolatorId = interpolatorIdInitialValue;
+
+  /// The id of the custom interpolator used when interpolation is Cubic.
+  int get interpolatorId => _interpolatorId;
+
+  /// Change the [_interpolatorId] field value.
+  /// [interpolatorIdChanged] will be invoked only if the field's value has
+  /// changed.
+  set interpolatorId(int value) {
+    if (_interpolatorId == value) {
+      return;
+    }
+    int from = _interpolatorId;
+    _interpolatorId = value;
+    if (hasValidated) {
+      interpolatorIdChanged(from, value);
+    }
+  }
+
+  void interpolatorIdChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// InterpolationTime field with key 592.
+  static const int interpolationTimePropertyKey = 592;
+  static const double interpolationTimeInitialValue = 0;
+  double _interpolationTime = interpolationTimeInitialValue;
+
+  /// The time over which the interpolator applies.
+  double get interpolationTime => _interpolationTime;
+
+  /// Change the [_interpolationTime] field value.
+  /// [interpolationTimeChanged] will be invoked only if the field's value has
+  /// changed.
+  set interpolationTime(double value) {
+    if (_interpolationTime == value) {
+      return;
+    }
+    double from = _interpolationTime;
+    _interpolationTime = value;
+    if (hasValidated) {
+      interpolationTimeChanged(from, value);
+    }
+  }
+
+  void interpolationTimeChanged(double from, double to);
+
   @override
   void copy(Core source) {
     super.copy(source);
@@ -807,6 +908,10 @@ abstract class LayoutComponentStyleBase extends Component {
       _flexBasis = source._flexBasis;
       _aspectRatio = source._aspectRatio;
       _scaleType = source._scaleType;
+      _animationStyleType = source._animationStyleType;
+      _interpolationType = source._interpolationType;
+      _interpolatorId = source._interpolatorId;
+      _interpolationTime = source._interpolationTime;
     }
   }
 }

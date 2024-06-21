@@ -240,6 +240,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Update any dirty components in this artboard.
   bool advanceInternal(double elapsedSeconds,
       {bool nested = false, bool isRoot = false}) {
+    bool didUpdate = false;
     if (_dirtyLayout.isNotEmpty) {
       var dirtyLayout = _dirtyLayout.toList();
       _dirtyLayout.clear();
@@ -248,12 +249,22 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         layoutComponent.syncStyle();
       }
       layoutNode.calculateLayout(width, height, LayoutDirection.ltr);
+      if (dirt & ComponentDirt.layoutStyle != 0) {
+        cascadeAnimationStyle(interpolation, interpolator, interpolationTime);
+      }
       // Need to sync all layout positions.
-      for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
+      for (final layout in _dependencyOrder
+          .whereType<LayoutComponent>()
+          .where((layout) => layout != this)) {
+        // Maybe we can genericize this to pass all styles to children if
+        // the child should inherit
         layout.updateLayoutBounds();
+        if ((layout == this && super.advance(elapsedSeconds)) ||
+            layout.advance(elapsedSeconds)) {
+          didUpdate = true;
+        }
       }
     }
-    bool didUpdate = false;
 
     for (final controller in _animationControllers) {
       if (controller.isActive) {
@@ -298,6 +309,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
+  @override
   bool advance(double elapsedSeconds, {bool nested = false}) {
     return advanceInternal(elapsedSeconds, nested: nested, isRoot: true);
   }

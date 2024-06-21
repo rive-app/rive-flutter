@@ -81,8 +81,7 @@ class _SkinningDemoState extends State<SkinningDemo> {
                 FilledButton(
                   onPressed: _swapSkin,
                   style: const ButtonStyle(
-                    backgroundColor:
-                        MaterialStatePropertyAll(Color(0xFF7d99ef)),
+                    backgroundColor: WidgetStatePropertyAll(Color(0xFF7d99ef)),
                   ),
                   child: const Text('Swap Skin'),
                 ),

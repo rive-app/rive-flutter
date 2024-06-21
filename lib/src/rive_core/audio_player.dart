@@ -121,7 +121,6 @@ class AudioPlayer {
     isPlaying.value = false;
     _timer?.cancel();
     _timer = null;
-
     time.value = Duration.zero;
     normalizedTime.value = 0;
     for (final sound in _sounds) {

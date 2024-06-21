@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/rendering.dart';
 import 'package:rive/src/generated/layout_component_base.dart';
+import 'package:rive/src/rive_core/animation/keyframe_interpolator.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/bounds_provider.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -28,6 +29,13 @@ extension ComponentExtension on Component {
   }
 }
 
+class LayoutAnimationData {
+  double elapsedSeconds = 0;
+  AABB fromBounds;
+  AABB toBounds;
+  LayoutAnimationData(this.fromBounds, this.toBounds);
+}
+
 class LayoutComponent extends LayoutComponentBase {
   LayoutComponentStyle? _style;
   LayoutComponentStyle? get style => _style;
@@ -45,9 +53,100 @@ class LayoutComponent extends LayoutComponentBase {
   final LayoutNode _layoutNode = LayoutNode.make();
   LayoutNode get layoutNode => _layoutNode;
 
+  LayoutAnimationData animationData = LayoutAnimationData(AABB(), AABB());
+
+  KeyFrameInterpolator? _inheritedInterpolator;
+  LayoutStyleInterpolation? _inheritedInterpolation;
+  double _inheritedInterpolationTime = 0;
+
+  LayoutAnimationStyle get animationStyle =>
+      style?.animationStyle ?? LayoutAnimationStyle.none;
+
+  KeyFrameInterpolator? get interpolator {
+    switch (style?.animationStyle) {
+      case LayoutAnimationStyle.inherit:
+        return _inheritedInterpolator ?? style?.interpolator;
+      case LayoutAnimationStyle.custom:
+        return style?.interpolator;
+      default:
+        return null;
+    }
+  }
+
+  LayoutStyleInterpolation get interpolation {
+    var defaultStyle = LayoutStyleInterpolation.hold;
+    switch (style?.animationStyle) {
+      case LayoutAnimationStyle.inherit:
+        return _inheritedInterpolation ?? style?.interpolation ?? defaultStyle;
+      case LayoutAnimationStyle.custom:
+        return style?.interpolation ?? defaultStyle;
+      default:
+        return defaultStyle;
+    }
+  }
+
+  double get interpolationTime {
+    switch (style?.animationStyle) {
+      case LayoutAnimationStyle.inherit:
+        return _inheritedInterpolationTime;
+      case LayoutAnimationStyle.custom:
+        return style?.interpolationTime ?? 0;
+      default:
+        return 0;
+    }
+  }
+
+  void cascadeAnimationStyle(
+      LayoutStyleInterpolation inheritedInterpolation,
+      KeyFrameInterpolator? inheritedInterpolator,
+      double inheritedInterpolationTime) {
+    if (style?.animationStyle == LayoutAnimationStyle.inherit) {
+      setInheritedInterpolation(inheritedInterpolation, inheritedInterpolator,
+          inheritedInterpolationTime);
+    } else {
+      clearInheritedInterpolation();
+    }
+    forEachChild((child) {
+      if (child is LayoutComponent) {
+        child.cascadeAnimationStyle(
+            interpolation, interpolator, interpolationTime);
+      }
+      return false;
+    });
+  }
+
+  // Parent layout component can push their interpolation into the child layout
+  // which may be more performant than having the child look up the tree
+  void setInheritedInterpolation(LayoutStyleInterpolation interpolation,
+      KeyFrameInterpolator? interpolator, double interpolationTime) {
+    _inheritedInterpolation = interpolation;
+    _inheritedInterpolator = interpolator;
+    _inheritedInterpolationTime = interpolationTime;
+  }
+
+  void clearInheritedInterpolation() {
+    _inheritedInterpolation = null;
+    _inheritedInterpolator = null;
+    _inheritedInterpolationTime = 0;
+  }
+
+  bool get animates {
+    return style?.positionType == LayoutPosition.relative &&
+        style?.animationStyle != LayoutAnimationStyle.none &&
+        interpolation != LayoutStyleInterpolation.hold &&
+        interpolationTime > 0;
+  }
+
   void markLayoutNodeDirty() {
     _layoutNode.markDirty();
     artboard?.markLayoutDirty(this);
+  }
+
+  void markLayoutStyleDirty() {
+    addDirt(ComponentDirt.layoutStyle);
+    if (this != artboard) {
+      artboard?.markLayoutStyleDirty();
+    }
   }
 
   @override
@@ -74,7 +173,83 @@ class LayoutComponent extends LayoutComponentBase {
   @override
   void styleIdChanged(int from, int to) {
     style = context.resolve(to);
+    markLayoutStyleDirty();
     markLayoutNodeDirty();
+  }
+
+  bool advance(double elapsedSeconds) {
+    return _applyInterpolation(elapsedSeconds);
+  }
+
+  bool _applyInterpolation(double elapsedSeconds) {
+    if (!animates || style == null || animationData.toBounds == layoutBounds) {
+      return false;
+    }
+    if (animationData.elapsedSeconds >= interpolationTime) {
+      _layoutLocation =
+          Offset(animationData.toBounds.left, animationData.toBounds.top);
+      _layoutSize =
+          Size(animationData.toBounds.width, animationData.toBounds.height);
+      animationData.elapsedSeconds = 0;
+      markWorldTransformDirty();
+      return false;
+    }
+    double f = 1;
+    if (interpolationTime > 0) {
+      f = animationData.elapsedSeconds / interpolationTime;
+    }
+
+    bool needsAdvance = false;
+    var left = _layoutLocation.dx;
+    var top = _layoutLocation.dy;
+    var width = _layoutSize.width;
+    var height = _layoutSize.height;
+    if (animationData.toBounds.left != left ||
+        animationData.toBounds.top != top) {
+      if (interpolation == LayoutStyleInterpolation.linear) {
+        left = animationData.fromBounds.left +
+            f * (animationData.toBounds.left - animationData.fromBounds.left);
+        top = animationData.fromBounds.top +
+            f * (animationData.toBounds.top - animationData.fromBounds.top);
+      } else {
+        if (interpolator != null) {
+          left = interpolator!.transformValue(
+              animationData.fromBounds.left, animationData.toBounds.left, f);
+          top = interpolator!.transformValue(
+              animationData.fromBounds.top, animationData.toBounds.top, f);
+        }
+      }
+      needsAdvance = true;
+      _layoutLocation = Offset(left, top);
+      markWorldTransformDirty();
+    }
+    if (animationData.toBounds.width != width ||
+        animationData.toBounds.height != height) {
+      if (interpolation == LayoutStyleInterpolation.linear) {
+        width = animationData.fromBounds.width +
+            f * (animationData.toBounds.width - animationData.fromBounds.width);
+        height = animationData.fromBounds.height +
+            f *
+                (animationData.toBounds.height -
+                    animationData.fromBounds.height);
+      } else {
+        if (interpolator != null) {
+          width = interpolator!.transformValue(
+              animationData.fromBounds.width, animationData.toBounds.width, f);
+          height = interpolator!.transformValue(animationData.fromBounds.height,
+              animationData.toBounds.height, f);
+        }
+      }
+      needsAdvance = true;
+      _layoutSize = Size(width, height);
+      markWorldTransformDirty();
+    }
+
+    animationData.elapsedSeconds += elapsedSeconds;
+    if (needsAdvance) {
+      markLayoutNodeDirty();
+    }
+    return needsAdvance;
   }
 
   @override
@@ -286,18 +461,23 @@ class LayoutComponent extends LayoutComponentBase {
   @override
   void onAdded() {
     super.onAdded();
+    markLayoutStyleDirty();
+    markLayoutNodeDirty();
     syncLayoutChildren();
   }
 
   @override
   void onAddedDirty() {
     super.onAddedDirty();
+    markLayoutStyleDirty();
+    markLayoutNodeDirty();
     style = context.resolve(styleId);
   }
 
   void setupStyle(LayoutComponentStyle style) {
     appendChild(style);
     style.valueChanged.addListener(styleValueChanged);
+    style.interpolationChanged.addListener(styleInterpolationChanged);
   }
 
   Offset _layoutLocation = Offset.zero;
@@ -345,7 +525,9 @@ class LayoutComponent extends LayoutComponentBase {
         return false;
       }
       if (child is Sizable) {
-        (child as Sizable).controlSize(_layoutSize);
+        (child as Sizable).controlSize(animates && _layoutSize == Size.zero
+            ? Size(animationData.toBounds.width, animationData.toBounds.height)
+            : _layoutSize);
       }
       return true;
     });
@@ -353,7 +535,22 @@ class LayoutComponent extends LayoutComponentBase {
 
   void updateLayoutBounds() {
     final layout = layoutNode.layout;
-    if (_layoutLocation.dx != layout.left ||
+    if (animates) {
+      if (animationData.toBounds.left != layout.left ||
+          animationData.toBounds.top != layout.top ||
+          animationData.toBounds.width != layout.width ||
+          animationData.toBounds.height != layout.height) {
+        // This is where we want to set the start/end data for the animation
+        // As we advance the animation, update _layoutLocation and _layoutSize
+        animationData.elapsedSeconds = 0;
+        animationData.fromBounds = layoutBounds;
+        animationData.toBounds = AABB.fromValues(layout.left, layout.top,
+            layout.left + layout.width, layout.top + layout.height);
+
+        propagateSize();
+        markWorldTransformDirty();
+      }
+    } else if (_layoutLocation.dx != layout.left ||
         _layoutLocation.dy != layout.top ||
         _layoutSize.width != layout.width ||
         _layoutSize.height != layout.height) {
@@ -368,7 +565,14 @@ class LayoutComponent extends LayoutComponentBase {
     markLayoutNodeDirty();
   }
 
+  // Only changes to layout animation styles mark style dirty
+  // In the future we may want other styles to cascade down to child layouts
+  void styleInterpolationChanged() {
+    markLayoutStyleDirty();
+  }
+
   void _removeLayoutNode() {
+    markLayoutStyleDirty();
     var parent = this.parent;
     if (parent is LayoutComponent) {
       parent.markLayoutNodeDirty();
@@ -378,6 +582,7 @@ class LayoutComponent extends LayoutComponentBase {
   @override
   void onRemoved() {
     _style?.valueChanged.removeListener(styleValueChanged);
+    _style?.interpolationChanged.removeListener(styleInterpolationChanged);
     _removeLayoutNode();
     super.onRemoved();
   }
