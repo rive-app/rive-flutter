@@ -673,9 +673,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       return;
     }
     for (final dataBind in dataBinds) {
-      if (dataBind is DataBindContext) {
-        dataBind.bindToContext();
-      }
+      dataBind.bind();
     }
     if (isRoot) {
       globalDataBinds.clear();
