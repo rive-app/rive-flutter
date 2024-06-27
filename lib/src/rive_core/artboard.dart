@@ -40,6 +40,19 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     _dirtyLayout.add(layoutComponent);
   }
 
+  @override
+  AABB get layoutBounds {
+    if (!hasLayoutMeasurements()) {
+      return AABB.fromValues(
+        x,
+        y,
+        x + width,
+        y + height,
+      );
+    }
+    return super.layoutBounds;
+  }
+
   bool _frameOrigin = true;
   bool hasChangedDrawOrderInLastUpdate = false;
 
@@ -250,17 +263,15 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
       layoutNode.calculateLayout(width, height, LayoutDirection.ltr);
       if (dirt & ComponentDirt.layoutStyle != 0) {
+        // Maybe we can genericize this to pass all styles to children if
+        // the child should inherit
         cascadeAnimationStyle(interpolation, interpolator, interpolationTime);
       }
       // Need to sync all layout positions.
-      for (final layout in _dependencyOrder
-          .whereType<LayoutComponent>()
-          .where((layout) => layout != this)) {
-        // Maybe we can genericize this to pass all styles to children if
-        // the child should inherit
+      for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
         layout.updateLayoutBounds();
         if ((layout == this && super.advance(elapsedSeconds)) ||
-            layout.advance(elapsedSeconds)) {
+            (layout != this && layout.advance(elapsedSeconds))) {
           didUpdate = true;
         }
       }

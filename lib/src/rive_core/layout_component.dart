@@ -37,6 +37,8 @@ class LayoutAnimationData {
 }
 
 class LayoutComponent extends LayoutComponentBase {
+  bool _forceUpdateLayoutBounds = false;
+
   LayoutComponentStyle? _style;
   LayoutComponentStyle? get style => _style;
   set style(LayoutComponentStyle? style) {
@@ -143,6 +145,7 @@ class LayoutComponent extends LayoutComponentBase {
   }
 
   void markLayoutStyleDirty() {
+    clearInheritedInterpolation();
     addDirt(ComponentDirt.layoutStyle);
     if (this != artboard) {
       artboard?.markLayoutStyleDirty();
@@ -483,6 +486,10 @@ class LayoutComponent extends LayoutComponentBase {
   Offset _layoutLocation = Offset.zero;
   Size _layoutSize = Size.zero;
 
+  bool hasLayoutMeasurements() {
+    return _layoutLocation != Offset.zero || _layoutSize != Size.zero;
+  }
+
   AABB get localBounds {
     return AABB.fromValues(
       0,
@@ -534,31 +541,29 @@ class LayoutComponent extends LayoutComponentBase {
   }
 
   void updateLayoutBounds() {
-    final layout = layoutNode.layout;
+    final newLayoutBounds = AABB.fromValues(
+        layoutNode.layout.left,
+        layoutNode.layout.top,
+        layoutNode.layout.left + layoutNode.layout.width,
+        layoutNode.layout.top + layoutNode.layout.height);
     if (animates) {
-      if (animationData.toBounds.left != layout.left ||
-          animationData.toBounds.top != layout.top ||
-          animationData.toBounds.width != layout.width ||
-          animationData.toBounds.height != layout.height) {
+      if (!AABB.areEqual(animationData.toBounds, newLayoutBounds) ||
+          _forceUpdateLayoutBounds) {
         // This is where we want to set the start/end data for the animation
         // As we advance the animation, update _layoutLocation and _layoutSize
-        animationData.elapsedSeconds = 0;
         animationData.fromBounds = layoutBounds;
-        animationData.toBounds = AABB.fromValues(layout.left, layout.top,
-            layout.left + layout.width, layout.top + layout.height);
-
+        animationData.toBounds = newLayoutBounds;
         propagateSize();
         markWorldTransformDirty();
       }
-    } else if (_layoutLocation.dx != layout.left ||
-        _layoutLocation.dy != layout.top ||
-        _layoutSize.width != layout.width ||
-        _layoutSize.height != layout.height) {
-      _layoutLocation = Offset(layout.left, layout.top);
-      _layoutSize = Size(layout.width, layout.height);
+    } else if (!AABB.areEqual(layoutBounds, newLayoutBounds) ||
+        _forceUpdateLayoutBounds) {
+      _layoutLocation = Offset(newLayoutBounds.left, newLayoutBounds.top);
+      _layoutSize = Size(newLayoutBounds.width, newLayoutBounds.height);
       propagateSize();
       markWorldTransformDirty();
     }
+    _forceUpdateLayoutBounds = false;
   }
 
   void styleValueChanged() {

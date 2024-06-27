@@ -17,7 +17,7 @@ enum ScaleType {
   String get label => name[0].toUpperCase() + name.substring(1);
 }
 
-enum LayoutAnimationStyle { none, custom, inherit }
+enum LayoutAnimationStyle { none, inherit, custom }
 
 enum LayoutStyleInterpolation { hold, linear, cubic, elastic }
 
