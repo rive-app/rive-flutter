@@ -4,9 +4,6 @@ export 'package:rive/src/generated/viewmodel/viewmodel_instance_list_item_base.d
 
 class ViewModelInstanceListItem extends ViewModelInstanceListItemBase {
   @override
-  void instanceListIdChanged(int from, int to) {}
-
-  @override
   void viewModelIdChanged(int from, int to) {}
 
   @override

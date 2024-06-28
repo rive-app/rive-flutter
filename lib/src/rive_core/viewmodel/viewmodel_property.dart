@@ -8,7 +8,4 @@ class ViewModelProperty extends ViewModelPropertyBase {
 
   @override
   void onAdded() {}
-
-  @override
-  void propertyOrderChanged(int from, int to) {}
 }

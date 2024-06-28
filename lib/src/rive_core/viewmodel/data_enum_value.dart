@@ -10,9 +10,6 @@ class DataEnumValue extends DataEnumValueBase {
   void keyChanged(String from, String to) {}
 
   @override
-  void enumIdChanged(int from, int to) {}
-
-  @override
   void onAdded() {}
 
   @override

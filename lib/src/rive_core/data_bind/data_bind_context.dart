@@ -8,6 +8,7 @@ import 'package:rive_common/utilities.dart';
 
 export 'package:rive/src/generated/data_bind/data_bind_context_base.dart';
 
+// ignore: one_member_abstracts
 abstract class DataBindContextInterface {
   bool addDirt(int value, {bool recurse = false});
 }

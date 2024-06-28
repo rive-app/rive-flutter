@@ -1,3 +1,8 @@
+## 0.13.9
+- Preperation for data binding ([databinding](https://github.com/rive-app/rive-flutter/commit/6ceb7a544e7124d303259f7d032641e5b38f7fc1), [data binding data context](https://github.com/rive-app/rive-flutter/commit/6d002300a6f0fd19f6dacac58a499ccc903a214d), [databinding add boolean](https://github.com/rive-app/rive-flutter/commit/90b8c81f0e496502b70db4d550341f5acabbbea6)).
+- Layout fixes and improvements ([animations for layouts](https://github.com/rive-app/rive-flutter/commit/8068e48eb2faa2a13eab1ba858b4e0737cf0265b), [layout UX fixes](https://github.com/rive-app/rive-flutter/commit/21bd3765ddc3ef8c3b1f0199f75eae21434cf52b)).
+- Android example project [fix](https://github.com/rive-app/rive-flutter/commit/9951f912df4c6f0574f57d5a152cd36e6ad2d7e0).
+
 ## 0.13.8
 - Add `key` property to `Rive` widget.
 - Nested linear animations report events up to parent artboards. Previously, only nested state machines could report events so that listeners in parent artboards could listen for them.

@@ -24,9 +24,6 @@ class DataEnum extends DataEnumBase {
     super.onRemoved();
   }
 
-  @override
-  void splitKeyValuesChanged(bool from, bool to) {}
-
   void removeValue(DataEnumValue item) {
     children.remove(item);
   }
