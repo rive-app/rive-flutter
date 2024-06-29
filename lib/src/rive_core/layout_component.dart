@@ -379,6 +379,77 @@ class LayoutComponent extends LayoutComponentBase {
         break;
     }
 
+    final isRowForAlignment = [
+      LayoutFlexDirection.row,
+      LayoutFlexDirection.rowReverse,
+    ].contains(style.flexDirection);
+    switch (style.alignmentType) {
+      case LayoutAlignmentType.topLeft:
+      case LayoutAlignmentType.topCenter:
+      case LayoutAlignmentType.topRight:
+      case LayoutAlignmentType.spaceBetweenStart:
+        if (isRowForAlignment) {
+          layoutStyle.alignItems = LayoutAlign.flexStart;
+        } else {
+          layoutStyle.justifyContent = LayoutJustify.flexStart;
+        }
+        break;
+      case LayoutAlignmentType.centerLeft:
+      case LayoutAlignmentType.center:
+      case LayoutAlignmentType.centerRight:
+      case LayoutAlignmentType.spaceBetweenCenter:
+        if (isRowForAlignment) {
+          layoutStyle.alignItems = LayoutAlign.center;
+        } else {
+          layoutStyle.justifyContent = LayoutJustify.center;
+        }
+        break;
+      case LayoutAlignmentType.bottomLeft:
+      case LayoutAlignmentType.bottomCenter:
+      case LayoutAlignmentType.bottomRight:
+      case LayoutAlignmentType.spaceBetweenEnd:
+        if (isRowForAlignment) {
+          layoutStyle.alignItems = LayoutAlign.flexEnd;
+        } else {
+          layoutStyle.justifyContent = LayoutJustify.flexEnd;
+        }
+        break;
+    }
+    switch (style.alignmentType) {
+      case LayoutAlignmentType.topLeft:
+      case LayoutAlignmentType.centerLeft:
+      case LayoutAlignmentType.bottomLeft:
+        if (isRowForAlignment) {
+          layoutStyle.justifyContent = LayoutJustify.flexStart;
+        } else {
+          layoutStyle.alignItems = LayoutAlign.flexStart;
+        }
+        break;
+      case LayoutAlignmentType.topCenter:
+      case LayoutAlignmentType.center:
+      case LayoutAlignmentType.bottomCenter:
+        if (isRowForAlignment) {
+          layoutStyle.justifyContent = LayoutJustify.center;
+        } else {
+          layoutStyle.alignItems = LayoutAlign.center;
+        }
+        break;
+      case LayoutAlignmentType.topRight:
+      case LayoutAlignmentType.centerRight:
+      case LayoutAlignmentType.bottomRight:
+        if (isRowForAlignment) {
+          layoutStyle.justifyContent = LayoutJustify.flexEnd;
+        } else {
+          layoutStyle.alignItems = LayoutAlign.flexEnd;
+        }
+        break;
+      case LayoutAlignmentType.spaceBetweenStart:
+      case LayoutAlignmentType.spaceBetweenCenter:
+      case LayoutAlignmentType.spaceBetweenEnd:
+        layoutStyle.justifyContent = LayoutJustify.spaceBetween;
+        break;
+    }
+
     layoutStyle.setMinDimension(LayoutDimension.width,
         LayoutValue(unit: style.minWidthUnits, value: style.minWidth));
     layoutStyle.setMinDimension(LayoutDimension.height,
@@ -445,10 +516,10 @@ class LayoutComponent extends LayoutComponentBase {
     //layoutStyle.flexBasis = style.flexBasis;
     layoutStyle.flexDirection = style.flexDirection;
     layoutStyle.flexWrap = style.flexWrap;
-    layoutStyle.alignItems = style.alignItems;
-    layoutStyle.alignContent = style.alignContent;
+    //layoutStyle.alignItems = style.alignItems;
+    //layoutStyle.alignContent = style.alignContent;
     //layoutStyle.alignSelf = style.alignSelf;
-    layoutStyle.justifyContent = style.justifyContent;
+    //layoutStyle.justifyContent = style.justifyContent;
 
     layoutNode.setStyle(layoutStyle);
   }
