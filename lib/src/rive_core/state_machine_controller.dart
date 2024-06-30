@@ -7,6 +7,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/animation_reset_factory.dart'
+    as animation_reset_factory;
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/animation_state_instance.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
@@ -68,6 +70,8 @@ class LayerController {
   final OnLayerStateChange? onLayerStateChange;
 
   final StateMachineController controller;
+
+  animation_reset_factory.AnimationReset? animationReset;
 
   LayerController(
     this.controller,
@@ -131,6 +135,7 @@ class LayerController {
 
       if (_mix == 1 && !_transitionCompleted) {
         _transitionCompleted = true;
+        _clearAnimationReset();
         _fireEvents(transition.eventsAt(StateMachineFireOccurance.atEnd));
       }
     } else {
@@ -139,6 +144,7 @@ class LayerController {
   }
 
   void _apply(CoreContext core) {
+    animationReset?.apply(core);
     if (_holdAnimation != null) {
       _holdAnimation!.apply(_holdTime, coreContext: core, mix: _mixFrom);
       _holdAnimation = null;
@@ -269,6 +275,18 @@ class LayerController {
     return null;
   }
 
+  void _buildAnimationResetForTransition() {
+    animationReset =
+        animation_reset_factory.fromStates(_stateFrom, _currentState, core);
+  }
+
+  void _clearAnimationReset() {
+    if (animationReset != null) {
+      animation_reset_factory.release(animationReset!);
+      animationReset = null;
+    }
+  }
+
   bool tryChangeState(StateInstance? stateFrom, bool ignoreTriggers) {
     if (stateFrom == null) {
       return false;
@@ -277,6 +295,7 @@ class LayerController {
     var outState = _currentState;
     final transition = _findAllowedTransition(stateFrom, ignoreTriggers);
     if (transition != null) {
+      _clearAnimationReset();
       _changeState(transition.stateTo, transition: transition);
       // Take transition
       _transition = transition;
@@ -291,6 +310,10 @@ class LayerController {
       }
 
       _stateFrom = outState;
+
+      if (!_transitionCompleted) {
+        _buildAnimationResetForTransition();
+      }
 
       // If we had an exit time and wanted to pause on exit, make sure to hold
       // the exit time. Delegate this to the transition by telling it that it

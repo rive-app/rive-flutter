@@ -27,3 +27,6 @@ dev_dependencies:
     sdk: flutter
   mocktail:
   path: ^1.8.3
+dependency_overrides:
+  rive_common:
+    path: ../rive_common

@@ -1,14 +1,30 @@
+import 'package:rive/src/rive_core/animation/animation_reset_factory.dart'
+    as animation_reset_factory;
 import 'package:rive/src/rive_core/animation/blend_animation_1d.dart';
 import 'package:rive/src/rive_core/animation/blend_state_1d.dart';
 import 'package:rive/src/rive_core/animation/blend_state_instance.dart';
+import 'package:rive/src/rive_core/container_component.dart';
+import 'package:rive/src/rive_core/layer_state_flags.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart';
 
 /// [BlendState1D] mixing logic that runs inside the [StateMachine].
 class BlendState1DInstance
     extends BlendStateInstance<BlendState1D, BlendAnimation1D> {
+  late animation_reset_factory.AnimationReset? animationReset;
   BlendState1DInstance(BlendState1D state) : super(state) {
     animationInstances.sort(
         (a, b) => a.blendAnimation.value.compareTo(b.blendAnimation.value));
+
+    animationReset =
+        state.flags & LayerStateFlags.reset == LayerStateFlags.reset
+            ? animation_reset_factory.fromAnimations(
+                animationInstances
+                    .map((animationInstance) =>
+                        animationInstance.animationInstance.animation)
+                    .toList(growable: false),
+                state.context,
+                true)
+            : null;
   }
 
   /// Binary find the closest animation index.
@@ -78,5 +94,13 @@ class BlendState1DInstance
         animation.mix = 0;
       }
     }
+  }
+
+  @override
+  void apply(CoreContext core, double mix) {
+    if (animationReset != null) {
+      animationReset!.apply(core);
+    }
+    super.apply(core, mix);
   }
 }
