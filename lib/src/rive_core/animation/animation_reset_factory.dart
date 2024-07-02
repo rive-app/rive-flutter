@@ -33,15 +33,15 @@ class AnimationReset {
   }
 
   void writeObjectId(int id) {
-    _writer.writeInt8(id);
+    _writer.writeVarUint(id);
   }
 
   void writeTotalProperties(int totalProperties) {
-    _writer.writeInt8(totalProperties);
+    _writer.writeVarUint(totalProperties);
   }
 
   void writePropertyKey(int propertyKey) {
-    _writer.writeInt8(propertyKey);
+    _writer.writeVarUint(propertyKey);
   }
 
   void writeColor(int value) {
@@ -74,15 +74,15 @@ class AnimationReset {
     reader.readIndex = 0;
     while (reader.readIndex < _dataSize) {
       // First we read the object's id
-      final objectIntId = reader.readInt8();
+      final objectIntId = reader.readVarUint();
       final objectId = resolveId(objectIntId);
       final object = core.resolve<Core>(objectId);
       // Second we read how many keyframed properties it has
-      final totalProperties = reader.readInt8();
+      final totalProperties = reader.readVarUint();
       int currentPropertyIndex = 0;
       while (currentPropertyIndex < totalProperties) {
         // Third we read the property key for each property
-        final propertyKey = reader.readInt8();
+        final propertyKey = reader.readVarUint();
         // Fourth we read the property value for each property
         if (_isDouble(propertyKey, object!)) {
           double value = reader.readFloat32();
