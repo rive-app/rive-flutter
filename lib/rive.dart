@@ -45,3 +45,5 @@ export 'package:rive/src/runtime_event.dart';
 export 'package:rive/src/runtime_mounted_artboard.dart';
 export 'package:rive/src/runtime_nested_artboard.dart';
 export 'package:rive/src/widgets/rive_animation.dart';
+// export 'package:rive_common/src/dynamic_library_helper.dart'
+//     show applyWorkaroundToRiveOnOldAndroidVersions;
