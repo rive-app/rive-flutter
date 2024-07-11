@@ -482,7 +482,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
                 transform);
             pathTransform = transform.mat4;
           } else {
-            pathTransform = glyphInfo.pathTransform(x, y + line.baseline);
+            pathTransform = glyphInfo.pathTransform(x, y + line.baseline).mat4;
           }
           var renderPath = path.transform(pathTransform);
           var style = styleFromShaperId(run.styleId);
