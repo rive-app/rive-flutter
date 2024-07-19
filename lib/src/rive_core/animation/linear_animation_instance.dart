@@ -127,12 +127,21 @@ class LinearAnimationInstance {
     switch (animation.loop) {
       case Loop.oneShot:
         if (direction == 1 && frames > end) {
-          _spilledTime = (frames - end) / fps;
+          // Account for the time dilation or contraction applied in the
+          // animation local time by its speed to calculate spilled time.
+          // Calculate the ratio of the time excess by the total elapsed
+          // time in local time (deltaFrames) and multiply the elapsed time
+          // by it.
+          final deltaFrames = deltaSeconds * fps;
+          final spilledFramesRatio = (frames - end) / deltaFrames;
+          _spilledTime = spilledFramesRatio * elapsedSeconds;
           frames = end.toDouble();
           _time = frames / fps;
           didLoop = true;
         } else if (direction == -1 && frames < start) {
-          _spilledTime = (start - frames) / fps;
+          final deltaFrames = (deltaSeconds * fps).abs();
+          final spilledFramesRatio = (start - frames) / deltaFrames;
+          _spilledTime = spilledFramesRatio * elapsedSeconds;
           frames = start.toDouble();
           _time = frames / fps;
           didLoop = true;
@@ -140,9 +149,18 @@ class LinearAnimationInstance {
         break;
       case Loop.loop:
         if (direction == 1 && frames >= end) {
-          _spilledTime = (frames - end) / fps;
-          frames = _time * fps;
-          frames = start + (frames - start) % range;
+          // How spilled time has to be calculated, given that local time can be scaled
+          // to a factor of the regular time:
+          // - for convenience, calculate the local elapsed time in frames (deltaFrames)
+          // - get the remainder of current frame position (frames) by duration (range)
+          // - use that remainder as the ratio of the original time that was not consumed
+          // by the loop (spilledFramesRatio)
+          // - multiply the original elapsedTime by the ratio to set the spilled time
+          final deltaFrames = deltaSeconds * fps;
+          final remainder = (frames - start) % range;
+          final spilledFramesRatio = remainder / deltaFrames;
+          _spilledTime = spilledFramesRatio * elapsedSeconds;
+          frames = start + remainder;
           lastTime = 0;
           _time = frames / fps;
           if (callbackReporter != null) {
@@ -155,9 +173,11 @@ class LinearAnimationInstance {
           }
           didLoop = true;
         } else if (direction == -1 && frames <= start) {
-          _spilledTime = (start - frames) / fps;
-          frames = _time * fps;
-          frames = end - (start - frames) % range;
+          final deltaFrames = deltaSeconds * fps;
+          final remainder = (start - frames) % range;
+          final spilledFramesRatio = (remainder / deltaFrames).abs();
+          _spilledTime = spilledFramesRatio * elapsedSeconds;
+          frames = end - remainder;
           lastTime = end / fps;
           _time = frames / fps;
           if (callbackReporter != null) {
