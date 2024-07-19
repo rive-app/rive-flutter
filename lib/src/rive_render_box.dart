@@ -89,6 +89,8 @@ abstract class RiveRenderBox extends RenderBox {
     }
   }
 
+  bool _paintedLastFrame = false;
+
   @override
   bool get sizedByParent => !useArtboardSize;
 
@@ -257,8 +259,33 @@ abstract class RiveRenderBox extends RenderBox {
   }
 
   void _frameCallback(Duration duration) {
+    // Under certain conditions Flutter will not call paint (for optimization).
+    // If the animation did not paint in the last frame, we force
+    // advance so that the animation can reach a settled state.
+
+    // TODO: Ideally "advance" should only happen inside_`_frameCallback`
+    // and not inside `paint`. But to support backwards compatibility we
+    // will continue to advance in `paint` (golden tests), and just introduce
+    // this as a backup to resolve:
+    // - https://github.com/rive-app/rive-flutter/issues/409
+    // - https://github.com/rive-app/rive-flutter/issues/408
+    //
+    // In the next version of the runtime that uses rive_native we can rework
+    // this logic.
+    //
+    // TODO: We also need to consider standard default behaviour for what
+    // Rive should do when not visible on the screen
+    // - Advance and not draw
+    // - Draw and advance
+    // - Neither advance nor draw
+    // - (Optional enum for users to choose)
+    if (!_paintedLastFrame) {
+      _advanceFrame();
+    }
+
     _calculateElapsedSeconds(duration);
 
+    _paintedLastFrame = false;
     markNeedsPaint();
   }
 
@@ -349,13 +376,18 @@ abstract class RiveRenderBox extends RenderBox {
     return transform;
   }
 
-  @protected
-  @override
-  void paint(PaintingContext context, Offset offset) {
+  void _advanceFrame() {
     if (!advance(_elapsedSeconds)) {
       _stopTicker();
     }
     _elapsedSeconds = 0;
+  }
+
+  @protected
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    _paintedLastFrame = true;
+    _advanceFrame();
 
     if (customPaint(context, offset)) {
       return;

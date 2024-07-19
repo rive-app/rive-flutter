@@ -1,19 +1,28 @@
+## Upcoming
+
+- Fix [408](https://github.com/rive-app/rive-flutter/issues/408) and [409](https://github.com/rive-app/rive-flutter/issues/409), Rive never reaching a settled state when the widget is not visible (paint method not called).
+
 ## 0.13.9
+
 - Preperation for data binding ([databinding](https://github.com/rive-app/rive-flutter/commit/6ceb7a544e7124d303259f7d032641e5b38f7fc1), [data binding data context](https://github.com/rive-app/rive-flutter/commit/6d002300a6f0fd19f6dacac58a499ccc903a214d), [databinding add boolean](https://github.com/rive-app/rive-flutter/commit/90b8c81f0e496502b70db4d550341f5acabbbea6)).
 - Layout fixes and improvements ([animations for layouts](https://github.com/rive-app/rive-flutter/commit/8068e48eb2faa2a13eab1ba858b4e0737cf0265b), [layout UX fixes](https://github.com/rive-app/rive-flutter/commit/21bd3765ddc3ef8c3b1f0199f75eae21434cf52b)).
 - Android example project [fix](https://github.com/rive-app/rive-flutter/commit/9951f912df4c6f0574f57d5a152cd36e6ad2d7e0).
 
 ## 0.13.8
+
 - Add `key` property to `Rive` widget.
 - Nested linear animations report events up to parent artboards. Previously, only nested state machines could report events so that listeners in parent artboards could listen for them.
 
 ## 0.13.7
+
 - Add `getComponentWhereOrNull` on `Artboard`, to find a component that matches the given predicate. This can be used instead of `forEachComponent` as it allows exiting early.
 
 ## 0.13.6
+
 - Add `getBoolInput(name, path)`, `getTriggerInput(name, path)`, and `getNumberInput(name, path` on `Artboard` to set nested inputs (inputs on nested artboards), see [the documentation](https://rive.app/community/doc/state-machines/docxeznG7iiK#nested-inputs).
 
 ## 0.13.5
+
 - Migrates to `dart:js_interop` and `package:web` APIs.
 - DEPRECATED: `RiveFile.initializeText` - use `RiveFile.initialize` instead. This now initializes the Rive audio, text, and layout engine. Call `await RiveFile.initialize()` before doing `RiveFile.import`. `RiveFile.asset`, `RiveFile.network`, and `RiveFile.file` will call initialize automatically if it has not been initialized. Alternatively, you can also call `unawaited(RiveFile.initialize());` in the `main` method on app start to make the first graphic load faster.
 
