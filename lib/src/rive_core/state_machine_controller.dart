@@ -275,6 +275,9 @@ class LayerController {
     return null;
   }
 
+  // It provides an instance of AnimationReset that is used to reset values on
+  // every frame. This generates a more linear and predictable mix of states
+  // during transitions.
   void _buildAnimationResetForTransition() {
     animationReset =
         animation_reset_factory.fromStates(_stateFrom, _currentState, core);
@@ -485,7 +488,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
             if (hitShape == null) {
               hitShapeLookup[component] = hitShape = _HitShape(component, this);
             }
-            hitShape.events.add(event);
+            hitShape.addEvent(event);
           }
           // Keep iterating so we find all shapes.
           return true;
@@ -775,11 +778,16 @@ class _HitShape extends _HitComponent {
   final Shape shape;
   double hitRadius = 2;
   bool isHovered = false;
+  bool canEarlyOut = true;
+  bool hasDownListener = false;
+  bool hasUpListener = false;
   final Vec2D previousPosition = Vec2D();
   List<StateMachineListener> events = [];
 
   _HitShape(this.shape, StateMachineController controller)
-      : super(shape, controller);
+      : super(shape, controller) {
+    canEarlyOut = !shape.isTargetOpaque;
+  }
 
   @override
   bool hitTest(Vec2D position) {
@@ -809,6 +817,11 @@ class _HitShape extends _HitComponent {
     ListenerType? hitEvent,
     bool canHit = true,
   }) {
+    if (canEarlyOut &&
+        (hitEvent != ListenerType.down || !hasDownListener) &&
+        (hitEvent != ListenerType.up || !hasUpListener)) {
+      return HitResult.none;
+    }
     var shape = component as Shape;
     var isOver = false;
     if (canHit) {
@@ -846,6 +859,22 @@ class _HitShape extends _HitComponent {
             ? HitResult.hitOpaque
             : HitResult.hit
         : HitResult.none;
+  }
+
+  void addEvent(StateMachineListener event) {
+    final listenerType = event.listenerType;
+    if (listenerType == ListenerType.enter ||
+        listenerType == ListenerType.exit ||
+        listenerType == ListenerType.move) {
+      canEarlyOut = false;
+    } else {
+      if (listenerType == ListenerType.down) {
+        hasDownListener = true;
+      } else if (listenerType == ListenerType.up) {
+        hasUpListener = true;
+      }
+    }
+    events.add(event);
   }
 }
 
