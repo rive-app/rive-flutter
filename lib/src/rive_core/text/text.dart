@@ -208,11 +208,11 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   Size get size => Size(_bounds.width, _bounds.height);
 
   @override
-  AABB get localBounds => AABB.fromCoordinates(
-        x: _bounds.minX - _bounds.width * originX,
-        y: _bounds.minY - _bounds.height * originY,
-        width: _bounds.width,
-        height: _bounds.height,
+  AABB get localBounds => AABB.fromLTWH(
+        _bounds.minX - _bounds.width * originX,
+        _bounds.minY - _bounds.height * originY,
+        _bounds.width,
+        _bounds.height,
       );
 
   @override

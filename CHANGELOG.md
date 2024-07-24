@@ -1,6 +1,7 @@
-## Upcoming
+## 0.13.10
 
 - Fix [408](https://github.com/rive-app/rive-flutter/issues/408) and [409](https://github.com/rive-app/rive-flutter/issues/409), Rive never reaching a settled state when the widget is not visible (paint method not called).
+- Add `applyWorkaroundToRiveOnOldAndroidVersions`. Experimental workaround when loading native libraries on Android 6 (see [this issue](https://github.com/rive-app/rive-flutter/issues/403)). The method should be called before using any Rive APIs.
 
 ## 0.13.9
 
