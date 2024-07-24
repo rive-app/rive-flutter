@@ -36,6 +36,7 @@ import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_event.dart';
 import 'package:rive_common/math.dart';
 
@@ -216,13 +217,13 @@ class LayerController {
     return tryChangeState(_currentState, ignoreTriggers);
   }
 
-  StateTransition? _findRandomTransition(
-      StateInstance stateFrom, bool ignoreTriggers) {
+  StateTransition? _findRandomTransition(StateInstance stateFrom,
+      bool ignoreTriggers, ViewModelInstance? viewModelInstance) {
     double totalWeight = 0;
     final transitions = stateFrom.state.transitions;
     for (final transition in transitions) {
-      var allowed = transition.allowed(
-          stateFrom, controller._inputValues, ignoreTriggers);
+      var allowed = transition.allowed(stateFrom, controller._inputValues,
+          ignoreTriggers, viewModelInstance);
       if (allowed == AllowTransition.yes &&
           _canChangeState(transition.stateTo)) {
         transition.evaluatedRandomWeight = transition.randomWeight;
@@ -255,16 +256,17 @@ class LayerController {
     return null;
   }
 
-  StateTransition? _findAllowedTransition(
-      StateInstance stateFrom, bool ignoreTriggers) {
+  StateTransition? _findAllowedTransition(StateInstance stateFrom,
+      bool ignoreTriggers, ViewModelInstance? viewModelInstance) {
     if (stateFrom.state.flags & LayerStateFlags.random ==
         LayerStateFlags.random) {
-      return _findRandomTransition(stateFrom, ignoreTriggers);
+      return _findRandomTransition(
+          stateFrom, ignoreTriggers, viewModelInstance);
     }
     final transitions = stateFrom.state.transitions;
     for (final transition in transitions) {
-      var allowed = transition.allowed(
-          stateFrom, controller._inputValues, ignoreTriggers);
+      var allowed = transition.allowed(stateFrom, controller._inputValues,
+          ignoreTriggers, viewModelInstance);
       if (allowed == AllowTransition.yes &&
           _canChangeState(transition.stateTo)) {
         return transition;
@@ -296,7 +298,8 @@ class LayerController {
     }
 
     var outState = _currentState;
-    final transition = _findAllowedTransition(stateFrom, ignoreTriggers);
+    final transition = _findAllowedTransition(
+        stateFrom, ignoreTriggers, controller._artboard?.viewModelInstance);
     if (transition != null) {
       _clearAnimationReset();
       _changeState(transition.stateTo, transition: transition);

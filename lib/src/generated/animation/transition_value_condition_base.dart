@@ -3,15 +3,19 @@
 // Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/animation/transition_condition.dart';
+import 'package:rive/src/generated/animation/transition_condition_base.dart';
+import 'package:rive/src/rive_core/animation/transition_input_condition.dart';
 
-abstract class TransitionValueConditionBase extends TransitionCondition {
+abstract class TransitionValueConditionBase extends TransitionInputCondition {
   static const int typeKey = 69;
   @override
   int get coreType => TransitionValueConditionBase.typeKey;
   @override
-  Set<int> get coreTypes =>
-      {TransitionValueConditionBase.typeKey, TransitionConditionBase.typeKey};
+  Set<int> get coreTypes => {
+        TransitionValueConditionBase.typeKey,
+        TransitionInputConditionBase.typeKey,
+        TransitionConditionBase.typeKey
+      };
 
   /// --------------------------------------------------------------------------
   /// OpValue field with key 156.

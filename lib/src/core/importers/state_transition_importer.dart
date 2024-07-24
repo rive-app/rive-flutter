@@ -2,6 +2,7 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/importers/artboard_import_stack_object.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
+import 'package:rive/src/rive_core/animation/transition_input_condition.dart';
 
 class StateTransitionImporter extends ArtboardImportStackObject {
   final StateMachineImporter stateMachineImporter;
@@ -17,9 +18,11 @@ class StateTransitionImporter extends ArtboardImportStackObject {
   bool resolve() {
     var inputs = stateMachineImporter.machine.inputs;
     for (final condition in transition.conditions) {
-      var inputIndex = condition.inputId;
-      if (inputIndex >= 0 && inputIndex < inputs.length) {
-        condition.inputId = inputs[inputIndex].id;
+      if (condition is TransitionInputCondition) {
+        var inputIndex = condition.inputId;
+        if (inputIndex >= 0 && inputIndex < inputs.length) {
+          condition.inputId = inputs[inputIndex].id;
+        }
       }
     }
     return true;

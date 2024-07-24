@@ -1,10 +1,12 @@
 import 'package:rive/src/generated/data_bind/data_bind_base.dart';
 import 'package:rive/src/rive_core/component.dart';
+import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value_boolean.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value_color.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value_number.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value_string.dart';
+import 'package:rive/src/rive_core/data_bind/data_context.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_boolean.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_color.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_enum.dart';
@@ -15,28 +17,29 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_value.dart';
 
 export 'package:rive/src/generated/data_bind/data_bind_base.dart';
 
-enum BindMode {
-  oneWay,
-  twoWay,
-  oneWayToSource,
-  once,
-}
-
 class DataBind extends DataBindBase {
   Component? target;
   ViewModelInstanceValue? source;
   ContextValue? contextValue;
 
-  @override
-  void onAddedDirty() {
-    target = context.resolve(targetId);
-    super.onAddedDirty();
+  int dirt = ComponentDirt.filthy;
+
+  bool addDirt(int value, {bool recurse = false}) {
+    if ((dirt & value) == value) {
+      return false;
+    }
+
+    dirt |= value;
+    return true;
   }
 
   @override
-  void update(int dirt) {
-    // TODO: @hernan implement update
-  }
+  void onAddedDirty() {}
+
+  @override
+  void onAdded() {}
+
+  void update(int dirt) {}
 
   void updateSourceBinding() {}
 
@@ -51,11 +54,9 @@ class DataBind extends DataBindBase {
   }
 
   @override
-  void modeValueChanged(int from, int to) {
-    // TODO: @hernan implement nameChanged
-  }
+  void flagsChanged(int from, int to) {}
 
-  void bind() {
+  void bind(DataContext? dataContext) {
     switch (source?.coreType) {
       case ViewModelInstanceNumberBase.typeKey:
         contextValue = ContextValueNumber(source);

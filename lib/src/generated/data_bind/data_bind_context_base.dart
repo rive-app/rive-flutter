@@ -3,7 +3,6 @@
 // Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/data_bind/data_bind.dart';
 
 abstract class DataBindContextBase extends DataBind {
@@ -11,11 +10,7 @@ abstract class DataBindContextBase extends DataBind {
   @override
   int get coreType => DataBindContextBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        DataBindContextBase.typeKey,
-        DataBindBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => {DataBindContextBase.typeKey, DataBindBase.typeKey};
 
   /// --------------------------------------------------------------------------
   /// SourcePathIds field with key 588.

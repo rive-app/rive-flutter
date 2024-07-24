@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:rive/src/generated/viewmodel/viewmodel_instance_base.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_value.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_viewmodel.dart';
 
 export 'package:rive/src/generated/viewmodel/viewmodel_instance_base.dart';
 
@@ -56,5 +57,23 @@ class ViewModelInstance extends ViewModelInstanceBase {
         (property) => property.viewModelPropertyId == propertyId);
     assert(propertyValue is T?);
     return propertyValue;
+  }
+
+  ViewModelInstanceValue property(int propertyId) {
+    return propertyValues
+        .firstWhere((property) => property.viewModelPropertyId == propertyId);
+  }
+
+  ViewModelInstanceValue? propertyFromPath(List<int> pathIds, int index) {
+    if (pathIds.isEmpty) {
+      return null;
+    }
+    final _property = property(pathIds[index]);
+    if (index == pathIds.length - 1) {
+      return _property;
+    } else if (_property is ViewModelInstanceViewModel) {
+      return _property.viewModelInstance?.propertyFromPath(pathIds, index + 1);
+    }
+    return null;
   }
 }

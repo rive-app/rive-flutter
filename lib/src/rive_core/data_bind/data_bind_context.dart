@@ -1,6 +1,7 @@
 import 'package:rive/src/generated/data_bind/data_bind_context_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
-import 'package:rive/src/rive_core/data_bind/data_bind.dart';
+import 'package:rive/src/rive_core/data_bind/data_context.dart';
+import 'package:rive/src/rive_core/data_bind_flags.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_color.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_number.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_string.dart';
@@ -35,8 +36,7 @@ class DataBindContext extends DataBindContextBase
   }
 
   @override
-  void bind() {
-    final dataContext = artboard?.dataContext;
+  void bind(DataContext? dataContext) {
     if (dataContext != null) {
       final value = dataContext.getViewModelProperty(_ids);
       if (value != null) {
@@ -48,7 +48,7 @@ class DataBindContext extends DataBindContextBase
           value.addDependent(this);
         }
         source = value;
-        super.bind();
+        super.bind(dataContext);
       }
     }
   }
@@ -56,8 +56,8 @@ class DataBindContext extends DataBindContextBase
   @override
   void update(int dirt) {
     if (dirt & ComponentDirt.bindings != 0) {
-      if (modeValue == BindMode.oneWay.index ||
-          modeValue == BindMode.twoWay.index) {
+      if ((flags & DataBindFlags.direction == DataBindFlags.toTarget) ||
+          (flags & DataBindFlags.twoWay == DataBindFlags.twoWay)) {
         if (contextValue != null) {
           contextValue!.apply(target!, propertyKey);
         }
@@ -68,8 +68,8 @@ class DataBindContext extends DataBindContextBase
 
   @override
   void updateSourceBinding() {
-    if (modeValue == BindMode.oneWayToSource.index ||
-        modeValue == BindMode.twoWay.index) {
+    if ((flags & DataBindFlags.direction == DataBindFlags.toSource) ||
+        (flags & DataBindFlags.twoWay == DataBindFlags.twoWay)) {
       if (contextValue != null) {
         contextValue!.applyToSource(target!, propertyKey);
       }

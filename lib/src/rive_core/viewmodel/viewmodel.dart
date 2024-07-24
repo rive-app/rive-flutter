@@ -19,9 +19,7 @@ class ViewModel extends ViewModelBase {
   }
 
   @override
-  void defaultInstanceIdChanged(int from, int to) {
-    // TODO: @hernan implement defaultInstanceIdChanged
-  }
+  void defaultInstanceIdChanged(int from, int to) {}
 
   void addProperty(ViewModelProperty item) {
     if (!children.contains(item)) {

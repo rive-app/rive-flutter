@@ -3,38 +3,13 @@
 // Do not modify manually.
 
 import 'package:rive/src/core/core.dart';
-import 'package:rive/src/rive_core/component.dart';
 
-abstract class DataBindBase extends Component {
+abstract class DataBindBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 446;
   @override
   int get coreType => DataBindBase.typeKey;
   @override
-  Set<int> get coreTypes => {DataBindBase.typeKey, ComponentBase.typeKey};
-
-  /// --------------------------------------------------------------------------
-  /// TargetId field with key 585.
-  static const int targetIdPropertyKey = 585;
-  static const int targetIdInitialValue = -1;
-  int _targetId = targetIdInitialValue;
-
-  /// Identifier used to track the object that is targetted.
-  int get targetId => _targetId;
-
-  /// Change the [_targetId] field value.
-  /// [targetIdChanged] will be invoked only if the field's value has changed.
-  set targetId(int value) {
-    if (_targetId == value) {
-      return;
-    }
-    int from = _targetId;
-    _targetId = value;
-    if (hasValidated) {
-      targetIdChanged(from, value);
-    }
-  }
-
-  void targetIdChanged(int from, int to);
+  Set<int> get coreTypes => {DataBindBase.typeKey};
 
   /// --------------------------------------------------------------------------
   /// PropertyKey field with key 586.
@@ -62,36 +37,33 @@ abstract class DataBindBase extends Component {
   void propertyKeyChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
-  /// ModeValue field with key 587.
-  static const int modeValuePropertyKey = 587;
-  static const int modeValueInitialValue = 0;
-  int _modeValue = modeValueInitialValue;
+  /// Flags field with key 587.
+  static const int flagsPropertyKey = 587;
+  static const int flagsInitialValue = 0;
+  int _flags = flagsInitialValue;
+  int get flags => _flags;
 
-  /// Backing enum value for the binding mode.
-  int get modeValue => _modeValue;
-
-  /// Change the [_modeValue] field value.
-  /// [modeValueChanged] will be invoked only if the field's value has changed.
-  set modeValue(int value) {
-    if (_modeValue == value) {
+  /// Change the [_flags] field value.
+  /// [flagsChanged] will be invoked only if the field's value has changed.
+  set flags(int value) {
+    if (_flags == value) {
       return;
     }
-    int from = _modeValue;
-    _modeValue = value;
+    int from = _flags;
+    _flags = value;
     if (hasValidated) {
-      modeValueChanged(from, value);
+      flagsChanged(from, value);
     }
   }
 
-  void modeValueChanged(int from, int to);
+  void flagsChanged(int from, int to);
 
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is DataBindBase) {
-      _targetId = source._targetId;
       _propertyKey = source._propertyKey;
-      _modeValue = source._modeValue;
+      _flags = source._flags;
     }
   }
 }

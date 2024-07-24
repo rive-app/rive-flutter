@@ -15,4 +15,6 @@ class ViewModelInstanceViewModel extends ViewModelInstanceViewModelBase {
     referenceViewModelInstance =
         context.resolve<ViewModelInstance>(propertyValue);
   }
+
+  ViewModelInstance? get viewModelInstance => context.resolve(propertyValue);
 }

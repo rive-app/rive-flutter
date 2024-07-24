@@ -75,6 +75,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     addDirt(ComponentDirt.paint);
   }
 
+  ViewModelInstance? viewModelInstance;
+
   /// Should antialiasing be used when drawing?
   bool _antialiasing = true;
 
@@ -676,7 +678,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   void sortDataBinds() {
-    globalDataBinds.sort((a, b) => a.modeValue.compareTo(b.modeValue) * -1);
+    globalDataBinds.sort((a, b) => a.flags.compareTo(b.flags) * -1);
   }
 
   void computeBindings(bool isRoot) {
@@ -684,7 +686,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       return;
     }
     for (final dataBind in dataBinds) {
-      dataBind.bind();
+      dataBind.bind(dataContext);
     }
     if (isRoot) {
       globalDataBinds.clear();

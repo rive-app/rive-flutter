@@ -14,9 +14,12 @@ import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
+import 'package:rive/src/rive_core/animation/transition_input_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
+import 'package:rive/src/rive_core/animation/transition_viewmodel_condition.dart';
 import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/state_transition_flags.dart';
+import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 
 export 'package:rive/src/generated/animation/state_transition_base.dart';
 
@@ -172,14 +175,20 @@ class StateTransition extends StateTransitionBase {
 
   /// Returns true when this transition can be taken from [stateFrom] with the
   /// given [inputValues].
-  AllowTransition allowed(StateInstance stateFrom,
-      HashMap<int, dynamic> inputValues, bool ignoreTriggers) {
+  AllowTransition allowed(
+      StateInstance stateFrom,
+      HashMap<int, dynamic> inputValues,
+      bool ignoreTriggers,
+      ViewModelInstance? viewModelInstance) {
     if (isDisabled) {
       return AllowTransition.no;
     }
     for (final condition in conditions) {
-      if ((ignoreTriggers && condition is TransitionTriggerCondition) ||
-          !condition.evaluate(inputValues)) {
+      if (condition is TransitionViewModelCondition) {
+        return AllowTransition.no;
+      } else if (condition is TransitionInputCondition &&
+          ((ignoreTriggers && condition is TransitionTriggerCondition) ||
+              !condition.evaluate(inputValues))) {
         return AllowTransition.no;
       }
     }

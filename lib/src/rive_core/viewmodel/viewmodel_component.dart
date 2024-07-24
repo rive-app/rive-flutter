@@ -10,7 +10,5 @@ class ViewModelComponent extends ViewModelComponentBase {
   void onAddedDirty() {}
 
   @override
-  void nameChanged(String from, String to) {
-    // TODO: implement nameChanged
-  }
+  void nameChanged(String from, String to) {}
 }

@@ -18,7 +18,7 @@ import 'package:rive/src/generated/animation/listener_input_change_base.dart';
 import 'package:rive/src/generated/animation/nested_input_base.dart';
 import 'package:rive/src/generated/animation/nested_linear_animation_base.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
-import 'package:rive/src/generated/animation/transition_condition_base.dart';
+import 'package:rive/src/generated/animation/transition_input_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/generated/assets/drawable_asset_base.dart';
@@ -84,7 +84,14 @@ import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
 import 'package:rive/src/rive_core/animation/transition_bool_condition.dart';
 import 'package:rive/src/rive_core/animation/transition_number_condition.dart';
+import 'package:rive/src/rive_core/animation/transition_property_viewmodel_comparator.dart';
 import 'package:rive/src/rive_core/animation/transition_trigger_condition.dart';
+import 'package:rive/src/rive_core/animation/transition_value_boolean_comparator.dart';
+import 'package:rive/src/rive_core/animation/transition_value_color_comparator.dart';
+import 'package:rive/src/rive_core/animation/transition_value_enum_comparator.dart';
+import 'package:rive/src/rive_core/animation/transition_value_number_comparator.dart';
+import 'package:rive/src/rive_core/animation/transition_value_string_comparator.dart';
+import 'package:rive/src/rive_core/animation/transition_viewmodel_condition.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/assets/audio_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset_contents.dart';
@@ -109,6 +116,11 @@ import 'package:rive/src/rive_core/constraints/translation_constraint.dart';
 import 'package:rive/src/rive_core/custom_property_boolean.dart';
 import 'package:rive/src/rive_core/custom_property_number.dart';
 import 'package:rive/src/rive_core/custom_property_string.dart';
+import 'package:rive/src/rive_core/data_bind/bindable_property_boolean.dart';
+import 'package:rive/src/rive_core/data_bind/bindable_property_color.dart';
+import 'package:rive/src/rive_core/data_bind/bindable_property_enum.dart';
+import 'package:rive/src/rive_core/data_bind/bindable_property_number.dart';
+import 'package:rive/src/rive_core/data_bind/bindable_property_string.dart';
 import 'package:rive/src/rive_core/data_bind/data_bind.dart';
 import 'package:rive/src/rive_core/data_bind/data_bind_context.dart';
 import 'package:rive/src/rive_core/draw_rules.dart';
@@ -274,6 +286,8 @@ class RiveCoreContext {
         return KeyedProperty();
       case StateMachineListenerBase.typeKey:
         return StateMachineListener();
+      case TransitionPropertyViewModelComparatorBase.typeKey:
+        return TransitionPropertyViewModelComparator();
       case KeyFrameIdBase.typeKey:
         return KeyFrameId();
       case KeyFrameBoolBase.typeKey:
@@ -284,6 +298,8 @@ class RiveCoreContext {
         return ListenerAlignTarget();
       case TransitionNumberConditionBase.typeKey:
         return TransitionNumberCondition();
+      case TransitionValueBooleanComparatorBase.typeKey:
+        return TransitionValueBooleanComparator();
       case AnyStateBase.typeKey:
         return AnyState();
       case CubicInterpolatorComponentBase.typeKey:
@@ -294,6 +310,8 @@ class RiveCoreContext {
         return KeyFrameString();
       case ListenerNumberChangeBase.typeKey:
         return ListenerNumberChange();
+      case TransitionViewModelConditionBase.typeKey:
+        return TransitionViewModelCondition();
       case CubicEaseInterpolatorBase.typeKey:
         return CubicEaseInterpolator();
       case StateTransitionBase.typeKey:
@@ -312,10 +330,14 @@ class RiveCoreContext {
         return EntryState();
       case StateMachineTriggerBase.typeKey:
         return StateMachineTrigger();
+      case TransitionValueColorComparatorBase.typeKey:
+        return TransitionValueColorComparator();
       case ListenerTriggerChangeBase.typeKey:
         return ListenerTriggerChange();
       case BlendStateDirectBase.typeKey:
         return BlendStateDirect();
+      case TransitionValueNumberComparatorBase.typeKey:
+        return TransitionValueNumberComparator();
       case NestedStateMachineBase.typeKey:
         return NestedStateMachine();
       case ElasticInterpolatorBase.typeKey:
@@ -328,8 +350,12 @@ class RiveCoreContext {
         return BlendAnimation1D();
       case BlendState1DBase.typeKey:
         return BlendState1D();
+      case TransitionValueEnumComparatorBase.typeKey:
+        return TransitionValueEnumComparator();
       case KeyFrameCallbackBase.typeKey:
         return KeyFrameCallback();
+      case TransitionValueStringComparatorBase.typeKey:
+        return TransitionValueStringComparator();
       case NestedRemapAnimationBase.typeKey:
         return NestedRemapAnimation();
       case TransitionBoolConditionBase.typeKey:
@@ -404,10 +430,20 @@ class RiveCoreContext {
         return Backboard();
       case OpenUrlEventBase.typeKey:
         return OpenUrlEvent();
+      case BindablePropertyBooleanBase.typeKey:
+        return BindablePropertyBoolean();
       case DataBindBase.typeKey:
         return DataBind();
       case DataBindContextBase.typeKey:
         return DataBindContext();
+      case BindablePropertyStringBase.typeKey:
+        return BindablePropertyString();
+      case BindablePropertyNumberBase.typeKey:
+        return BindablePropertyNumber();
+      case BindablePropertyEnumBase.typeKey:
+        return BindablePropertyEnum();
+      case BindablePropertyColorBase.typeKey:
+        return BindablePropertyColor();
       case BoneBase.typeKey:
         return Bone();
       case RootBoneBase.typeKey:
@@ -1283,8 +1319,8 @@ class RiveCoreContext {
           object.y2 = value;
         }
         break;
-      case TransitionConditionBase.inputIdPropertyKey:
-        if (object is TransitionConditionBase && value is int) {
+      case TransitionInputConditionBase.inputIdPropertyKey:
+        if (object is TransitionInputConditionBase && value is int) {
           object.inputId = value;
         }
         break;
@@ -1343,6 +1379,11 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
+      case TransitionValueBooleanComparatorBase.valuePropertyKey:
+        if (object is TransitionValueBooleanComparatorBase && value is bool) {
+          object.value = value;
+        }
+        break;
       case CubicInterpolatorComponentBase.x1PropertyKey:
         if (object is CubicInterpolatorComponentBase && value is double) {
           object.x1 = value;
@@ -1371,6 +1412,21 @@ class RiveCoreContext {
       case ListenerNumberChangeBase.valuePropertyKey:
         if (object is ListenerNumberChangeBase && value is double) {
           object.value = value;
+        }
+        break;
+      case TransitionViewModelConditionBase.leftComparatorIdPropertyKey:
+        if (object is TransitionViewModelConditionBase && value is int) {
+          object.leftComparatorId = value;
+        }
+        break;
+      case TransitionViewModelConditionBase.rightComparatorIdPropertyKey:
+        if (object is TransitionViewModelConditionBase && value is int) {
+          object.rightComparatorId = value;
+        }
+        break;
+      case TransitionViewModelConditionBase.opValuePropertyKey:
+        if (object is TransitionViewModelConditionBase && value is int) {
+          object.opValue = value;
         }
         break;
       case StateTransitionBase.stateToIdPropertyKey:
@@ -1433,6 +1489,16 @@ class RiveCoreContext {
           object.occursValue = value;
         }
         break;
+      case TransitionValueColorComparatorBase.valuePropertyKey:
+        if (object is TransitionValueColorComparatorBase && value is int) {
+          object.value = value;
+        }
+        break;
+      case TransitionValueNumberComparatorBase.valuePropertyKey:
+        if (object is TransitionValueNumberComparatorBase && value is double) {
+          object.value = value;
+        }
+        break;
       case ElasticInterpolatorBase.easingValuePropertyKey:
         if (object is ElasticInterpolatorBase && value is int) {
           object.easingValue = value;
@@ -1461,6 +1527,16 @@ class RiveCoreContext {
       case BlendState1DBase.inputIdPropertyKey:
         if (object is BlendState1DBase && value is int) {
           object.inputId = value;
+        }
+        break;
+      case TransitionValueEnumComparatorBase.valuePropertyKey:
+        if (object is TransitionValueEnumComparatorBase && value is int) {
+          object.value = value;
+        }
+        break;
+      case TransitionValueStringComparatorBase.valuePropertyKey:
+        if (object is TransitionValueStringComparatorBase && value is String) {
+          object.value = value;
         }
         break;
       case NestedRemapAnimationBase.timePropertyKey:
@@ -1903,9 +1979,9 @@ class RiveCoreContext {
           object.targetValue = value;
         }
         break;
-      case DataBindBase.targetIdPropertyKey:
-        if (object is DataBindBase && value is int) {
-          object.targetId = value;
+      case BindablePropertyBooleanBase.propertyValuePropertyKey:
+        if (object is BindablePropertyBooleanBase && value is bool) {
+          object.propertyValue = value;
         }
         break;
       case DataBindBase.propertyKeyPropertyKey:
@@ -1913,14 +1989,34 @@ class RiveCoreContext {
           object.propertyKey = value;
         }
         break;
-      case DataBindBase.modeValuePropertyKey:
+      case DataBindBase.flagsPropertyKey:
         if (object is DataBindBase && value is int) {
-          object.modeValue = value;
+          object.flags = value;
         }
         break;
       case DataBindContextBase.sourcePathIdsPropertyKey:
         if (object is DataBindContextBase && value is Uint8List) {
           object.sourcePathIds = value;
+        }
+        break;
+      case BindablePropertyStringBase.propertyValuePropertyKey:
+        if (object is BindablePropertyStringBase && value is String) {
+          object.propertyValue = value;
+        }
+        break;
+      case BindablePropertyNumberBase.propertyValuePropertyKey:
+        if (object is BindablePropertyNumberBase && value is double) {
+          object.propertyValue = value;
+        }
+        break;
+      case BindablePropertyEnumBase.propertyValuePropertyKey:
+        if (object is BindablePropertyEnumBase && value is int) {
+          object.propertyValue = value;
+        }
+        break;
+      case BindablePropertyColorBase.propertyValuePropertyKey:
+        if (object is BindablePropertyColorBase && value is int) {
+          object.propertyValue = value;
         }
         break;
       case BoneBase.lengthPropertyKey:
@@ -2288,6 +2384,7 @@ class RiveCoreContext {
       case NestedSimpleAnimationBase.isPlayingPropertyKey:
       case KeyFrameBoolBase.valuePropertyKey:
       case ListenerAlignTargetBase.preserveOffsetPropertyKey:
+      case TransitionValueBooleanComparatorBase.valuePropertyKey:
       case NestedBoolBase.nestedValuePropertyKey:
       case StateMachineBoolBase.valuePropertyKey:
       case ShapePaintBase.isVisiblePropertyKey:
@@ -2297,6 +2394,7 @@ class RiveCoreContext {
       case ClippingShapeBase.isVisiblePropertyKey:
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
       case LayoutComponentBase.clipPropertyKey:
+      case BindablePropertyBooleanBase.propertyValuePropertyKey:
       case TextModifierRangeBase.clampPropertyKey:
         return boolType;
       case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
@@ -2383,7 +2481,7 @@ class RiveCoreContext {
       case BlendAnimationBase.animationIdPropertyKey:
       case BlendAnimationDirectBase.inputIdPropertyKey:
       case BlendAnimationDirectBase.blendSourcePropertyKey:
-      case TransitionConditionBase.inputIdPropertyKey:
+      case TransitionInputConditionBase.inputIdPropertyKey:
       case KeyedPropertyBase.propertyKeyPropertyKey:
       case StateMachineListenerBase.targetIdPropertyKey:
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
@@ -2392,6 +2490,9 @@ class RiveCoreContext {
       case ListenerBoolChangeBase.valuePropertyKey:
       case ListenerAlignTargetBase.targetIdPropertyKey:
       case TransitionValueConditionBase.opValuePropertyKey:
+      case TransitionViewModelConditionBase.leftComparatorIdPropertyKey:
+      case TransitionViewModelConditionBase.rightComparatorIdPropertyKey:
+      case TransitionViewModelConditionBase.opValuePropertyKey:
       case StateTransitionBase.stateToIdPropertyKey:
       case StateTransitionBase.flagsPropertyKey:
       case StateTransitionBase.durationPropertyKey:
@@ -2403,6 +2504,7 @@ class RiveCoreContext {
       case StateMachineFireEventBase.occursValuePropertyKey:
       case ElasticInterpolatorBase.easingValuePropertyKey:
       case BlendState1DBase.inputIdPropertyKey:
+      case TransitionValueEnumComparatorBase.valuePropertyKey:
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
       case StrokeBase.capPropertyKey:
       case StrokeBase.joinPropertyKey:
@@ -2428,9 +2530,9 @@ class RiveCoreContext {
       case JoystickBase.joystickFlagsPropertyKey:
       case JoystickBase.handleSourceIdPropertyKey:
       case OpenUrlEventBase.targetValuePropertyKey:
-      case DataBindBase.targetIdPropertyKey:
       case DataBindBase.propertyKeyPropertyKey:
-      case DataBindBase.modeValuePropertyKey:
+      case DataBindBase.flagsPropertyKey:
+      case BindablePropertyEnumBase.propertyValuePropertyKey:
       case TendonBase.boneIdPropertyKey:
       case TextModifierRangeBase.unitsValuePropertyKey:
       case TextModifierRangeBase.typeValuePropertyKey:
@@ -2452,8 +2554,10 @@ class RiveCoreContext {
         return uintType;
       case ViewModelInstanceColorBase.propertyValuePropertyKey:
       case KeyFrameColorBase.valuePropertyKey:
+      case TransitionValueColorComparatorBase.valuePropertyKey:
       case SolidColorBase.colorValuePropertyKey:
       case GradientStopBase.colorValuePropertyKey:
+      case BindablePropertyColorBase.propertyValuePropertyKey:
         return colorType;
       case ViewModelComponentBase.namePropertyKey:
       case ViewModelInstanceStringBase.propertyValuePropertyKey:
@@ -2463,7 +2567,9 @@ class RiveCoreContext {
       case AnimationBase.namePropertyKey:
       case StateMachineComponentBase.namePropertyKey:
       case KeyFrameStringBase.valuePropertyKey:
+      case TransitionValueStringComparatorBase.valuePropertyKey:
       case OpenUrlEventBase.urlPropertyKey:
+      case BindablePropertyStringBase.propertyValuePropertyKey:
       case TextValueRunBase.textPropertyKey:
       case CustomPropertyStringBase.propertyValuePropertyKey:
       case AssetBase.namePropertyKey:
@@ -2533,6 +2639,7 @@ class RiveCoreContext {
       case CubicInterpolatorComponentBase.y2PropertyKey:
       case ListenerNumberChangeBase.valuePropertyKey:
       case KeyFrameDoubleBase.valuePropertyKey:
+      case TransitionValueNumberComparatorBase.valuePropertyKey:
       case ElasticInterpolatorBase.amplitudePropertyKey:
       case ElasticInterpolatorBase.periodPropertyKey:
       case NestedNumberBase.nestedValuePropertyKey:
@@ -2588,6 +2695,7 @@ class RiveCoreContext {
       case JoystickBase.originYPropertyKey:
       case JoystickBase.widthPropertyKey:
       case JoystickBase.heightPropertyKey:
+      case BindablePropertyNumberBase.propertyValuePropertyKey:
       case BoneBase.lengthPropertyKey:
       case RootBoneBase.xPropertyKey:
       case RootBoneBase.yPropertyKey:
@@ -2693,6 +2801,8 @@ class RiveCoreContext {
         return (object as KeyFrameBoolBase).value;
       case ListenerAlignTargetBase.preserveOffsetPropertyKey:
         return (object as ListenerAlignTargetBase).preserveOffset;
+      case TransitionValueBooleanComparatorBase.valuePropertyKey:
+        return (object as TransitionValueBooleanComparatorBase).value;
       case NestedBoolBase.nestedValuePropertyKey:
         return (object as NestedBoolBase).nestedValue;
       case StateMachineBoolBase.valuePropertyKey:
@@ -2711,6 +2821,8 @@ class RiveCoreContext {
         return (object as CustomPropertyBooleanBase).propertyValue;
       case LayoutComponentBase.clipPropertyKey:
         return (object as LayoutComponentBase).clip;
+      case BindablePropertyBooleanBase.propertyValuePropertyKey:
+        return (object as BindablePropertyBooleanBase).propertyValue;
       case TextModifierRangeBase.clampPropertyKey:
         return (object as TextModifierRangeBase).clamp;
     }
@@ -2887,8 +2999,8 @@ class RiveCoreContext {
         return (object as BlendAnimationDirectBase).inputId;
       case BlendAnimationDirectBase.blendSourcePropertyKey:
         return (object as BlendAnimationDirectBase).blendSource;
-      case TransitionConditionBase.inputIdPropertyKey:
-        return (object as TransitionConditionBase).inputId;
+      case TransitionInputConditionBase.inputIdPropertyKey:
+        return (object as TransitionInputConditionBase).inputId;
       case KeyedPropertyBase.propertyKeyPropertyKey:
         return (object as KeyedPropertyBase).propertyKey;
       case StateMachineListenerBase.targetIdPropertyKey:
@@ -2905,6 +3017,12 @@ class RiveCoreContext {
         return (object as ListenerAlignTargetBase).targetId;
       case TransitionValueConditionBase.opValuePropertyKey:
         return (object as TransitionValueConditionBase).opValue;
+      case TransitionViewModelConditionBase.leftComparatorIdPropertyKey:
+        return (object as TransitionViewModelConditionBase).leftComparatorId;
+      case TransitionViewModelConditionBase.rightComparatorIdPropertyKey:
+        return (object as TransitionViewModelConditionBase).rightComparatorId;
+      case TransitionViewModelConditionBase.opValuePropertyKey:
+        return (object as TransitionViewModelConditionBase).opValue;
       case StateTransitionBase.stateToIdPropertyKey:
         return (object as StateTransitionBase).stateToId;
       case StateTransitionBase.flagsPropertyKey:
@@ -2927,6 +3045,8 @@ class RiveCoreContext {
         return (object as ElasticInterpolatorBase).easingValue;
       case BlendState1DBase.inputIdPropertyKey:
         return (object as BlendState1DBase).inputId;
+      case TransitionValueEnumComparatorBase.valuePropertyKey:
+        return (object as TransitionValueEnumComparatorBase).value;
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
         return (object as BlendStateTransitionBase).exitBlendAnimationId;
       case StrokeBase.capPropertyKey:
@@ -2977,12 +3097,12 @@ class RiveCoreContext {
         return (object as JoystickBase).handleSourceId;
       case OpenUrlEventBase.targetValuePropertyKey:
         return (object as OpenUrlEventBase).targetValue;
-      case DataBindBase.targetIdPropertyKey:
-        return (object as DataBindBase).targetId;
       case DataBindBase.propertyKeyPropertyKey:
         return (object as DataBindBase).propertyKey;
-      case DataBindBase.modeValuePropertyKey:
-        return (object as DataBindBase).modeValue;
+      case DataBindBase.flagsPropertyKey:
+        return (object as DataBindBase).flags;
+      case BindablePropertyEnumBase.propertyValuePropertyKey:
+        return (object as BindablePropertyEnumBase).propertyValue;
       case TendonBase.boneIdPropertyKey:
         return (object as TendonBase).boneId;
       case TextModifierRangeBase.unitsValuePropertyKey:
@@ -3029,10 +3149,14 @@ class RiveCoreContext {
         return (object as ViewModelInstanceColorBase).propertyValue;
       case KeyFrameColorBase.valuePropertyKey:
         return (object as KeyFrameColorBase).value;
+      case TransitionValueColorComparatorBase.valuePropertyKey:
+        return (object as TransitionValueColorComparatorBase).value;
       case SolidColorBase.colorValuePropertyKey:
         return (object as SolidColorBase).colorValue;
       case GradientStopBase.colorValuePropertyKey:
         return (object as GradientStopBase).colorValue;
+      case BindablePropertyColorBase.propertyValuePropertyKey:
+        return (object as BindablePropertyColorBase).propertyValue;
     }
     return 0;
   }
@@ -3055,8 +3179,12 @@ class RiveCoreContext {
         return (object as StateMachineComponentBase).name;
       case KeyFrameStringBase.valuePropertyKey:
         return (object as KeyFrameStringBase).value;
+      case TransitionValueStringComparatorBase.valuePropertyKey:
+        return (object as TransitionValueStringComparatorBase).value;
       case OpenUrlEventBase.urlPropertyKey:
         return (object as OpenUrlEventBase).url;
+      case BindablePropertyStringBase.propertyValuePropertyKey:
+        return (object as BindablePropertyStringBase).propertyValue;
       case TextValueRunBase.textPropertyKey:
         return (object as TextValueRunBase).text;
       case CustomPropertyStringBase.propertyValuePropertyKey:
@@ -3199,6 +3327,8 @@ class RiveCoreContext {
         return (object as ListenerNumberChangeBase).value;
       case KeyFrameDoubleBase.valuePropertyKey:
         return (object as KeyFrameDoubleBase).value;
+      case TransitionValueNumberComparatorBase.valuePropertyKey:
+        return (object as TransitionValueNumberComparatorBase).value;
       case ElasticInterpolatorBase.amplitudePropertyKey:
         return (object as ElasticInterpolatorBase).amplitude;
       case ElasticInterpolatorBase.periodPropertyKey:
@@ -3309,6 +3439,8 @@ class RiveCoreContext {
         return (object as JoystickBase).width;
       case JoystickBase.heightPropertyKey:
         return (object as JoystickBase).height;
+      case BindablePropertyNumberBase.propertyValuePropertyKey:
+        return (object as BindablePropertyNumberBase).propertyValue;
       case BoneBase.lengthPropertyKey:
         return (object as BoneBase).length;
       case RootBoneBase.xPropertyKey:
@@ -3505,6 +3637,11 @@ class RiveCoreContext {
           object.preserveOffset = value;
         }
         break;
+      case TransitionValueBooleanComparatorBase.valuePropertyKey:
+        if (object is TransitionValueBooleanComparatorBase) {
+          object.value = value;
+        }
+        break;
       case NestedBoolBase.nestedValuePropertyKey:
         if (object is NestedBoolBase) {
           object.nestedValue = value;
@@ -3548,6 +3685,11 @@ class RiveCoreContext {
       case LayoutComponentBase.clipPropertyKey:
         if (object is LayoutComponentBase) {
           object.clip = value;
+        }
+        break;
+      case BindablePropertyBooleanBase.propertyValuePropertyKey:
+        if (object is BindablePropertyBooleanBase) {
+          object.propertyValue = value;
         }
         break;
       case TextModifierRangeBase.clampPropertyKey:
@@ -3980,8 +4122,8 @@ class RiveCoreContext {
           object.blendSource = value;
         }
         break;
-      case TransitionConditionBase.inputIdPropertyKey:
-        if (object is TransitionConditionBase) {
+      case TransitionInputConditionBase.inputIdPropertyKey:
+        if (object is TransitionInputConditionBase) {
           object.inputId = value;
         }
         break;
@@ -4022,6 +4164,21 @@ class RiveCoreContext {
         break;
       case TransitionValueConditionBase.opValuePropertyKey:
         if (object is TransitionValueConditionBase) {
+          object.opValue = value;
+        }
+        break;
+      case TransitionViewModelConditionBase.leftComparatorIdPropertyKey:
+        if (object is TransitionViewModelConditionBase) {
+          object.leftComparatorId = value;
+        }
+        break;
+      case TransitionViewModelConditionBase.rightComparatorIdPropertyKey:
+        if (object is TransitionViewModelConditionBase) {
+          object.rightComparatorId = value;
+        }
+        break;
+      case TransitionViewModelConditionBase.opValuePropertyKey:
+        if (object is TransitionViewModelConditionBase) {
           object.opValue = value;
         }
         break;
@@ -4078,6 +4235,11 @@ class RiveCoreContext {
       case BlendState1DBase.inputIdPropertyKey:
         if (object is BlendState1DBase) {
           object.inputId = value;
+        }
+        break;
+      case TransitionValueEnumComparatorBase.valuePropertyKey:
+        if (object is TransitionValueEnumComparatorBase) {
+          object.value = value;
         }
         break;
       case BlendStateTransitionBase.exitBlendAnimationIdPropertyKey:
@@ -4205,19 +4367,19 @@ class RiveCoreContext {
           object.targetValue = value;
         }
         break;
-      case DataBindBase.targetIdPropertyKey:
-        if (object is DataBindBase) {
-          object.targetId = value;
-        }
-        break;
       case DataBindBase.propertyKeyPropertyKey:
         if (object is DataBindBase) {
           object.propertyKey = value;
         }
         break;
-      case DataBindBase.modeValuePropertyKey:
+      case DataBindBase.flagsPropertyKey:
         if (object is DataBindBase) {
-          object.modeValue = value;
+          object.flags = value;
+        }
+        break;
+      case BindablePropertyEnumBase.propertyValuePropertyKey:
+        if (object is BindablePropertyEnumBase) {
+          object.propertyValue = value;
         }
         break;
       case TendonBase.boneIdPropertyKey:
@@ -4325,6 +4487,11 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
+      case TransitionValueColorComparatorBase.valuePropertyKey:
+        if (object is TransitionValueColorComparatorBase) {
+          object.value = value;
+        }
+        break;
       case SolidColorBase.colorValuePropertyKey:
         if (object is SolidColorBase) {
           object.colorValue = value;
@@ -4333,6 +4500,11 @@ class RiveCoreContext {
       case GradientStopBase.colorValuePropertyKey:
         if (object is GradientStopBase) {
           object.colorValue = value;
+        }
+        break;
+      case BindablePropertyColorBase.propertyValuePropertyKey:
+        if (object is BindablePropertyColorBase) {
+          object.propertyValue = value;
         }
         break;
     }
@@ -4380,9 +4552,19 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
+      case TransitionValueStringComparatorBase.valuePropertyKey:
+        if (object is TransitionValueStringComparatorBase) {
+          object.value = value;
+        }
+        break;
       case OpenUrlEventBase.urlPropertyKey:
         if (object is OpenUrlEventBase) {
           object.url = value;
+        }
+        break;
+      case BindablePropertyStringBase.propertyValuePropertyKey:
+        if (object is BindablePropertyStringBase) {
+          object.propertyValue = value;
         }
         break;
       case TextValueRunBase.textPropertyKey:
@@ -4730,6 +4912,11 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
+      case TransitionValueNumberComparatorBase.valuePropertyKey:
+        if (object is TransitionValueNumberComparatorBase) {
+          object.value = value;
+        }
+        break;
       case ElasticInterpolatorBase.amplitudePropertyKey:
         if (object is ElasticInterpolatorBase) {
           object.amplitude = value;
@@ -5003,6 +5190,11 @@ class RiveCoreContext {
       case JoystickBase.heightPropertyKey:
         if (object is JoystickBase) {
           object.height = value;
+        }
+        break;
+      case BindablePropertyNumberBase.propertyValuePropertyKey:
+        if (object is BindablePropertyNumberBase) {
+          object.propertyValue = value;
         }
         break;
       case BoneBase.lengthPropertyKey:

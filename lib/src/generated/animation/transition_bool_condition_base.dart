@@ -3,6 +3,7 @@
 // Do not modify manually.
 
 import 'package:rive/src/generated/animation/transition_condition_base.dart';
+import 'package:rive/src/generated/animation/transition_input_condition_base.dart';
 import 'package:rive/src/rive_core/animation/transition_value_condition.dart';
 
 abstract class TransitionBoolConditionBase extends TransitionValueCondition {
@@ -13,6 +14,7 @@ abstract class TransitionBoolConditionBase extends TransitionValueCondition {
   Set<int> get coreTypes => {
         TransitionBoolConditionBase.typeKey,
         TransitionValueConditionBase.typeKey,
+        TransitionInputConditionBase.typeKey,
         TransitionConditionBase.typeKey
       };
 }
