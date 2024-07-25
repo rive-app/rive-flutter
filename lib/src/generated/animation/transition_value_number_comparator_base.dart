@@ -19,8 +19,8 @@ abstract class TransitionValueNumberComparatorBase
       };
 
   /// --------------------------------------------------------------------------
-  /// Value field with key 645.
-  static const int valuePropertyKey = 645;
+  /// Value field with key 652.
+  static const int valuePropertyKey = 652;
   static const double valueInitialValue = 0;
   double _value = valueInitialValue;
   double get value => _value;

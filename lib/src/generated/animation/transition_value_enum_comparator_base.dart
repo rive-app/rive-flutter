@@ -19,8 +19,8 @@ abstract class TransitionValueEnumComparatorBase
       };
 
   /// --------------------------------------------------------------------------
-  /// Value field with key 646.
-  static const int valuePropertyKey = 646;
+  /// Value field with key 653.
+  static const int valuePropertyKey = 653;
   static const int valueInitialValue = -1;
   int _value = valueInitialValue;
 

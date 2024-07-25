@@ -19,8 +19,8 @@ abstract class TransitionValueStringComparatorBase
       };
 
   /// --------------------------------------------------------------------------
-  /// Value field with key 647.
-  static const int valuePropertyKey = 647;
+  /// Value field with key 654.
+  static const int valuePropertyKey = 654;
   static const String valueInitialValue = '';
   String _value = valueInitialValue;
   String get value => _value;

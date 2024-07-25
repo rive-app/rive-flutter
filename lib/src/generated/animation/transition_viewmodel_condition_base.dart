@@ -16,8 +16,8 @@ abstract class TransitionViewModelConditionBase extends TransitionCondition {
       };
 
   /// --------------------------------------------------------------------------
-  /// LeftComparatorId field with key 641.
-  static const int leftComparatorIdPropertyKey = 641;
+  /// LeftComparatorId field with key 648.
+  static const int leftComparatorIdPropertyKey = 648;
   static const int leftComparatorIdInitialValue = -1;
   int _leftComparatorId = leftComparatorIdInitialValue;
 
@@ -41,8 +41,8 @@ abstract class TransitionViewModelConditionBase extends TransitionCondition {
   void leftComparatorIdChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
-  /// RightComparatorId field with key 642.
-  static const int rightComparatorIdPropertyKey = 642;
+  /// RightComparatorId field with key 649.
+  static const int rightComparatorIdPropertyKey = 649;
   static const int rightComparatorIdInitialValue = -1;
   int _rightComparatorId = rightComparatorIdInitialValue;
 
@@ -66,8 +66,8 @@ abstract class TransitionViewModelConditionBase extends TransitionCondition {
   void rightComparatorIdChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
-  /// OpValue field with key 643.
-  static const int opValuePropertyKey = 643;
+  /// OpValue field with key 650.
+  static const int opValuePropertyKey = 650;
   static const int opValueInitialValue = 0;
   int _opValue = opValueInitialValue;
 

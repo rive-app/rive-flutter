@@ -19,8 +19,8 @@ abstract class TransitionValueColorComparatorBase
       };
 
   /// --------------------------------------------------------------------------
-  /// Value field with key 644.
-  static const int valuePropertyKey = 644;
+  /// Value field with key 651.
+  static const int valuePropertyKey = 651;
   static const int valueInitialValue = 0xFF1D1D1D;
   int _value = valueInitialValue;
   int get value => _value;

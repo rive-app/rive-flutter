@@ -19,8 +19,8 @@ abstract class TransitionValueBooleanComparatorBase
       };
 
   /// --------------------------------------------------------------------------
-  /// Value field with key 640.
-  static const int valuePropertyKey = 640;
+  /// Value field with key 647.
+  static const int valuePropertyKey = 647;
   static const bool valueInitialValue = false;
   bool _value = valueInitialValue;
   bool get value => _value;
