@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
-import 'package:rive/src/rive_core/shapes/image.dart';
 
 import 'src/utils.dart';
 

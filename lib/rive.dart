@@ -46,5 +46,6 @@ export 'package:rive/src/runtime_event.dart';
 export 'package:rive/src/runtime_mounted_artboard.dart';
 export 'package:rive/src/runtime_nested_artboard.dart';
 export 'package:rive/src/widgets/rive_animation.dart';
-export 'package:rive_common/src/dynamic_library_helper.dart'
-    show applyWorkaroundToRiveOnOldAndroidVersions;
+export 'src/dynamic_library_helper/dynamic_library_helper_stub.dart'
+    if (dart.library.js_interop) 'src/dynamic_library_helper/dynamic_library_helper_web.dart'
+    if (dart.library.ffi) 'src/dynamic_library_helper/dynamic_library_helper_ffi.dart';

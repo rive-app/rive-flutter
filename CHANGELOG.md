@@ -1,3 +1,7 @@
+## 0.13.12
+
+- Fix [410](https://github.com/rive-app/rive-flutter/issues/410) Rive not compatible with Flutter web.
+
 ## 0.13.11
 
 - Add `applyWorkaroundToRiveOnOldAndroidVersions`. Experimental workaround when loading native libraries on Android 6 (see [this issue](https://github.com/rive-app/rive-flutter/issues/403)). The method should be called before using any Rive APIs.
