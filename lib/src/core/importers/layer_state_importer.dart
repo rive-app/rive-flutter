@@ -19,6 +19,7 @@ class LayerStateImporter extends ArtboardImportStackObject {
     // animations.
     if (state is BlendState) {
       var blendState = state as BlendState;
+      blendState.internalAddAnimation(blendAnimation);
       for (final transition
           in state.transitions.whereType<BlendStateTransition>()) {
         if (transition.exitBlendAnimationId >= 0 &&
@@ -27,9 +28,6 @@ class LayerStateImporter extends ArtboardImportStackObject {
               blendState.animations[transition.exitBlendAnimationId];
         }
       }
-    }
-    if (state is BlendState) {
-      (state as BlendState).internalAddAnimation(blendAnimation);
       return true;
     }
 
