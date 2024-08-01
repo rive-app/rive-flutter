@@ -7,8 +7,6 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/notifier.dart';
 
-import 'rive_core/animation/keyed_object.dart';
-
 /// Adds getters for linear animations and state machines
 extension RuntimeArtboardGetters on RuntimeArtboard {
   /// Returns an iterable of linear animations in the artboard

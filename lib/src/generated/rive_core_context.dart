@@ -2364,6 +2364,7 @@ class RiveCoreContext {
   static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType bytesType = CoreBytesType();
   static CoreFieldType callbackType = CoreCallbackType();
+
   static CoreFieldType? coreType(int propertyKey) {
     switch (propertyKey) {
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:

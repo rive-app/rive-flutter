@@ -1,7 +1,5 @@
 import 'dart:collection';
-import 'dart:developer';
 
-import 'package:collection/collection.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/linear_animation_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';

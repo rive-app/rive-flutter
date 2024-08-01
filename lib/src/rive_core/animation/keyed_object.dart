@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:developer';
 
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyed_object_base.dart';
@@ -111,6 +110,9 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     }
   }
 
+  /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+  late final List<KeyedProperty> _properties = _keyedProperties.values.toList(growable: false);
+
   void apply(
     double time,
     double mix,
@@ -120,7 +122,9 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     if (object == null) {
       return;
     }
-    for (final keyedProperty in _keyedProperties.values) {
+    // for (final keyedProperty in _keyedProperties.values) {
+    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+    for (final keyedProperty in _properties) {
       if (keyedProperty.isCallback) {
         continue;
       }
