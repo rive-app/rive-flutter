@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyed_object_base.dart';
@@ -19,6 +20,31 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
       HashMap<int, KeyedProperty>();
 
   Iterable<KeyedProperty> get keyedProperties => _keyedProperties.values;
+
+  // @override
+  // String toString() => 'KeyedObject[$count]';
+
+  // static int _objectCount = 0;
+  // // static final List<LinearAnimation> _all = <LinearAnimation>[];
+  // // static void dump() {
+  // //   log('DUMPING LINEAR ANIMATIONS all=${_all.length} keyed=${_all.where((a) => a._keyedObjects.isNotEmpty).length} keys=${_all.map((a) => a._keyedObjects.length).sum}');
+  // //   log(_all.where((a) => a._keyedObjects.isNotEmpty).map((a) => a.toString()).join('\n'));
+  // // }
+
+  // final int count = ++_objectCount;
+  // late final bool logging = count % 50000 == 0;
+
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  @override
+  K? clone<K extends Core>() => this as K;
+
+  // KeyedObject() {
+  //
+  //   if (logging) {
+  //     log('CONSTRUCTED >> $this');
+  //     debugPrintStack();
+  //   }
+  // }
 
   @override
   void onAddedDirty() {}

@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/notifier.dart';
+
+import 'rive_core/animation/keyed_object.dart';
 
 /// Adds getters for linear animations and state machines
 extension RuntimeArtboardGetters on RuntimeArtboard {
@@ -108,6 +113,13 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   T? addObject<T extends Core>(T? object) {
     object?.context = this;
     object?.id = _objects.length;
+
+    // if (object is LinearAnimation && object.logging) {
+    //   log('ADD LINEAR-ANIMATION > $object');
+    // }
+    // if (object is KeyedObject && object.logging) {
+    //   log('ADD KEYED-OBJECT > $object');
+    // }
 
     _objects.add(object);
     return object;
@@ -223,7 +235,29 @@ class RuntimeArtboard extends Artboard implements CoreContext {
       InternalCoreHelper.markValid(object);
     }
     artboard.clean();
+
+    // dump();
+
     return artboard;
+  }
+
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  void dump() {
+    log(toString());
+    log(objects
+      .map((o) => o.runtimeType)
+      .groupListsBy((o) => o)
+      .entries
+      .sorted((e1, e2) => e2.value.length - e1.value.length)
+      .map((e) => '${e.key}: ${e.value.length}')
+      .join('\n'));
+  }
+
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  @override
+  String toString() {
+    // LinearAnimation.dump(); // uncomment to dump animations
+    return 'RuntimeArtboard[$name ${objects.length}]';
   }
 
   void addNestedEventListener(StateMachineController controller) {

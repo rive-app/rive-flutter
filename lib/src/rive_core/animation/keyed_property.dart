@@ -57,6 +57,11 @@ class KeyFrameList<T extends KeyFrameInterface> {
 
 class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     with KeyFrameList<KeyFrame> {
+
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  @override
+  K? clone<K extends Core>() => this as K;
+
   @override
   void onAdded() {}
 
