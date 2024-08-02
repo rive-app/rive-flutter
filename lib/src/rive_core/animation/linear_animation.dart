@@ -70,13 +70,16 @@ class LinearAnimation extends LinearAnimationBase {
       objects.any((element) => _keyedObjects.containsKey(element.id));
 
   bool isObjectKeyed(Core object) => _keyedObjects.containsKey(object.id);
+
   bool removeObjectKeys(Core object) {
     var value = _keyedObjects[object.id];
     if (value == null) {
       return false;
     }
     bool found = false;
-    for (final kp in value.keyedProperties) {
+    // for (final kp in value.keyedProperties) {
+    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+    for (final kp in value.properties) {
       for (final kf in kp.keyframes.toList()) {
         kf.remove();
         found = true;
@@ -101,6 +104,9 @@ class LinearAnimation extends LinearAnimationBase {
   /// Returns the start time of the animation in seconds, considering speed
   double get startTime => (speed >= 0) ? startSeconds : endSeconds;
 
+  /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+  late final List<KeyedObject> _objects = _keyedObjects.values.toList(growable: false);
+
   void reportKeyedCallbacks(
     double secondsFrom,
     double secondsTo, {
@@ -116,7 +122,9 @@ class LinearAnimation extends LinearAnimationBase {
     // Do not report a callback twice if it comes from the "pong" part of a
     // "ping pong" loop
     if (!isAtStartFrame || !fromPong) {
-      for (final keyedObject in _keyedObjects.values) {
+      // for (final keyedObject in _keyedObjects.values) {
+      /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+      for (final keyedObject in _objects) {
         keyedObject.reportKeyedCallbacks(
           secondsFrom,
           secondsTo,
@@ -138,7 +146,9 @@ class LinearAnimation extends LinearAnimationBase {
       // ignore: parameter_assignments
       time = (time * fps).floor() / fps;
     }
-    for (final keyedObject in _keyedObjects.values) {
+    // for (final keyedObject in _keyedObjects.values) {
+    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+    for (final keyedObject in _objects) {
       keyedObject.apply(time, mix, coreContext);
     }
   }

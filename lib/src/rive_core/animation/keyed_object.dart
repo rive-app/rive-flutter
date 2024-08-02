@@ -111,7 +111,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   }
 
   /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-  late final List<KeyedProperty> _properties = _keyedProperties.values.toList(growable: false);
+  late final List<KeyedProperty> properties = _keyedProperties.values.toList(growable: false);
 
   void apply(
     double time,
@@ -124,7 +124,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     }
     // for (final keyedProperty in _keyedProperties.values) {
     /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-    for (final keyedProperty in _properties) {
+    for (final keyedProperty in properties) {
       if (keyedProperty.isCallback) {
         continue;
       }
