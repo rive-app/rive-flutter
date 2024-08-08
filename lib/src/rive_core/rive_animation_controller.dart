@@ -29,4 +29,5 @@ abstract class RiveAnimationController<T> {
 
   bool init(T core) => true;
   void dispose() {}
+  void reset() {}
 }
