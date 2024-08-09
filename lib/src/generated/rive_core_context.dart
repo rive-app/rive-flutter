@@ -30,6 +30,7 @@ import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
 import 'package:rive/src/generated/constraints/transform_component_constraint_base.dart';
 import 'package:rive/src/generated/constraints/transform_component_constraint_y_base.dart';
 import 'package:rive/src/generated/constraints/transform_space_constraint_base.dart';
+import 'package:rive/src/generated/data_bind/converters/data_converter_base.dart';
 import 'package:rive/src/generated/drawable_base.dart';
 import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
@@ -68,6 +69,7 @@ import 'package:rive/src/rive_core/animation/listener_bool_change.dart';
 import 'package:rive/src/rive_core/animation/listener_fire_event.dart';
 import 'package:rive/src/rive_core/animation/listener_number_change.dart';
 import 'package:rive/src/rive_core/animation/listener_trigger_change.dart';
+import 'package:rive/src/rive_core/animation/listener_viewmodel_change.dart';
 import 'package:rive/src/rive_core/animation/nested_bool.dart';
 import 'package:rive/src/rive_core/animation/nested_number.dart';
 import 'package:rive/src/rive_core/animation/nested_remap_animation.dart';
@@ -336,6 +338,8 @@ class RiveCoreContext {
         return ListenerTriggerChange();
       case BlendStateDirectBase.typeKey:
         return BlendStateDirect();
+      case ListenerViewModelChangeBase.typeKey:
+        return ListenerViewModelChange();
       case TransitionValueNumberComparatorBase.typeKey:
         return TransitionValueNumberComparator();
       case NestedStateMachineBase.typeKey:
@@ -1994,6 +1998,16 @@ class RiveCoreContext {
           object.flags = value;
         }
         break;
+      case DataBindBase.converterIdPropertyKey:
+        if (object is DataBindBase && value is int) {
+          object.converterId = value;
+        }
+        break;
+      case DataConverterBase.namePropertyKey:
+        if (object is DataConverterBase && value is String) {
+          object.name = value;
+        }
+        break;
       case DataBindContextBase.sourcePathIdsPropertyKey:
         if (object is DataBindContextBase && value is Uint8List) {
           object.sourcePathIds = value;
@@ -2532,6 +2546,7 @@ class RiveCoreContext {
       case OpenUrlEventBase.targetValuePropertyKey:
       case DataBindBase.propertyKeyPropertyKey:
       case DataBindBase.flagsPropertyKey:
+      case DataBindBase.converterIdPropertyKey:
       case BindablePropertyEnumBase.propertyValuePropertyKey:
       case TendonBase.boneIdPropertyKey:
       case TextModifierRangeBase.unitsValuePropertyKey:
@@ -2569,6 +2584,7 @@ class RiveCoreContext {
       case KeyFrameStringBase.valuePropertyKey:
       case TransitionValueStringComparatorBase.valuePropertyKey:
       case OpenUrlEventBase.urlPropertyKey:
+      case DataConverterBase.namePropertyKey:
       case BindablePropertyStringBase.propertyValuePropertyKey:
       case TextValueRunBase.textPropertyKey:
       case CustomPropertyStringBase.propertyValuePropertyKey:
@@ -3101,6 +3117,8 @@ class RiveCoreContext {
         return (object as DataBindBase).propertyKey;
       case DataBindBase.flagsPropertyKey:
         return (object as DataBindBase).flags;
+      case DataBindBase.converterIdPropertyKey:
+        return (object as DataBindBase).converterId;
       case BindablePropertyEnumBase.propertyValuePropertyKey:
         return (object as BindablePropertyEnumBase).propertyValue;
       case TendonBase.boneIdPropertyKey:
@@ -3183,6 +3201,8 @@ class RiveCoreContext {
         return (object as TransitionValueStringComparatorBase).value;
       case OpenUrlEventBase.urlPropertyKey:
         return (object as OpenUrlEventBase).url;
+      case DataConverterBase.namePropertyKey:
+        return (object as DataConverterBase).name;
       case BindablePropertyStringBase.propertyValuePropertyKey:
         return (object as BindablePropertyStringBase).propertyValue;
       case TextValueRunBase.textPropertyKey:
@@ -4377,6 +4397,11 @@ class RiveCoreContext {
           object.flags = value;
         }
         break;
+      case DataBindBase.converterIdPropertyKey:
+        if (object is DataBindBase) {
+          object.converterId = value;
+        }
+        break;
       case BindablePropertyEnumBase.propertyValuePropertyKey:
         if (object is BindablePropertyEnumBase) {
           object.propertyValue = value;
@@ -4560,6 +4585,11 @@ class RiveCoreContext {
       case OpenUrlEventBase.urlPropertyKey:
         if (object is OpenUrlEventBase) {
           object.url = value;
+        }
+        break;
+      case DataConverterBase.namePropertyKey:
+        if (object is DataConverterBase) {
+          object.name = value;
         }
         break;
       case BindablePropertyStringBase.propertyValuePropertyKey:

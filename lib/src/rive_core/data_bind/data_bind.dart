@@ -49,10 +49,12 @@ class DataBind extends DataBindBase {
   }
 
   @override
-  // ignore: override_on_non_overriding_member
   void targetIdChanged(int from, int to) {
     // TODO: @hernan implement nameChanged
   }
+
+  @override
+  void converterIdChanged(int from, int to) {}
 
   @override
   void flagsChanged(int from, int to) {}

@@ -58,12 +58,38 @@ abstract class DataBindBase<T extends CoreContext> extends Core<T> {
 
   void flagsChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// ConverterId field with key 660.
+  static const int converterIdPropertyKey = 660;
+  static const int converterIdInitialValue = -1;
+  int _converterId = converterIdInitialValue;
+
+  /// Identifier used to link to a data converter.
+  int get converterId => _converterId;
+
+  /// Change the [_converterId] field value.
+  /// [converterIdChanged] will be invoked only if the field's value has
+  /// changed.
+  set converterId(int value) {
+    if (_converterId == value) {
+      return;
+    }
+    int from = _converterId;
+    _converterId = value;
+    if (hasValidated) {
+      converterIdChanged(from, value);
+    }
+  }
+
+  void converterIdChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is DataBindBase) {
       _propertyKey = source._propertyKey;
       _flags = source._flags;
+      _converterId = source._converterId;
     }
   }
 }

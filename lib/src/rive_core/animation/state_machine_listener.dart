@@ -12,7 +12,9 @@ import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/animation/state_machine_listener_base.dart';
 
-enum ListenerType { enter, exit, down, up, move, event }
+enum ListenerType { enter, exit, down, up, move, event, click }
+
+enum GestureClickPhase { out, down, clicked }
 
 class StateMachineListener extends StateMachineListenerBase {
   final ListenerActions actions = ListenerActions();
