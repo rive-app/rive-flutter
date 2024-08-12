@@ -480,6 +480,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     HashMap<Shape, _HitShape> hitShapeLookup = HashMap<Shape, _HitShape>();
     for (final event in stateMachine.listeners) {
       if (event is StateMachineListener) {
+        if (event.listenerType == ListenerType.event) {
+          continue;
+        }
         // Resolve target on this artboard instance.
         var node = core.resolve<Node>(event.targetId);
         if (node == null) {
