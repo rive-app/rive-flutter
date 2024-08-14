@@ -784,6 +784,10 @@ class _ListenerGroup {
     _isHovered = true;
   }
 
+  void unhover() {
+    _isHovered = false;
+  }
+
   void reset() {
     _isConsumed = false;
     _prevIsHovered = _isHovered;
@@ -901,6 +905,17 @@ class _HitShape extends _HitComponent {
     for (final listenerGroup in listenerGroups) {
       if (listenerGroup.isConsumed()) {
         continue;
+      }
+      // Because each group is tested individually for its hover state, a group
+      // could be marked "incorrectly" as hovered at this point.
+      // But once we iterate each element in the drawing order, that group can
+      // be occluded by an opaque target on top  of it.
+      // So although it is hovered in isolation, it shouldn't be considered as
+      // hovered in the full context.
+      // In this case, we unhover the group so it is not marked as previously
+      // hovered.
+      if (!canHit && listenerGroup.isHovered()) {
+        listenerGroup.unhover();
       }
       final isGroupHovered = canHit && listenerGroup.isHovered();
       bool hoverChange = listenerGroup.prevHovered() != isGroupHovered;
