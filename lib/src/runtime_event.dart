@@ -14,7 +14,7 @@ import 'package:rive/src/rive_core/open_url_target.dart';
 ///
 /// For specific event types.
 ///
-/// Documentation: https://help.rive.app/runtimes/rive-events
+/// Documentation: https://rive.app/community/doc/rive-events/docbOnaeffgr
 @immutable
 class RiveEvent {
   final String name;

@@ -15,7 +15,7 @@ import 'package:http/http.dart' as http;
 ///
 /// See `custom_cached_asset_loading.dart` for an example of this.
 ///
-/// See: https://help.rive.app/runtimes/loading-assets
+/// See: https://rive.app/community/doc/loading-assets/doct4wVHGPgC
 class CustomAssetLoading extends StatefulWidget {
   const CustomAssetLoading({Key? key}) : super(key: key);
 

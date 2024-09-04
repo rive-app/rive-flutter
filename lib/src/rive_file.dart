@@ -338,7 +338,7 @@ class RiveFile {
   /// Whether an assets is embedded/cdn/referenced is determined by the Rive
   /// file - as set in the editor.
   ///
-  /// Loading assets documentation: https://help.rive.app/runtimes/loading-assets
+  /// Loading assets documentation: https://rive.app/community/doc/loading-assets/doct4wVHGPgC
   /// {@endtemplate}
   ///
   /// Provide an [objectGenerator] if you want to override any built-in Rive

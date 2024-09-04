@@ -389,7 +389,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
   /// Adds a Rive event listener to this controller.
   ///
-  /// Documentation: https://help.rive.app/runtimes/rive-events
+  /// Documentation: https://rive.app/community/doc/rive-events/docbOnaeffgr
   void addEventListener(OnEvent callback) => _eventListeners.add(callback);
 
   /// Removes listener from this controller.

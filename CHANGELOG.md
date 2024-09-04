@@ -76,7 +76,7 @@
 
 ## 0.12.3
 
-- Support for Nested Inputs and Nested Events. See the docs on [Nested Artboards](https://help.rive.app/editor/fundamentals/nested-artboards).
+- Support for Nested Inputs and Nested Events. See the docs on [Nested Artboards](https://rive.app/community/doc/nested-artboards/docL5SnBgUng).
 
 ## 0.12.2
 
@@ -89,7 +89,7 @@
 
 ## 0.12.0
 
-- BREAKING: Changes to `assetLoader` in `RiveFile`. See the Rive docs on [Loading Assets](https://help.rive.app/runtimes/loading-assets) for updated examples.
+- BREAKING: Changes to `assetLoader` in `RiveFile`. See the Rive docs on [Loading Assets](https://rive.app/community/doc/loading-assets/doct4wVHGPgC) for updated examples.
 
 ## 0.11.17
 
