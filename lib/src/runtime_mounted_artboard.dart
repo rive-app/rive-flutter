@@ -94,6 +94,12 @@ class RuntimeMountedArtboard extends MountedArtboard {
   void artboardHeightOverride(double height, int heightUnitValue, bool isRow) {}
 
   @override
+  void artboardWidthIntrinsicallySizeOverride(bool intrinsic) {}
+
+  @override
+  void artboardHeightIntrinsicallySizeOverride(bool intrinsic) {}
+
+  @override
   double get originalArtboardWidth => originalArtboardInstanceSize.width;
 
   @override
