@@ -1,3 +1,7 @@
+## 0.13.14
+
+- Reduce audio polling and unneeded runtime calculations around audio. Resolves issue [411](https://github.com/rive-app/rive-flutter/issues/411)
+
 ## 0.13.13
 
 - Update Android `minSdkVersion` from 16 to 19

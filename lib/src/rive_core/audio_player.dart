@@ -5,14 +5,10 @@ import 'package:rive/src/rive_core/assets/audio_asset.dart';
 import 'package:rive_common/rive_audio.dart';
 
 class AudioPlayer {
-  final ValueNotifier<Duration> time = ValueNotifier(Duration.zero);
-  final ValueNotifier<double> normalizedTime = ValueNotifier(0);
   final ValueNotifier<bool> isPlaying = ValueNotifier(false);
   AudioEngine? _engine;
   AudioEngine? get engine => _engine;
   final List<AudioSound> _sounds = [];
-  int _soundStartTime = 0;
-  Duration _soundDuration = Duration.zero;
 
   Timer? _timer;
 
@@ -69,10 +65,7 @@ class AudioPlayer {
       sound.volume = volume;
     }
     _sounds.add(sound);
-    _soundDuration = source.duration;
-    _soundStartTime = engineTime -
-        (startTime.inMicroseconds * 1e-6 * engine.sampleRate).round();
-    _timer ??= Timer.periodic(const Duration(milliseconds: 0), _frameCallback);
+    _timer ??= Timer.periodic(const Duration(seconds: 1), _frameCallback);
   }
 
   bool playSource(AudioAsset? audio) {
@@ -92,7 +85,7 @@ class AudioPlayer {
       sound.volume = audio?.volume ?? 1;
     }
     _sounds.add(sound);
-    _timer ??= Timer.periodic(const Duration(milliseconds: 0), _frameCallback);
+    _timer ??= Timer.periodic(const Duration(seconds: 1), _frameCallback);
     return true;
   }
 
@@ -101,13 +94,6 @@ class AudioPlayer {
     if (engine == null) {
       return;
     }
-    var elapsedAudioFrames = engine.timeInFrames - _soundStartTime;
-    time.value = Duration(
-        microseconds: (elapsedAudioFrames / engine.sampleRate / 1e-6).floor());
-    normalizedTime.value = _soundDuration == Duration.zero
-        ? 0
-        : (time.value.inMicroseconds / _soundDuration.inMicroseconds)
-            .clamp(0, 1);
 
     var completed = _sounds.where((sound) => sound.completed).toList();
 
@@ -115,14 +101,16 @@ class AudioPlayer {
     for (final sound in completed) {
       sound.dispose();
     }
+    if (_sounds.isEmpty) {
+      _timer?.cancel();
+      _timer = null;
+    }
   }
 
   void stop() {
     isPlaying.value = false;
     _timer?.cancel();
     _timer = null;
-    time.value = Duration.zero;
-    normalizedTime.value = 0;
     for (final sound in _sounds) {
       sound.stop();
       sound.dispose();
