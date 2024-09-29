@@ -20,6 +20,9 @@ class RiveAnimation extends StatefulWidget {
   /// The asset name or url
   final String? name;
 
+  /// The package name where the asset is located
+  final String? package;
+
   /// The Rive File object
   final RiveFile? file;
 
@@ -85,6 +88,7 @@ class RiveAnimation extends StatefulWidget {
     this.fit,
     this.alignment,
     this.placeHolder,
+    this.package,
     this.antialiasing = true,
     this.useArtboardSize = false,
     this.clipRect,
@@ -124,6 +128,7 @@ class RiveAnimation extends StatefulWidget {
     Key? key,
   })  : name = url,
         file = null,
+        package = null,
         src = _Source.network,
         super(key: key);
 
@@ -152,6 +157,7 @@ class RiveAnimation extends StatefulWidget {
   })  : name = path,
         file = null,
         headers = null,
+        package = null,
         src = _Source.file,
         super(key: key);
 
@@ -180,6 +186,7 @@ class RiveAnimation extends StatefulWidget {
     this.behavior = RiveHitTestBehavior.opaque,
   })  : name = null,
         headers = null,
+        package = null,
         objectGenerator = null,
         src = _Source.direct,
         super(key: key);
@@ -216,8 +223,12 @@ class RiveAnimationState extends State<RiveAnimation> {
   Future<RiveFile> _loadRiveFile() {
     switch (widget.src) {
       case _Source.asset:
+        String assetLocation = widget.package == null
+            ? widget.name!
+            : 'packages/${widget.package}/${widget.name!}';
+
         return RiveFile.asset(
-          widget.name!,
+          assetLocation,
           objectGenerator: widget.objectGenerator,
         );
       case _Source.network:
@@ -244,6 +255,7 @@ class RiveAnimationState extends State<RiveAnimation> {
 
     if (widget.name != oldWidget.name ||
         widget.file != oldWidget.file ||
+        widget.package != oldWidget.package ||
         widget.src != oldWidget.src) {
       _configure(); // Rife file has changed
     } else if (_requiresInit(oldWidget)) {
