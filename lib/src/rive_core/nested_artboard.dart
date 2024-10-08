@@ -63,7 +63,7 @@ abstract class MountedArtboard {
   void artboardWidthIntrinsicallySizeOverride(bool intrinsic);
   void artboardHeightIntrinsicallySizeOverride(bool intrinsic);
   void dispose();
-  void dataContextFromInstance(ViewModelInstance viewModelInstance,
+  void setDataContextFromInstance(ViewModelInstance viewModelInstance,
       DataContext? dataContextValue, bool isRoot);
   void internalDataContext(DataContext dataContextValue,
       DataContext? parentDataContext, bool isRoot);
