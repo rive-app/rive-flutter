@@ -2308,6 +2308,16 @@ class RiveCoreContext {
           object.originValue = value;
         }
         break;
+      case TextBase.wrapValuePropertyKey:
+        if (object is TextBase && value is int) {
+          object.wrapValue = value;
+        }
+        break;
+      case TextBase.verticalAlignValuePropertyKey:
+        if (object is TextBase && value is int) {
+          object.verticalAlignValue = value;
+        }
+        break;
       case TextValueRunBase.styleIdPropertyKey:
         if (object is TextValueRunBase && value is int) {
           object.styleId = value;
@@ -2563,6 +2573,8 @@ class RiveCoreContext {
       case TextBase.sizingValuePropertyKey:
       case TextBase.overflowValuePropertyKey:
       case TextBase.originValuePropertyKey:
+      case TextBase.wrapValuePropertyKey:
+      case TextBase.verticalAlignValuePropertyKey:
       case TextValueRunBase.styleIdPropertyKey:
       case FileAssetBase.assetIdPropertyKey:
       case AudioEventBase.assetIdPropertyKey:
@@ -3151,6 +3163,10 @@ class RiveCoreContext {
         return (object as TextBase).overflowValue;
       case TextBase.originValuePropertyKey:
         return (object as TextBase).originValue;
+      case TextBase.wrapValuePropertyKey:
+        return (object as TextBase).wrapValue;
+      case TextBase.verticalAlignValuePropertyKey:
+        return (object as TextBase).verticalAlignValue;
       case TextValueRunBase.styleIdPropertyKey:
         return (object as TextValueRunBase).styleId;
       case FileAssetBase.assetIdPropertyKey:
@@ -4480,6 +4496,16 @@ class RiveCoreContext {
       case TextBase.originValuePropertyKey:
         if (object is TextBase) {
           object.originValue = value;
+        }
+        break;
+      case TextBase.wrapValuePropertyKey:
+        if (object is TextBase) {
+          object.wrapValue = value;
+        }
+        break;
+      case TextBase.verticalAlignValuePropertyKey:
+        if (object is TextBase) {
+          object.verticalAlignValue = value;
         }
         break;
       case TextValueRunBase.styleIdPropertyKey:

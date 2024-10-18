@@ -28,6 +28,7 @@ enum TextOverflow {
   hidden,
   clipped,
   ellipsis,
+  fit,
 }
 
 enum TextOrigin {
@@ -35,9 +36,18 @@ enum TextOrigin {
   baseline,
 }
 
+enum VerticalTextAlign {
+  top,
+  bottom,
+  middle,
+}
+
 class Text extends TextBase with TextStyleContainer implements Sizable {
+  Path? _clipRenderPath;
+
   double? _layoutWidth;
   double? _layoutHeight;
+  Mat2D _transform = Mat2D();
 
   double get effectiveWidth => _layoutWidth ?? super.width;
   double get effectiveHeight => _layoutHeight ?? super.height;
@@ -203,6 +213,8 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         ),
       );
 
+  double verticalAlignOffset = 0;
+
   AABB _bounds = AABB.collapsed(Vec2D());
   // Size _size = Size.zero;
   Size get size => Size(_bounds.width, _bounds.height);
@@ -251,8 +263,12 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   }
 
   final List<rive.TextStyle> _renderStyles = [];
-
+  Size _measuredSizeMax = Size.zero;
+  Size _measuredSize = Size.zero;
   Size _measure(Size maxSize) {
+    if (_measuredSizeMax == maxSize) {
+      return _measuredSize;
+    }
     var defaultFont = _defaultFont;
     if (defaultFont == null) {
       return Size.zero;
@@ -265,13 +281,16 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     _cleanupShapes.add(shape);
 
     var lines = shape.breakLines(
-        min(maxSize.width,
-            sizing == TextSizing.autoWidth ? double.infinity : width),
-        align);
+        min(maxSize.width, sizing == TextSizing.autoWidth ? -1 : width),
+        align,
+        wrap);
 
     double y = 0;
+    double computedHeight = 0;
     double minY = 0;
     var paragraphIndex = 0;
+    int ellipsisLine = -1;
+
     double maxWidth = 0;
     if (textOrigin == TextOrigin.baseline &&
         lines.isNotEmpty &&
@@ -280,7 +299,12 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
       minY = y;
     }
 
+    var wantEllipsis = overflow == TextOverflow.ellipsis &&
+        sizing == TextSizing.fixed &&
+        verticalAlign == VerticalTextAlign.top;
+
     // We iterate in a pre-path building pass to compute dimensions.
+    outer:
     for (final paragraphLines in lines) {
       final paragraph = shape.paragraphs[paragraphIndex++];
       for (final line in paragraphLines) {
@@ -288,6 +312,15 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         if (width > maxWidth) {
           maxWidth = width;
         }
+        if (wantEllipsis && y + line.bottom > maxSize.height) {
+          if (ellipsisLine == -1) {
+            // Nothing fits, just show the first line and ellipse it.
+            computedHeight = y + line.bottom;
+          }
+          break outer;
+        }
+        ellipsisLine++;
+        computedHeight = y + line.bottom;
       }
 
       if (paragraphLines.isNotEmpty) {
@@ -304,7 +337,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
           0.0,
           minY,
           maxWidth,
-          max(minY, y - paragraphSpacing),
+          max(minY, computedHeight),
         );
         break;
       case TextSizing.autoHeight:
@@ -312,7 +345,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
           0.0,
           minY,
           width,
-          max(minY, y - paragraphSpacing),
+          max(minY, computedHeight),
         );
         break;
       case TextSizing.fixed:
@@ -325,7 +358,10 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         break;
     }
     lines.dispose();
-    return Size(bounds.width.ceilToDouble(), bounds.height.ceilToDouble());
+
+    _measuredSizeMax = maxSize;
+    return _measuredSize = Size(min(maxSize.width, bounds.width.ceilToDouble()),
+        min(maxSize.height, bounds.height.ceilToDouble()));
   }
 
   void _buildRenderStyles() {
@@ -355,7 +391,8 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     // If we want an ellipsis we need to find the line to put the
     // ellipsis on (line before the one that overflows).
     var wantEllipsis = overflow == TextOverflow.ellipsis &&
-        effectiveSizing == TextSizing.fixed;
+        effectiveSizing == TextSizing.fixed &&
+        verticalAlign == VerticalTextAlign.top;
 
     // We iterate in a pre-path building pass to compute dimensions.
     int lastLineIndex = -1;
@@ -378,6 +415,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
 
       y += paragraphSpacing;
     }
+    final totalHeight = y;
     if (wantEllipsis && ellipsisLine == -1) {
       // Nothing fits, just show the first line and ellipse it.
       ellipsisLine = 0;
@@ -421,36 +459,103 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         break;
     }
 
-    y = -_bounds.height * originY;
+    verticalAlignOffset = 0;
+    switch (verticalAlign) {
+      case VerticalTextAlign.middle:
+        verticalAlignOffset = (totalHeight - _bounds.height) / 2;
+        break;
+      case VerticalTextAlign.bottom:
+        verticalAlignOffset = totalHeight - _bounds.height;
+        break;
+      default:
+        break;
+    }
+
+    if (overflow == TextOverflow.clipped) {
+      if (_clipRenderPath != null) {
+        _clipRenderPath?.reset();
+      } else {
+        _clipRenderPath = Path();
+      }
+      _clipRenderPath?.addRect(localBounds.rect.translate(
+          _bounds.width * originX,
+          verticalAlignOffset + _bounds.height * originY));
+    } else {
+      _clipRenderPath?.reset();
+      _clipRenderPath = null;
+    }
+
+    y = 0;
     if (textOrigin == TextOrigin.baseline &&
         lines.isNotEmpty &&
         lines.first.isNotEmpty) {
       y -= lines.first.first.baseline;
     }
     paragraphIndex = 0;
+    double minX = double.maxFinite;
+    bool drawLine = true;
 
     outer:
     for (final paragraphLines in lines) {
       final paragraph = shape.paragraphs[paragraphIndex++];
       for (final line in paragraphLines) {
+        drawLine = true;
         switch (overflow) {
           case TextOverflow.hidden:
-            if (effectiveSizing == TextSizing.fixed &&
-                y + line.bottom > effectiveHeight) {
-              break outer;
+            if (effectiveSizing == TextSizing.fixed) {
+              switch (verticalAlign) {
+                case VerticalTextAlign.top:
+                  if (y + line.bottom > effectiveHeight) {
+                    break outer;
+                  }
+                  break;
+                case VerticalTextAlign.middle:
+                  if (y + line.top < totalHeight / 2 - effectiveHeight / 2) {
+                    drawLine = false;
+                  }
+                  if (y + line.bottom > totalHeight / 2 + effectiveHeight / 2) {
+                    drawLine = false;
+                    break outer;
+                  }
+                  break;
+                case VerticalTextAlign.bottom:
+                  if (y + line.top < totalHeight - effectiveHeight) {
+                    continue;
+                  }
+                  break;
+              }
             }
             break;
           case TextOverflow.clipped:
-            if (effectiveSizing == TextSizing.fixed &&
-                y + line.top > effectiveHeight) {
-              break outer;
+            if (effectiveSizing == TextSizing.fixed) {
+              switch (verticalAlign) {
+                case VerticalTextAlign.top:
+                  if (y + line.top > effectiveHeight) {
+                    break outer;
+                  }
+                  break;
+                case VerticalTextAlign.middle:
+                  if (y + line.bottom < totalHeight / 2 - effectiveHeight / 2) {
+                    drawLine = false;
+                  }
+                  if (y + line.top > totalHeight / 2 + effectiveHeight / 2) {
+                    break outer;
+                  }
+                  break;
+                case VerticalTextAlign.bottom:
+                  if (y + line.bottom < totalHeight - effectiveHeight) {
+                    drawLine = false;
+                  }
+                  break;
+              }
             }
             break;
           default:
             break;
         }
 
-        double x = -_bounds.width * originX + line.startX;
+        double x = line.startX;
+        minX = min(x, minX);
         for (final glyphInfo in lineIndex == ellipsisLine
             ? line.glyphsWithEllipsis(
                 effectiveWidth,
@@ -496,8 +601,10 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
                 }
               }
             }
-            if (style.addPath(renderPath, opacity)) {
-              _renderStyles.add(style);
+            if (drawLine) {
+              if (style.addPath(renderPath, opacity)) {
+                _renderStyles.add(style);
+              }
             }
           }
 
@@ -513,6 +620,45 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
       }
       y += paragraphSpacing;
     }
+    double scale = 1;
+    double xOffset = -_bounds.width * originX;
+    double yOffset = -_bounds.height * originY;
+    if (overflow == TextOverflow.fit) {
+      double xScale =
+          (effectiveSizing != TextSizing.autoWidth && maxWidth > _bounds.width)
+              ? _bounds.width / maxWidth
+              : 1;
+      double baseline = lines[0][0].baseline;
+      double yScale =
+          (effectiveSizing == TextSizing.fixed && totalHeight > _bounds.height)
+              ? (_bounds.height - baseline) / (totalHeight - baseline)
+              : 1;
+      if (xScale != 1 || yScale != 1) {
+        scale = max(0, xScale > yScale ? yScale : xScale);
+        yOffset += baseline * (1 - scale);
+        switch (align) {
+          case TextAlign.center:
+            xOffset += (_bounds.width - maxWidth * scale) / 2 - minX * scale;
+            break;
+          case TextAlign.right:
+            xOffset += _bounds.width - maxWidth * scale - minX * scale;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+    if (verticalAlignValue != VerticalTextAlign.top.index) {
+      if (effectiveSizing == TextSizing.fixed) {
+        yOffset = -_bounds.height * originY;
+        if (verticalAlignValue == VerticalTextAlign.middle.index) {
+          yOffset += (_bounds.height - totalHeight * scale) / 2;
+        } else if (verticalAlignValue == VerticalTextAlign.bottom.index) {
+          yOffset += _bounds.height - totalHeight * scale;
+        }
+      }
+    }
+    _transform = Mat2D.fromScaleAndTranslation(scale, scale, xOffset, yOffset);
   }
 
   @override
@@ -527,8 +673,9 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
       canvas.save();
     }
     canvas.transform(worldTransform.mat4);
-    if (overflow == TextOverflow.clipped) {
-      canvas.clipRect(localBounds.rect); //Offset.zero & size);
+    canvas.transform(_transform.mat4);
+    if (overflow == TextOverflow.clipped && _clipRenderPath != null) {
+      canvas.clipPath(_clipRenderPath!);
     }
     for (final style in _renderStyles) {
       style.draw(canvas);
@@ -537,6 +684,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   }
 
   void markShapeDirty({bool sendToLayout = true}) {
+    _measuredSizeMax = Size.zero;
     _disposeShape();
     addDirt(ComponentDirt.path);
     for (final group in _modifierGroups) {
@@ -545,17 +693,21 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     markWorldTransformDirty();
 
     if (sendToLayout) {
-      for (ContainerComponent? p = parent; p != null; p = p.parent) {
-        if (p is LayoutComponent) {
-          p.markLayoutNodeDirty();
-          // break;
-        }
+      _markLayoutNodeDirty();
+    }
+  }
+
+  void _markLayoutNodeDirty() {
+    for (ContainerComponent? p = parent; p != null; p = p.parent) {
+      if (p is LayoutComponent) {
+        p.markLayoutNodeDirty();
       }
     }
   }
 
   /// Called when a modifier causes the text's shape to change.
   void modifierShapeDirty() {
+    _measuredSizeMax = Size.zero;
     _disposeShape();
     addDirt(ComponentDirt.path);
   }
@@ -564,9 +716,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   static Font? _defaultFont;
   int _unicharCount = 0;
 
-  void markPaintDirty() {
-    addDirt(ComponentDirt.paint);
-  }
+  void markPaintDirty() => addDirt(ComponentDirt.paint);
 
   void computeShape() {
     markPaintDirty();
@@ -599,7 +749,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         _modifierStyledText!.value,
         _modifierStyledText!.runs,
       );
-      _modifierLines = _modifierShape?.breakLines(breakWidth, align);
+      _modifierLines = _modifierShape?.breakLines(breakWidth, align, wrap);
       _glyphLookup = GlyphLookup.fromShape(
           _modifierShape!, _modifierStyledText!.value.length);
       _unicharCount = _modifierStyledText!.value.length;
@@ -623,7 +773,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     );
     _unicharCount = styled.value.length;
     _cleanupShapes.add(_shape!);
-    _lines = _shape?.breakLines(breakWidth, align);
+    _lines = _shape?.breakLines(breakWidth, align, wrap);
 
     // If we did not pre-compute the range then we can do it now.
     if (!precomputeModifierCoverage && haveModifiers && _shape != null) {
@@ -691,6 +841,11 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     markShapeDirty();
   }
 
+  @override
+  void verticalAlignValueChanged(int from, int to) {
+    markShapeDirty();
+  }
+
   TextAlign get align => enumAt(TextAlign.values, alignValue);
   set align(TextAlign value) => alignValue = value.index;
 
@@ -704,10 +859,15 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   TextSizing get sizing => TextSizing.values[sizingValue];
   TextSizing get effectiveSizing =>
       _layoutHeight != null ? TextSizing.fixed : TextSizing.values[sizingValue];
+  TextWrap get wrap => TextWrap.values[wrapValue];
 
   set sizing(TextSizing value) => sizingValue = value.index;
   TextOverflow get overflow {
     return enumAt(TextOverflow.values, overflowValue);
+  }
+
+  VerticalTextAlign get verticalAlign {
+    return enumAt(VerticalTextAlign.values, verticalAlignValue);
   }
 
   set overflow(TextOverflow value) => overflowValue = value.index;
@@ -728,7 +888,14 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   void overflowValueChanged(int from, int to) {
     if (sizing != TextSizing.autoWidth) {
       markShapeDirty();
+    } else {
+      markPaintDirty();
     }
+  }
+
+  @override
+  void wrapValueChanged(int from, int to) {
+    markShapeDirty();
   }
 
   @override

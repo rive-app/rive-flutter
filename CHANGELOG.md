@@ -1,3 +1,8 @@
+## 0.13.15
+
+- Fix audio crashing iOS
+- Add new text resizing and layout features. Resolves [422](https://github.com/rive-app/rive-flutter/issues/422).
+
 ## 0.13.14
 
 - Reduce audio polling and unneeded runtime calculations around audio. Resolves issue [411](https://github.com/rive-app/rive-flutter/issues/411)
