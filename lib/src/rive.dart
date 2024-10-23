@@ -94,6 +94,11 @@ class Rive extends LeafRenderObjectWidget {
   /// {@endtemplate}
   final Rect? clipRect;
 
+  /// A multiplier for controlling the speed of the Rive animation playback.
+  ///
+  /// Default `1.0`.
+  final double speedMultiplier;
+
   const Rive({
     required this.artboard,
     super.key,
@@ -105,6 +110,7 @@ class Rive extends LeafRenderObjectWidget {
     this.fit = BoxFit.contain,
     this.alignment = Alignment.center,
     this.clipRect,
+    this.speedMultiplier = 1.0,
   });
 
   @override
@@ -121,7 +127,8 @@ class Rive extends LeafRenderObjectWidget {
       ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
       ..cursor = cursor
-      ..behavior = behavior;
+      ..behavior = behavior
+      ..speedMultiplier = speedMultiplier;
   }
 
   @override
@@ -139,12 +146,14 @@ class Rive extends LeafRenderObjectWidget {
       ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
       ..cursor = cursor
-      ..behavior = behavior;
+      ..behavior = behavior
+      ..speedMultiplier = speedMultiplier;
   }
 }
 
 class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   RuntimeArtboard _artboard;
+  double _speedMultiplier = 1;
   RiveRenderObject(
     this._artboard, {
     this.behavior = RiveHitTestBehavior.opaque,
@@ -165,6 +174,14 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
     _artboard = value as RuntimeArtboard;
     _artboard.redraw.addListener(scheduleRepaint);
     markNeedsLayout();
+  }
+
+  double get speedMultiplier => _speedMultiplier;
+
+  set speedMultiplier(double value) {
+    if (value != _speedMultiplier) {
+      _speedMultiplier = value;
+    }
   }
 
   /// Local offset to global artboard position
@@ -333,7 +350,8 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
 
   @override
   bool advance(double elapsedSeconds) =>
-      _artboard.isPlaying && _artboard.advance(elapsedSeconds, nested: true);
+      _artboard.isPlaying &&
+      _artboard.advance(elapsedSeconds * _speedMultiplier, nested: true);
 
   @override
   void beforeDraw(Canvas canvas, Offset offset) {
