@@ -100,6 +100,9 @@ class RuntimeMountedArtboard extends MountedArtboard {
   void artboardHeightIntrinsicallySizeOverride(bool intrinsic) {}
 
   @override
+  void updateLayoutBounds(bool animate) {}
+
+  @override
   double get originalArtboardWidth => originalArtboardInstanceSize.width;
 
   @override
