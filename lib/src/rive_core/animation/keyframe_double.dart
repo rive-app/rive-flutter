@@ -14,6 +14,11 @@ void _apply(
 }
 
 class KeyFrameDouble extends KeyFrameDoubleBase {
+
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  @override
+  K? clone<K extends Core>() => this as K;
+
   @override
   void apply(Core<CoreContext> object, int propertyKey, double mix) =>
       _apply(object, propertyKey, mix, value);

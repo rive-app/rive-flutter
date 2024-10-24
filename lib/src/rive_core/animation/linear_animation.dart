@@ -14,6 +14,28 @@ class LinearAnimation extends LinearAnimationBase {
   /// object is keyed in this animation.
   final _keyedObjects = HashMap<int, KeyedObject>();
 
+  // static int _objectCount = 0;
+  // static final List<LinearAnimation> _all = <LinearAnimation>[];
+  // static void dump() {
+  //   log('DUMPING LINEAR ANIMATIONS all=${_all.length} keyed=${_all.where((a) => a._keyedObjects.isNotEmpty).length} keys=${_all.map((a) => a._keyedObjects.length).sum}');
+  //   // log(_all.where((a) => a._keyedObjects.isNotEmpty).map((a) => a.toString()).join('\n'));
+  // }
+  //
+  // final int count = ++_objectCount;
+  // late final bool logging = count < 4500 && count % 500 == 0;
+  //
+  // @override
+  // String toString() => 'LinearAnimation[$name, $count, ${_keyedObjects.length}]';
+  //
+  // LinearAnimation() {
+  //
+  //   _all.add(this);
+  //   if (logging) {
+  //     log('CONSTRUCTED >> $this');
+  //     debugPrintStack();
+  //   }
+  // }
+
   /// The metadata for the objects that are keyed in this animation.
   Iterable<KeyedObject> get keyedObjects => _keyedObjects.values;
 
@@ -22,6 +44,12 @@ class LinearAnimation extends LinearAnimationBase {
   bool internalAddKeyedObject(KeyedObject object) {
     if (internalCheckAddKeyedObject(object)) {
       _keyedObjects[object.objectId] = object;
+
+      // if (logging) {// && _keyedObjects.length % 1 == 0) {
+      //   log('ADDING KEY-OBJECT >> $this');
+      //   debugPrintStack();
+      // }
+
       return true;
     }
     return false;
@@ -42,13 +70,16 @@ class LinearAnimation extends LinearAnimationBase {
       objects.any((element) => _keyedObjects.containsKey(element.id));
 
   bool isObjectKeyed(Core object) => _keyedObjects.containsKey(object.id);
+
   bool removeObjectKeys(Core object) {
     var value = _keyedObjects[object.id];
     if (value == null) {
       return false;
     }
     bool found = false;
-    for (final kp in value.keyedProperties) {
+    // for (final kp in value.keyedProperties) {
+    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+    for (final kp in value.properties) {
       for (final kf in kp.keyframes.toList()) {
         kf.remove();
         found = true;
@@ -73,6 +104,9 @@ class LinearAnimation extends LinearAnimationBase {
   /// Returns the start time of the animation in seconds, considering speed
   double get startTime => (speed >= 0) ? startSeconds : endSeconds;
 
+  /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+  late final List<KeyedObject> _objects = _keyedObjects.values.toList(growable: false);
+
   void reportKeyedCallbacks(
     double secondsFrom,
     double secondsTo, {
@@ -88,7 +122,9 @@ class LinearAnimation extends LinearAnimationBase {
     // Do not report a callback twice if it comes from the "pong" part of a
     // "ping pong" loop
     if (!isAtStartFrame || !fromPong) {
-      for (final keyedObject in _keyedObjects.values) {
+      // for (final keyedObject in _keyedObjects.values) {
+      /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+      for (final keyedObject in _objects) {
         keyedObject.reportKeyedCallbacks(
           secondsFrom,
           secondsTo,
@@ -110,7 +146,9 @@ class LinearAnimation extends LinearAnimationBase {
       // ignore: parameter_assignments
       time = (time * fps).floor() / fps;
     }
-    for (final keyedObject in _keyedObjects.values) {
+    // for (final keyedObject in _keyedObjects.values) {
+    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
+    for (final keyedObject in _objects) {
       keyedObject.apply(time, mix, coreContext);
     }
   }
