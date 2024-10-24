@@ -44,15 +44,14 @@ class DataBind extends DataBindBase {
   void updateSourceBinding() {}
 
   @override
-  void propertyKeyChanged(int from, int to) {
-    // TODO: @hernan implement propertyKeyChanged
-  }
+  void propertyKeyChanged(int from, int to) {}
 
   @override
   // ignore: override_on_non_overriding_member
-  void targetIdChanged(int from, int to) {
-    // TODO: @hernan implement nameChanged
-  }
+  void targetIdChanged(int from, int to) {}
+
+  @override
+  void converterIdChanged(int from, int to) {}
 
   @override
   void flagsChanged(int from, int to) {}

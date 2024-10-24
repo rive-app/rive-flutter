@@ -1,3 +1,21 @@
+## 0.13.15
+
+- Fix audio crashing iOS
+- Add new text resizing and layout features. Resolves [422](https://github.com/rive-app/rive-flutter/issues/422).
+
+## 0.13.14
+
+- Reduce audio polling and unneeded runtime calculations around audio. Resolves issue [411](https://github.com/rive-app/rive-flutter/issues/411)
+
+## 0.13.13
+
+- Update Android `minSdkVersion` from 16 to 19
+- Update `kotlin_version` from '1.6.10' to '1.7.10'
+- Specify the Android NDK version Rive should use by setting `rive.ndk.version` in `gradle.properties`. For example: `rive.ndk.version=26.3.11579264`. See issue [398](https://github.com/rive-app/rive-flutter/issues/398).
+- Expand supported `web` package range to `web: ">=0.5.1 <2.0.0"`. Resolves issues [413](https://github.com/rive-app/rive-flutter/issues/413) and [415](https://github.com/rive-app/rive-flutter/issues/415).
+- Fix iOS audio issue, see [416](https://github.com/rive-app/rive-flutter/issues/416)
+- Various other fixes and improvements to support new Editor features
+
 ## 0.13.12
 
 - Fix [410](https://github.com/rive-app/rive-flutter/issues/410) Rive not compatible with Flutter web.
@@ -67,7 +85,7 @@
 
 ## 0.12.3
 
-- Support for Nested Inputs and Nested Events. See the docs on [Nested Artboards](https://help.rive.app/editor/fundamentals/nested-artboards).
+- Support for Nested Inputs and Nested Events. See the docs on [Nested Artboards](https://rive.app/community/doc/nested-artboards/docL5SnBgUng).
 
 ## 0.12.2
 
@@ -80,7 +98,7 @@
 
 ## 0.12.0
 
-- BREAKING: Changes to `assetLoader` in `RiveFile`. See the Rive docs on [Loading Assets](https://help.rive.app/runtimes/loading-assets) for updated examples.
+- BREAKING: Changes to `assetLoader` in `RiveFile`. See the Rive docs on [Loading Assets](https://rive.app/community/doc/loading-assets/doct4wVHGPgC) for updated examples.
 
 ## 0.11.17
 

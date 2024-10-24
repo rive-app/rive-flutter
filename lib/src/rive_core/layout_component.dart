@@ -10,6 +10,8 @@ import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/layout/layout_component_style.dart';
 import 'package:rive/src/rive_core/node.dart';
+import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
+import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
@@ -36,7 +38,7 @@ class LayoutAnimationData {
   LayoutAnimationData(this.fromBounds, this.toBounds);
 }
 
-class LayoutComponent extends LayoutComponentBase {
+class LayoutComponent extends LayoutComponentBase with ShapePaintContainer {
   bool _forceUpdateLayoutBounds = false;
 
   LayoutComponentStyle? _style;
@@ -137,6 +139,33 @@ class LayoutComponent extends LayoutComponentBase {
         style?.animationStyle != LayoutAnimationStyle.none &&
         interpolation != LayoutStyleInterpolation.hold &&
         interpolationTime > 0;
+  }
+
+  @override
+  void onPaintMutatorChanged(ShapePaintMutator mutator) {
+    // The transform affects stroke property may have changed as we have a new
+    // mutator.
+    paintChanged();
+  }
+
+  @override
+  void onStrokesChanged() => paintChanged();
+
+  @override
+  void onFillsChanged() => paintChanged();
+
+  void paintChanged() {
+    addDirt(ComponentDirt.path);
+
+    // Add world transform dirt to the direct dependents (don't recurse) as
+    // things like ClippingShape directly depend on their referenced Shape. This
+    // allows them to recompute any stored values which can change when the
+    // transformAffectsStroke property changes (whether the path is in world
+    // space or not). Consider using a different dirt type if this pattern is
+    // repeated.
+    for (final d in dependents) {
+      d.addDirt(ComponentDirt.worldTransform);
+    }
   }
 
   void markLayoutNodeDirty() {

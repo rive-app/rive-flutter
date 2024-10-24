@@ -88,6 +88,21 @@ class RuntimeMountedArtboard extends MountedArtboard {
   }
 
   @override
+  void artboardWidthOverride(double width, int widthUnitValue, bool isRow) {}
+
+  @override
+  void artboardHeightOverride(double height, int heightUnitValue, bool isRow) {}
+
+  @override
+  void artboardWidthIntrinsicallySizeOverride(bool intrinsic) {}
+
+  @override
+  void artboardHeightIntrinsicallySizeOverride(bool intrinsic) {}
+
+  @override
+  void updateLayoutBounds(bool animate) {}
+
+  @override
   double get originalArtboardWidth => originalArtboardInstanceSize.width;
 
   @override
@@ -138,9 +153,9 @@ class RuntimeMountedArtboard extends MountedArtboard {
   }
 
   @override
-  void dataContextFromInstance(ViewModelInstance viewModelInstance,
+  void setDataContextFromInstance(ViewModelInstance viewModelInstance,
       DataContext? dataContextValue, bool isRoot) {
-    artboardInstance.dataContextFromInstance(
+    artboardInstance.setDataContextFromInstance(
         viewModelInstance, dataContextValue, isRoot);
   }
 

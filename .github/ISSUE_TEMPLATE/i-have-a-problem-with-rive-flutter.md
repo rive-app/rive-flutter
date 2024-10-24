@@ -12,10 +12,12 @@ assignees: ''
 If something isn't working like you expected, please:
 - Make sure you've updated rive-flutter to the latest version:
 			https://pub.dev/packages/rive/versions
-- Check out our help center
-			https://help.rive.app/
+- Check out our documentation
+			https://rive.app/community/doc
+- Get help on our forums
+			https://rive.app/community/forums/home				
 - You can file a new feature request at
-			https://feedback.rive.app/
+			https://rive.app/community/forums/feature-requests/fsnweJpNLqIh
 			
 If you think you found a bug or if you can't find what you're looking for 
 in our docs, fill out the template below.
@@ -35,7 +37,7 @@ Steps to reproduce the behavior:
 #### Source `.riv`/`.rev` file
 <-- 
 Attaching runtime-exported `.riv` file that reproduces the issue is immensely helpful for our team to identify the problem as fast as possible and fix it.
-Please also include the source (`.rev`) by [downloading a backup](https://help.rive.app/editor/exporting#for-backup) from the Editor. 
+Please also include the source (`.rev`) by [downloading a backup](https://rive.app/community/doc/exporting/dockj1y5YeDd#for-backup) from the Editor. 
 	
 N.B. Because GitHub only supports certain file types use a ZIP archive to upload `.riv`/`.rev` files to this issue.
 

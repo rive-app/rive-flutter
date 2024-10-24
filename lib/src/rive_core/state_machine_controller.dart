@@ -389,7 +389,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
   /// Adds a Rive event listener to this controller.
   ///
-  /// Documentation: https://help.rive.app/runtimes/rive-events
+  /// Documentation: https://rive.app/community/doc/rive-events/docbOnaeffgr
   void addEventListener(OnEvent callback) => _eventListeners.add(callback);
 
   /// Removes listener from this controller.
@@ -447,6 +447,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       });
 
   late List<_HitComponent> hitComponents = [];
+  final List<_ListenerGroup> listenerGroups = [];
 
   Artboard? _artboard;
 
@@ -479,11 +480,16 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     HashMap<Shape, _HitShape> hitShapeLookup = HashMap<Shape, _HitShape>();
     for (final event in stateMachine.listeners) {
       if (event is StateMachineListener) {
+        if (event.listenerType == ListenerType.event) {
+          continue;
+        }
         // Resolve target on this artboard instance.
         var node = core.resolve<Node>(event.targetId);
         if (node == null) {
           continue;
         }
+        _ListenerGroup listenerGroup = _ListenerGroup(event);
+        listenerGroups.add(listenerGroup);
 
         node.forAll((component) {
           if (component is Shape) {
@@ -491,7 +497,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
             if (hitShape == null) {
               hitShapeLookup[component] = hitShape = _HitShape(component, this);
             }
-            hitShape.addEvent(event);
+            hitShape.addListener(listenerGroup);
           }
           // Keep iterating so we find all shapes.
           return true;
@@ -653,6 +659,12 @@ class StateMachineController extends RiveAnimationController<CoreContext>
           );
     }
 
+    for (final listenerGroup in listenerGroups) {
+      listenerGroup.reset();
+    }
+    for (final hitComponent in hitComponents) {
+      hitComponent.prepareEvent(position, hitEvent);
+    }
     bool hitSomething = false;
     bool hitOpaque = false;
     HitResult hitResult = HitResult.none;
@@ -755,6 +767,49 @@ enum HitResult {
   hitOpaque,
 }
 
+class _ListenerGroup {
+  final StateMachineListener listener;
+  bool _isConsumed = false;
+  bool _isHovered = false;
+  bool _prevIsHovered = false;
+  GestureClickPhase clickPhase = GestureClickPhase.out;
+  final Vec2D previousPosition = Vec2D();
+
+  _ListenerGroup(this.listener);
+  void consume() {
+    _isConsumed = true;
+  }
+
+  void hover() {
+    _isHovered = true;
+  }
+
+  void unhover() {
+    _isHovered = false;
+  }
+
+  void reset() {
+    _isConsumed = false;
+    _prevIsHovered = _isHovered;
+    _isHovered = false;
+    if (clickPhase == GestureClickPhase.clicked) {
+      clickPhase = GestureClickPhase.out;
+    }
+  }
+
+  bool isConsumed() {
+    return _isConsumed;
+  }
+
+  bool isHovered() {
+    return _isHovered;
+  }
+
+  bool prevHovered() {
+    return _prevIsHovered;
+  }
+}
+
 class _HitComponent {
   final Component component;
   final StateMachineController controller;
@@ -766,6 +821,8 @@ class _HitComponent {
   }) {
     return HitResult.none;
   }
+
+  void prepareEvent(Vec2D position, ListenerType? hitType) {}
 
   bool hitTest(Vec2D position) {
     return false;
@@ -784,8 +841,7 @@ class _HitShape extends _HitComponent {
   bool canEarlyOut = true;
   bool hasDownListener = false;
   bool hasUpListener = false;
-  final Vec2D previousPosition = Vec2D();
-  List<StateMachineListener> events = [];
+  List<_ListenerGroup> listenerGroups = [];
 
   _HitShape(this.shape, StateMachineController controller)
       : super(shape, controller) {
@@ -814,6 +870,23 @@ class _HitShape extends _HitComponent {
   }
 
   @override
+  void prepareEvent(Vec2D position, ListenerType? hitType) {
+    if (canEarlyOut &&
+        (hitType != ListenerType.down || !hasDownListener) &&
+        (hitType != ListenerType.up || !hasUpListener)) {
+      return;
+    }
+    isHovered = hitTest(position);
+
+    // iterate all listeners associated with this hit shape
+    if (isHovered) {
+      for (final listenerGroup in listenerGroups) {
+        listenerGroup.hover();
+      }
+    }
+  }
+
+  @override
   HitResult processEvent(
     Vec2D position, {
     PointerEvent? pointerEvent,
@@ -825,59 +898,102 @@ class _HitShape extends _HitComponent {
         (hitEvent != ListenerType.up || !hasUpListener)) {
       return HitResult.none;
     }
+
     var shape = component as Shape;
-    var isOver = false;
-    if (canHit) {
-      isOver = hitTest(position);
-    }
-    bool hoverChange = isHovered != isOver;
-    isHovered = isOver;
-    if (hoverChange && isHovered) {
-      previousPosition.x = position.x;
-      previousPosition.y = position.y;
-    }
 
     // iterate all events associated with this hit shape
-    for (final event in events) {
-      // Always update hover states regardless of which specific event type
-      // we're trying to trigger.
-      if (hoverChange) {
-        if (isOver && event.listenerType == ListenerType.enter) {
-          event.performChanges(controller, position, previousPosition);
-          controller.isActive = true;
-        } else if (!isOver && event.listenerType == ListenerType.exit) {
-          event.performChanges(controller, position, previousPosition);
-          controller.isActive = true;
+    for (final listenerGroup in listenerGroups) {
+      if (listenerGroup.isConsumed()) {
+        continue;
+      }
+      // Because each group is tested individually for its hover state, a group
+      // could be marked "incorrectly" as hovered at this point.
+      // But once we iterate each element in the drawing order, that group can
+      // be occluded by an opaque target on top  of it.
+      // So although it is hovered in isolation, it shouldn't be considered as
+      // hovered in the full context.
+      // In this case, we unhover the group so it is not marked as previously
+      // hovered.
+      if (!canHit && listenerGroup.isHovered()) {
+        listenerGroup.unhover();
+      }
+      final isGroupHovered = canHit && listenerGroup.isHovered();
+      bool hoverChange = listenerGroup.prevHovered() != isGroupHovered;
+      // If hover has changes, it means that the element is hovered for the
+      // first time. Previous positions need to be reset to avoid jumps.
+      if (hoverChange && isGroupHovered) {
+        listenerGroup.previousPosition.x = position.x;
+        listenerGroup.previousPosition.y = position.y;
+      }
+      // Handle click gesture phases. A click gesture has two phases.
+      // First one attached to a pointer down actions, second one attached to a
+      // pointer up action. Both need to act on a shape of the listener group.
+      if (isGroupHovered) {
+        if (hitEvent == ListenerType.down) {
+          listenerGroup.clickPhase = GestureClickPhase.down;
+        } else if (hitEvent == ListenerType.up &&
+            listenerGroup.clickPhase == GestureClickPhase.down) {
+          listenerGroup.clickPhase = GestureClickPhase.clicked;
+        }
+      } else {
+        if (hitEvent == ListenerType.down || hitEvent == ListenerType.up) {
+          listenerGroup.clickPhase = GestureClickPhase.out;
         }
       }
-      if (isOver && hitEvent == event.listenerType) {
-        event.performChanges(controller, position, previousPosition);
+      // Always update hover states regardless of which specific event type
+      // we're trying to trigger.
+      // If hover has changed and:
+      // - it's hovering and the listener is of type enter
+      // - it's not hovering and the listener is of type exit
+      final listener = listenerGroup.listener;
+      if (hoverChange &&
+          ((isGroupHovered && listener.listenerType == ListenerType.enter) ||
+              (!isGroupHovered &&
+                  listener.listenerType == ListenerType.exit))) {
+        listener.performChanges(
+            controller, position, listenerGroup.previousPosition);
         controller.isActive = true;
+        listenerGroup.consume();
       }
+      // Perform changes if:
+      // - the click gesture is complete and the listener is of type click
+      // - the event type matches the listener type and it is hovering the group
+      if ((listenerGroup.clickPhase == GestureClickPhase.clicked &&
+              listener.listenerType == ListenerType.click) ||
+          (isGroupHovered && hitEvent == listener.listenerType)) {
+        listener.performChanges(
+            controller, position, listenerGroup.previousPosition);
+        controller.isActive = true;
+        listenerGroup.consume();
+      }
+      listenerGroup.previousPosition.x = position.x;
+      listenerGroup.previousPosition.y = position.y;
     }
-    previousPosition.x = position.x;
-    previousPosition.y = position.y;
-    return isOver
+    return isHovered && canHit
         ? shape.isTargetOpaque
             ? HitResult.hitOpaque
             : HitResult.hit
         : HitResult.none;
   }
 
-  void addEvent(StateMachineListener event) {
-    final listenerType = event.listenerType;
+  void addListener(_ListenerGroup listenerGroup) {
+    final listener = listenerGroup.listener;
+    final listenerType = listener.listenerType;
     if (listenerType == ListenerType.enter ||
         listenerType == ListenerType.exit ||
         listenerType == ListenerType.move) {
       canEarlyOut = false;
     } else {
-      if (listenerType == ListenerType.down) {
+      if (listenerType == ListenerType.down ||
+          listenerType == ListenerType.click) {
         hasDownListener = true;
-      } else if (listenerType == ListenerType.up) {
+      }
+      if (listenerType == ListenerType.up ||
+          listenerType == ListenerType.click) {
         hasUpListener = true;
       }
     }
-    events.add(event);
+    listenerGroups.add(listenerGroup);
   }
 }
 

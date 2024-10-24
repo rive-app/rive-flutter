@@ -24,19 +24,23 @@ public:
     {
         unsigned int width;
         unsigned int height;
-        Size(unsigned int width, unsigned int height) : width(width), height(height) {}
+        Size(unsigned int width, unsigned int height) :
+            width(width), height(height)
+        {}
     };
 
     Win32Window();
     virtual ~Win32Window();
 
     // Creates and shows a win32 window with |title| and position and size using
-    // |origin| and |size|. New windows are created on the default monitor. Window
-    // sizes are specified to the OS in physical pixels, hence to ensure a
-    // consistent size to will treat the width height passed in to this function
-    // as logical pixels and scale to appropriate for the default monitor. Returns
-    // true if the window was created successfully.
-    bool CreateAndShow(const std::wstring& title, const Point& origin, const Size& size);
+    // |origin| and |size|. New windows are created on the default monitor.
+    // Window sizes are specified to the OS in physical pixels, hence to ensure
+    // a consistent size to will treat the width height passed in to this
+    // function as logical pixels and scale to appropriate for the default
+    // monitor. Returns true if the window was created successfully.
+    bool CreateAndShow(const std::wstring& title,
+                       const Point& origin,
+                       const Size& size);
 
     // Release OS resources associated with window.
     void Destroy();

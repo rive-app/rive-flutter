@@ -75,7 +75,7 @@ abstract class TextBase extends Drawable {
   static const int overflowValueInitialValue = 0;
   int _overflowValue = overflowValueInitialValue;
 
-  /// One of visible, hidden, clipped, ellipsis.
+  /// One of visible, hidden, clipped, ellipsis, fit.
   int get overflowValue => _overflowValue;
 
   /// Change the [_overflowValue] field value.
@@ -238,6 +238,53 @@ abstract class TextBase extends Drawable {
 
   void originValueChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// WrapValue field with key 683.
+  static const int wrapValuePropertyKey = 683;
+  static const int wrapValueInitialValue = 0;
+  int _wrapValue = wrapValueInitialValue;
+
+  /// One of wrap, no-wrap
+  int get wrapValue => _wrapValue;
+
+  /// Change the [_wrapValue] field value.
+  /// [wrapValueChanged] will be invoked only if the field's value has changed.
+  set wrapValue(int value) {
+    if (_wrapValue == value) {
+      return;
+    }
+    int from = _wrapValue;
+    _wrapValue = value;
+    if (hasValidated) {
+      wrapValueChanged(from, value);
+    }
+  }
+
+  void wrapValueChanged(int from, int to);
+
+  /// --------------------------------------------------------------------------
+  /// VerticalAlignValue field with key 685.
+  static const int verticalAlignValuePropertyKey = 685;
+  static const int verticalAlignValueInitialValue = 0;
+  int _verticalAlignValue = verticalAlignValueInitialValue;
+  int get verticalAlignValue => _verticalAlignValue;
+
+  /// Change the [_verticalAlignValue] field value.
+  /// [verticalAlignValueChanged] will be invoked only if the field's value has
+  /// changed.
+  set verticalAlignValue(int value) {
+    if (_verticalAlignValue == value) {
+      return;
+    }
+    int from = _verticalAlignValue;
+    _verticalAlignValue = value;
+    if (hasValidated) {
+      verticalAlignValueChanged(from, value);
+    }
+  }
+
+  void verticalAlignValueChanged(int from, int to);
+
   @override
   void copy(Core source) {
     super.copy(source);
@@ -251,6 +298,8 @@ abstract class TextBase extends Drawable {
       _originY = source._originY;
       _paragraphSpacing = source._paragraphSpacing;
       _originValue = source._originValue;
+      _wrapValue = source._wrapValue;
+      _verticalAlignValue = source._verticalAlignValue;
     }
   }
 }

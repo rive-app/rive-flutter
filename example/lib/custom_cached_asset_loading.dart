@@ -15,7 +15,7 @@ import 'package:rive/rive.dart';
 /// The example also shows how to swap out the assets multiple times by
 /// keeping a reference to the asset and swapping it out.
 ///
-/// See: https://help.rive.app/runtimes/loading-assets
+/// See: https://rive.app/community/doc/loading-assets/doct4wVHGPgC
 class CustomCachedAssetLoading extends StatefulWidget {
   const CustomCachedAssetLoading({Key? key}) : super(key: key);
 
