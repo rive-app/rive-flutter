@@ -628,7 +628,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
           (effectiveSizing != TextSizing.autoWidth && maxWidth > _bounds.width)
               ? _bounds.width / maxWidth
               : 1;
-      double baseline = lines[0][0].baseline;
+      double baseline = fitFromBaseline ? lines[0][0].baseline : 0;
       double yScale =
           (effectiveSizing == TextSizing.fixed && totalHeight > _bounds.height)
               ? (_bounds.height - baseline) / (totalHeight - baseline)
@@ -843,6 +843,11 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
 
   @override
   void verticalAlignValueChanged(int from, int to) {
+    markShapeDirty();
+  }
+
+  @override
+  void fitFromBaselineChanged(bool from, bool to) {
     markShapeDirty();
   }
 

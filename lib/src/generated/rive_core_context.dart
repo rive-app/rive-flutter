@@ -2318,6 +2318,11 @@ class RiveCoreContext {
           object.verticalAlignValue = value;
         }
         break;
+      case TextBase.fitFromBaselinePropertyKey:
+        if (object is TextBase && value is bool) {
+          object.fitFromBaseline = value;
+        }
+        break;
       case TextValueRunBase.styleIdPropertyKey:
         if (object is TextValueRunBase && value is int) {
           object.styleId = value;
@@ -2420,6 +2425,7 @@ class RiveCoreContext {
       case LayoutComponentBase.clipPropertyKey:
       case BindablePropertyBooleanBase.propertyValuePropertyKey:
       case TextModifierRangeBase.clampPropertyKey:
+      case TextBase.fitFromBaselinePropertyKey:
         return boolType;
       case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
       case ViewModelInstanceListItemBase.viewModelInstanceIdPropertyKey:
@@ -2853,6 +2859,8 @@ class RiveCoreContext {
         return (object as BindablePropertyBooleanBase).propertyValue;
       case TextModifierRangeBase.clampPropertyKey:
         return (object as TextModifierRangeBase).clamp;
+      case TextBase.fitFromBaselinePropertyKey:
+        return (object as TextBase).fitFromBaseline;
     }
     return false;
   }
@@ -3731,6 +3739,11 @@ class RiveCoreContext {
       case TextModifierRangeBase.clampPropertyKey:
         if (object is TextModifierRangeBase) {
           object.clamp = value;
+        }
+        break;
+      case TextBase.fitFromBaselinePropertyKey:
+        if (object is TextBase) {
+          object.fitFromBaseline = value;
         }
         break;
     }
