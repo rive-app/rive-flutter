@@ -14,7 +14,7 @@ dependencies:
   rive:
     path: ../
   http:
-  url_launcher: ^6.1.14
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
