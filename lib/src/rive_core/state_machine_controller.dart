@@ -420,6 +420,16 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     return false;
   }
 
+  bool tryChangeState() {
+    bool didChangeState = false;
+    for (final layer in layerControllers) {
+      if (layer.updateState(true)) {
+        didChangeState = true;
+      }
+    }
+    return didChangeState;
+  }
+
   void _clearLayerControllers() {
     for (final layer in layerControllers) {
       layer.dispose();
