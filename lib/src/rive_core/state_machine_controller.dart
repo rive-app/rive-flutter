@@ -640,7 +640,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       var riveEvents = <RiveEvent>[];
 
       for (final event in events) {
-        if (event is AudioEvent) {
+        if (event is AudioEvent && event.asset != null) {
           event.play(audioPlayer);
         }
         riveEvents.add(RiveEvent.fromCoreEvent(event));

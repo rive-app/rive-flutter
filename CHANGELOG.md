@@ -1,3 +1,7 @@
+## 0.13.16
+
+- Avoid audio init on empty assets. See PR [431](https://github.com/rive-app/rive-flutter/pull/431).
+
 ## 0.13.15
 
 - Fix audio crashing iOS
