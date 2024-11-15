@@ -1,3 +1,7 @@
+## 0.13.17
+
+- Expose `speedMultiplier` on the `RiveAnimation` and `Rive` widgets. With this you can adjust the playback speed of an animation or state machine. Thanks [tguerin](https://github.com/tguerin) for the contribution. See [423](https://github.com/rive-app/rive-flutter/pull/423)
+
 ## 0.13.16
 
 - Avoid audio init on empty assets. See PR [431](https://github.com/rive-app/rive-flutter/pull/431).
