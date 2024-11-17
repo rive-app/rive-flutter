@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:rive/src/asset_loader.dart';
+import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/core/field_types/core_field_type.dart';
 import 'package:rive/src/core/importers/viewmodel_instance_importer.dart';
@@ -12,8 +12,6 @@ import 'package:rive/src/generated/animation/any_state_base.dart';
 import 'package:rive/src/generated/animation/blend_state_transition_base.dart';
 import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
-import 'package:rive/src/generated/assets/font_asset_base.dart';
-import 'package:rive/src/generated/nested_artboard_base.dart';
 import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/local_file_io.dart'
     if (dart.library.js_interop) 'package:rive/src/local_file_web.dart';
@@ -22,23 +20,15 @@ import 'package:rive/src/rive_core/animation/blend_state_direct.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
-import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
-import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer_component.dart';
 import 'package:rive/src/rive_core/animation/state_machine_listener.dart';
 import 'package:rive/src/rive_core/animation/state_transition.dart';
-import 'package:rive/src/rive_core/artboard.dart';
-import 'package:rive/src/rive_core/assets/audio_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
-import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
-import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
-import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive_common/rive_text.dart';
 import 'package:rive_common/utilities.dart';
 
@@ -113,7 +103,6 @@ class RiveFile {
 
   Backboard _backboard = Backboard.unknown;
   final _artboards = <Artboard>[];
-  final FileAssetLoader? _assetLoader;
 
   // List of core file types
   static final indexToField = <CoreFieldType>[
@@ -162,20 +151,61 @@ class RiveFile {
     return false;
   }
 
+  late final List<Core<CoreContext>?> _objectCache;
+  bool _cached = false;
+  bool _enableCloning = false;
+
+  RiveFile._cached(
+    this.header,
+    this._objectCache,
+    ObjectGenerator? generator,
+    FileAssetLoader? assetLoader,
+  ) {
+    _cached = true;
+    _import(null, generator, assetLoader);
+  }
+
   RiveFile._(
     BinaryReader reader,
     this.header,
     ObjectGenerator? generator,
-    this._assetLoader,
+    FileAssetLoader? assetLoader,
+    this._enableCloning,
   ) {
+    _objectCache = [];
+    _import(reader, generator, assetLoader);
+  }
+
+  void _import(
+    BinaryReader? reader,
+    ObjectGenerator? generator,
+    FileAssetLoader? assetLoader,
+  ) {
+    assert((reader == null && _cached) || (reader != null && !_cached),
+        'Reader must be null when using cache');
+
     /// Property fields table of contents
     final propertyToField = _propertyToFieldLookup(header);
 
     int artboardId = 0;
     var artboardLookup = HashMap<int, Artboard>();
     var importStack = ImportStack();
-    while (!reader.isEOF) {
-      final object = _readRuntimeObject(reader, propertyToField, generator);
+    int cacheIndex = 0;
+    final context = RuntimeArtboard();
+    while ((!_cached && !reader!.isEOF) ||
+        (_cached && cacheIndex < _objectCache.length)) {
+      Core<CoreContext>? object;
+      if (!_cached) {
+        object = _readRuntimeObject(reader!, propertyToField, generator);
+        if (_enableCloning) {
+          object?.context = context;
+          _objectCache.add(object?.clone());
+        }
+      } else {
+        object = _objectCache[cacheIndex++];
+        object?.context = context;
+        object = object?.clone();
+      }
       if (object == null) {
         // See if there's an artboard on the stack, need to track the null
         // object as it'll still hold an id.
@@ -253,7 +283,7 @@ class RiveFile {
           // all these stack objects are resolvers. they get resolved.
           stackObject = FileAssetImporter(
             object as FileAsset,
-            _assetLoader,
+            assetLoader,
           );
           stackType = FileAssetBase.typeKey;
           break;
@@ -325,6 +355,28 @@ class RiveFile {
         }
       }
     }
+    if (_enableCloning) {
+      _cached = true;
+    }
+  }
+
+  RiveFile clone({
+    ObjectGenerator? objectGenerator,
+    FileAssetLoader? assetLoader,
+    bool loadCdnAssets = true,
+  }) {
+    assert(_cached, 'RiveFile is not cached');
+    return RiveFile._cached(
+      header,
+      _objectCache,
+      objectGenerator,
+      FallbackAssetLoader(
+        [
+          if (assetLoader != null) assetLoader,
+          if (loadCdnAssets) CDNAssetLoader(),
+        ],
+      ),
+    );
   }
 
   /// Imports a Rive file from an array of bytes.
@@ -351,6 +403,7 @@ class RiveFile {
     FileAssetLoader? assetLoader,
     ObjectGenerator? objectGenerator,
     bool loadCdnAssets = true,
+    bool enableCloning = false,
   }) {
     // TODO: in the next major version add an assert here to make this a
     // requirement
@@ -371,6 +424,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
           if (loadCdnAssets) CDNAssetLoader(),
         ],
       ),
+      enableCloning,
     );
   }
 
@@ -408,6 +462,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
     ObjectGenerator? objectGenerator,
+    bool enableCloning = false,
   }) async {
     /// If the file looks like it needs the text runtime, let's load it.
     if (!_initializedText) {
@@ -416,6 +471,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
     return RiveFile.import(
       bytes,
       assetLoader: assetLoader,
+      enableCloning: enableCloning,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
     );
@@ -436,6 +492,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
     ObjectGenerator? objectGenerator,
+    bool enableCloning = false,
   }) async {
     final bytes = await (bundle ?? rootBundle).load(
       bundleKey,
@@ -444,6 +501,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
     return _initTextAndImport(
       bytes,
       assetLoader: assetLoader,
+      enableCloning: enableCloning,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
     );
@@ -463,12 +521,14 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
     ObjectGenerator? objectGenerator,
+    bool enableCloning = false,
   }) async {
     final res = await http.get(Uri.parse(url), headers: headers);
     final bytes = ByteData.view(res.bodyBytes.buffer);
     return _initTextAndImport(
       bytes,
       assetLoader: assetLoader,
+      enableCloning: enableCloning,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
     );

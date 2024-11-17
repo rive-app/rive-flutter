@@ -193,6 +193,38 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   }
 
   @override
+  K? clone<K extends Core>() {
+    var artboard = RuntimeArtboard();
+    artboard.context = artboard;
+    artboard.frameOrigin = frameOrigin;
+    artboard.copy(this);
+    // First copy the objects ensuring onAddedDirty can later find them in the
+    // _objects list.
+    for (final object in _objects) {
+      Core? clone = object?.clone();
+      artboard.addObject(clone);
+    }
+
+    // Then run the onAddedDirty loop.
+    for (final object in artboard.objects) {
+      if (object is Component &&
+          object.parentId == ComponentBase.parentIdInitialValue) {
+        object.parent = artboard;
+      }
+      object?.onAddedDirty();
+    }
+    animations.forEach(artboard.animations.add);
+    for (final object in artboard.objects.toList(growable: false)) {
+      if (object == null) {
+        continue;
+      }
+      object.onAdded();
+      InternalCoreHelper.markValid(object);
+    }
+    return artboard as K;
+  }
+
+  @override
   Artboard instance() {
     var artboard = RuntimeArtboard();
     artboard.context = artboard;
