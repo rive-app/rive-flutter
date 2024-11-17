@@ -133,8 +133,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   int _dirtDepth = 0;
 
   /// Iterate each component and call callback for it.
-  void forEachComponent(void Function(Component) callback) =>
-      _components.forEach(callback);
+  void forEachComponent(void Function(Component) callback) {
+    _components.forEach(callback);
+  }
 
   /// Find a component of a specific type with a specific name.
   T? component<T>(String name) {

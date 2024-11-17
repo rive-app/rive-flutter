@@ -4,4 +4,6 @@ import 'package:rive_common/utilities.dart';
 abstract class CoreFieldType<T extends Object> {
   T deserialize(BinaryReader reader);
   void skip(BinaryReader reader) => deserialize(reader);
+
+  // const CoreFieldType();
 }
