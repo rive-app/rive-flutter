@@ -1,3 +1,7 @@
+## 0.13.18
+
+- Bump to latest `rive_common`, v0.4.13. Resolves [issues building rive_common downstream](https://github.com/rive-app/rive-flutter/issues/354#issuecomment-2491004291).
+
 ## 0.13.17
 
 - Expose `speedMultiplier` on the `RiveAnimation` and `Rive` widgets. With this you can adjust the playback speed of an animation or state machine. Thanks [tguerin](https://github.com/tguerin) for the contribution. See [423](https://github.com/rive-app/rive-flutter/pull/423)
