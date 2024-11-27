@@ -122,7 +122,6 @@ do
         'HB_NO_BITMAP',
         'HB_NO_BUFFER_SERIALIZE',
         'HB_NO_SETLOCALE',
-        'HB_NO_STYLE',
         'HB_NO_VERTICAL',
         'HB_NO_LAYOUT_COLLECT_GLYPHS',
         'HB_NO_LAYOUT_RARELY_USED',
@@ -197,6 +196,8 @@ do
         harfbuzz .. '/src/hb-subset.cc',
         harfbuzz .. '/src/hb-ucd.cc',
         harfbuzz .. '/src/hb-unicode.cc',
+        harfbuzz .. '/src/hb-style.h',
+        harfbuzz .. '/src/hb-style.cc',
     })
 
     links({ 'rive_sheenbidi' })
