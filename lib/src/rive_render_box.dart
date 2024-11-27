@@ -13,6 +13,7 @@ abstract class RiveRenderBox extends RenderBox {
   Rect? _clipRect;
   bool _tickerModeEnabled = true;
   bool _enableHitTests = false;
+  bool _isTouchScrollEnabled = false;
 
   bool get useArtboardSize => _useArtboardSize;
 
@@ -86,6 +87,14 @@ abstract class RiveRenderBox extends RenderBox {
   set enableHitTests(bool value) {
     if (value != _enableHitTests) {
       _enableHitTests = value;
+    }
+  }
+
+  bool get isTouchScrollEnabled => _isTouchScrollEnabled;
+
+  set isTouchScrollEnabled(bool value) {
+    if (value != _isTouchScrollEnabled) {
+      _isTouchScrollEnabled = value;
     }
   }
 

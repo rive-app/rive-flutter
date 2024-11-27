@@ -466,8 +466,6 @@ class StateMachineController extends RiveAnimationController<CoreContext>
 
   late CoreContext core;
 
-  final _recognizer = ImmediateMultiDragGestureRecognizer();
-
   @override
   bool init(CoreContext core) {
     this.core = core;
@@ -734,9 +732,6 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       hitEvent: ListenerType.down,
       pointerEvent: event,
     );
-    if (hitResult != HitResult.none) {
-      _recognizer.addPointer(event);
-    }
     return hitResult;
   }
 

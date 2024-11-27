@@ -1,3 +1,7 @@
+## Upcoming
+
+- Adds the `isTouchScrollEnabled` property to `RiveAnimation` and `Rive` widgets. When `true` allows scrolling behavior to occur on Rive widgets when a touch/drag action is performed on touch-enabled devices. Defauls to `false`, which means Rive will "absorb" the pointer down event and a scroll cannot be triggered if the touch occured within a Rive Listener area. Setting to `true` will impact Rive's capability to handle multiple gestures simultaneously.
+
 ## 0.13.18
 
 - Bump to latest `rive_common`, v0.4.13. Resolves [issues building rive_common downstream](https://github.com/rive-app/rive-flutter/issues/354#issuecomment-2491004291).
