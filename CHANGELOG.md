@@ -1,3 +1,7 @@
+## 0.13.20
+
+- Fix: Windows/Linux building. Undefined symbol `hb_style_get_value`, see issue [437](https://github.com/rive-app/rive-flutter/issues/437)
+  
 ## 0.13.19
 
 - Adds the `isTouchScrollEnabled` property to `RiveAnimation` and `Rive` widgets. When `true` allows scrolling behavior to occur on Rive widgets when a touch/drag action is performed on touch-enabled devices. Defauls to `false`, which means Rive will "absorb" the pointer down event and a scroll cannot be triggered if the touch occured within a Rive Listener area. Setting to `true` will impact Rive's capability to handle multiple gestures simultaneously.
