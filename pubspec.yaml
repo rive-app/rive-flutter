@@ -13,6 +13,8 @@ environment:
   sdk: ">=2.17.0 <4.0.0"
   flutter: ">=2.5.0"
 
+# see STOKANAL-FORK-EDIT for edits against the fork
+
 dependencies:
   collection: ^1.15.0
   flutter:
