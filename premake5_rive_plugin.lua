@@ -139,6 +139,7 @@ do
     files({
         source .. '/src/renderer.cpp',
         source .. '/src/math/mat2d.cpp',
+        source .. '/src/math/vec2d.cpp',
         source .. '/src/math/raw_path.cpp',
         source .. '/src/text/font_hb.cpp',
         source .. '/src/text/line_breaker.cpp',
