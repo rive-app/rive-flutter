@@ -122,7 +122,6 @@ do
         'HB_NO_BITMAP',
         'HB_NO_BUFFER_SERIALIZE',
         'HB_NO_SETLOCALE',
-        'HB_NO_STYLE',
         'HB_NO_VERTICAL',
         'HB_NO_LAYOUT_COLLECT_GLYPHS',
         'HB_NO_LAYOUT_RARELY_USED',
@@ -140,6 +139,7 @@ do
     files({
         source .. '/src/renderer.cpp',
         source .. '/src/math/mat2d.cpp',
+        source .. '/src/math/vec2d.cpp',
         source .. '/src/math/raw_path.cpp',
         source .. '/src/text/font_hb.cpp',
         source .. '/src/text/line_breaker.cpp',
@@ -197,6 +197,8 @@ do
         harfbuzz .. '/src/hb-subset.cc',
         harfbuzz .. '/src/hb-ucd.cc',
         harfbuzz .. '/src/hb-unicode.cc',
+        harfbuzz .. '/src/hb-style.h',
+        harfbuzz .. '/src/hb-style.cc',
     })
 
     links({ 'rive_sheenbidi' })

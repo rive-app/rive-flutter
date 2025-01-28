@@ -71,6 +71,19 @@ class RiveAnimation extends StatefulWidget {
   /// rendering.
   final ObjectGenerator? objectGenerator;
 
+  /// A multiplier for controlling the speed of the Rive animation playback.
+  ///
+  /// Default `1.0`.
+  final double speedMultiplier;
+
+  /// For Rive Listeners, allows scrolling behavior to still occur on Rive
+  /// widgets when a touch/drag action is performed on touch-enabled devices.
+  /// Otherwise, scroll behavior may be prevented on touch/drag actions on the
+  /// widget by default.
+  ///
+  /// Default `false`.
+  final bool isTouchScrollEnabled;
+
   /// Creates a new [RiveAnimation] from an asset bundle.
   ///
   /// *Example:*
@@ -92,6 +105,8 @@ class RiveAnimation extends StatefulWidget {
     this.onInit,
     this.behavior = RiveHitTestBehavior.opaque,
     this.objectGenerator,
+    this.speedMultiplier = 1,
+    this.isTouchScrollEnabled = false,
     Key? key,
   })  : name = asset,
         file = null,
@@ -121,6 +136,8 @@ class RiveAnimation extends StatefulWidget {
     this.headers,
     this.behavior = RiveHitTestBehavior.opaque,
     this.objectGenerator,
+    this.speedMultiplier = 1,
+    this.isTouchScrollEnabled = false,
     Key? key,
   })  : name = url,
         file = null,
@@ -148,6 +165,8 @@ class RiveAnimation extends StatefulWidget {
     this.onInit,
     this.behavior = RiveHitTestBehavior.opaque,
     this.objectGenerator,
+    this.speedMultiplier = 1,
+    this.isTouchScrollEnabled = false,
     Key? key,
   })  : name = path,
         file = null,
@@ -176,6 +195,8 @@ class RiveAnimation extends StatefulWidget {
     this.clipRect,
     this.controllers = const [],
     this.onInit,
+    this.speedMultiplier = 1,
+    this.isTouchScrollEnabled = false,
     Key? key,
     this.behavior = RiveHitTestBehavior.opaque,
   })  : name = null,
@@ -361,6 +382,8 @@ class RiveAnimationState extends State<RiveAnimation> {
           clipRect: widget.clipRect,
           enablePointerEvents: _shouldAddHitTesting,
           behavior: widget.behavior,
+          speedMultiplier: widget.speedMultiplier,
+          isTouchScrollEnabled: widget.isTouchScrollEnabled,
         )
       : widget.placeHolder ?? const SizedBox();
 }

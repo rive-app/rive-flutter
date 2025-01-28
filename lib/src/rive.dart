@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/src/controllers/state_machine_controller.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+import 'package:rive/src/rive_core/state_machine_controller.dart'
+    show HitResult;
 import 'package:rive/src/rive_render_box.dart';
 import 'package:rive/src/runtime_artboard.dart';
 import 'package:rive_common/math.dart';
@@ -94,6 +96,19 @@ class Rive extends LeafRenderObjectWidget {
   /// {@endtemplate}
   final Rect? clipRect;
 
+  /// A multiplier for controlling the speed of the Rive animation playback.
+  ///
+  /// Default `1.0`.
+  final double speedMultiplier;
+
+  /// For Rive Listeners, allows scrolling behavior to still occur on Rive
+  /// widgets when a touch/drag action is performed on touch-enabled devices.
+  /// Otherwise, scroll behavior may be prevented on touch/drag actions on the
+  /// widget by default.
+  ///
+  /// Default `false`.
+  final bool isTouchScrollEnabled;
+
   const Rive({
     required this.artboard,
     super.key,
@@ -105,6 +120,8 @@ class Rive extends LeafRenderObjectWidget {
     this.fit = BoxFit.contain,
     this.alignment = Alignment.center,
     this.clipRect,
+    this.speedMultiplier = 1.0,
+    this.isTouchScrollEnabled = false,
   });
 
   @override
@@ -121,7 +138,9 @@ class Rive extends LeafRenderObjectWidget {
       ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
       ..cursor = cursor
-      ..behavior = behavior;
+      ..behavior = behavior
+      ..speedMultiplier = speedMultiplier
+      ..isTouchScrollEnabled = isTouchScrollEnabled;
   }
 
   @override
@@ -139,12 +158,15 @@ class Rive extends LeafRenderObjectWidget {
       ..tickerModeEnabled = tickerModeValue
       ..enableHitTests = enablePointerEvents
       ..cursor = cursor
-      ..behavior = behavior;
+      ..behavior = behavior
+      ..speedMultiplier = speedMultiplier
+      ..isTouchScrollEnabled = isTouchScrollEnabled;
   }
 }
 
 class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   RuntimeArtboard _artboard;
+  double _speedMultiplier = 1;
   RiveRenderObject(
     this._artboard, {
     this.behavior = RiveHitTestBehavior.opaque,
@@ -165,6 +187,14 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
     _artboard = value as RuntimeArtboard;
     _artboard.redraw.addListener(scheduleRepaint);
     markNeedsLayout();
+  }
+
+  double get speedMultiplier => _speedMultiplier;
+
+  set speedMultiplier(double value) {
+    if (value != _speedMultiplier) {
+      _speedMultiplier = value;
+    }
   }
 
   /// Local offset to global artboard position
@@ -228,6 +258,20 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
     return false;
   }
 
+  // TODO: A possible alternative to [isTouchScrollEnabled] is to allow
+  // users to set custom recognizers. Or for us to provide
+  // heuristics on whether a Rive graphic has certain gestures:
+  // - Pointer down/up
+  // - Drag
+  // - Scroll
+  // - etc.
+  // With this information we can better decide which recognizers to use,
+  // while optionally allowing end users to override it, or provide custom ones.
+  // Can be considered for `rive_native`.
+  //
+  // https://api.flutter.dev/flutter/gestures/GestureArenaManager-class.html
+  final _recognizer = ImmediateMultiDragGestureRecognizer();
+
   @override
   void handleEvent(PointerEvent event, HitTestEntry entry) {
     assert(debugHandleEvent(event, entry));
@@ -235,11 +279,13 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
       return;
     }
     if (event is PointerDownEvent) {
-      _hitHelper(
-        event,
-        (controller, artboardPosition) =>
-            controller.pointerDown(artboardPosition, event),
-      );
+      _hitHelper(event, (controller, artboardPosition) {
+        final hitResult = controller.pointerDown(artboardPosition, event);
+
+        if (hitResult != HitResult.none && !isTouchScrollEnabled) {
+          _recognizer.addPointer(event);
+        }
+      });
     }
     if (event is PointerUpEvent) {
       _hitHelper(
@@ -321,6 +367,7 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   @override
   void dispose() {
     _artboard.redraw.removeListener(scheduleRepaint);
+    _recognizer.dispose();
     super.dispose();
   }
 
@@ -333,7 +380,8 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
 
   @override
   bool advance(double elapsedSeconds) =>
-      _artboard.isPlaying && _artboard.advance(elapsedSeconds, nested: true);
+      _artboard.isPlaying &&
+      _artboard.advance(elapsedSeconds * _speedMultiplier, nested: true);
 
   @override
   void beforeDraw(Canvas canvas, Offset offset) {

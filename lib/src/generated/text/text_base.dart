@@ -244,7 +244,7 @@ abstract class TextBase extends Drawable {
   static const int wrapValueInitialValue = 0;
   int _wrapValue = wrapValueInitialValue;
 
-  /// One of wrap, no-wrap
+  /// One of wrap, noWrap
   int get wrapValue => _wrapValue;
 
   /// Change the [_wrapValue] field value.
@@ -285,6 +285,29 @@ abstract class TextBase extends Drawable {
 
   void verticalAlignValueChanged(int from, int to);
 
+  /// --------------------------------------------------------------------------
+  /// FitFromBaseline field with key 703.
+  static const int fitFromBaselinePropertyKey = 703;
+  static const bool fitFromBaselineInitialValue = true;
+  bool _fitFromBaseline = fitFromBaselineInitialValue;
+  bool get fitFromBaseline => _fitFromBaseline;
+
+  /// Change the [_fitFromBaseline] field value.
+  /// [fitFromBaselineChanged] will be invoked only if the field's value has
+  /// changed.
+  set fitFromBaseline(bool value) {
+    if (_fitFromBaseline == value) {
+      return;
+    }
+    bool from = _fitFromBaseline;
+    _fitFromBaseline = value;
+    if (hasValidated) {
+      fitFromBaselineChanged(from, value);
+    }
+  }
+
+  void fitFromBaselineChanged(bool from, bool to);
+
   @override
   void copy(Core source) {
     super.copy(source);
@@ -300,6 +323,7 @@ abstract class TextBase extends Drawable {
       _originValue = source._originValue;
       _wrapValue = source._wrapValue;
       _verticalAlignValue = source._verticalAlignValue;
+      _fitFromBaseline = source._fitFromBaseline;
     }
   }
 }

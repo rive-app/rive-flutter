@@ -1,3 +1,24 @@
+## 0.13.20
+
+- Fix: Windows/Linux building. Undefined symbol `hb_style_get_value`, see issue [437](https://github.com/rive-app/rive-flutter/issues/437)
+  
+## 0.13.19
+
+- Adds the `isTouchScrollEnabled` property to `RiveAnimation` and `Rive` widgets. When `true` allows scrolling behavior to occur on Rive widgets when a touch/drag action is performed on touch-enabled devices. Defauls to `false`, which means Rive will "absorb" the pointer down event and a scroll cannot be triggered if the touch occured within a Rive Listener area. Setting to `true` will impact Rive's capability to handle multiple gestures simultaneously.
+- Bump to latest `rive_common`, v0.4.14.
+
+## 0.13.18
+
+- Bump to latest `rive_common`, v0.4.13. Resolves [issues building rive_common downstream](https://github.com/rive-app/rive-flutter/issues/354#issuecomment-2491004291).
+
+## 0.13.17
+
+- Expose `speedMultiplier` on the `RiveAnimation` and `Rive` widgets. With this you can adjust the playback speed of an animation or state machine. Thanks [tguerin](https://github.com/tguerin) for the contribution. See [423](https://github.com/rive-app/rive-flutter/pull/423)
+
+## 0.13.16
+
+- Avoid audio init on empty assets. See PR [431](https://github.com/rive-app/rive-flutter/pull/431).
+
 ## 0.13.15
 
 - Fix audio crashing iOS

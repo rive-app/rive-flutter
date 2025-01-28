@@ -420,6 +420,16 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     return false;
   }
 
+  bool tryChangeState() {
+    bool didChangeState = false;
+    for (final layer in layerControllers) {
+      if (layer.updateState(true)) {
+        didChangeState = true;
+      }
+    }
+    return didChangeState;
+  }
+
   void _clearLayerControllers() {
     for (final layer in layerControllers) {
       layer.dispose();
@@ -455,8 +465,6 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   Artboard? get artboard => _artboard;
 
   late CoreContext core;
-
-  final _recognizer = ImmediateMultiDragGestureRecognizer();
 
   @override
   bool init(CoreContext core) {
@@ -630,7 +638,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       var riveEvents = <RiveEvent>[];
 
       for (final event in events) {
-        if (event is AudioEvent) {
+        if (event is AudioEvent && event.asset != null) {
           event.play(audioPlayer);
         }
         riveEvents.add(RiveEvent.fromCoreEvent(event));
@@ -724,9 +732,6 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       hitEvent: ListenerType.down,
       pointerEvent: event,
     );
-    if (hitResult != HitResult.none) {
-      _recognizer.addPointer(event);
-    }
     return hitResult;
   }
 
