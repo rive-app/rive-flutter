@@ -122,15 +122,16 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   int closestFrameIndex(double seconds, {int exactOffset = 0}) {
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
-    int mid = 0;
-    double closestSeconds = 0;
-    int start = 0;
     int end = _keyframes.length - 1;
 
     // If it's the last keyframe, we skip the binary search
     if (seconds > _keyframes[end].seconds) {
       return end + 1;
     }
+
+    int mid = 0;
+    int start = 0;
+    double closestSeconds = 0;
 
     while (start <= end) {
       mid = (start + end) >> 1;
@@ -146,7 +147,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     return start;
   }
 
-  bool get isCallback => RiveCoreContext.isCallback(propertyKey);
+  bool get isCallback => RiveCoreContext.isCallback(propertyKey_);
 
   /// Report any keyframes that occured between secondsFrom and secondsTo.
   void reportKeyedCallbacks(
@@ -191,7 +192,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
-    if (_keyframes.isEmpty) {
+    if (_keyframes.length == 0) {
       return;
     }
 

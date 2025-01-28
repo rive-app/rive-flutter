@@ -15,35 +15,20 @@ abstract class KeyedCallbackReporter {
 }
 
 class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
-  final HashMap<int, KeyedProperty> _keyedProperties =
-      HashMap<int, KeyedProperty>();
 
-  Iterable<KeyedProperty> get keyedProperties => _keyedProperties.values;
+  final Map<int, KeyedProperty> _keyedProperties = HashMap<int, KeyedProperty>();
 
-  // @override
-  // String toString() => 'KeyedObject[$count]';
+  /// STOKANAL-FORK-EDIT: Keeping a copy of values lazily
+  List<KeyedProperty>? _set;
+  Iterable<KeyedProperty> get keyedProperties =>
+    _set ??= _keyedProperties.values.toList();
 
-  // static int _objectCount = 0;
-  // // static final List<LinearAnimation> _all = <LinearAnimation>[];
-  // // static void dump() {
-  // //   log('DUMPING LINEAR ANIMATIONS all=${_all.length} keyed=${_all.where((a) => a._keyedObjects.isNotEmpty).length} keys=${_all.map((a) => a._keyedObjects.length).sum}');
-  // //   log(_all.where((a) => a._keyedObjects.isNotEmpty).map((a) => a.toString()).join('\n'));
-  // // }
-
-  // final int count = ++_objectCount;
-  // late final bool logging = count % 50000 == 0;
+  // final keyedProperties = <KeyedProperty>{};
+  // Iterable<KeyedProperty> get keyedProperties => _keyedProperties.values;
 
   /// STOKANAL-FORK-EDIT: Reuse this object for every animation
   @override
   K? clone<K extends Core>() => this as K;
-
-  // KeyedObject() {
-  //
-  //   if (logging) {
-  //     log('CONSTRUCTED >> $this');
-  //     debugPrintStack();
-  //   }
-  // }
 
   @override
   void onAddedDirty() {}
@@ -74,6 +59,11 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     }
     _keyedProperties[property.propertyKey] = property;
 
+    if (value != null) {
+      _set?.remove(property);
+    }
+    _set?.add(property);
+
     return true;
   }
 
@@ -81,6 +71,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   /// be @internal when it's supported.
   bool internalRemoveKeyedProperty(KeyedProperty property) {
     var removed = _keyedProperties.remove(property.propertyKey);
+    _set?.remove(removed);
 
     if (_keyedProperties.isEmpty) {
       // Remove this keyed property.
@@ -98,8 +89,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-    for (final keyedProperty
-        in _keyedProperties.values.where((property) => property.isCallback)) {
+    for (final keyedProperty in keyedProperties.where((property) => property.isCallback)) {
       keyedProperty.reportKeyedCallbacks(
         objectId,
         secondsFrom,
@@ -110,9 +100,6 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     }
   }
 
-  /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-  late final List<KeyedProperty> properties = _keyedProperties.values.toList(growable: false);
-
   void apply(
     double time,
     double mix,
@@ -122,9 +109,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     if (object == null) {
       return;
     }
-    // for (final keyedProperty in _keyedProperties.values) {
-    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-    for (final keyedProperty in properties) {
+    for (final keyedProperty in keyedProperties) {
       if (keyedProperty.isCallback) {
         continue;
       }

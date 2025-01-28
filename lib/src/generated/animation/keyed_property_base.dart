@@ -15,20 +15,22 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   /// PropertyKey field with key 53.
   static const int propertyKeyPropertyKey = 53;
   static const int propertyKeyInitialValue = CoreContext.invalidPropertyKey;
-  int _propertyKey = propertyKeyInitialValue;
+
+  /// STOKANAL-FORK-EDIT: exposing
+  int propertyKey_ = propertyKeyInitialValue;
 
   /// The property type that is keyed.
-  int get propertyKey => _propertyKey;
+  int get propertyKey => propertyKey_;
 
-  /// Change the [_propertyKey] field value.
+  /// Change the [propertyKey_] field value.
   /// [propertyKeyChanged] will be invoked only if the field's value has
   /// changed.
   set propertyKey(int value) {
-    if (_propertyKey == value) {
+    if (propertyKey_ == value) {
       return;
     }
-    int from = _propertyKey;
-    _propertyKey = value;
+    int from = propertyKey_;
+    propertyKey_ = value;
     if (hasValidated) {
       propertyKeyChanged(from, value);
     }
@@ -40,7 +42,7 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   void copy(Core source) {
     super.copy(source);
     if (source is KeyedPropertyBase) {
-      _propertyKey = source._propertyKey;
+      propertyKey_ = source.propertyKey_;
     }
   }
 }

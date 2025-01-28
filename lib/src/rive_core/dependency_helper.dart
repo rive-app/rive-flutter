@@ -1,8 +1,8 @@
 class DependencyHelper<T extends dynamic, U extends dynamic> {
 
-  // Set<U> dependents = {};
   /// STOKANAL-FORK-EDIT: make if final
-  final Set<U> dependents = {};
+  // final dependents = <U>{};
+  final dependents = <U>[];
   T? dependencyRoot;
 
   DependencyHelper();
@@ -12,16 +12,20 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
     // if (!dependents.contains(value)) {
     //   dependents.add(value);
 
+    // if (dependents.add(value)) {
+    //   return true;
+    // }
+
     /// STOKANAL-FORK-EDIT: use add directly
-    if (dependents.add(value)) {
-      return true;
+    if (!dependents.contains(value)) {
+      dependents.add(value);
     }
     return false;
   }
 
   void addDirt(int dirt, {bool recurse = false}) {
 
-    /// STOKANAL-FORK-EDIT: dot not use forEach
+    /// STOKANAL-FORK-EDIT: do not use forEach
     for (final dependent in dependents) {
       dependent.addDirt(dirt, recurse: recurse);
     }

@@ -1,6 +1,7 @@
 analyzer:
   errors:
     unused_import: error
+    prefer_is_empty: ignore
   exclude:
     - ios
     - macos
@@ -51,7 +52,8 @@ linter:
     - join_return_with_assignment
     - library_names
     - library_prefixes
-    - lines_longer_than_80_chars
+    # STOKANAL-FORK-EDIT
+#    - lines_longer_than_80_chars
     # - literal_only_boolean_expressions # too many false positives: https://github.com/dart-lang/sdk/issues/34181
     - no_adjacent_strings_in_list
     - no_duplicate_case_values

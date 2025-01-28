@@ -6,6 +6,7 @@ import 'package:rive/src/core/core.dart';
 
 abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 25;
+
   @override
   int get coreType => KeyedObjectBase.typeKey;
   @override

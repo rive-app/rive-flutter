@@ -91,7 +91,7 @@ abstract class TransformComponent extends TransformComponentBase {
       Mat2D.copy(worldTransform, transform);
     }
 
-    if (_constraints.isNotEmpty) {
+    if (_constraints.length > 0) {
       for (final constraint in _constraints) {
         constraint.constrain(this);
       }

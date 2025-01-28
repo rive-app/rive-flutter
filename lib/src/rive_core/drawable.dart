@@ -43,7 +43,7 @@ abstract class Drawable extends DrawableBase {
   List<ClippingShape> _clippingShapes = [];
 
   bool clip(Canvas canvas) {
-    if (_clippingShapes.isEmpty) {
+    if (_clippingShapes.length == 0) {
       return false;
     }
     canvas.save();

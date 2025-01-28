@@ -77,9 +77,8 @@ class LinearAnimation extends LinearAnimationBase {
       return false;
     }
     bool found = false;
-    // for (final kp in value.keyedProperties) {
-    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-    for (final kp in value.properties) {
+
+    for (final kp in value.keyedProperties) {
       for (final kf in kp.keyframes.toList()) {
         kf.remove();
         found = true;
