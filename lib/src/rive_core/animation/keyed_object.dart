@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyed_object_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
@@ -19,12 +20,13 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   final Map<int, KeyedProperty> _keyedProperties = HashMap<int, KeyedProperty>();
 
   /// STOKANAL-FORK-EDIT: Keeping a copy of values lazily
-  List<KeyedProperty>? _set;
+  List<KeyedProperty>? _props;
   Iterable<KeyedProperty> get keyedProperties =>
-    _set ??= _keyedProperties.values.toList();
+    _props ??= _keyedProperties.values.toList();
 
-  // final keyedProperties = <KeyedProperty>{};
-  // Iterable<KeyedProperty> get keyedProperties => _keyedProperties.values;
+  List<KeyedProperty>? _propsNonCallback;
+  Iterable<KeyedProperty> get propsNonCallback =>
+      _propsNonCallback ??= keyedProperties.whereNot((p) => p.isCallback).toList();
 
   /// STOKANAL-FORK-EDIT: Reuse this object for every animation
   @override
@@ -58,11 +60,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
       return false;
     }
     _keyedProperties[property.propertyKey] = property;
-
-    if (value != null) {
-      _set?.remove(property);
-    }
-    _set?.add(property);
+    _propsNonCallback = _props = null;
 
     return true;
   }
@@ -71,7 +69,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   /// be @internal when it's supported.
   bool internalRemoveKeyedProperty(KeyedProperty property) {
     var removed = _keyedProperties.remove(property.propertyKey);
-    _set?.remove(removed);
+    _propsNonCallback = _props = null;
 
     if (_keyedProperties.isEmpty) {
       // Remove this keyed property.
@@ -89,7 +87,12 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-    for (final keyedProperty in keyedProperties.where((property) => property.isCallback)) {
+    for (final keyedProperty in keyedProperties) {
+
+      if (!keyedProperty.isCallback) {
+        continue;
+      }
+
       keyedProperty.reportKeyedCallbacks(
         objectId,
         secondsFrom,
@@ -109,10 +112,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     if (object == null) {
       return;
     }
-    for (final keyedProperty in keyedProperties) {
-      if (keyedProperty.isCallback) {
-        continue;
-      }
+    for (final keyedProperty in propsNonCallback) {
       keyedProperty.apply(time, mix, object);
     }
   }

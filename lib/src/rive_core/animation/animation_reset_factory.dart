@@ -202,7 +202,7 @@ class _AnimationsData {
             animationReset.writePropertyKey(property.propertyKey);
             if (property.isBaseline) {
               animationReset.writeDouble(
-                  (property.property.keyframes.first as KeyFrameDouble).value);
+                  (property.property.keyframes.first as KeyFrameDouble).value_);
             } else {
               animationReset.writeDouble(RiveCoreContext.getDouble(
                   core.resolve(keyedObject.data.objectId),

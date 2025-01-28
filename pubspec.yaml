@@ -14,10 +14,8 @@ topics:
   - widget
   -
 environment:
-#  sdk: ">=2.17.0 <4.0.0"
-  sdk: ">=3.4.0 <4.0.0" # STOKANAL-FORK-EDIT: synced with stokanal
-  flutter: ">=3.24.2" # STOKANAL-FORK-EDIT: synced with stokanal
-#  flutter: ">=2.5.0"
+  sdk: ">=2.17.0 <4.0.0"
+  flutter: ">=2.5.0"
 
 dependencies:
   collection: ^1.15.0

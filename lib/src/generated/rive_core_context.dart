@@ -191,7 +191,7 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_property_viewmodel.dart';
 // ignore: avoid_classes_with_only_static_members
 class RiveCoreContext {
 
-  // static final _counter = <dynamic, IntCapsule>{};
+  // static final _counter = HashMap<dynamic, IntCapsule>();
 
   /// STOKANAL-FORK-EDIT
   static Core? makeCoreInstance(int typeKey) {
@@ -3416,7 +3416,7 @@ class RiveCoreContext {
       case ListenerNumberChangeBase.valuePropertyKey:
         return (object as ListenerNumberChangeBase).value;
       case KeyFrameDoubleBase.valuePropertyKey:
-        return (object as KeyFrameDoubleBase).value;
+        return (object as KeyFrameDoubleBase).value_;
       case TransitionValueNumberComparatorBase.valuePropertyKey:
         return (object as TransitionValueNumberComparatorBase).value;
       case ElasticInterpolatorBase.amplitudePropertyKey:

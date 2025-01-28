@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
@@ -119,7 +121,7 @@ class StateMachineController extends core.StateMachineController
   /// A list of inputs available in the StateMachine.
   Iterable<SMIInput> get inputs => _inputs;
 
-  final _runtimeEventListeners = <OnRuntimeEvent>{};
+  final _runtimeEventListeners = HashSet<OnRuntimeEvent>();//{};
 
   StateMachineController(
     StateMachine stateMachine, {

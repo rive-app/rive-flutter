@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart'
@@ -10,7 +12,7 @@ export 'package:rive/src/runtime_mounted_artboard.dart';
 /// the inputs of the StateMachine.
 class LinearAnimationInstance extends core.LinearAnimationInstance
     with RuntimeEventReporter, KeyedCallbackReporter {
-  final _runtimeEventListeners = <OnRuntimeEvent>{};
+  final _runtimeEventListeners = HashSet<OnRuntimeEvent>(); // {};
   late CoreContext? context;
 
   LinearAnimationInstance(animation,

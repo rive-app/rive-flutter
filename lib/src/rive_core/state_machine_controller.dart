@@ -372,7 +372,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   /// Optional callback for input value changes
   OnInputValueChange? onInputValueChange;
 
-  final _eventListeners = <OnEvent>{};
+  final _eventListeners = HashSet<OnEvent>();//{};
   AudioPlayer? _audioPlayer;
 
   AudioPlayer get audioPlayer => (_audioPlayer ??= AudioPlayer.make())!;

@@ -1,8 +1,9 @@
+import 'dart:collection';
+
 class DependencyHelper<T extends dynamic, U extends dynamic> {
 
   /// STOKANAL-FORK-EDIT: make if final
-  // final dependents = <U>{};
-  final dependents = <U>[];
+  final dependents = HashSet<U>();//{};
   T? dependencyRoot;
 
   DependencyHelper();
@@ -12,13 +13,9 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
     // if (!dependents.contains(value)) {
     //   dependents.add(value);
 
-    // if (dependents.add(value)) {
-    //   return true;
-    // }
-
     /// STOKANAL-FORK-EDIT: use add directly
-    if (!dependents.contains(value)) {
-      dependents.add(value);
+    if (dependents.add(value)) {
+      return true;
     }
     return false;
   }

@@ -77,7 +77,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   final List<TextShapeResult> _cleanupShapes = [];
   BreakLinesResult? _lines;
 
-  /// STOKANAL-FORK-EDIT: exposing shape
+  /// STOKANAL-FORK-EDIT: exposing
   TextShapeResult? get shape => _shape;
   BreakLinesResult? get lines => _lines;
 
@@ -266,7 +266,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
 
   final List<rive.TextStyle> _renderStyles = [];
   
-  /// STOKANAL-FORK-EDIT: exposing renderStyles
+  /// STOKANAL-FORK-EDIT: exposing
   List<rive.TextStyle> get renderStyles => _renderStyles;
 
   Size _measuredSizeMax = Size.zero;
