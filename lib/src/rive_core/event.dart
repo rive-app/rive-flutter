@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:rive/src/generated/event_base.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart';
 import 'package:rive/src/rive_core/artboard.dart';
@@ -28,7 +26,7 @@ class Event extends EventBase {
   }
 
   void _syncCustomProperties() {
-    var nextCustomProperties = HashSet.of(children.whereType<CustomProperty>());
+    var nextCustomProperties = children.whereType<CustomProperty>().toSet();//.toSet();
     if (!iterableEquals(customProperties, nextCustomProperties)) {
       customProperties.clear();
       customProperties.addAll(nextCustomProperties);

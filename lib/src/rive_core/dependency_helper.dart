@@ -1,9 +1,8 @@
-import 'dart:collection';
+
 
 class DependencyHelper<T extends dynamic, U extends dynamic> {
 
-  /// STOKANAL-FORK-EDIT: make if final
-  final dependents = HashSet<U>();//{};
+  final dependents = <U>{}; // set should stay ordered
   T? dependencyRoot;
 
   DependencyHelper();
