@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/blend_state.dart';
@@ -120,10 +122,10 @@ class _KeyedProperty {
 class _KeyedObject {
   final List<_KeyedProperty> properties = [];
   final KeyedObject data;
-  final Set<int> visitedProperties = {};
+  final Set<int> visitedProperties = HashSet<int>();//{};
   _KeyedObject(this.data);
   void addProperties(
-      List<KeyedProperty> props, Core object, bool storeAsBaseline) {
+      Iterable<KeyedProperty> props, Core object, bool storeAsBaseline) {
     for (final property in props) {
       if (!visitedProperties.contains(property.propertyKey)) {
         visitedProperties.add(property.propertyKey);
@@ -151,12 +153,14 @@ class _AnimationsData {
   int size = 0;
 
   List<_KeyedObject> keyedObjects = [];
-  Map<int, _KeyedObject> visitedObjects = {};
-  _AnimationsData(List<LinearAnimation> animations, CoreContext core,
+  Map<int, _KeyedObject> visitedObjects = HashMap<int, _KeyedObject>();//{};
+
+  _AnimationsData(Iterable<LinearAnimation> animations, CoreContext core,
       bool useFirstAsBaseline) {
     bool isFirstAnimation = useFirstAsBaseline;
     for (final animation in animations) {
-      animation.keyedObjects.forEach((keyedObject) {
+      // animation.keyedObjects.forEach((keyedObject) {
+      for (final keyedObject in animation.keyedObjects) {
         final objectIntId = resolveId(keyedObject.objectId);
         final object = core.resolve<Core>(keyedObject.objectId);
         if (!visitedObjects.containsKey(objectIntId)) {
@@ -164,8 +168,8 @@ class _AnimationsData {
           keyedObjects.add(visitedObjects[objectIntId]!);
         }
         visitedObjects[objectIntId]!.addProperties(
-            keyedObject.keyedProperties.toList(), object!, isFirstAnimation);
-      });
+            keyedObject.keyedProperties, object!, isFirstAnimation); // .toList()
+      }//);
       isFirstAnimation = false;
     }
     for (final object in keyedObjects) {
@@ -178,7 +182,9 @@ class _AnimationsData {
   }
 
   void writeObjects(AnimationReset animationReset, CoreContext core) {
-    keyedObjects.forEach((keyedObject) {
+
+    // keyedObjects.forEach((keyedObject) {
+    for (final keyedObject in keyedObjects) {
       // We might have added keyed objects but no properties need resetting
       if (keyedObject.properties.isNotEmpty) {
         int objectIntId = resolveId(keyedObject.data.objectId);
@@ -211,14 +217,14 @@ class _AnimationsData {
           }
         }
       }
-    });
+    }//);
     animationReset.createReader();
   }
 }
 
 List<AnimationReset> _pool = [];
 
-AnimationReset fromAnimations(List<LinearAnimation> animations,
+AnimationReset fromAnimations(Iterable<LinearAnimation> animations,
     CoreContext core, bool useFirstAsBaseline) {
   final animationData = _AnimationsData(animations, core, useFirstAsBaseline);
   AnimationReset? animationReset;
@@ -247,13 +253,15 @@ List<LinearAnimation> _fromState(
     if (state is AnimationState && state.animation != null) {
       animations.add(state.animation!);
     } else if (state is BlendState) {
-      state.animations.forEach((blend1DAnimation) {
+
+      // state.animations.forEach((blend1DAnimation) {
+      for (final blend1DAnimation in state.animations) {
         final animation =
             core.resolve<LinearAnimation>(blend1DAnimation.animationId);
         if (animation != null) {
           animations.add(animation);
         }
-      });
+      }//);
     }
   }
   return animations;

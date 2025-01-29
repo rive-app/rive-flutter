@@ -78,7 +78,7 @@ linter:
     - prefer_contains
     - prefer_final_fields
     - prefer_final_in_for_each
-    - prefer_foreach
+#    - prefer_foreach
     - prefer_function_declarations_over_variables
     - prefer_initializing_formals
     - prefer_is_empty

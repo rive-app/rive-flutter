@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
@@ -102,9 +103,9 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   final List<Core?> _objects = [];
 
   Iterable<Core?> get objects => _objects;
-  final Set<Component> _needDependenciesBuilt = {};
+  final Set<Component> _needDependenciesBuilt = HashSet<Component>();//{};
 
-  // Indicates if this artboard is playing or paused
+  /// Indicates if this artboard is playing or paused
   bool _isPlaying = true;
 
   @override
@@ -224,8 +225,13 @@ class RuntimeArtboard extends Artboard implements CoreContext {
       }
       object?.onAddedDirty();
     }
-    animations.forEach(artboard.animations.add);
-    for (final object in artboard.objects.toList(growable: false)) {
+
+    // animations.forEach(artboard.animations.add);
+    for (var a in animations) {
+      artboard.animations.add(a);
+    }
+
+    for (final object in artboard.objects) { //.toList(growable: false)) {
       if (object == null) {
         continue;
       }
@@ -259,6 +265,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   }
 
   void addNestedEventListener(StateMachineController controller) {
+
     activeNestedArtboards.forEach((artboard) {
       if (artboard.mountedArtboard is RuntimeMountedArtboard) {
         (artboard.mountedArtboard as RuntimeMountedArtboard).eventCallback =

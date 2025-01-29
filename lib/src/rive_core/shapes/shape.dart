@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
@@ -14,7 +15,7 @@ import 'package:rive_common/math.dart';
 export 'package:rive/src/generated/shapes/shape_base.dart';
 
 class Shape extends ShapeBase with ShapePaintContainer {
-  final Set<Path> paths = {};
+  final Set<Path> paths = HashSet<Path>();//{};
 
   bool _wantWorldPath = false;
   bool _wantLocalPath = false;

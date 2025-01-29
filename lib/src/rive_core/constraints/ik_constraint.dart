@@ -96,7 +96,7 @@ class IKConstraint extends IKConstraintBase {
     // tip (constrainedComponent).
     var tip = parent as Bone;
 
-    var bones = _fkChain.reversed.map((link) => link.bone).toSet();
+    var bones = _fkChain.reversed.map((link) => link.bone).toSet(); // to set to preserve order
     for (final bone in bones.skip(1)) {
       for (final child in bone.children) {
         if (child is TransformComponent && !bones.contains(child)) {

@@ -29,9 +29,12 @@ class LinearAnimationInstance extends core.LinearAnimationInstance
 
   @override
   void reportEvent(Event event) {
-    _runtimeEventListeners.toList().forEach((callback) {
-      callback(event);
-    });
+    for (final t in _runtimeEventListeners) {
+      t(event);
+    }
+    // _runtimeEventListeners.toList().forEach((callback) {
+    //   callback(event);
+    // });
   }
 
   @override

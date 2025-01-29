@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:rive/src/core/core.dart';
@@ -41,7 +43,7 @@ class NestedStateMachine extends NestedStateMachineBase {
   @override
   bool get isEnabled => _stateMachineInstance?.isActive ?? false;
 
-  final Set<NestedInput> _nestedInputs = {};
+  final Set<NestedInput> _nestedInputs = HashSet<NestedInput>();//{};
   Set<NestedInput> get nestedInputs => _nestedInputs;
 
   NestedStateMachineInstance? _stateMachineInstance;

@@ -106,7 +106,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   final List<DrawRules> _rules = [];
   List<DrawTarget> _sortedDrawRules = [];
 
-  final Set<Component> _components = {};
+  final Set<Component> _components = HashSet<Component>();//{};
 
   List<Drawable> get drawables => _drawables;
 
@@ -206,7 +206,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
-  final Set<NestedArtboard> _activeNestedArtboards = {};
+  final Set<NestedArtboard> _activeNestedArtboards = HashSet<NestedArtboard>();//{};
   Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   final List<Joystick> _joysticks = [];
@@ -312,8 +312,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
 
     if (nested) {
-      var active = _activeNestedArtboards.toList(growable: false);
-      for (final activeNestedArtboard in active) {
+      // var active = _activeNestedArtboards.toList(growable: false);
+      for (final activeNestedArtboard in _activeNestedArtboards){//.toList(growable: false)) {
         if (activeNestedArtboard.advance(elapsedSeconds)) {
           didUpdate = true;
         }
@@ -574,7 +574,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// The animation controllers that are called back whenever the artboard
   /// advances.
-  final Set<RiveAnimationController> _animationControllers = {};
+  final Set<RiveAnimationController> _animationControllers = HashSet<RiveAnimationController>();//{};
 
   /// Access a read-only iterator of currently applied animation controllers.
   Iterable<RiveAnimationController> get animationControllers =>
@@ -666,9 +666,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   void populateDataBinds(List<DataBind> globalDataBinds) {
-    dataBinds.forEach((dataBind) {
-      globalDataBinds.add(dataBind);
-    });
+    dataBinds.forEach(globalDataBinds.add);
 
     for (final nestedArtboard in _activeNestedArtboards) {
       final mountedArtboard = nestedArtboard.mountedArtboard;

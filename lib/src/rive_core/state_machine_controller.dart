@@ -364,7 +364,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   final _reportedEvents = <Event>[];
   // Keep a seperate list of nested events because we also need to store
   // the source of the nested event in order to compare to listener target
-  final Map<int, List<Event>> _reportedNestedEvents = {};
+  final Map<int, List<Event>> _reportedNestedEvents = HashMap<int, List<Event>>();//{};
 
   /// Optional callback for state changes
   final OnStateChange? onStateChange;
@@ -512,7 +512,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
         });
       }
     }
-    hitShapeLookup.values.toList().forEach(hitComponents.add);
+
+    // hitShapeLookup.values.toList().forEach(hitComponents.add);
+    hitShapeLookup.values.forEach(hitComponents.add);
 
     _artboard = core as RuntimeArtboard;
 
@@ -609,31 +611,34 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       _reportedEvents.clear();
       _reportedNestedEvents.clear();
 
-      var listeners = stateMachine.listeners.whereType<StateMachineListener>();
-      listeners.forEach((listener) {
+      // var listeners = stateMachine.listeners.whereType<StateMachineListener>();
+      // stateMachine.listeners.whereType<StateMachineListener>().forEach((listener) {
+      for (final listener in stateMachine.listeners.whereType<StateMachineListener>()) {
         var listenerTarget = artboard?.context.resolve(listener.targetId);
         if (listener.listenerType == ListenerType.event) {
           // Handle events from this artboard if it is the target
           if (listenerTarget == artboard) {
-            events.forEach((event) {
+            // events.forEach((event) {
+            for (final event in events) {
               if (listener.eventId == event.id) {
                 listener.performChanges(this, Vec2D(), Vec2D());
               }
-            });
+            }//);
           } else {
             // Handle events from nested artboards
             nestedEvents.forEach((targetId, eventList) {
               if (listener.targetId == targetId) {
-                eventList.forEach((nestedEvent) {
+                // eventList.forEach((nestedEvent) {
+                for (final nestedEvent in eventList) {
                   if (listener.eventId == nestedEvent.id) {
                     listener.performChanges(this, Vec2D(), Vec2D());
                   }
-                });
+                }//);
               }
             });
           }
         }
-      });
+      }//);
 
       var riveEvents = <RiveEvent>[];
 
@@ -643,9 +648,10 @@ class StateMachineController extends RiveAnimationController<CoreContext>
         }
         riveEvents.add(RiveEvent.fromCoreEvent(event));
       }
-      _eventListeners.toList().forEach((listener) {
+      // _eventListeners.toList().forEach((listener) {
+      for (final listener in _eventListeners) {
         riveEvents.forEach(listener);
-      });
+      }//);
     }
   }
 

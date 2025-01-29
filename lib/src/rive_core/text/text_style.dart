@@ -56,10 +56,10 @@ class TextVariationHelper extends Component {
 
 class TextStyle extends TextStyleBase
     with ShapePaintContainer, FileAssetReferencer<FontAsset> {
-  final Set<TextValueRun> _referencers = {};
+  final Set<TextValueRun> _referencers = HashSet<TextValueRun>();//{};
   Text? get text => parent as Text?;
-  final Set<TextStyleAxis> _variations = {};
-  final Set<TextStyleFeature> _features = {};
+  final Set<TextStyleAxis> _variations = HashSet<TextStyleAxis>();//{};
+  final Set<TextStyleFeature> _features = HashSet<TextStyleFeature>();//{};
   Iterable<TextStyleAxis> get variations => _variations;
   Iterable<TextStyleFeature> get features => _features;
 
@@ -133,7 +133,8 @@ class TextStyle extends TextStyleBase
     _variationHelper?.buildDependencies();
   }
 
-  void removeVariations() => _variations.toSet().forEach(context.removeObject);
+  // void removeVariations() => _variations.toSet().forEach(context.removeObject);
+  void removeVariations() => _variations.forEach(context.removeObject);
 
   @override
   set asset(FontAsset? value) {

@@ -79,7 +79,7 @@ class LinearAnimation extends LinearAnimationBase {
     bool found = false;
 
     for (final kp in value.keyedProperties) {
-      for (final kf in kp.keyframes.toList()) {
+      for (final kf in kp.keyframes){//.toList()) {
         kf.remove();
         found = true;
       }

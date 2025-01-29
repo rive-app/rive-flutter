@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:rive/src/generated/bones/bone_base.dart';
 import 'package:rive/src/rive_core/constraints/constraint.dart';
 import 'package:rive_common/math.dart';
@@ -9,7 +11,7 @@ typedef bool BoneCallback(Bone bone);
 class Bone extends BoneBase {
   /// Child constraints applied to some child of this bone which also affect
   /// this bone.
-  final Set<Constraint> _peerConstraints = {};
+  final Set<Constraint> _peerConstraints = HashSet<Constraint>();//{};
   Iterable<Constraint> get peerConstraints => _peerConstraints;
 
   bool addPeerConstraint(Constraint child) => _peerConstraints.add(child);

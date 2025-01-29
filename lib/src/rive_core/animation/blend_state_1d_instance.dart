@@ -20,8 +20,8 @@ class BlendState1DInstance
             ? animation_reset_factory.fromAnimations(
                 animationInstances
                     .map((animationInstance) =>
-                        animationInstance.animationInstance.animation)
-                    .toList(growable: false),
+                        animationInstance.animationInstance.animation),
+                    // .toList(growable: false),
                 state.context,
                 true)
             : null;

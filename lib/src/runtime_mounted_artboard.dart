@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/rendering.dart';
 import 'package:rive/src/controllers/state_machine_controller.dart';
 import 'package:rive/src/core/core.dart';
@@ -19,11 +21,11 @@ abstract class RuntimeEventReporter {
 class RuntimeMountedArtboard extends MountedArtboard {
   NestedArtboard nestedArtboard;
   final RuntimeArtboard artboardInstance;
-  final Set<RuntimeEventReporter> _runtimeEventListeners = {};
+  final Set<RuntimeEventReporter> _runtimeEventListeners = HashSet<RuntimeEventReporter>();//{};
   Size originalArtboardInstanceSize = const Size(0, 0);
 
   Set<StateMachineController> get controllers =>
-      _runtimeEventListeners.whereType<StateMachineController>().toSet();
+      HashSet.of(_runtimeEventListeners.whereType<StateMachineController>());
 
   // The callback used for bubbling events up from nested artboards
   Function(Event, NestedArtboard)? eventCallback;
