@@ -4,6 +4,9 @@ import 'package:rive/src/rive_core/animation/interpolating_keyframe.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
 
+import '../../../rive.dart';
+import '../../generated/animation/nested_trigger_base.dart';
+
 export 'package:rive/src/generated/animation/keyed_property_base.dart';
 
 abstract class KeyFrameInterface {
@@ -120,9 +123,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   KeyFrame getFrameAt(int index) => _keyframes[index];
 
-  double _seconds = -1;
-  int _closest = -1;
-
   int _closestFrameIndex(double seconds, {int exactOffset = 0}) {
 
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
@@ -167,7 +167,10 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     return start;
   }
 
-  bool get isCallback => RiveCoreContext.isCallback(propertyKey_);
+  bool get isCallback =>
+      propertyKey_ == EventBase.triggerPropertyKey ||
+      propertyKey_ == NestedTriggerBase.firePropertyKey;
+      // RiveCoreContext.isCallback(propertyKey_);
 
   /// Report any keyframes that occured between secondsFrom and secondsTo.
   void reportKeyedCallbacks(
@@ -210,40 +213,40 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     }
   }
 
+  double _seconds = -1;
+  int _idx = -1;
+
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
-    if (_keyframes.length == 0) {
+    var length = _keyframes.length;
+    if (length == 0) {
       return;
     }
 
-    int idx;
-    if (_seconds == seconds) { // return value from last run
-      idx = _closest;
-    } else {
+    if (_seconds != seconds) { // return value from last run
       _seconds = seconds;
-      idx = _closest = _closestFrameIndex(seconds);
+      _idx = _closestFrameIndex(seconds);
     }
 
-    int pk = propertyKey_;
-    if (idx == 0) {
-      _keyframes[0].apply(object, pk, mix);
+    if (_idx == 0) {
+      _keyframes[0].apply(object, propertyKey_, mix);
     } else {
-      if (idx < _keyframes.length) {
-        KeyFrame toFrame = _keyframes[idx];
+      if (_idx < length) {
+        final toFrame = _keyframes[_idx];
         if (seconds == toFrame.seconds) {
-          toFrame.apply(object, pk, mix);
+          toFrame.apply(object, propertyKey_, mix);
         } else {
-          InterpolatingKeyFrame fromFrame = _keyframes[idx - 1] as InterpolatingKeyFrame;
+          final fromFrame = _keyframes[_idx - 1] as InterpolatingKeyFrame;
           /// Equivalent to fromFrame.interpolation ==
           /// KeyFrameInterpolation.hold.
           if (fromFrame.interpolationType == 0) {
-            fromFrame.apply(object, pk, mix);
+            fromFrame.apply(object, propertyKey_, mix);
           } else {
-            fromFrame.applyInterpolation(object, pk, seconds, toFrame, mix);
+            fromFrame.applyInterpolation(object, propertyKey_, seconds, toFrame, mix);
           }
         }
       } else {
-        _keyframes[idx - 1].apply(object, pk, mix);
+        _keyframes[_idx - 1].apply(object, propertyKey_, mix);
       }
     }
   }

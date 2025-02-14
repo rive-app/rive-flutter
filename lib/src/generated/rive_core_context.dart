@@ -2802,15 +2802,15 @@ class RiveCoreContext {
     }
   }
 
-  static bool isCallback(int propertyKey) {
-    switch (propertyKey) {
-      case NestedTriggerBase.firePropertyKey:
-      case EventBase.triggerPropertyKey:
-        return true;
-      default:
-        return false;
-    }
-  }
+  // static bool isCallback(int propertyKey) {
+  //   switch (propertyKey) {
+  //     case NestedTriggerBase.firePropertyKey:
+  //     case EventBase.triggerPropertyKey:
+  //       return true;
+  //     default:
+  //       return false;
+  //   }
+  // }
 
   static bool getBool(Core object, int propertyKey) {
     switch (propertyKey) {
@@ -2924,7 +2924,7 @@ class RiveCoreContext {
       case DrawableBase.blendModeValuePropertyKey:
         return (object as DrawableBase).blendModeValue;
       case DrawableBase.drawableFlagsPropertyKey:
-        return (object as DrawableBase).drawableFlags;
+        return (object as DrawableBase).drawableFlags_;
       case NestedArtboardBase.artboardIdPropertyKey:
         return (object as NestedArtboardBase).artboardId;
       case NestedArtboardBase.fitPropertyKey:
@@ -3263,12 +3263,10 @@ class RiveCoreContext {
   static double getDouble(Core object, int propertyKey) {
 
     switch (propertyKey) {
-
       case NodeBase.xPropertyKey:
         return (object as NodeBase).x;
       case NodeBase.yPropertyKey:
         return (object as NodeBase).y;
-
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
         return (object as ViewModelInstanceNumberBase).propertyValue;
       case CustomPropertyNumberBase.propertyValuePropertyKey:
@@ -3323,6 +3321,9 @@ class RiveCoreContext {
         return (object as LayoutComponentStyleBase).borderTop;
       case LayoutComponentStyleBase.borderBottomPropertyKey:
         return (object as LayoutComponentStyleBase).borderBottom;
+    }
+
+    switch (propertyKey) {
       case LayoutComponentStyleBase.marginLeftPropertyKey:
         return (object as LayoutComponentStyleBase).marginLeft;
       case LayoutComponentStyleBase.marginRightPropertyKey:
