@@ -4737,112 +4737,65 @@ class RiveCoreContext {
     switch (propertyKey) {
       case VertexBase.xPropertyKey:
         (object as VertexBase).x = value;
-        // if (object is VertexBase) {
-        //   object.x = value;
-        // }
         return;
       case VertexBase.yPropertyKey:
         (object as VertexBase).y = value;
-        // if (object is VertexBase) {
-        //   object.y = value;
-        // }
         return;
       case CubicDetachedVertexBase.outRotationPropertyKey:
         (object as CubicDetachedVertexBase).outRotation = value;
-        // if (object is CubicDetachedVertexBase) {
-        //   object.outRotation = value;
-        // }
         return;
       case CubicDetachedVertexBase.outDistancePropertyKey:
         (object as CubicDetachedVertexBase).outDistance = value;
-        // if (object is CubicDetachedVertexBase) {
-        //   object.outDistance = value;
-        // }
         return;
       case CubicDetachedVertexBase.inRotationPropertyKey:
         (object as CubicDetachedVertexBase).inRotation = value;
-        // if (object is CubicDetachedVertexBase) {
-        //   object.inRotation = value;
-        // }
         return;
       case CubicAsymmetricVertexBase.inDistancePropertyKey:
         (object as CubicAsymmetricVertexBase).inDistance = value;
-        // if (object is CubicAsymmetricVertexBase) {
-        //   object.inDistance = value;
-        // }
         return;
       case NodeBase.xPropertyKey:
         (object as NodeBase).x = value;
-        // if (object is NodeBase) {
-        //   object.x = value;
-        // }
         return;
       case NodeBase.yPropertyKey:
         (object as NodeBase).y = value;
-        // if (object is NodeBase) {
-        //   object.y = value;
-        // }
         return;
       case CubicDetachedVertexBase.inDistancePropertyKey:
-        if (object is CubicDetachedVertexBase) {
-          object.inDistance = value;
-        }
+        (object as CubicDetachedVertexBase).inDistance = value;
         return;
       case TransformComponentBase.scaleXPropertyKey:
-        if (object is TransformComponentBase) {
-          object.scaleX = value;
-        }
+        (object as TransformComponentBase).scaleX = value;
         return;
       case TransformComponentBase.scaleYPropertyKey:
-        if (object is TransformComponentBase) {
-          object.scaleY = value;
-        }
+        (object as TransformComponentBase).scaleY = value;
         return;
       case TransformComponentBase.rotationPropertyKey:
-        if (object is TransformComponentBase) {
-          object.rotation = value;
-        }
+        (object as TransformComponentBase).rotation = value;
         return;
       case DistanceConstraintBase.distancePropertyKey:
-        if (object is DistanceConstraintBase) {
-          object.distance = value;
-        }
+        (object as DistanceConstraintBase).distance = value;
         return;
       case WorldTransformComponentBase.opacityPropertyKey:
-        if (object is WorldTransformComponentBase) {
-          object.opacity = value;
-        }
+        (object as WorldTransformComponentBase).opacity = value;
         return;
       case CubicAsymmetricVertexBase.rotationPropertyKey:
-        if (object is CubicAsymmetricVertexBase) {
-          object.rotation = value;
-        }
+        (object as CubicAsymmetricVertexBase).rotation = value;
         return;
       case CubicMirroredVertexBase.rotationPropertyKey:
-        if (object is CubicMirroredVertexBase) {
-          object.rotation = value;
-        }
+        (object as CubicMirroredVertexBase).rotation = value;
         return;
       case CubicMirroredVertexBase.distancePropertyKey:
-        if (object is CubicMirroredVertexBase) {
-          object.distance = value;
-        }
+        (object as CubicMirroredVertexBase).distance = value;
         return;
       case CubicAsymmetricVertexBase.outDistancePropertyKey:
-        if (object is CubicAsymmetricVertexBase) {
-          object.outDistance = value;
-        }
+        (object as CubicAsymmetricVertexBase).outDistance = value;
         return;
       case GradientStopBase.positionPropertyKey:
-        if (object is GradientStopBase) {
-          object.position = value;
-        }
+        (object as GradientStopBase).position = value;
         return;
       case StrokeBase.thicknessPropertyKey:
-        if (object is StrokeBase) {
-          object.thickness = value;
-        }
+        (object as StrokeBase).thickness = value;
         return;
+    }
 
     // }
     //
@@ -4853,6 +4806,7 @@ class RiveCoreContext {
     //
     // switch (propertyKey) {
 
+    switch (propertyKey) {
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
         if (object is ViewModelInstanceNumberBase) {
           object.propertyValue = value;

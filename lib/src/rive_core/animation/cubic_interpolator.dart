@@ -81,16 +81,33 @@ class InterpolatorCubicFactor {
     int currentSample = 1;
     int lastSample = splineTableSize - 1;
 
-    for (;
-        currentSample != lastSample && _values[currentSample] <= x;
-        ++currentSample) {
-      intervalStart += sampleStepSize;
-    }
-    --currentSample;
+    // for (;
+    //     currentSample != lastSample && _values[currentSample] <= x;
+    //     ++currentSample) {
+    //   intervalStart += sampleStepSize;
+    // }
+    // --currentSample;
+    // // Interpolate to provide an initial guess for t
+    // var dist = (x - _values[currentSample]) /
+    //     (_values[currentSample + 1] - _values[currentSample]);
 
-    // Interpolate to provide an initial guess for t
-    var dist = (x - _values[currentSample]) /
-        (_values[currentSample + 1] - _values[currentSample]);
+    // if (currentSample-1 < 0) {
+    //   throw Exception('review me');
+    // }
+    double last = _values[currentSample];
+    double? previous;// = _values[currentSample-1];
+    while (true) {
+      if (!(currentSample != lastSample && last <= x)) {
+        break;
+      }
+      intervalStart += sampleStepSize;
+      currentSample++;
+      previous = last;
+      last = _values[currentSample];
+    }
+    previous ??= _values[currentSample-1];
+    var dist = (x - previous) / (last - previous);
+
     var guessForT = intervalStart + dist * sampleStepSize;
 
     var initialSlope = getSlope(guessForT, x1, x2);

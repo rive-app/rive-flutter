@@ -21,11 +21,11 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
 
   /// STOKANAL-FORK-EDIT: Keeping a copy of values lazily
   List<KeyedProperty>? _props;
-  Iterable<KeyedProperty> get keyedProperties =>
+  List<KeyedProperty> get keyedProperties =>
     _props ??= _keyedProperties.values.toList();
 
   List<KeyedProperty>? _propsNonCallback;
-  Iterable<KeyedProperty> get propsNonCallback =>
+  List<KeyedProperty> get propsNonCallback =>
       _propsNonCallback ??= keyedProperties.whereNot((p) => p.isCallback).toList();
 
   /// STOKANAL-FORK-EDIT: Reuse this object for every animation
@@ -87,7 +87,13 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-    for (final keyedProperty in keyedProperties) {
+
+    var ps = keyedProperties;
+    var t = ps.length;
+    KeyedProperty keyedProperty;
+    for (var i = 0; i < t; i++) {
+      keyedProperty = ps[i];
+    // for (final keyedProperty in keyedProperties) {
 
       if (!keyedProperty.isCallback) {
         continue;
@@ -108,13 +114,19 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     double mix,
     CoreContext coreContext,
   ) {
-    Core? object = coreContext.resolve(objectId);
+    var object = coreContext.resolve(objectId);
     if (object == null) {
       return;
     }
-    for (final keyedProperty in propsNonCallback) {
-      keyedProperty.apply(time, mix, object);
+
+    var ps = propsNonCallback;
+    var t = ps.length;
+    for (var i = 0; i < t; i++) {
+      ps[i].apply(time, mix, object);
     }
+    // for (final keyedProperty in propsNonCallback) {
+    //   keyedProperty.apply(time, mix, object);
+    // }
   }
 
   @override

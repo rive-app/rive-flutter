@@ -147,9 +147,13 @@ class LinearAnimation extends LinearAnimationBase {
     }
     // for (final keyedObject in _keyedObjects.values) {
     /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-    for (final keyedObject in _objects) {
-      keyedObject.apply(time, mix, coreContext);
+    var t = _objects.length;
+    for (var i = 0; i < t; i++) {
+      _objects[i].apply(time, mix, coreContext);
     }
+    // for (final keyedObject in _objects) {
+    //   keyedObject.apply(time, mix, coreContext);
+    // }
   }
 
   Loop get loop => Loop.values[loopValue];

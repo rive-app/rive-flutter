@@ -11,7 +11,8 @@ abstract class KeyFrameInterface {
 }
 
 class KeyFrameList<T extends KeyFrameInterface> {
-  List<T> _keyframes = [];
+
+  var _keyframes = <T>[];
   List<T> get keyframes => _keyframes;
   set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
 
@@ -122,19 +123,33 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   int closestFrameIndex(double seconds, {int exactOffset = 0}) {
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
-    int end = _keyframes.length - 1;
+    var length = _keyframes.length;
+    int end = length - 1;
+    var totalSeconds = _keyframes[end].seconds;
 
     // If it's the last keyframe, we skip the binary search
-    if (seconds > _keyframes[end].seconds) {
+    if (seconds > totalSeconds) {
       return end + 1;
     }
 
-    int mid = 0;
+    // int mid;
+
+    if (seconds == totalSeconds) {
+      return end + exactOffset;
+    }
+    if (seconds < _keyframes[0].seconds) {
+      return 0;
+    }
+    int mid = (length * seconds/totalSeconds).toInt(); // try to guess an optimal starting seconds
+    if (mid == length) {
+      mid = length - 1;
+    }
+
     int start = 0;
-    double closestSeconds = 0;
+    double closestSeconds;
 
     while (start <= end) {
-      mid = (start + end) >> 1;
+      // mid = (start + end) >> 1;
       closestSeconds = _keyframes[mid].seconds;
       if (closestSeconds < seconds) {
         start = mid + 1;
@@ -143,6 +158,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       } else {
         return mid + exactOffset;
       }
+      mid = (start + end) >> 1;
     }
     return start;
   }
@@ -199,17 +215,14 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     int idx = closestFrameIndex(seconds);
     int pk = propertyKey;
     if (idx == 0) {
-      var first = _keyframes[0];
-
-      first.apply(object, pk, mix);
+      _keyframes[0].apply(object, pk, mix);
     } else {
       if (idx < _keyframes.length) {
-        InterpolatingKeyFrame fromFrame =
-            _keyframes[idx - 1] as InterpolatingKeyFrame;
         KeyFrame toFrame = _keyframes[idx];
         if (seconds == toFrame.seconds) {
           toFrame.apply(object, pk, mix);
         } else {
+          InterpolatingKeyFrame fromFrame = _keyframes[idx - 1] as InterpolatingKeyFrame;
           /// Equivalent to fromFrame.interpolation ==
           /// KeyFrameInterpolation.hold.
           if (fromFrame.interpolationType == 0) {
@@ -219,9 +232,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
           }
         }
       } else {
-        var last = _keyframes[idx - 1];
-
-        last.apply(object, pk, mix);
+        _keyframes[idx - 1].apply(object, pk, mix);
       }
     }
   }

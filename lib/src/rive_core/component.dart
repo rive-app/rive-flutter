@@ -29,7 +29,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
       dirt &= ~ComponentDirt.collapsed;
     }
     onDirty(dirt);
-    _dependencyHelper.onComponentDirty(this);
+
+    // _dependencyHelper.onComponentDirty(this);
+    _dependencyHelper.dependencyRoot?.onComponentDirty(this); // avoid invocking
     return true;
   }
 
@@ -56,7 +58,8 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     dirt |= value;
 
     onDirty(dirt);
-    _dependencyHelper.onComponentDirty(this);
+    // _dependencyHelper.onComponentDirty(this);
+    _dependencyHelper.dependencyRoot?.onComponentDirty(this); // avoid calling one method
 
     if (!recurse) {
       return true;

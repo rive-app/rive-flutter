@@ -8,14 +8,18 @@ export 'package:rive/src/generated/animation/keyframe_base.dart';
 abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
     implements KeyFrameInterface {
   bool get canInterpolate => false;
-  double _timeInSeconds = 0;
-  double get seconds => _timeInSeconds;
+
+  @nonVirtual
+  double seconds = 0; // avoid getter
+  // double _timeInSeconds = 0;
+  // double get seconds => _timeInSeconds;
 
   @override
   void onAdded() {}
 
   void computeSeconds(LinearAnimation animation) {
-    _timeInSeconds = frame / animation.fps;
+    // _timeInSeconds = frame / animation.fps;
+    seconds = frame / animation.fps;
   }
 
   @override
