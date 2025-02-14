@@ -226,13 +226,16 @@ class StateMachineController extends core.StateMachineController
 
   @override
   void applyEvents() {
-    // var events = reportedEvents.toList(growable: false);
     super.applyEvents();
 
-    // _runtimeEventListeners.toList().forEach(events.forEach);
-    for (final t in _runtimeEventListeners) {
-      reportedEvents.forEach(t);
+    for (final event in _runtimeEventListeners) {
+      // reportedEvents.forEach(event);
+
+      var list = reportedEvents;
+      var t = list.length;
+      for (var i = 0; i < t; i++) {
+        event(list[i]);
+      }
     }
-    // _runtimeEventListeners.toList().forEach(reportedEvents.forEach);
   }
 }

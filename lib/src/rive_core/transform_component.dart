@@ -225,12 +225,21 @@ abstract class TransformComponent extends TransformComponentBase {
     }
 
     // In the runtime, we have to iterate the dependents
-    // dependents.forEach((element) {
-    for (final element in dependents) {
+
+    var list = dependentsList;
+    var t = list.length;
+    for (var i = 0; i < t; i++) {
+      var element = list[i];
       if (element is TransformComponent) {
         element.markDirtyIfConstrained();
       }
-    }//);
+    }
+
+    // for (final element in dependents) {
+    //   if (element is TransformComponent) {
+    //     element.markDirtyIfConstrained();
+    //   }
+    // }
 
     return true;
   }

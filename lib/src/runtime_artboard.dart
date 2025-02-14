@@ -227,7 +227,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
     }
 
     // animations.forEach(artboard.animations.add);
-    for (var a in animations) {
+    for (final a in animations) {
       artboard.animations.add(a);
     }
 

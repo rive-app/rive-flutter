@@ -42,7 +42,11 @@ abstract class TextStyleContainer {
     if (!iterableEquals(nextStyles, styles)) {
       styles.clear();
       styles.addAll(nextStyles);
-      styles.forEach(_registerStyle);
+
+      // styles.forEach(_registerStyle);
+      for (final s in styles) {
+        _registerStyle(s);
+      }
     }
   }
 

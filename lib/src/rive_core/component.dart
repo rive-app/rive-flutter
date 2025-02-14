@@ -173,6 +173,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   @override
   Set<Component> get dependents => _dependencyHelper.dependents;
 
+  @nonVirtual
+  List<Component> get dependentsList => _dependencyHelper.dependentsList;
+
   Set<Component> get dependencies {
     Set<Component> components = HashSet<Component>();//{};
     allDependencies(components);

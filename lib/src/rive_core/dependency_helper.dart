@@ -2,10 +2,10 @@
 
 class DependencyHelper<T extends dynamic, U extends dynamic> {
 
-  final _dependents = <U>{}; // set should stay ordered
-  final _dependentsList = <U>[]; // it's a copy of the set used to iterate over
+  final dependents = <U>{}; // set should stay ordered
+  final dependentsList = <U>[]; // it's a copy of the set used to iterate over
 
-  Set<U> get dependents => _dependents;
+  // Set<U> get dependents => _dependents;
 
   // final dependents = <U>[]; // set should stay ordered
   T? dependencyRoot;
@@ -21,8 +21,8 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
     // return false;
 
     // /// STOKANAL-FORK-EDIT: use add directly
-    if (_dependents.add(value)) {
-      _dependentsList.add(value);
+    if (dependents.add(value)) {
+      dependentsList.add(value);
       return true;
     }
 
@@ -33,9 +33,9 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
 
     /// STOKANAL-FORK-EDIT: do not use forEach
 
-    var t = _dependentsList.length;
+    var t = dependentsList.length;
     for (var i = 0; i < t; i++) {
-      _dependentsList[i].addDirt(dirt, recurse: recurse);
+      dependentsList[i].addDirt(dirt, recurse: recurse);
     // for (final dependent in _dependents) {
     //   dependent.addDirt(dirt, recurse: recurse);
     }
@@ -48,7 +48,6 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
   //   dependencyRoot?.onComponentDirty(component);
   // }
 
-  void clear() {
-    _dependents.clear();
-  }
+  void clear() =>
+    dependents.clear();
 }

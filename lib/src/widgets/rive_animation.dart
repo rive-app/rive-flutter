@@ -312,9 +312,11 @@ class RiveAnimationState extends State<RiveAnimation> {
 
     // Clear current local controllers.
     // _controllers.forEach((c) {
+
     for (final c in _controllers) {
       c.dispose();
-    }//);
+    }
+
     _controllers.clear();
 
     final artboard = (widget.artboard != null

@@ -134,7 +134,12 @@ class TextStyle extends TextStyleBase
   }
 
   // void removeVariations() => _variations.toSet().forEach(context.removeObject);
-  void removeVariations() => _variations.forEach(context.removeObject);
+  // void removeVariations() => _variations.forEach(context.removeObject);
+  void removeVariations() {
+    for (final v in _variations) {
+      context.removeObject(v);
+    }
+  }
 
   @override
   set asset(FontAsset? value) {

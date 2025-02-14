@@ -134,7 +134,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// Iterate each component and call callback for it.
   void forEachComponent(void Function(Component) callback) {
-    _components.forEach(callback);
+    for (final c in _components) {
+      callback(c);
+    }
+    // _components.forEach(callback);
   }
 
   /// Find a component of a specific type with a specific name.

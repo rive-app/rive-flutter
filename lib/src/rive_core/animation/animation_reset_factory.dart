@@ -104,19 +104,14 @@ class _KeyedProperty {
   final bool isBaseline;
   _KeyedProperty(this.property, this.isBaseline);
   bool readProperty() {
-    if (property.propertyKey == 1) {
+    if (property.propertyKey_ == 1) {
       return true;
     }
     return false;
   }
 
-  int get propertyKey {
-    return property.propertyKey;
-  }
-
-  int get size {
-    return 1 + 4; // property id + float value
-  }
+  int get propertyKey => property.propertyKey_;
+  int get size => 1 + 4; // property id + float value
 }
 
 class _KeyedObject {
@@ -124,13 +119,16 @@ class _KeyedObject {
   final KeyedObject data;
   final Set<int> visitedProperties = HashSet<int>();//{};
   _KeyedObject(this.data);
+
   void addProperties(
       Iterable<KeyedProperty> props, Core object, bool storeAsBaseline) {
     for (final property in props) {
-      if (!visitedProperties.contains(property.propertyKey)) {
-        visitedProperties.add(property.propertyKey);
-        if (_isColor(property.propertyKey, object) ||
-            _isDouble(property.propertyKey, object)) {
+      var prop = property.propertyKey_;
+
+      if (visitedProperties.add(prop)) {
+        // visitedProperties.add(prop);
+        if (_isColor(prop, object) ||
+            _isDouble(prop, object)) {
           properties.add(_KeyedProperty(property, storeAsBaseline));
         }
       }
@@ -158,8 +156,9 @@ class _AnimationsData {
   _AnimationsData(Iterable<LinearAnimation> animations, CoreContext core,
       bool useFirstAsBaseline) {
     bool isFirstAnimation = useFirstAsBaseline;
+
     for (final animation in animations) {
-      // animation.keyedObjects.forEach((keyedObject) {
+
       for (final keyedObject in animation.keyedObjects) {
         final objectIntId = resolveId(keyedObject.objectId);
         final object = core.resolve<Core>(keyedObject.objectId);
@@ -168,13 +167,19 @@ class _AnimationsData {
           keyedObjects.add(visitedObjects[objectIntId]!);
         }
         visitedObjects[objectIntId]!.addProperties(
-            keyedObject.keyedProperties, object!, isFirstAnimation); // .toList()
-      }//);
+            keyedObject.keyedProperties, object!, isFirstAnimation);
+      }
       isFirstAnimation = false;
     }
-    for (final object in keyedObjects) {
-      size += object.size;
+
+    var t = keyedObjects.length;
+    for (var i = 0; i < t; i++) {
+      size += keyedObjects[i].size;
     }
+
+    // for (final object in keyedObjects) {
+    //   size += object.size;
+    // }
   }
 
   int resolveId(int intId) {

@@ -495,58 +495,34 @@ class RiveCoreContext {
     switch (propertyKey) {
       case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
         (object as InterpolatingKeyFrameBase).interpolationType = value as int;
-        // if (object is InterpolatingKeyFrameBase && value is int) {
-          // object.interpolationType = value;
-        // }
         return;
 
       case KeyFrameDoubleBase.valuePropertyKey:
         (object as KeyFrameDoubleBase).value =value as double;
-        // if (object is KeyFrameDoubleBase && value is double) {
-        //   object.value = value;
-        // }
         return;
 
       case KeyedPropertyBase.propertyKeyPropertyKey:
         (object as KeyedPropertyBase).propertyKey = value as int;
-        // if (object is KeyedPropertyBase && value is int) {
-        //   object.propertyKey = value;
-        // }
         return;
 
       case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
         (object as InterpolatingKeyFrameBase).interpolatorId = value as int;
-        // if (object is InterpolatingKeyFrameBase && value is int) {
-        //   object.interpolatorId = value;
-        // }
         return;
 
       case KeyFrameBase.framePropertyKey:
         (object as KeyFrameBase).frame = value as int;
-        // if (object is KeyFrameBase && value is int) {
-        //   object.frame = value;
-        // }
         return;
 
       case KeyedObjectBase.objectIdPropertyKey:
         (object as KeyedObjectBase).objectId = value as int;
-        // if (object is KeyedObjectBase && value is int) {
-        //   object.objectId = value;
-        // }
         return;
 
       case ComponentBase.parentIdPropertyKey:
         (object as ComponentBase).parentId = value as int;
-        // if (object is ComponentBase && value is int) {
-        //   object.parentId = value;
-        // }
         return;
 
       case LayoutComponentStyleBase.interpolatorIdPropertyKey:
         (object as LayoutComponentStyleBase).interpolatorId = value as int;
-        // if (object is LayoutComponentStyleBase && value is int) {
-        //   object.interpolatorId = value;
-        // }
         return;
     }
 
@@ -3078,7 +3054,7 @@ class RiveCoreContext {
       case TransitionInputConditionBase.inputIdPropertyKey:
         return (object as TransitionInputConditionBase).inputId;
       case KeyedPropertyBase.propertyKeyPropertyKey:
-        return (object as KeyedPropertyBase).propertyKey;
+        return (object as KeyedPropertyBase).propertyKey_;
       case StateMachineListenerBase.targetIdPropertyKey:
         return (object as StateMachineListenerBase).targetId;
       case StateMachineListenerBase.listenerTypeValuePropertyKey:

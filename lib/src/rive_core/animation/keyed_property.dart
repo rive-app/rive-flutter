@@ -120,7 +120,11 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   KeyFrame getFrameAt(int index) => _keyframes[index];
 
-  int closestFrameIndex(double seconds, {int exactOffset = 0}) {
+  double _seconds = -1;
+  int _closest = -1;
+
+  int _closestFrameIndex(double seconds, {int exactOffset = 0}) {
+
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
     var length = _keyframes.length;
@@ -141,8 +145,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       return 0;
     }
     int mid = (length * seconds/totalSeconds).toInt(); // try to guess an optimal starting seconds
-    if (mid == length) {
-      mid = length - 1;
+    if (mid > end) {
+      mid = end;
     }
 
     int start = 0;
@@ -188,8 +192,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
         fromExactOffset = 1;
       }
     }
-    int idx = closestFrameIndex(secondsFrom, exactOffset: fromExactOffset);
-    int idxTo = closestFrameIndex(secondsTo, exactOffset: toExactOffset);
+    int idx = _closestFrameIndex(secondsFrom, exactOffset: fromExactOffset);
+    int idxTo = _closestFrameIndex(secondsTo, exactOffset: toExactOffset);
 
     // going backwards?
     if (idxTo < idx) {
@@ -201,7 +205,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     while (idxTo > idx) {
       var frame = _keyframes[idx];
       reporter.reportKeyedCallback(
-          objectId, propertyKey, secondsTo - frame.seconds);
+          objectId, propertyKey_, secondsTo - frame.seconds);
       idx++;
     }
   }
@@ -212,8 +216,15 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       return;
     }
 
-    int idx = closestFrameIndex(seconds);
-    int pk = propertyKey;
+    int idx;
+    if (_seconds == seconds) { // return value from last run
+      idx = _closest;
+    } else {
+      _seconds = seconds;
+      idx = _closest = _closestFrameIndex(seconds);
+    }
+
+    int pk = propertyKey_;
     if (idx == 0) {
       _keyframes[0].apply(object, pk, mix);
     } else {
