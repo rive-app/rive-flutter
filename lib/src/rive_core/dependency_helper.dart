@@ -4,7 +4,7 @@ import 'package:stokanal/collections.dart';
 
 class DependencyHelper<T extends dynamic, U extends dynamic> {
 
-  final UniqueList<U> dependents = UniqueList.hashed(); // set should stay ordered
+  final dependents = UniqueList<U>(); // set should stay ordered
 
   // final dependents = <U>{}; // set should stay ordered
   // final dependentsList = <U>[]; // it's a copy of the set used to iterate over

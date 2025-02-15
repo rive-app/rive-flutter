@@ -10,8 +10,8 @@ import 'package:stokanal/collections.dart';
 /// An abstraction to give a common interface to any component that can contain
 /// fills and strokes.
 abstract class ShapePaintContainer {
-  final UniqueList<Fill> fills = UniqueList.nonHashed();
-  final UniqueList<Stroke> strokes = UniqueList.nonHashed();
+  final fills = UniqueList<Fill>();
+  final strokes = UniqueList<Stroke>();
 
   /// Called whenever a new paint mutator is added/removed from the shape paints
   /// (for example a linear gradient is added to a stroke).

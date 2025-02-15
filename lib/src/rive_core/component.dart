@@ -167,10 +167,10 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   }
 
   /// Components that this component depends on.
-  final UniqueList<Component> _dependsOn = UniqueList.nonHashed();
+  final _dependsOn = UniqueList<Component>();
 
   @override
-  Set<Component> get dependents => _dependencyHelper.dependents.toSet();
+  Set<Component> get dependents => _dependencyHelper.dependents;
 
   @nonVirtual
   UniqueList<Component> get dependentsList => _dependencyHelper.dependents;

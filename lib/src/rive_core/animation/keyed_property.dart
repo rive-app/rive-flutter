@@ -310,8 +310,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     // }
   }
 
-  @override
-  void propertyKeyChanged(int from, int to) {}
+  // @override
+  // void propertyKeyChanged(int from, int to) {}
 
   @override
   bool import(ImportStack stack) {

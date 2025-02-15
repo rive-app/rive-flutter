@@ -25,18 +25,19 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   /// Change the [propertyKey_] field value.
   /// [propertyKeyChanged] will be invoked only if the field's value has
   /// changed.
+  @nonVirtual
   set propertyKey(int value) {
     if (propertyKey_ == value) {
       return;
     }
-    int from = propertyKey_;
+    // int from = propertyKey_;
     propertyKey_ = value;
-    if (hasValidated) {
-      propertyKeyChanged(from, value);
-    }
+    // if (hasValidated) {
+    //   propertyKeyChanged(from, value);
+    // }
   }
 
-  void propertyKeyChanged(int from, int to);
+  // void propertyKeyChanged(int from, int to);
 
   @override
   void copy(Core source) {

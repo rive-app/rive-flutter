@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:stokanal/collections.dart';
@@ -46,8 +44,10 @@ abstract class Core<T extends CoreContext> {
   int get coreType;
   int id = missingId;
   Set<int> get coreTypes => {};
-  bool _hasValidated = false;
-  bool get hasValidated => _hasValidated;
+
+  @nonVirtual
+  bool hasValidated = false;
+  // bool get hasValidated => _hasValidated;
 
   void onAddedDirty();
   void onAdded() {}
@@ -74,7 +74,7 @@ abstract class Core<T extends CoreContext> {
 // ignore: avoid_classes_with_only_static_members
 class InternalCoreHelper {
   static void markValid(Core object) {
-    object._hasValidated = true;
+    object.hasValidated = true;
   }
 }
 
@@ -94,7 +94,7 @@ abstract class CoreContext {
 
 // ignore: one_member_abstracts
 abstract class ImportStackObject {
-  final UniqueList<ImportStackObject> _resolveBefore = UniqueList.hashed();
+  final _resolveBefore = UniqueList<ImportStackObject>();
   bool _resolved = false;
 
   bool initStack(ImportStack stack) {
@@ -131,7 +131,7 @@ abstract class ImportStackObject {
 /// Stack to help the RiveFile locate latest ImportStackObject created of a
 /// certain type.
 class ImportStack {
-  final _latests = HashMap<int, ImportStackObject>();
+  final _latests = <int, ImportStackObject>{};
   T? latest<T extends ImportStackObject>(int coreType) {
     var latest = _latests[coreType];
     if (latest is T) {
