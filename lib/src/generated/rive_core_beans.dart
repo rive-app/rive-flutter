@@ -196,7 +196,6 @@ class PropertyBean {
   double getDouble(Core o) => throw Exception();
   void setDouble(Core o, double v) => throw Exception();
 
-  @nonVirtual
   void transformDouble(Core o, double Function(double) function) {
     setDouble(o, function(getDouble(o)));
   }
@@ -228,6 +227,10 @@ class DoublePropertyBean<T extends Core> extends PropertyBean {
 
   @override
   void setDouble(Core o, double v) => setter(o as T, v);
+
+  @override
+  void transformDouble(Core o, double Function(double) function) =>
+    setter(o as T, function(getter(o)));
 
   @override
   void setObjectProperty(Core o, Object v) => o is T && v is double ? setDouble(o, v) : {};
@@ -417,8 +420,10 @@ final _implements = <PropertyBean>[
   ColorPropertyBean<SolidColorBase>._(SolidColorBase.colorValuePropertyKey, (o) => o.colorValue, (o, v) => o.colorValue = v),
   StringPropertyBean<ComponentBase>._(ComponentBase.namePropertyKey, (o) => o.name, (o, v) => o.name = v),
   DoublePropertyBean<StrokeBase>._(StrokeBase.thicknessPropertyKey, (o) => o.thickness, (o, v) => o.thickness = v),
+  DoublePropertyBean<DistanceConstraintBase>._(DistanceConstraintBase.distancePropertyKey, (o) => o.distance, (o, v) => o.distance = v),
+  DoublePropertyBean<CubicMirroredVertexBase>._(CubicMirroredVertexBase.distancePropertyKey, (o) => o.distance, (o, v) => o.distance = v),
+  DoublePropertyBean<GradientStopBase>._(GradientStopBase.positionPropertyKey, (o) => o.position, (o, v) => o.position = v),
 ];
-
 
 // ignore: avoid_classes_with_only_static_members
 abstract class PropertyBeans {
@@ -436,6 +441,6 @@ abstract class PropertyBeans {
   }
 
   static void _dumpFallbacks() {
-    info(_map.values.whereType<FallbackBean>().sorted((b1, b2) => b2.hits.compareTo(b1.hits)).map((b) => '$b').join('\n'));
+    info('\n${_map.values.whereType<FallbackBean>().sorted((b1, b2) => b2.hits.compareTo(b1.hits)).map((b) => '$b').join('\n')}');
   }
 }

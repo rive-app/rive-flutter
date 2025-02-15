@@ -17,8 +17,13 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
   K? clone<K extends Core>() => this as K;
 
   @override
-  void apply(Core<CoreContext> object, PropertyBean bean, double mix) =>
-      bean.transformDouble(object, (v) => mix == 1 ? value_ : v * (1.0 - mix) + value_ * mix);
+  void apply(Core<CoreContext> object, PropertyBean bean, double mix) {
+    if (mix == 1) {
+      bean.setDouble(object, value_);
+    } else {
+      bean.transformDouble(object, (v) => v * (1.0 - mix) + value_ * mix);
+    }
+  }
 
   @override
   void applyInterpolation(Core<CoreContext> object, PropertyBean bean,

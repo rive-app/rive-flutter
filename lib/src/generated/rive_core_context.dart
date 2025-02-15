@@ -608,11 +608,6 @@ class RiveCoreContext {
           object.targetId = value;
         }
         break;
-      case DistanceConstraintBase.distancePropertyKey:
-        if (object is DistanceConstraintBase && value is double) {
-          object.distance = value;
-        }
-        break;
       case DistanceConstraintBase.modeValuePropertyKey:
         if (object is DistanceConstraintBase && value is int) {
           object.modeValue = value;
@@ -1528,11 +1523,6 @@ class RiveCoreContext {
           object.colorValue = value;
         }
         break;
-      case GradientStopBase.positionPropertyKey:
-        if (object is GradientStopBase && value is double) {
-          object.position = value;
-        }
-        break;
       case TrimPathBase.startPropertyKey:
         if (object is TrimPathBase && value is double) {
           object.start = value;
@@ -1656,11 +1646,6 @@ class RiveCoreContext {
       case RectangleBase.cornerRadiusBRPropertyKey:
         if (object is RectangleBase && value is double) {
           object.cornerRadiusBR = value;
-        }
-        break;
-      case CubicMirroredVertexBase.distancePropertyKey:
-        if (object is CubicMirroredVertexBase && value is double) {
-          object.distance = value;
         }
         break;
       case ClippingShapeBase.sourceIdPropertyKey:
@@ -2456,7 +2441,6 @@ class RiveCoreContext {
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
       case CustomPropertyNumberBase.propertyValuePropertyKey:
       case ConstraintBase.strengthPropertyKey:
-      case DistanceConstraintBase.distancePropertyKey:
       case TransformComponentConstraintBase.copyFactorPropertyKey:
       case TransformComponentConstraintBase.minValuePropertyKey:
       case TransformComponentConstraintBase.maxValuePropertyKey:
@@ -2521,7 +2505,6 @@ class RiveCoreContext {
       case LinearGradientBase.endXPropertyKey:
       case LinearGradientBase.endYPropertyKey:
       case LinearGradientBase.opacityPropertyKey:
-      case GradientStopBase.positionPropertyKey:
       case TrimPathBase.startPropertyKey:
       case TrimPathBase.endPropertyKey:
       case TrimPathBase.offsetPropertyKey:
@@ -2535,7 +2518,6 @@ class RiveCoreContext {
       case RectangleBase.cornerRadiusTRPropertyKey:
       case RectangleBase.cornerRadiusBLPropertyKey:
       case RectangleBase.cornerRadiusBRPropertyKey:
-      case CubicMirroredVertexBase.distancePropertyKey:
       case PolygonBase.cornerRadiusPropertyKey:
       case StarBase.innerRadiusPropertyKey:
       case ImageBase.originXPropertyKey:
@@ -3049,8 +3031,6 @@ class RiveCoreContext {
         return (object as CustomPropertyNumberBase).propertyValue;
       case ConstraintBase.strengthPropertyKey:
         return (object as ConstraintBase).strength;
-      case DistanceConstraintBase.distancePropertyKey:
-        return (object as DistanceConstraintBase).distance;
       case TransformComponentConstraintBase.copyFactorPropertyKey:
         return (object as TransformComponentConstraintBase).copyFactor;
       case TransformComponentConstraintBase.minValuePropertyKey:
@@ -3182,8 +3162,6 @@ class RiveCoreContext {
         return (object as LinearGradientBase).endY;
       case LinearGradientBase.opacityPropertyKey:
         return (object as LinearGradientBase).opacity;
-      case GradientStopBase.positionPropertyKey:
-        return (object as GradientStopBase).position;
       case TrimPathBase.startPropertyKey:
         return (object as TrimPathBase).start;
       case TrimPathBase.endPropertyKey:
@@ -3210,8 +3188,6 @@ class RiveCoreContext {
         return (object as RectangleBase).cornerRadiusBL;
       case RectangleBase.cornerRadiusBRPropertyKey:
         return (object as RectangleBase).cornerRadiusBR;
-      case CubicMirroredVertexBase.distancePropertyKey:
-        return (object as CubicMirroredVertexBase).distance;
       case PolygonBase.cornerRadiusPropertyKey:
         return (object as PolygonBase).cornerRadius;
       case StarBase.innerRadiusPropertyKey:
@@ -4388,19 +4364,6 @@ class RiveCoreContext {
 
   /// STOKANAL-FORK-EDIT
   static void setDouble(Core object, int propertyKey, double value) {
-
-    // reordered switch to allow for more frequent in the beginning
-    switch (propertyKey) {
-      case DistanceConstraintBase.distancePropertyKey:
-        (object as DistanceConstraintBase).distance = value;
-        return;
-      case CubicMirroredVertexBase.distancePropertyKey:
-        (object as CubicMirroredVertexBase).distance = value;
-        return;
-      case GradientStopBase.positionPropertyKey:
-        (object as GradientStopBase).position = value;
-        return;
-    }
 
     switch (propertyKey) {
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
