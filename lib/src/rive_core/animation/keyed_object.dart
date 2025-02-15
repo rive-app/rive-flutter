@@ -129,8 +129,8 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     // }
   }
 
-  @override
-  void objectIdChanged(int from, int to) {}
+  // @override
+  // void objectIdChanged(int from, int to) {}
 
   @override
   bool import(ImportStack stack) {

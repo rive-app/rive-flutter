@@ -19,9 +19,9 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
   @override
   void apply(Core<CoreContext> object, PropertyBean bean, double mix) {
     if (mix == 1) {
-      bean.setDouble(object, value_);
+      bean.setDouble(object, value);
     } else {
-      bean.transformDouble(object, (v) => v * (1.0 - mix) + value_ * mix);
+      bean.transformDouble(object, (v) => v * (1.0 - mix) + value * mix);
     }
   }
 
@@ -30,14 +30,14 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
       double currentTime, KeyFrameDouble nextFrame, double mix) {
     var f = (currentTime - seconds) / (nextFrame.seconds - seconds);
 
-    var frameValue = interpolator?.transformValue(value_, nextFrame.value_, f) ??
-        value_ + (nextFrame.value_ - value_) * f;
+    var frameValue = interpolator?.transformValue(value, nextFrame.value, f) ??
+        value + (nextFrame.value - value) * f;
 
     // _apply(object, propertyKey, mix, frameValue);
 
     bean.setDouble(object, mix == 1 ? frameValue : bean.getDouble(object) * (1.0 - mix) + frameValue * mix);
   }
 
-  @override
-  void valueChanged(double from, double to) {}
+  // @override
+  // void valueChanged(double from, double to) {}
 }

@@ -16,7 +16,6 @@ import 'package:rive/src/generated/animation/listener_input_change_base.dart';
 import 'package:rive/src/generated/animation/nested_input_base.dart';
 import 'package:rive/src/generated/animation/nested_linear_animation_base.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
-import 'package:rive/src/generated/animation/transition_input_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/generated/assets/drawable_asset_base.dart';
@@ -1248,11 +1247,6 @@ class RiveCoreContext {
           object.y2 = value;
         }
         break;
-      case TransitionInputConditionBase.inputIdPropertyKey:
-        if (object is TransitionInputConditionBase && value is int) {
-          object.inputId = value;
-        }
-        break;
       case StateMachineListenerBase.targetIdPropertyKey:
         if (object is StateMachineListenerBase && value is int) {
           object.targetId = value;
@@ -1516,11 +1510,6 @@ class RiveCoreContext {
       case StrokeBase.transformAffectsStrokePropertyKey:
         if (object is StrokeBase && value is bool) {
           object.transformAffectsStroke = value;
-        }
-        break;
-      case GradientStopBase.colorValuePropertyKey:
-        if (object is GradientStopBase && value is int) {
-          object.colorValue = value;
         }
         break;
       case TrimPathBase.startPropertyKey:
@@ -2343,7 +2332,6 @@ class RiveCoreContext {
       case BlendAnimationBase.animationIdPropertyKey:
       case BlendAnimationDirectBase.inputIdPropertyKey:
       case BlendAnimationDirectBase.blendSourcePropertyKey:
-      case TransitionInputConditionBase.inputIdPropertyKey:
       case StateMachineListenerBase.targetIdPropertyKey:
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
       case StateMachineListenerBase.eventIdPropertyKey:
@@ -2419,7 +2407,6 @@ class RiveCoreContext {
       case ViewModelInstanceColorBase.propertyValuePropertyKey:
       case KeyFrameColorBase.valuePropertyKey:
       case TransitionValueColorComparatorBase.valuePropertyKey:
-      case GradientStopBase.colorValuePropertyKey:
       case BindablePropertyColorBase.propertyValuePropertyKey:
         return colorType;
       case ViewModelComponentBase.namePropertyKey:
@@ -2821,8 +2808,6 @@ class RiveCoreContext {
         return (object as BlendAnimationDirectBase).inputId;
       case BlendAnimationDirectBase.blendSourcePropertyKey:
         return (object as BlendAnimationDirectBase).blendSource;
-      case TransitionInputConditionBase.inputIdPropertyKey:
-        return (object as TransitionInputConditionBase).inputId;
       case StateMachineListenerBase.targetIdPropertyKey:
         return (object as StateMachineListenerBase).targetId;
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
@@ -2976,8 +2961,6 @@ class RiveCoreContext {
         return (object as KeyFrameColorBase).value;
       case TransitionValueColorComparatorBase.valuePropertyKey:
         return (object as TransitionValueColorComparatorBase).value;
-      case GradientStopBase.colorValuePropertyKey:
-        return (object as GradientStopBase).colorValue;
       case BindablePropertyColorBase.propertyValuePropertyKey:
         return (object as BindablePropertyColorBase).propertyValue;
     }
@@ -3891,11 +3874,6 @@ class RiveCoreContext {
           object.blendSource = value;
         }
         break;
-      case TransitionInputConditionBase.inputIdPropertyKey:
-        if (object is TransitionInputConditionBase) {
-          object.inputId = value;
-        }
-        break;
       case StateMachineListenerBase.targetIdPropertyKey:
         if (object is StateMachineListenerBase) {
           object.targetId = value;
@@ -4254,10 +4232,6 @@ class RiveCoreContext {
 
     // reordered
     switch (propertyKey) {
-      case GradientStopBase.colorValuePropertyKey:
-        (object as GradientStopBase).colorValue = value;
-        return;
-
       case ViewModelInstanceColorBase.propertyValuePropertyKey:
         if (object is ViewModelInstanceColorBase) {
           object.propertyValue = value;

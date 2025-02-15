@@ -27,8 +27,8 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
   @override
   void onAddedDirty() {}
 
-  @override
-  void frameChanged(int from, int to) {}
+  // @override
+  // void frameChanged(int from, int to) {}
 
   /// Apply the value of this keyframe to the object's property.
   void apply(Core object, PropertyBean bean, double mix) {}

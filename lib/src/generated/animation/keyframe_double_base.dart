@@ -23,30 +23,31 @@ abstract class KeyFrameDoubleBase extends InterpolatingKeyFrame {
   static const double valueInitialValue = 0;
 
   /// STOKANAL-FORK-EDIT: exposing
-  double value_ = valueInitialValue;
+  @nonVirtual
+  double value = valueInitialValue;
 
-  double get value => value_;
+  // double get value => value_;
+  //
+  // /// Change the [value_] field value.
+  // /// [valueChanged] will be invoked only if the field's value has changed.
+  // set value(double value) {
+  //   if (value_ == value) {
+  //     return;
+  //   }
+  //   double from = value_;
+  //   value_ = value;
+    // if (hasValidated) {
+    //   valueChanged(from, value);
+    // }
+  // }
 
-  /// Change the [value_] field value.
-  /// [valueChanged] will be invoked only if the field's value has changed.
-  set value(double value) {
-    if (value_ == value) {
-      return;
-    }
-    double from = value_;
-    value_ = value;
-    if (hasValidated) {
-      valueChanged(from, value);
-    }
-  }
-
-  void valueChanged(double from, double to);
+  // void valueChanged(double from, double to);
 
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is KeyFrameDoubleBase) {
-      value_ = source.value_;
+      value = source.value;
     }
   }
 }

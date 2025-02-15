@@ -21,19 +21,21 @@ abstract class VertexBase extends ContainerComponent {
   static const int xPropertyKey = 24;
   static const double xInitialValue = 0;
 
-  double _x = xInitialValue;
+  double x_ = xInitialValue;
 
   /// X value for the translation of the vertex.
-  double get x => _x;
+  @nonVirtual
+  double get x => x_;
 
-  /// Change the [_x] field value.
+  /// Change the [x_] field value.
   /// [xChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set x(double value) {
-    if (_x == value) {
+    if (x_ == value) {
       return;
     }
-    double from = _x;
-    _x = value;
+    double from = x_;
+    x_ = value;
     if (hasValidated) {
       xChanged(from, value);
     }
@@ -46,19 +48,21 @@ abstract class VertexBase extends ContainerComponent {
   static const int yPropertyKey = 25;
   static const double yInitialValue = 0;
 
-  double _y = yInitialValue;
+  double y_ = yInitialValue;
 
   /// Y value for the translation of the vertex.
-  double get y => _y;
+  @nonVirtual
+  double get y => y_;
 
-  /// Change the [_y] field value.
+  /// Change the [y_] field value.
   /// [yChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set y(double value) {
-    if (_y == value) {
+    if (y_ == value) {
       return;
     }
-    double from = _y;
-    _y = value;
+    double from = y_;
+    y_ = value;
     if (hasValidated) {
       yChanged(from, value);
     }
@@ -70,8 +74,8 @@ abstract class VertexBase extends ContainerComponent {
   void copy(Core source) {
     super.copy(source);
     if (source is VertexBase) {
-      _x = source._x;
-      _y = source._y;
+      x_ = source.x_;
+      y_ = source.y_;
     }
   }
 }

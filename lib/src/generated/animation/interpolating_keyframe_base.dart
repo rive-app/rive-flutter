@@ -17,27 +17,31 @@ abstract class InterpolatingKeyFrameBase extends KeyFrame {
   /// InterpolationType field with key 68.
   static const int interpolationTypePropertyKey = 68;
   static const int interpolationTypeInitialValue = 0;
-  int _interpolationType = interpolationTypeInitialValue;
 
   /// The type of interpolation index in KeyframeInterpolation applied to this
   /// keyframe.
-  int get interpolationType => _interpolationType;
+  @nonVirtual
+  int interpolationType = interpolationTypeInitialValue;
 
-  /// Change the [_interpolationType] field value.
-  /// [interpolationTypeChanged] will be invoked only if the field's value has
-  /// changed.
-  set interpolationType(int value) {
-    if (_interpolationType == value) {
-      return;
-    }
-    int from = _interpolationType;
-    _interpolationType = value;
-    if (hasValidated) {
-      interpolationTypeChanged(from, value);
-    }
-  }
+  // /// The type of interpolation index in KeyframeInterpolation applied to this
+  // /// keyframe.
+  // int get interpolationType => _interpolationType;
+  //
+  // /// Change the [_interpolationType] field value.
+  // /// [interpolationTypeChanged] will be invoked only if the field's value has
+  // /// changed.
+  // set interpolationType(int value) {
+  //   if (_interpolationType == value) {
+  //     return;
+  //   }
+  //   int from = _interpolationType;
+  //   _interpolationType = value;
+  //   if (hasValidated) {
+  //     interpolationTypeChanged(from, value);
+  //   }
+  // }
 
-  void interpolationTypeChanged(int from, int to);
+  // void interpolationTypeChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// InterpolatorId field with key 69.
@@ -68,7 +72,7 @@ abstract class InterpolatingKeyFrameBase extends KeyFrame {
   void copy(Core source) {
     super.copy(source);
     if (source is InterpolatingKeyFrameBase) {
-      _interpolationType = source._interpolationType;
+      interpolationType = source.interpolationType;
       _interpolatorId = source._interpolatorId;
     }
   }
