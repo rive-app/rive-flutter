@@ -11,15 +11,13 @@ import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive_common/utilities.dart';
 
-bool _isDouble(int propertyKey, Core object) {
-  final coreType = RiveCoreContext.coreType(propertyKey);
-  return coreType == RiveCoreContext.doubleType;
-}
+import '../../generated/rive_core_beans.dart';
 
-bool _isColor(int propertyKey, Core object) {
-  final coreType = RiveCoreContext.coreType(propertyKey);
-  return coreType == RiveCoreContext.colorType;
-}
+bool _isDouble(int propertyKey, Core object) =>
+    PropertyBeans.get(propertyKey).coreType == RiveCoreContext.doubleType;
+
+bool _isColor(int propertyKey, Core object) =>
+    PropertyBeans.get(propertyKey).coreType == RiveCoreContext.colorType;
 
 class AnimationReset {
   BinaryReader? _reader;
@@ -88,10 +86,10 @@ class AnimationReset {
         // Fourth we read the property value for each property
         if (_isDouble(propertyKey, object!)) {
           double value = reader.readFloat32();
-          RiveCoreContext.setDouble(object, propertyKey, value);
+          PropertyBeans.get(propertyKey).setDouble(object, value);
         } else if (_isColor(propertyKey, object)) {
           int value = reader.readInt32();
-          RiveCoreContext.setColor(object, propertyKey, value);
+          PropertyBeans.get(propertyKey).setColor(object, value);
         }
         currentPropertyIndex += 1;
       }
@@ -104,13 +102,14 @@ class _KeyedProperty {
   final bool isBaseline;
   _KeyedProperty(this.property, this.isBaseline);
   bool readProperty() {
-    if (property.propertyKey_ == 1) {
+    if (property.propertyKey == 1) {
       return true;
     }
     return false;
   }
 
-  int get propertyKey => property.propertyKey_;
+  int get propertyKey => property.propertyKey;
+  PropertyBean get propertyBean => property.propertyBean;
   int get size => 1 + 4; // property id + float value
 }
 
@@ -123,7 +122,7 @@ class _KeyedObject {
   void addProperties(
       Iterable<KeyedProperty> props, Core object, bool storeAsBaseline) {
     for (final property in props) {
-      var prop = property.propertyKey_;
+      var prop = property.propertyKey;
 
       if (visitedProperties.add(prop)) {
         // visitedProperties.add(prop);
@@ -205,9 +204,9 @@ class _AnimationsData {
               animationReset.writeColor(
                   (property.property.keyframes.first as KeyFrameColor).value);
             } else {
-              animationReset.writeColor(RiveCoreContext.getColor(
-                  core.resolve(keyedObject.data.objectId),
-                  property.propertyKey));
+
+              animationReset.writeColor(PropertyBeans.get(property.propertyKey).getColor(core.resolve(keyedObject.data.objectId)));
+
             }
           } else if (_isDouble(property.propertyKey, object)) {
             animationReset.writePropertyKey(property.propertyKey);
@@ -215,9 +214,13 @@ class _AnimationsData {
               animationReset.writeDouble(
                   (property.property.keyframes.first as KeyFrameDouble).value_);
             } else {
-              animationReset.writeDouble(RiveCoreContext.getDouble(
-                  core.resolve(keyedObject.data.objectId),
-                  property.propertyKey));
+
+              // animationReset.writeDouble(RiveCoreContext.getDouble(
+              //     core.resolve(keyedObject.data.objectId),
+              //     property.propertyKey));
+              animationReset.writeDouble(
+                  property.propertyBean.getDouble(
+                      core.resolve(keyedObject.data.objectId)));
             }
           }
         }

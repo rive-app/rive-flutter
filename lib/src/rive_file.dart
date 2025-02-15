@@ -14,6 +14,7 @@ import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/assets/font_asset_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
+import 'package:rive/src/generated/rive_core_beans.dart';
 import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/local_file_io.dart'
     if (dart.library.js_interop) 'package:rive/src/local_file_web.dart';
@@ -67,12 +68,15 @@ Core<CoreContext>? _readRuntimeObject(BinaryReader reader,
       break;
     }
 
-    var fieldType = RiveCoreContext.coreType(propertyKey);
+    // var fieldType = RiveCoreContext.coreType(propertyKey);
+    var fieldType = PropertyBeans.get(propertyKey).coreType;
+
     if (fieldType == null || object == null) {
       _skipProperty(reader, propertyKey, propertyToField);
     } else {
-      RiveCoreContext.setObjectProperty(
-          object, propertyKey, fieldType.deserialize(reader));
+      PropertyBeans.get(propertyKey).setObjectProperty(object, fieldType.deserialize(reader));
+      // RiveCoreContext.setObjectProperty(
+      //     object, propertyKey, fieldType.deserialize(reader));
     }
   }
   return object;
@@ -97,7 +101,7 @@ int _peekRuntimeObjectType(
 void _skipProperty(BinaryReader reader, int propertyKey,
     HashMap<int, CoreFieldType> propertyToField) {
   var field =
-      RiveCoreContext.coreType(propertyKey) ?? propertyToField[propertyKey];
+      PropertyBeans.get(propertyKey).coreType ?? propertyToField[propertyKey];
   if (field == null) {
     throw UnsupportedError('Unsupported property key $propertyKey. '
         'A new runtime is likely necessary to play this file.');

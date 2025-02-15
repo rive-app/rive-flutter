@@ -40,6 +40,8 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_event.dart';
 import 'package:rive_common/math.dart';
 
+import '../generated/rive_core_beans.dart';
+
 /// Callback signature for state machine state changes
 typedef OnStateChange = void Function(
     String stateMachineName, String stateName);
@@ -777,9 +779,9 @@ class StateMachineController extends RiveAnimationController<CoreContext>
       int objectId, int propertyKey, double elapsedSeconds) {
     var coreObject = core.resolve(objectId);
     if (coreObject != null) {
-      RiveCoreContext.setCallback(
+      PropertyBeans.get(propertyKey).setCallback(
         coreObject,
-        propertyKey,
+        // propertyKey,
         CallbackData(this, delay: elapsedSeconds),
       );
     }

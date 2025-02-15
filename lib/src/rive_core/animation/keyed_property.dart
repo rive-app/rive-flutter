@@ -212,8 +212,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   }
 
   bool get isCallback =>
-      propertyKey_ == EventBase.triggerPropertyKey ||
-      propertyKey_ == NestedTriggerBase.firePropertyKey;
+      propertyKey == EventBase.triggerPropertyKey ||
+      propertyKey == NestedTriggerBase.firePropertyKey;
       // RiveCoreContext.isCallback(propertyKey_);
 
   /// Report any keyframes that occured between secondsFrom and secondsTo.
@@ -252,7 +252,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     while (idxTo > idx) {
       var frame = _keyframes[idx];
       reporter.reportKeyedCallback(
-          objectId, propertyKey_, secondsTo - frame.seconds);
+          objectId, propertyKey, secondsTo - frame.seconds);
       idx++;
     }
   }
@@ -279,12 +279,12 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
     if (fromFrame != null) { // interpolation
       if (fromFrame.interpolationType == 0) {
-        fromFrame.apply(object, propertyKey_, mix);
+        fromFrame.apply(object, propertyBean, mix);
       } else {
-        fromFrame.applyInterpolation(object, propertyKey_, seconds, toFrame, mix);
+        fromFrame.applyInterpolation(object, propertyBean, seconds, toFrame, mix);
       }
     } else {
-      toFrame.apply(object, propertyKey_, mix);
+      toFrame.apply(object, propertyBean, mix);
     }
 
     // if (_idx == 0) {

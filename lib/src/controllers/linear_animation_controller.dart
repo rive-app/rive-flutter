@@ -1,4 +1,5 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/rive_core_beans.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart'
     as core;
@@ -41,9 +42,8 @@ class LinearAnimationInstance extends core.LinearAnimationInstance
       int objectId, int propertyKey, double elapsedSeconds) {
     var coreObject = context?.resolve(objectId);
     if (coreObject != null) {
-      RiveCoreContext.setCallback(
+      PropertyBeans.get(propertyKey).setCallback(
         coreObject,
-        propertyKey,
         CallbackData(this, delay: elapsedSeconds),
       );
     }

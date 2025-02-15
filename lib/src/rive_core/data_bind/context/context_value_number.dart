@@ -1,4 +1,5 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/rive_core_beans.dart';
 import 'package:rive/src/rive_core/data_bind/context/context_value.dart';
 
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_number.dart';
@@ -12,13 +13,13 @@ class ContextValueNumber extends ContextValue {
     if (source?.coreType == ViewModelInstanceNumberBase.typeKey) {
       final sourceNumber = source as ViewModelInstanceNumber;
 
-      RiveCoreContext.setDouble(core, propertyKey, sourceNumber.propertyValue);
+      PropertyBeans.get(propertyKey).setDouble(core, sourceNumber.propertyValue);
     }
   }
 
   @override
   void applyToSource(Core<CoreContext> core, int propertyKey) {
-    final value = RiveCoreContext.getDouble(core, propertyKey);
+    final value = PropertyBeans.get(propertyKey).getDouble(core);
     final sourceNumber = source as ViewModelInstanceNumber;
     sourceNumber.propertyValue = value;
   }

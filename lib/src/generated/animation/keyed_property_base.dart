@@ -4,6 +4,8 @@
 
 import 'package:rive/src/core/core.dart';
 
+import '../rive_core_beans.dart';
+
 abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 26;
   @override
@@ -14,24 +16,30 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   /// --------------------------------------------------------------------------
   /// PropertyKey field with key 53.
   static const int propertyKeyPropertyKey = 53;
-  static const int propertyKeyInitialValue = CoreContext.invalidPropertyKey;
+  // static const int propertyKeyInitialValue = CoreContext.invalidPropertyKey;
 
   /// STOKANAL-FORK-EDIT: exposing
-  int propertyKey_ = propertyKeyInitialValue;
+  // int propertyKey_ = CoreContext.invalidPropertyKey;
+  PropertyBean propertyBean = PropertyBeans.invalid;
 
   /// The property type that is keyed.
-  int get propertyKey => propertyKey_;
+  // int get propertyKey => propertyKey_;
+  int get propertyKey => propertyBean.propertyKey;
 
   /// Change the [propertyKey_] field value.
   /// [propertyKeyChanged] will be invoked only if the field's value has
   /// changed.
   @nonVirtual
   set propertyKey(int value) {
-    if (propertyKey_ == value) {
+    if (propertyKey == value) {
       return;
     }
+
     // int from = propertyKey_;
-    propertyKey_ = value;
+
+    // propertyKey_ = value;
+    propertyBean = PropertyBeans.get(value);
+
     // if (hasValidated) {
     //   propertyKeyChanged(from, value);
     // }
@@ -43,7 +51,8 @@ abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   void copy(Core source) {
     super.copy(source);
     if (source is KeyedPropertyBase) {
-      propertyKey_ = source.propertyKey_;
+      // propertyKey_ = source.propertyKey_;
+      propertyBean = source.propertyBean;
     }
   }
 }

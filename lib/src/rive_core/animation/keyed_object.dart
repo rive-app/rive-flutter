@@ -39,7 +39,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   void onAdded() {}
 
   bool isValidKeyedProperty(KeyedProperty property) {
-    var value = _keyedProperties[property.propertyKey_];
+    var value = _keyedProperties[property.propertyKey];
 
     // If the property is already keyed, that's ok just make sure the
     // KeyedObject matches.
@@ -52,14 +52,14 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   /// Called by rive_core to add a KeyedProperty to the animation. This should
   /// be @internal when it's supported.
   bool internalAddKeyedProperty(KeyedProperty property) {
-    var value = _keyedProperties[property.propertyKey_];
+    var value = _keyedProperties[property.propertyKey];
 
     // If the property is already keyed, that's ok just make sure the
     // KeyedObject matches.
     if (value != null && value != property) {
       return false;
     }
-    _keyedProperties[property.propertyKey_] = property;
+    _keyedProperties[property.propertyKey] = property;
     _propsNonCallback = _props = null;
 
     return true;
@@ -68,7 +68,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   /// Called by rive_core to remove a KeyedObject to the animation. This should
   /// be @internal when it's supported.
   bool internalRemoveKeyedProperty(KeyedProperty property) {
-    var removed = _keyedProperties.remove(property.propertyKey_);
+    var removed = _keyedProperties.remove(property.propertyKey);
     _propsNonCallback = _props = null;
 
     if (_keyedProperties.isEmpty) {

@@ -1,5 +1,7 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_double_base.dart';
+
+import '../../generated/rive_core_beans.dart';
 export 'package:rive/src/generated/animation/keyframe_double_base.dart';
 
 // void _apply(
@@ -15,12 +17,11 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
   K? clone<K extends Core>() => this as K;
 
   @override
-  void apply(Core<CoreContext> object, int propertyKey, double mix) =>
-    RiveCoreContext.setDouble(object, propertyKey,
-        mix == 1 ? value_ : RiveCoreContext.getDouble(object, propertyKey) * (1.0 - mix) + value_ * mix);
+  void apply(Core<CoreContext> object, PropertyBean bean, double mix) =>
+      bean.transformDouble(object, (v) => mix == 1 ? value_ : v * (1.0 - mix) + value_ * mix);
 
   @override
-  void applyInterpolation(Core<CoreContext> object, int propertyKey,
+  void applyInterpolation(Core<CoreContext> object, PropertyBean bean,
       double currentTime, KeyFrameDouble nextFrame, double mix) {
     var f = (currentTime - seconds) / (nextFrame.seconds - seconds);
 
@@ -29,8 +30,7 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
 
     // _apply(object, propertyKey, mix, frameValue);
 
-    RiveCoreContext.setDouble(object, propertyKey,
-        mix == 1 ? frameValue : RiveCoreContext.getDouble(object, propertyKey) * (1.0 - mix) + frameValue * mix);
+    bean.setDouble(object, mix == 1 ? frameValue : bean.getDouble(object) * (1.0 - mix) + frameValue * mix);
   }
 
   @override
