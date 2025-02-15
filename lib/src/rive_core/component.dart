@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
@@ -168,7 +166,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   }
 
   /// Components that this component depends on.
-  final Set<Component> _dependsOn = HashSet<Component>();//{};
+  final _dependsOn = <Component>{};
 
   @override
   Set<Component> get dependents => _dependencyHelper.dependents;
@@ -177,7 +175,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   List<Component> get dependentsList => _dependencyHelper.dependentsList;
 
   Set<Component> get dependencies {
-    Set<Component> components = HashSet<Component>();//{};
+    var components = <Component>{};
     allDependencies(components);
     return components;
   }

@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
@@ -34,7 +33,7 @@ import 'package:rive_common/utilities.dart';
 export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
-  final HashSet<LayoutComponent> _dirtyLayout = HashSet<LayoutComponent>();
+  final _dirtyLayout = <LayoutComponent>{};
 
   void markLayoutDirty(LayoutComponent layoutComponent) {
     _dirtyLayout.add(layoutComponent);
@@ -106,7 +105,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   final List<DrawRules> _rules = [];
   List<DrawTarget> _sortedDrawRules = [];
 
-  final Set<Component> _components = HashSet<Component>();//{};
+  final _components = <Component>{};
 
   List<Drawable> get drawables => _drawables;
 
@@ -209,7 +208,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
-  final Set<NestedArtboard> _activeNestedArtboards = HashSet<NestedArtboard>();//{};
+  final _activeNestedArtboards = <NestedArtboard>{};
   Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   final List<Joystick> _joysticks = [];
@@ -577,7 +576,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// The animation controllers that are called back whenever the artboard
   /// advances.
-  final Set<RiveAnimationController> _animationControllers = HashSet<RiveAnimationController>();//{};
+  final _animationControllers = <RiveAnimationController>{};
 
   /// Access a read-only iterator of currently applied animation controllers.
   Iterable<RiveAnimationController> get animationControllers =>

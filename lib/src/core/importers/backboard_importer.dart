@@ -11,9 +11,9 @@ class BackboardImporter extends ImportStackObject {
   final Backboard backboard;
 
   final HashMap<int, Artboard> artboardLookup;
-  final Set<NestedArtboard> nestedArtboards = HashSet<NestedArtboard>();//{};
+  final nestedArtboards = <NestedArtboard>{};
   final List<FileAsset> fileAssets = [];
-  final Set<FileAssetReferencer> fileAssetReferencers = HashSet<FileAssetReferencer>();//{};
+  final fileAssetReferencers = <FileAssetReferencer>{};
   BackboardImporter(this.artboardLookup, this.backboard);
 
   void addArtboard(Artboard object) {}

@@ -56,10 +56,10 @@ class TextVariationHelper extends Component {
 
 class TextStyle extends TextStyleBase
     with ShapePaintContainer, FileAssetReferencer<FontAsset> {
-  final Set<TextValueRun> _referencers = HashSet<TextValueRun>();//{};
+  final _referencers = <TextValueRun>{};
   Text? get text => parent as Text?;
-  final Set<TextStyleAxis> _variations = HashSet<TextStyleAxis>();//{};
-  final Set<TextStyleFeature> _features = HashSet<TextStyleFeature>();//{};
+  final _variations = <TextStyleAxis>{};
+  final _features = <TextStyleFeature>{};
   Iterable<TextStyleAxis> get variations => _variations;
   Iterable<TextStyleFeature> get features => _features;
 

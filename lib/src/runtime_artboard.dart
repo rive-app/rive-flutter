@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
@@ -103,7 +102,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   final List<Core?> _objects = [];
 
   Iterable<Core?> get objects => _objects;
-  final Set<Component> _needDependenciesBuilt = HashSet<Component>();//{};
+  final _needDependenciesBuilt = <Component>{};
 
   /// Indicates if this artboard is playing or paused
   bool _isPlaying = true;

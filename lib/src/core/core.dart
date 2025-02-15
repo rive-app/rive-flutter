@@ -93,7 +93,7 @@ abstract class CoreContext {
 
 // ignore: one_member_abstracts
 abstract class ImportStackObject {
-  final _resolveBefore = HashSet<ImportStackObject>();//{};
+  final _resolveBefore = <ImportStackObject>{};
   bool _resolved = false;
 
   bool initStack(ImportStack stack) {

@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:meta/meta.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/container_component.dart';
@@ -11,9 +9,9 @@ import 'package:rive_common/math.dart';
 /// An abstraction to give a common interface to any component that can contain
 /// fills and strokes.
 abstract class ShapePaintContainer {
-  final Set<Fill> fills = HashSet<Fill>();//{};
+  final fills = <Fill>{};
 
-  final Set<Stroke> strokes = HashSet<Stroke>();//{};
+  final strokes = <Stroke>{};
 
   /// Called whenever a new paint mutator is added/removed from the shape paints
   /// (for example a linear gradient is added to a stroke).

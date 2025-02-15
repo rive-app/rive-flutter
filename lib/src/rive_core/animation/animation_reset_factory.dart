@@ -117,7 +117,7 @@ class _KeyedProperty {
 class _KeyedObject {
   final List<_KeyedProperty> properties = [];
   final KeyedObject data;
-  final Set<int> visitedProperties = HashSet<int>();//{};
+  final visitedProperties = <int>{};
   _KeyedObject(this.data);
 
   void addProperties(

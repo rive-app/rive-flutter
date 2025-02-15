@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
@@ -9,6 +7,7 @@ import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 import 'package:rive/src/runtime_mounted_artboard.dart';
+
 export 'package:rive/src/runtime_mounted_artboard.dart';
 
 /// [StateMachine]s supports three input types. The StateMachine mostly
@@ -121,7 +120,7 @@ class StateMachineController extends core.StateMachineController
   /// A list of inputs available in the StateMachine.
   Iterable<SMIInput> get inputs => _inputs;
 
-  final _runtimeEventListeners = HashSet<OnRuntimeEvent>();//{};
+  final _runtimeEventListeners = <OnRuntimeEvent>{};
 
   StateMachineController(
     StateMachine stateMachine, {

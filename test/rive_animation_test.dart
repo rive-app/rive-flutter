@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -271,7 +269,7 @@ void main() {
           riveFile.mainArtboard, 'State Machine 1');
       expect(controller, isNotNull);
 
-      Set<String> receivedEvents = HashSet<String>();//{};
+      var receivedEvents = <String>{};
       controller!.addEventListener((event) {
         receivedEvents.add(event.name);
       });
@@ -318,7 +316,7 @@ void main() {
           riveFile.mainArtboard, 'State Machine 1');
       expect(controller, isNotNull);
 
-      Set<String> receivedEvents = HashSet<String>();//{};
+      var receivedEvents = <String>{};
       controller!.addEventListener((event) {
         receivedEvents.add(event.name);
       });
