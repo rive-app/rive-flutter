@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
+import 'package:stokanal/collections.dart';
 
 export 'dart:typed_data';
 
@@ -93,7 +94,7 @@ abstract class CoreContext {
 
 // ignore: one_member_abstracts
 abstract class ImportStackObject {
-  final _resolveBefore = <ImportStackObject>{};
+  final UniqueList<ImportStackObject> _resolveBefore = UniqueList.hashed();
   bool _resolved = false;
 
   bool initStack(ImportStack stack) {
@@ -116,11 +117,9 @@ abstract class ImportStackObject {
       return true;
     }
     _resolved = true;
-    if (_resolveBefore.isNotEmpty) {
-      for (final before in _resolveBefore) {
-        if (!before._internalResolve()) {
-          return false;
-        }
+    for (final before in _resolveBefore) {
+      if (!before._internalResolve()) {
+        return false;
       }
     }
     return resolve();

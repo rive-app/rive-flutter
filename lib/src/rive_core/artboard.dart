@@ -29,6 +29,7 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/utilities.dart';
+import 'package:stokanal/collections.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
@@ -105,7 +106,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   final List<DrawRules> _rules = [];
   List<DrawTarget> _sortedDrawRules = [];
 
-  final _components = <Component>{};
+  final UniqueList<Component> _components = UniqueList.nonHashed();
 
   List<Drawable> get drawables => _drawables;
 
@@ -208,14 +209,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
-  final _activeNestedArtboards = <NestedArtboard>{};
+  final UniqueList<NestedArtboard> _activeNestedArtboards = UniqueList.nonHashed();
   Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   final List<Joystick> _joysticks = [];
   Iterable<Joystick> get joysticks => _joysticks;
 
-  final List<DataBind> _dataBinds = [];
-  Iterable<DataBind> get dataBinds => _dataBinds;
+  final List<DataBind> dataBinds = [];
+  // Iterable<DataBind> get dataBinds => _dataBinds;
 
   bool canPreApplyJoysticks() {
     if (_joysticks.length == 0) {
@@ -438,7 +439,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         break;
       case DataBindBase.typeKey:
       case DataBindContextBase.typeKey:
-        _dataBinds.add(component as DataBind);
+        dataBinds.add(component as DataBind);
         break;
     }
   }
@@ -460,7 +461,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         break;
       case DataBindBase.typeKey:
       case DataBindContextBase.typeKey:
-        _dataBinds.remove(component as DataBind);
+        dataBinds.remove(component as DataBind);
         break;
     }
   }
@@ -576,7 +577,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// The animation controllers that are called back whenever the artboard
   /// advances.
-  final _animationControllers = <RiveAnimationController>{};
+  final UniqueList<RiveAnimationController> _animationControllers = UniqueList.nonHashed();
 
   /// Access a read-only iterator of currently applied animation controllers.
   Iterable<RiveAnimationController> get animationControllers =>
@@ -686,9 +687,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     if (dataContext == null) {
       return;
     }
-    for (final dataBind in dataBinds) {
-      dataBind.bind(dataContext);
+
+    var length = dataBinds.length;
+    for (var i = 0; i < length; i++) {
+    // for (final dataBind in dataBinds) {
+      dataBinds[i].bind(dataContext);
     }
+
     if (isRoot) {
       globalDataBinds.clear();
       populateDataBinds(globalDataBinds);
@@ -698,14 +703,21 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   void sortDrawOrder() {
     hasChangedDrawOrderInLastUpdate = true;
+
     // Clear out rule first/last items.
-    for (final rule in _sortedDrawRules) {
+    var length = _sortedDrawRules.length;
+    for (var i = 0; i < length; i++) {
+    // for (final rule in _sortedDrawRules) {
+      final rule = _sortedDrawRules[i];
       rule.first = rule.last = null;
     }
 
     firstDrawable = null;
     Drawable? lastDrawable;
-    for (final drawable in _drawables) {
+    length = _drawables.length;
+    for (var i = 0; i < length; i++) {
+    // for (final drawable in _drawables) {
+      final drawable = _drawables[i];
       var rules = drawable.flattenedDrawRules;
 
       var target = rules?.activeTarget;
@@ -731,7 +743,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
 
-    for (final rule in _sortedDrawRules) {
+    length = _sortedDrawRules.length;
+    for (var i = 0; i < length; i++) {
+    // for (final rule in _sortedDrawRules) {
+      final rule = _sortedDrawRules[i];
       if (rule.first == null) {
         continue;
       }

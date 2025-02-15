@@ -565,11 +565,11 @@ class StateMachineController extends RiveAnimationController<CoreContext>
         firstDrawable = firstDrawable.prev;
       }
 
-      int hitComponentsCount = hitComponents.length;
+      final hitComponentsCount = hitComponents.length;
       int currentSortedIndex = 0;
       while (firstDrawable != null) {
         for (var i = currentSortedIndex; i < hitComponentsCount; i++) {
-          if (hitComponents.elementAt(i).component == firstDrawable) {
+          if (hitComponents[i].component == firstDrawable) {
             if (currentSortedIndex != i) {
               hitComponents.swap(i, currentSortedIndex);
             }
@@ -637,7 +637,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
             nestedEvents.forEach((targetId, eventList) {
               if (listener.targetId == targetId) {
 
-                var t = eventList.length;
+                final t = eventList.length;
                 for (var i = 0; i < t; i++) {
                   if (listener.eventId == eventList[i].id) {
                     listener.performChanges(this, Vec2D(), Vec2D());

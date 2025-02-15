@@ -111,14 +111,6 @@ class RuntimeArtboard extends Artboard implements CoreContext {
   T? addObject<T extends Core>(T? object) {
     object?.context = this;
     object?.id = _objects.length;
-
-    // if (object is LinearAnimation && object.logging) {
-    //   log('ADD LINEAR-ANIMATION > $object');
-    // }
-    // if (object is KeyedObject && object.logging) {
-    //   log('ADD KEYED-OBJECT > $object');
-    // }
-
     _objects.add(object);
     return object;
   }

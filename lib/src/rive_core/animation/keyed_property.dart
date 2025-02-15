@@ -149,15 +149,15 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     }
 
     int start = 0;
-    double closestSeconds;
+    // double closestSeconds;
 
     while (start <= end) {
       // mid = (start + end) >> 1;
       var keyframe = _keyframes[mid];
-      closestSeconds = keyframe.seconds;
-      if (closestSeconds < seconds) {
+      // closestSeconds = keyframe.seconds;
+      if (keyframe.seconds < seconds) {
         start = mid + 1;
-      } else if (closestSeconds > seconds) {
+      } else if (keyframe.seconds > seconds) {
         end = mid - 1;
       } else {
         return Pair.of(null, first);
@@ -181,8 +181,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     if (seconds > totalSeconds) {
       return end + 1;
     }
-
-    // int mid;
 
     if (seconds == totalSeconds) {
       return end + exactOffset;

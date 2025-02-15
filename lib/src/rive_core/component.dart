@@ -4,6 +4,7 @@ import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/dependency_helper.dart';
 import 'package:rive_common/utilities.dart';
+import 'package:stokanal/collections.dart';
 
 export 'package:rive/src/generated/component_base.dart';
 
@@ -166,13 +167,13 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   }
 
   /// Components that this component depends on.
-  final _dependsOn = <Component>{};
+  final UniqueList<Component> _dependsOn = UniqueList.nonHashed();
 
   @override
-  Set<Component> get dependents => _dependencyHelper.dependents;
+  Set<Component> get dependents => _dependencyHelper.dependents.toSet();
 
   @nonVirtual
-  List<Component> get dependentsList => _dependencyHelper.dependentsList;
+  UniqueList<Component> get dependentsList => _dependencyHelper.dependents;
 
   Set<Component> get dependencies {
     var components = <Component>{};

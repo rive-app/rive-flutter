@@ -5,13 +5,13 @@ import 'package:rive/src/rive_core/shapes/paint/fill.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive_common/math.dart';
+import 'package:stokanal/collections.dart';
 
 /// An abstraction to give a common interface to any component that can contain
 /// fills and strokes.
 abstract class ShapePaintContainer {
-  final fills = <Fill>{};
-
-  final strokes = <Stroke>{};
+  final UniqueList<Fill> fills = UniqueList.nonHashed();
+  final UniqueList<Stroke> strokes = UniqueList.nonHashed();
 
   /// Called whenever a new paint mutator is added/removed from the shape paints
   /// (for example a linear gradient is added to a stroke).

@@ -1,9 +1,13 @@
 
 
+import 'package:stokanal/collections.dart';
+
 class DependencyHelper<T extends dynamic, U extends dynamic> {
 
-  final dependents = <U>{}; // set should stay ordered
-  final dependentsList = <U>[]; // it's a copy of the set used to iterate over
+  final UniqueList<U> dependents = UniqueList.hashed(); // set should stay ordered
+
+  // final dependents = <U>{}; // set should stay ordered
+  // final dependentsList = <U>[]; // it's a copy of the set used to iterate over
 
   // Set<U> get dependents => _dependents;
 
@@ -22,7 +26,7 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
 
     // /// STOKANAL-FORK-EDIT: use add directly
     if (dependents.add(value)) {
-      dependentsList.add(value);
+      // dependentsList.add(value);
       return true;
     }
 
@@ -33,9 +37,9 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
 
     /// STOKANAL-FORK-EDIT: do not use forEach
 
-    var t = dependentsList.length;
+    final t = dependents.length;
     for (var i = 0; i < t; i++) {
-      dependentsList[i].addDirt(dirt, recurse: recurse);
+      dependents[i].addDirt(dirt, recurse: recurse);
     // for (final dependent in _dependents) {
     //   dependent.addDirt(dirt, recurse: recurse);
     }
