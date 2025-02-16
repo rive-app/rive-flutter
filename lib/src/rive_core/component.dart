@@ -167,7 +167,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   }
 
   /// Components that this component depends on.
-  final _dependsOn = UniqueList<Component>();
+  final _dependsOn = UniqueList.of<Component>();
 
   @override
   Set<Component> get dependents => _dependencyHelper.dependents;

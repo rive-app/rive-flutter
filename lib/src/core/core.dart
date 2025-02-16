@@ -94,7 +94,7 @@ abstract class CoreContext {
 
 // ignore: one_member_abstracts
 abstract class ImportStackObject {
-  final _resolveBefore = UniqueList<ImportStackObject>();
+  final _resolveBefore = UniqueList.of<ImportStackObject>();
   bool _resolved = false;
 
   bool initStack(ImportStack stack) {

@@ -106,7 +106,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   final List<DrawRules> _rules = [];
   List<DrawTarget> _sortedDrawRules = [];
 
-  final _components = UniqueList<Component>();
+  final _components = UniqueList.of<Component>();
 
   List<Drawable> get drawables => _drawables;
 
@@ -209,7 +209,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
-  final _activeNestedArtboards = UniqueList<NestedArtboard>();
+  final _activeNestedArtboards = UniqueList.of<NestedArtboard>();
   Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   final List<Joystick> _joysticks = [];
@@ -577,7 +577,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   /// The animation controllers that are called back whenever the artboard
   /// advances.
-  final _animationControllers = UniqueList<RiveAnimationController>();
+  final _animationControllers = UniqueList.of<RiveAnimationController>();
 
   /// Access a read-only iterator of currently applied animation controllers.
   Iterable<RiveAnimationController> get animationControllers =>

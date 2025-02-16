@@ -140,6 +140,7 @@ class FallbackBean extends PropertyBean {
   FallbackBean._(super.propertyKey):
     super._();
 
+  // ignore: prefer_final_fields
   int _hits = 0;
 
   // uncomment me to dump stats
@@ -286,6 +287,7 @@ abstract class PropertyBeans {
     return _map.putIfAbsent(propertyKey, () => FallbackBean._(propertyKey));
   }
 
+  // ignore: unused_element
   static void _dumpFallbacks() {
     info('\n${_map.values.whereType<FallbackBean>().sorted((b1, b2) => b2._hits.compareTo(b1._hits)).map((b) => '$b').join('\n')}');
   }

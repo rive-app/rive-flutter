@@ -226,6 +226,7 @@ abstract class TransformComponent extends TransformComponentBase {
 
     // In the runtime, we have to iterate the dependents
 
+    // Unique List
     var list = dependentsList;
     var t = list.length;
     for (var i = 0; i < t; i++) {
@@ -235,6 +236,7 @@ abstract class TransformComponent extends TransformComponentBase {
       }
     }
 
+    // Set
     // for (final element in dependents) {
     //   if (element is TransformComponent) {
     //     element.markDirtyIfConstrained();

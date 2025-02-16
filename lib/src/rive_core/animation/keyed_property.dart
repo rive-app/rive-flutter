@@ -20,6 +20,15 @@ class KeyFrameList<T extends KeyFrameInterface> {
   List<T> get keyframes => _keyframes;
   set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
 
+  // T get firstKeyframe => _keyframes.first;
+
+  // void remove(T keyframe) {
+  //   _keyframes.remove(keyframe);
+  //   onKeyframesChanged();
+  // }
+
+  void onKeyframesChanged() {}
+
   /// Get the keyframe immediately following the provided one.
   T? after(T keyframe) {
     var index = _keyframes.indexOf(keyframe);
@@ -81,6 +90,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     }
     _keyframes.add(frame);
     markKeyFrameOrderDirty();
+    onKeyframesChanged();
     return true;
   }
 
@@ -96,6 +106,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     } else {
       markKeyFrameOrderDirty();
     }
+    onKeyframesChanged();
 
     return removed;
   }
@@ -257,8 +268,13 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     }
   }
 
+  @override
+  void onKeyframesChanged() {
+    _seconds = -1;
+    _pair = null;
+  }
+
   double _seconds = -1;
-  // int _idx = -1;
   Pair<InterpolatingKeyFrame?, KeyFrame>? _pair;
 
   /// Apply keyframe values at a given time expressed in [seconds].
@@ -270,7 +286,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
     if (_seconds != seconds) { // if seconds coincide, return value from last run
       _seconds = seconds;
-      // _idx = _closestFrameIndex(seconds);
       _pair = _closestFramePair(seconds);
     }
 
