@@ -286,8 +286,9 @@ AnimationReset fromStates(
 void release(AnimationReset value) {
   value.clear();
   int index = 0;
-  while (index < _pool.length) {
-    final animationReset = _pool.elementAt(index);
+  final length = _pool.length;
+  while (index < length) {
+    final animationReset = _pool[index];
     if (animationReset.size > value.size) {
       break;
     }

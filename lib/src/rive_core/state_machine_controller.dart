@@ -244,7 +244,7 @@ class LayerController {
       int index = 0;
       while (index < transitions.length) {
         final transitionWeight =
-            transitions.elementAt(index).evaluatedRandomWeight;
+            transitions[index].evaluatedRandomWeight;
         if (currentWeight + transitionWeight > random) {
           break;
         }
@@ -252,7 +252,7 @@ class LayerController {
         index += 1;
       }
       assert(index < transitions.length);
-      final transition = transitions.elementAt(index);
+      final transition = transitions[index];
       return transition;
     }
     return null;
