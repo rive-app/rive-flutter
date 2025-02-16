@@ -99,7 +99,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   /// Note that objects must be nullable as some may not resolve during load due
   /// to format differences.
-  final List<Core?> _objects = [];
+  final _objects = <Core?>[];
 
   Iterable<Core?> get objects => _objects;
   final _needDependenciesBuilt = <Component>{};
@@ -158,7 +158,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   @override
   T? resolve<T>(int id) {
-    if (id >= _objects.length || id < 0) {
+    if (id < 0 || id >= _objects.length) {
       return null;
     }
     var object = _objects[id];

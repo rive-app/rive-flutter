@@ -17,7 +17,7 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
     // }
     // return false;
 
-    // /// STOKANAL-FORK-EDIT: use add directly
+    // using set or unique list
     return dependents.add(value);
   }
 
@@ -36,10 +36,6 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
     //   dependent.addDirt(dirt, recurse: recurse);
     // }
   }
-
-  // void onComponentDirty(U component) {
-  //   dependencyRoot?.onComponentDirty(component);
-  // }
 
   void clear() =>
     dependents.clear();
