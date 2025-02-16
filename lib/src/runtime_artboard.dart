@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
@@ -96,19 +99,18 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   /// Note that objects must be nullable as some may not resolve during load due
   /// to format differences.
-  final List<Core?> _objects = [];
+  final _objects = <Core?>[];
 
   Iterable<Core?> get objects => _objects;
-  final Set<Component> _needDependenciesBuilt = {};
+  final _needDependenciesBuilt = <Component>{};
 
-  // Indicates if this artboard is playing or paused
+  /// Indicates if this artboard is playing or paused
   bool _isPlaying = true;
 
   @override
   T? addObject<T extends Core>(T? object) {
     object?.context = this;
     object?.id = _objects.length;
-
     _objects.add(object);
     return object;
   }
@@ -156,7 +158,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   @override
   T? resolve<T>(int id) {
-    if (id >= _objects.length || id < 0) {
+    if (id < 0 || id >= _objects.length) {
       return null;
     }
     var object = _objects[id];
@@ -214,8 +216,13 @@ class RuntimeArtboard extends Artboard implements CoreContext {
       }
       object?.onAddedDirty();
     }
-    animations.forEach(artboard.animations.add);
-    for (final object in artboard.objects.toList(growable: false)) {
+
+    // animations.forEach(artboard.animations.add);
+    for (final a in animations) {
+      artboard.animations.add(a);
+    }
+
+    for (final object in artboard.objects) { //.toList(growable: false)) {
       if (object == null) {
         continue;
       }
@@ -223,10 +230,33 @@ class RuntimeArtboard extends Artboard implements CoreContext {
       InternalCoreHelper.markValid(object);
     }
     artboard.clean();
+
+    // dump();
+
     return artboard;
   }
 
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  void dump() {
+    log(toString());
+    log(objects
+      .map((o) => o.runtimeType)
+      .groupListsBy((o) => o)
+      .entries
+      .sorted((e1, e2) => e2.value.length - e1.value.length)
+      .map((e) => '${e.key}: ${e.value.length}')
+      .join('\n'));
+  }
+
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  @override
+  String toString() {
+    // LinearAnimation.dump(); // uncomment to dump animations
+    return 'RuntimeArtboard[$name ${objects.length}]';
+  }
+
   void addNestedEventListener(StateMachineController controller) {
+
     activeNestedArtboards.forEach((artboard) {
       if (artboard.mountedArtboard is RuntimeMountedArtboard) {
         (artboard.mountedArtboard as RuntimeMountedArtboard).eventCallback =

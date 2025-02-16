@@ -554,10 +554,11 @@ class LayoutComponent extends LayoutComponentBase with ShapePaintContainer {
   }
 
   void syncLayoutChildren() {
-    final layoutChildren = children.whereType<LayoutComponent>();
+    final layoutChildren = children.whereType<LayoutComponent>().toList();
     layoutNode.clearChildren();
-    for (var i = 0; i < layoutChildren.length; i++) {
-      layoutNode.insertChild(layoutChildren.elementAt(i).layoutNode, i);
+    final length = layoutChildren.length;
+    for (var i = 0; i < length; i++) {
+      layoutNode.insertChild(layoutChildren[i].layoutNode, i);
     }
   }
 

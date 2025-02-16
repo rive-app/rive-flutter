@@ -90,3 +90,19 @@ shared_lib/dependencies
 shared_lib/bin
 *.make
 Makefile
+
+# https://dart.dev/guides/libraries/private-files
+
+.dart_tool/
+build/
+
+doc/api/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Mac
+.DS_Store

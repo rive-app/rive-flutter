@@ -27,19 +27,21 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   /// Rotation field with key 79.
   static const int rotationPropertyKey = 79;
   static const double rotationInitialValue = 0;
-  double _rotation = rotationInitialValue;
+  double rotation_ = rotationInitialValue;
 
   /// The control points' angle.
-  double get rotation => _rotation;
+  @nonVirtual
+  double get rotation => rotation_;
 
-  /// Change the [_rotation] field value.
+  /// Change the [rotation_] field value.
   /// [rotationChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set rotation(double value) {
-    if (_rotation == value) {
+    if (rotation_ == value) {
       return;
     }
-    double from = _rotation;
-    _rotation = value;
+    double from = rotation_;
+    rotation_ = value;
     if (hasValidated) {
       rotationChanged(from, value);
     }
@@ -51,19 +53,21 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   /// InDistance field with key 80.
   static const int inDistancePropertyKey = 80;
   static const double inDistanceInitialValue = 0;
-  double _inDistance = inDistanceInitialValue;
+  double inDistance_ = inDistanceInitialValue;
 
   /// The in point's distance from the translation of the point.
-  double get inDistance => _inDistance;
+  @nonVirtual
+  double get inDistance => inDistance_;
 
-  /// Change the [_inDistance] field value.
+  /// Change the [inDistance_] field value.
   /// [inDistanceChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set inDistance(double value) {
-    if (_inDistance == value) {
+    if (inDistance_ == value) {
       return;
     }
-    double from = _inDistance;
-    _inDistance = value;
+    double from = inDistance_;
+    inDistance_ = value;
     if (hasValidated) {
       inDistanceChanged(from, value);
     }
@@ -100,8 +104,8 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   void copy(Core source) {
     super.copy(source);
     if (source is CubicAsymmetricVertexBase) {
-      _rotation = source._rotation;
-      _inDistance = source._inDistance;
+      rotation_ = source.rotation_;
+      inDistance_ = source.inDistance_;
       _outDistance = source._outDistance;
     }
   }

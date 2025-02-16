@@ -19,7 +19,7 @@ abstract class RuntimeEventReporter {
 class RuntimeMountedArtboard extends MountedArtboard {
   NestedArtboard nestedArtboard;
   final RuntimeArtboard artboardInstance;
-  final Set<RuntimeEventReporter> _runtimeEventListeners = {};
+  final _runtimeEventListeners = <RuntimeEventReporter>{};
   Size originalArtboardInstanceSize = const Size(0, 0);
 
   Set<StateMachineController> get controllers =>

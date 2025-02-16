@@ -233,6 +233,21 @@ class RiveAnimationState extends State<RiveAnimation> {
     _init(await _loadRiveFile());
   }
 
+  /// STOKANAL-FORK-EDIT: start
+  /// This is a workaround to allow for embedded Rive animations. It hacks the Flutter State flow.
+  // @override
+  // RiveAnimation get widget => _widget??super.widget;
+  // RiveAnimation? _widget;
+  // @override
+  // bool get mounted => (_widget != null) ? true : super.mounted;
+  // @override
+  // void setState(VoidCallback fn) => (_widget != null) ? fn() : super.setState(fn);
+  // Future<void> init(RiveAnimation widget) async {
+  //   _widget = widget;
+  //   initState();
+  // }
+  /// STOKANAL-FORK-EDIT: end
+
   /// Loads the correct Rive file depending on [widget.src]
   Future<RiveFile> _loadRiveFile() {
     switch (widget.src) {
@@ -296,9 +311,12 @@ class RiveAnimationState extends State<RiveAnimation> {
     }
 
     // Clear current local controllers.
-    _controllers.forEach((c) {
+    // _controllers.forEach((c) {
+
+    for (final c in _controllers) {
       c.dispose();
-    });
+    }
+
     _controllers.clear();
 
     final artboard = (widget.artboard != null

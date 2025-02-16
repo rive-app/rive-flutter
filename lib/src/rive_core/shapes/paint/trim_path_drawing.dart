@@ -78,7 +78,7 @@ void _appendPathSegmentSync(
 void _trimPathSequential(
     Path path, Path result, double startT, double stopT, bool complement) {
   // Measure length of all the contours.
-  var metrics = path.computeMetrics().toList(growable: false);
+  var metrics = path.computeMetrics();//.toList(growable: false);
   double totalLength = 0.0;
   for (final metric in metrics) {
     totalLength += metric.length;
@@ -114,7 +114,7 @@ void _trimPathSequential(
 
 void _trimPathSync(
     Path path, Path result, double startT, double stopT, bool complement) {
-  final metrics = path.computeMetrics().toList(growable: false);
+  final metrics = path.computeMetrics();//.toList(growable: false);
   for (final metric in metrics) {
     double length = metric.length;
     double trimStart = length * startT;

@@ -2,29 +2,32 @@ import 'dart:ui';
 
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_color_base.dart';
+
+import '../../generated/rive_core_beans.dart';
 export 'package:rive/src/generated/animation/keyframe_color_base.dart';
 
-void _apply(Core<CoreContext> object, int propertyKey, double mix, int value) {
+void _apply(Core<CoreContext> object, PropertyBean bean, double mix, int value) {
   if (mix == 1) {
-    RiveCoreContext.setColor(object, propertyKey, value);
+    // RiveCoreContext.setColor(object, propertyKey, value);
+    bean.setColor(object, value);
   } else {
     var mixedColor = Color.lerp(
-        Color(RiveCoreContext.getColor(object, propertyKey)),
+        Color(bean.getColor(object)),
         Color(value),
         mix);
     if (mixedColor != null) {
-      RiveCoreContext.setColor(object, propertyKey, mixedColor.value);
+      bean.setColor(object, mixedColor.value);
     }
   }
 }
 
 class KeyFrameColor extends KeyFrameColorBase {
   @override
-  void apply(Core<CoreContext> object, int propertyKey, double mix) =>
-      _apply(object, propertyKey, mix, value);
+  void apply(Core<CoreContext> object, PropertyBean bean, double mix) =>
+      _apply(object, bean, mix, value);
 
   @override
-  void applyInterpolation(Core<CoreContext> object, int propertyKey,
+  void applyInterpolation(Core<CoreContext> object, PropertyBean bean,
       double currentTime, KeyFrameColor nextFrame, double mix) {
     var f = (currentTime - seconds) / (nextFrame.seconds - seconds);
 
@@ -34,7 +37,7 @@ class KeyFrameColor extends KeyFrameColorBase {
 
     var color = Color.lerp(Color(value), Color(nextFrame.value), f);
     if (color != null) {
-      _apply(object, propertyKey, mix, color.value);
+      _apply(object, bean, mix, color.value);
     }
   }
 

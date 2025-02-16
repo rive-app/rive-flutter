@@ -91,7 +91,7 @@ abstract class TransformComponent extends TransformComponentBase {
       Mat2D.copy(worldTransform, transform);
     }
 
-    if (_constraints.isNotEmpty) {
+    if (_constraints.length > 0) {
       for (final constraint in _constraints) {
         constraint.constrain(this);
       }
@@ -225,11 +225,23 @@ abstract class TransformComponent extends TransformComponentBase {
     }
 
     // In the runtime, we have to iterate the dependents
-    dependents.forEach((element) {
+
+    // Unique List
+    var list = dependentsList;
+    var t = list.length;
+    for (var i = 0; i < t; i++) {
+      var element = list[i];
       if (element is TransformComponent) {
         element.markDirtyIfConstrained();
       }
-    });
+    }
+
+    // Set
+    // for (final element in dependents) {
+    //   if (element is TransformComponent) {
+    //     element.markDirtyIfConstrained();
+    //   }
+    // }
 
     return true;
   }

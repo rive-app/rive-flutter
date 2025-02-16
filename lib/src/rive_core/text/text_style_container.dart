@@ -10,7 +10,7 @@ import 'package:rive_common/utilities.dart';
 /// file-wide styles by making them owned by an [Artboard] or [Backboard].
 abstract class TextStyleContainer {
   int _nextShaperId = 0;
-  final Set<TextStyle> styles = {};
+  final Set<TextStyle> styles = <TextStyle>{}; // preserve order
   final HashMap<int, TextStyle> _styleLookup = HashMap<int, TextStyle>();
 
   // TextStyle? styleFromShaperId(int id) => _styleLookup[id];
@@ -42,7 +42,11 @@ abstract class TextStyleContainer {
     if (!iterableEquals(nextStyles, styles)) {
       styles.clear();
       styles.addAll(nextStyles);
-      styles.forEach(_registerStyle);
+
+      // styles.forEach(_registerStyle);
+      for (final s in styles) {
+        _registerStyle(s);
+      }
     }
   }
 

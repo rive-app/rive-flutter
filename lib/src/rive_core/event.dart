@@ -26,7 +26,7 @@ class Event extends EventBase {
   }
 
   void _syncCustomProperties() {
-    var nextCustomProperties = children.whereType<CustomProperty>().toSet();
+    var nextCustomProperties = children.whereType<CustomProperty>().toSet();//.toSet();
     if (!iterableEquals(customProperties, nextCustomProperties)) {
       customProperties.clear();
       customProperties.addAll(nextCustomProperties);

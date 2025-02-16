@@ -18,8 +18,8 @@ abstract class InterpolatingKeyFrame extends InterpolatingKeyFrameBase {
     interpolationType = value.index;
   }
 
-  @override
-  void interpolationTypeChanged(int from, int to) {}
+  // @override
+  // void interpolationTypeChanged(int from, int to) {}
 
   Interpolator? _interpolator;
   Interpolator? get interpolator => _interpolator;

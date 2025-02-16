@@ -62,7 +62,11 @@ abstract class ContainerComponent extends ContainerComponentBase {
   void removeRecursive() {
     Set<Component> deathRow = {this};
     forEachChild((child) => deathRow.add(child));
-    deathRow.forEach(context.removeObject);
+
+    // deathRow.forEach(context.removeObject);
+    for (final c in deathRow) {
+      context.removeObject(c);
+    }
   }
 
   void buildDrawOrder(

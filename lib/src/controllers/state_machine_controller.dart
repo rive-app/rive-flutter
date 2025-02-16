@@ -7,6 +7,7 @@ import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 import 'package:rive/src/runtime_mounted_artboard.dart';
+
 export 'package:rive/src/runtime_mounted_artboard.dart';
 
 /// [StateMachine]s supports three input types. The StateMachine mostly
@@ -224,8 +225,16 @@ class StateMachineController extends core.StateMachineController
 
   @override
   void applyEvents() {
-    var events = reportedEvents.toList(growable: false);
     super.applyEvents();
-    _runtimeEventListeners.toList().forEach(events.forEach);
+
+    for (final event in _runtimeEventListeners) {
+      // reportedEvents.forEach(event);
+
+      var list = reportedEvents;
+      var t = list.length;
+      for (var i = 0; i < t; i++) {
+        event(list[i]);
+      }
+    }
   }
 }
