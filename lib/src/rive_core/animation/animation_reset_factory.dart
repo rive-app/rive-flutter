@@ -287,9 +287,9 @@ void release(AnimationReset value) {
   value.clear();
   int index = 0;
   final length = _pool.length;
+  final valueSize = value.size;
   while (index < length) {
-    final animationReset = _pool[index];
-    if (animationReset.size > value.size) {
+    if (_pool[index].size > valueSize) {
       break;
     }
     index++;

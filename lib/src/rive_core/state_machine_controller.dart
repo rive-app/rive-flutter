@@ -39,6 +39,7 @@ import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_event.dart';
 import 'package:rive_common/math.dart';
+import 'package:stokanal/telemetry.dart';
 
 import '../generated/rive_core_beans.dart';
 
@@ -165,6 +166,9 @@ class LayerController {
     }
   }
 
+  static int _maxIterations = 0;
+  static bool _tooMuchIterationsCollected = false;
+
   bool apply(CoreContext core, double elapsedSeconds) {
     if (_currentState != null) {
       _currentState!.advance(elapsedSeconds, controller);
@@ -181,16 +185,26 @@ class LayerController {
     }
     _apply(core);
 
-    for (int i = 0; updateState(i != 0); i++) {
+    int i = 0;
+    for (; updateState(i != 0); i++) {
       _apply(core);
-
       if (i == 100) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
-        print('StateMachineController.apply exceeded max iterations.');
-
+        if (_tooMuchIterationsCollected) {
+          print('TOO MUCH ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} $_holdAnimation $_transition ${controller._artboard?.name}');
+        } else {
+          _tooMuchIterationsCollected = true;
+          Telemetry()
+              .collect('TOO MUCH ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} $_holdAnimation $_transition ${controller._artboard?.name}')
+              .error(StackTrace.current, 'Too much iterations', fatal: false);
+        }
         return false;
       }
+    }
+
+    if (i > _maxIterations) {
+      _maxIterations = i;
     }
 
     // give the current state the oportunity to clear spilled time, so that we
