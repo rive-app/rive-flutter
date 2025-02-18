@@ -169,6 +169,13 @@ class LayerController {
   static int _maxIterations = 0;
   static bool _tooMuchIterationsCollected = false;
 
+  String _dumpState(StateInstance<LayerState>? state) {
+    if (state == null) {
+      return 'null';
+    }
+    return '${state.runtimeType} state=${state.state} keepGoing=${state.keepGoing} id=${state.state.id} type=${state.state.runtimeType} coreType=${state.state.coreType}';
+  }
+
   bool apply(CoreContext core, double elapsedSeconds) {
     if (_currentState != null) {
       _currentState!.advance(elapsedSeconds, controller);
@@ -188,10 +195,12 @@ class LayerController {
     int i = 0;
     for (; updateState(i != 0); i++) {
       _apply(core);
-      if (i == 100) {
+      if (i == 30) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
-        var message = 'TOO MANY ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} $_holdAnimation $_transition ${controller._artboard?.name}';
+        var runtime = core is RuntimeArtboard ? core : null;
+        var message = 'TOO MANY ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} ${runtime?.artboard.name} > '
+            '${_dumpState(_currentState)} ${_dumpState(_stateFrom)}';
         if (_tooMuchIterationsCollected) {
           print(message);
         } else {

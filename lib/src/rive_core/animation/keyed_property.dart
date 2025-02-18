@@ -166,10 +166,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
         return Pair(null, keyframe);
       }
     }
-    // if (start == 0) {
-    //   throw Exception('start=0 not expected');
-    // }
-    // return Pair.of((start == 0 ? _keyframes[lastIndex] : _keyframes[start-1]) as InterpolatingKeyFrame, _keyframes[start]);
+
     return Pair(_keyframes[start-1] as InterpolatingKeyFrame, _keyframes[start]);
   }
 
