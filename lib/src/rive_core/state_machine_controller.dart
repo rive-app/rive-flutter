@@ -191,13 +191,14 @@ class LayerController {
       if (i == 100) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
+        var message = 'TOO MANY ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} $_holdAnimation $_transition ${controller._artboard?.name}';
         if (_tooMuchIterationsCollected) {
-          print('TOO MUCH ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} $_holdAnimation $_transition ${controller._artboard?.name}');
+          print(message);
         } else {
           _tooMuchIterationsCollected = true;
           Telemetry()
-              .collect('TOO MUCH ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} $_holdAnimation $_transition ${controller._artboard?.name}')
-              .error(StackTrace.current, 'Too much iterations', fatal: false);
+              .collect(message)
+              .error(StackTrace.current, 'Too many iterations', fatal: false);
         }
         return false;
       }
