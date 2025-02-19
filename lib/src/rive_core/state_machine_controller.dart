@@ -173,7 +173,8 @@ class LayerController {
     if (state == null) {
       return 'null';
     }
-    return '${state.runtimeType} state=${state.state} keepGoing=${state.keepGoing} id=${state.state.id} type=${state.state.runtimeType} coreType=${state.state.coreType}';
+    var animationState = state.state is AnimationState ? state.state as AnimationState : null;
+    return '${state.runtimeType}:${state.state.runtimeType} ${animationState?.animation?.name} > $state ${state.state}';
   }
 
   bool apply(CoreContext core, double elapsedSeconds) {
