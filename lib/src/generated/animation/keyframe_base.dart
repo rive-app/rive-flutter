@@ -19,6 +19,16 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
   @nonVirtual
   int frame = frameInitialValue;
 
+  // var _meta = CoreMetas.frameInitialValue;
+  // @nonVirtual
+  // int get frame => _meta.frame;
+  // @nonVirtual
+  // set frame(int frame) {
+  //   if (this.frame != frame) {
+  //     _meta = _meta.setFrame(frame);
+  //   }
+  // }
+
   // /// Timecode as frame number can be converted to time by dividing by animation
   // /// fps.
   // int get frame => _frame;

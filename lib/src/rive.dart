@@ -366,6 +366,7 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   @override
   void dispose() {
     _artboard.redraw.removeListener(scheduleRepaint);
+    _artboard.dispose();
     _recognizer.dispose();
     super.dispose();
   }

@@ -6,16 +6,18 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
 import 'package:rive/src/rive_core/animation/interpolating_keyframe.dart';
 
+const _coreTypes = <int>{
+  KeyFrameIdBase.typeKey,
+  InterpolatingKeyFrameBase.typeKey,
+  KeyFrameBase.typeKey
+};
+
 abstract class KeyFrameIdBase extends InterpolatingKeyFrame {
   static const int typeKey = 50;
   @override
   int get coreType => KeyFrameIdBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        KeyFrameIdBase.typeKey,
-        InterpolatingKeyFrameBase.typeKey,
-        KeyFrameBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Value field with key 122.

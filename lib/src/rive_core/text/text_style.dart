@@ -44,6 +44,16 @@ class TextVariationHelper extends Component {
     _font = null;
   }
 
+  // @override
+  // bool dispose() {
+  //   if (!super.dispose()) {
+  //     return false;
+  //   }
+  //   _font?.dispose();
+  //   _font = null;
+  //   return true;
+  // }
+
   @override
   void buildDependencies() {
     var text = style.text;

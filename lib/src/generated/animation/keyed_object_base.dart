@@ -4,13 +4,15 @@
 
 import 'package:rive/src/core/core.dart';
 
+const _coreTypes = <int>{KeyedObjectBase.typeKey};
+
 abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 25;
 
   @override
   int get coreType => KeyedObjectBase.typeKey;
   @override
-  Set<int> get coreTypes => {KeyedObjectBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// ObjectId field with key 51.

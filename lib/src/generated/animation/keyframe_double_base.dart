@@ -6,16 +6,18 @@ import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
 import 'package:rive/src/rive_core/animation/interpolating_keyframe.dart';
 
+const _coreTypes = <int>{
+  KeyFrameDoubleBase.typeKey,
+  InterpolatingKeyFrameBase.typeKey,
+  KeyFrameBase.typeKey
+};
+
 abstract class KeyFrameDoubleBase extends InterpolatingKeyFrame {
   static const int typeKey = 30;
   @override
   int get coreType => KeyFrameDoubleBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        KeyFrameDoubleBase.typeKey,
-        InterpolatingKeyFrameBase.typeKey,
-        KeyFrameBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Value field with key 70.
@@ -25,23 +27,6 @@ abstract class KeyFrameDoubleBase extends InterpolatingKeyFrame {
   /// STOKANAL-FORK-EDIT: exposing
   @nonVirtual
   double value = valueInitialValue;
-
-  // double get value => value_;
-  //
-  // /// Change the [value_] field value.
-  // /// [valueChanged] will be invoked only if the field's value has changed.
-  // set value(double value) {
-  //   if (value_ == value) {
-  //     return;
-  //   }
-  //   double from = value_;
-  //   value_ = value;
-    // if (hasValidated) {
-    //   valueChanged(from, value);
-    // }
-  // }
-
-  // void valueChanged(double from, double to);
 
   @override
   void copy(Core source) {

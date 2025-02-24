@@ -6,12 +6,14 @@ import 'package:rive/src/core/core.dart';
 
 import '../rive_core_beans.dart';
 
+const _coreTypes = <int>{KeyedPropertyBase.typeKey};
+
 abstract class KeyedPropertyBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 26;
   @override
   int get coreType => KeyedPropertyBase.typeKey;
   @override
-  Set<int> get coreTypes => {KeyedPropertyBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// PropertyKey field with key 53.

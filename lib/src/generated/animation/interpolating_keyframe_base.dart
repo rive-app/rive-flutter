@@ -23,47 +23,30 @@ abstract class InterpolatingKeyFrameBase extends KeyFrame {
   @nonVirtual
   int interpolationType = interpolationTypeInitialValue;
 
-  // /// The type of interpolation index in KeyframeInterpolation applied to this
-  // /// keyframe.
-  // int get interpolationType => _interpolationType;
-  //
-  // /// Change the [_interpolationType] field value.
-  // /// [interpolationTypeChanged] will be invoked only if the field's value has
-  // /// changed.
-  // set interpolationType(int value) {
-  //   if (_interpolationType == value) {
-  //     return;
-  //   }
-  //   int from = _interpolationType;
-  //   _interpolationType = value;
-  //   if (hasValidated) {
-  //     interpolationTypeChanged(from, value);
-  //   }
-  // }
-
-  // void interpolationTypeChanged(int from, int to);
-
   /// --------------------------------------------------------------------------
   /// InterpolatorId field with key 69.
   static const int interpolatorIdPropertyKey = 69;
   static const int interpolatorIdInitialValue = -1;
-  int _interpolatorId = interpolatorIdInitialValue;
+
+  // int _interpolatorId = interpolatorIdInitialValue;
 
   /// The id of the custom interpolator used when interpolation is Cubic.
-  int get interpolatorId => _interpolatorId;
+  // int get interpolatorId => _interpolatorId;
+
+  int get interpolatorId;
 
   /// Change the [_interpolatorId] field value.
   /// [interpolatorIdChanged] will be invoked only if the field's value has
   /// changed.
+  @nonVirtual
   set interpolatorId(int value) {
-    if (_interpolatorId == value) {
+    // int from = _interpolatorId;
+    int from = interpolatorId;
+    if (from == value) {
       return;
     }
-    int from = _interpolatorId;
-    _interpolatorId = value;
-    if (hasValidated) {
-      interpolatorIdChanged(from, value);
-    }
+    // _interpolatorId = value;
+    interpolatorIdChanged(from, value);
   }
 
   void interpolatorIdChanged(int from, int to);
@@ -73,7 +56,7 @@ abstract class InterpolatingKeyFrameBase extends KeyFrame {
     super.copy(source);
     if (source is InterpolatingKeyFrameBase) {
       interpolationType = source.interpolationType;
-      _interpolatorId = source._interpolatorId;
+      // _interpolatorId = source._interpolatorId;
     }
   }
 }

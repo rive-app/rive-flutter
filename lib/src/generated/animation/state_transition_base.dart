@@ -5,13 +5,14 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer_component.dart';
 
+const _coreTypes = <int>{StateTransitionBase.typeKey, StateMachineLayerComponentBase.typeKey};
+
 abstract class StateTransitionBase extends StateMachineLayerComponent {
   static const int typeKey = 65;
   @override
   int get coreType => StateTransitionBase.typeKey;
   @override
-  Set<int> get coreTypes =>
-      {StateTransitionBase.typeKey, StateMachineLayerComponentBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// StateToId field with key 151.

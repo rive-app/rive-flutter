@@ -35,7 +35,11 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
 
     // _apply(object, propertyKey, mix, frameValue);
 
-    bean.setDouble(object, mix == 1 ? frameValue : bean.getDouble(object) * (1.0 - mix) + frameValue * mix);
+    if (mix == 1) {
+      bean.setDouble(object, frameValue);
+    } else {
+      bean.setDouble(object, bean.getDouble(object) * (1.0 - mix) + frameValue * mix);
+    }
   }
 
   // @override

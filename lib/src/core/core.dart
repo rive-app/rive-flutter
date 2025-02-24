@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:stokanal/collections.dart';
 
-export 'dart:typed_data';
-
 export 'package:flutter/foundation.dart';
 export 'package:rive/src/animation_list.dart';
 export 'package:rive/src/asset_list.dart';
@@ -38,12 +36,52 @@ export 'package:rive/src/viewmodel_properties.dart';
 typedef PropertyChangeCallback = void Function(dynamic from, dynamic to);
 typedef BatchAddCallback = void Function();
 
+const _coreTypes = <int>{};
+
 abstract class Core<T extends CoreContext> {
   static const int missingId = -1;
   covariant late T context;
   int get coreType;
+
+  @mustCallSuper
+  void onRemoved() {}
+
   int id = missingId;
-  Set<int> get coreTypes => {};
+  // var _meta = missing;
+  // int get id => _meta.id;
+  // set id(int id) {
+  //   if (this.id != id) {
+  //     _meta = _meta.setId(id);
+  //   }
+  // }
+
+  // static const int disposedId = -2;
+  // void onRemoved() => calloc.free(_id);
+  // final Pointer<Uint8> _id = using((Arena arena) => arena<Uint8>(2));
+  // final Pointer<Uint8> _id = calloc<Uint8>(2);
+  // int get id => _id.cast<Int64>().value;
+  // set id(int value) => _id.cast<Int64>().value = value;
+
+  // Core() {
+  //   id = missingId;
+  // }
+
+  // @mustCallSuper
+  // bool dispose() {
+  //   if (id == disposedId) { // already disposed
+  //     return false;
+  //   }
+  //   id = disposedId;
+  //   // if (Randoms().hit(0.01)) {
+  //   //   print('REMOVING > $runtimeType');
+  //   // }
+  //   calloc.free(_id);
+  //   print('FREE > ${_id.address} ${id}');
+  //   return true;
+  // }
+
+  // TODO override this method with a static field, see KeyFrameDoubleBase as example
+  Set<int> get coreTypes => _coreTypes;//{};
 
   @nonVirtual
   bool hasValidated = false;
@@ -51,9 +89,16 @@ abstract class Core<T extends CoreContext> {
 
   void onAddedDirty();
   void onAdded() {}
-  void onRemoved() {}
-  void remove() => context.removeObject(this);
   bool import(ImportStack stack) => true;
+
+  void remove() => context.removeObject(this);
+  // @nonVirtual
+  // void remove() {
+  //   context.removeObject(this);
+  //   if (Randoms().hit(0.1)) {
+  //     print('REMOVING > $runtimeType');
+  //   }
+  // }
 
   bool validate() => true;
 
@@ -73,9 +118,8 @@ abstract class Core<T extends CoreContext> {
 
 // ignore: avoid_classes_with_only_static_members
 class InternalCoreHelper {
-  static void markValid(Core object) {
+  static void markValid(Core object) =>
     object.hasValidated = true;
-  }
 }
 
 abstract class CoreContext {

@@ -9,19 +9,21 @@ import 'package:rive/src/generated/shapes/path_vertex_base.dart';
 import 'package:rive/src/generated/shapes/vertex_base.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
 
+const _coreTypes = <int>{
+  CubicDetachedVertexBase.typeKey,
+  CubicVertexBase.typeKey,
+  PathVertexBase.typeKey,
+  VertexBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class CubicDetachedVertexBase extends CubicVertex {
   static const int typeKey = 6;
   @override
   int get coreType => CubicDetachedVertexBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        CubicDetachedVertexBase.typeKey,
-        CubicVertexBase.typeKey,
-        PathVertexBase.typeKey,
-        VertexBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// InRotation field with key 84.

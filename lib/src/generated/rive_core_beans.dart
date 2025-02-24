@@ -25,111 +25,123 @@ import 'package:stokanal/logging.dart';
 
 import '../core/field_types/core_field_type.dart';
 
-class PropertyBean {
+class PropertyBean<T extends Core> {
   final int propertyKey;
   PropertyBean._(this.propertyKey);
 
-  bool getBool(Core o) => throw Exception();
-  void setBool(Core o, bool v) => throw Exception();
+  bool getBool(T o) => throw Exception();
+  void setBool(T o, bool v) => throw Exception();
 
-  double getDouble(Core o) => throw Exception();
-  void setDouble(Core o, double v) => throw Exception();
+  double getDouble(T o) => throw Exception();
+  void setDouble(T o, double v) => throw Exception();
 
-  void transformDouble(Core o, double Function(double) function) {
+  void transformDouble(T o, double Function(double) function) {
     setDouble(o, function(getDouble(o)));
   }
 
-  int getColor(Core o) => throw Exception();
-  void setColor(Core o, int v) => throw Exception();
+  int getColor(T o) => throw Exception();
+  void setColor(T o, int v) => throw Exception();
 
-  int getUint(Core o) => throw Exception();
-  void setUint(Core o, int v) => throw Exception();
+  int getUint(T o) => throw Exception();
+  void setUint(T o, int v) => throw Exception();
 
-  String getString(Core o) => throw Exception();
-  void setString(Core o, String v) => throw Exception();
+  String getString(T o) => throw Exception();
+  void setString(T o, String v) => throw Exception();
 
   void setObjectProperty(Core o, Object v) => throw Exception();
 
   CoreFieldType? get coreType => throw Exception();
 
-  void setCallback(Core o, CallbackData v) => throw Exception();
+  void setCallback(T o, CallbackData v) => throw Exception();
 }
 
-class DoublePropertyBean<T extends Core> extends PropertyBean {
+class _DoublePropertyBean<T extends Core> extends PropertyBean<T> {
+  _DoublePropertyBean._(super.propertyKey): super._();
+
+  @override
+  @nonVirtual
+  CoreFieldType? get coreType => RiveCoreContext.doubleType;
+
+  @override
+  void transformDouble(T o, double Function(double) function) =>
+      setDouble(o, function(getDouble(o)));
+
+  @override
+  void setObjectProperty(Core o, Object v) => o is T && v is double ? setDouble(o, v) : {};
+}
+
+class DoublePropertyBean<T extends Core> extends _DoublePropertyBean<T> {
 
   final double Function(T) getter;
   final void Function(T, double) setter;
   DoublePropertyBean._(super.propertyKey, this.getter, this.setter): super._();
 
   @override
-  double getDouble(Core o) => getter(o as T);
+  double getDouble(T o) => getter(o);
 
   @override
-  void setDouble(Core o, double v) => setter(o as T, v);
+  void setDouble(T o, double v) => setter(o, v);
 
   @override
-  void transformDouble(Core o, double Function(double) function) =>
-    setter(o as T, function(getter(o)));
+  void transformDouble(T o, double Function(double) function) =>
+    setter(o, function(getter(o)));
 
   @override
-  void setObjectProperty(Core o, Object v) => o is T && v is double ? setDouble(o, v) : {};
-
-  @override
-  CoreFieldType? get coreType => RiveCoreContext.doubleType;
+  void setObjectProperty(Core o, Object v) => o is T && v is double ? setter(o, v) : {};
 }
 
-class UintPropertyBean<T extends Core> extends PropertyBean {
+class UintPropertyBean<T extends Core> extends PropertyBean<T> {
 
   final int Function(T) getter;
   final void Function(T, int) setter;
   UintPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
 
   @override
-  int getUint(Core o) => getter(o as T);
+  int getUint(T o) => getter(o);
 
   @override
-  void setUint(Core o, int v) => setter(o as T, v);
+  void setUint(T o, int v) => setter(o, v);
 
   @override
-  void setObjectProperty(Core o, Object v) => o is T && v is int ? setUint(o, v) : {};
+  void setObjectProperty(Core o, Object v) => o is T && v is int ? setter(o, v) : {};
 
   @override
   CoreFieldType? get coreType => RiveCoreContext.uintType;
 }
 
-class ColorPropertyBean<T extends Core> extends PropertyBean {
+class ColorPropertyBean<T extends Core> extends PropertyBean<T> {
 
   final int Function(T) getter;
   final void Function(T, int) setter;
   ColorPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
 
   @override
-  int getColor(Core o) => getter(o as T);
+  int getColor(T o) => getter(o);
 
   @override
-  void setColor(Core o, int v) => setter(o as T, v);
+  void setColor(T o, int v) => setter(o, v);
 
   @override
-  void setObjectProperty(Core o, Object v) => o is T && v is int ? setColor(o, v) : {};
+  void setObjectProperty(Core o, Object v) => o is T && v is int ? setter(o, v) : {};
 
   @override
   CoreFieldType? get coreType => RiveCoreContext.colorType;
 }
 
-class StringPropertyBean<T extends Core> extends PropertyBean {
+class StringPropertyBean<T extends Core> extends PropertyBean<T> {
 
   final String Function(T) getter;
   final void Function(T, String) setter;
   StringPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
 
   @override
-  String getString(Core o) => getter(o as T);
+  String getString(T o) => getter(o);
 
   @override
-  void setString(Core o, String v) => setter(o as T, v);
+  void setString(T o, String v) => setter(o, v);
 
   @override
-  void setObjectProperty(Core o, Object v) => o is T && v is String ? setString(o, v) : {};
+  void setObjectProperty(Core o, Object v) => o is T && v is String ? setter(o, v) : {};
 
   @override
   CoreFieldType? get coreType => RiveCoreContext.stringType;
@@ -236,10 +248,14 @@ final _invalid = PropertyBean._(CoreContext.invalidPropertyKey);
 var _first = true;
 final _implements = <PropertyBean>[
   _invalid,
-  DoublePropertyBean<NodeBase>._(NodeBase.xPropertyKey, (o) => o.x_, (o, v) => o.x = v),
-  DoublePropertyBean<NodeBase>._(NodeBase.yPropertyKey, (o) => o.y_, (o, v) => o.y = v),
-  DoublePropertyBean<VertexBase>._(VertexBase.xPropertyKey, (o) => o.x_, (o, v) => o.x = v),
-  DoublePropertyBean<VertexBase>._(VertexBase.yPropertyKey, (o) => o.y_, (o, v) => o.y = v),
+  XPropertyBean._(),
+  YPropertyBean._(),
+  VertexBaseXPropertyBean._(),
+  VertexBaseYPropertyBean._(),
+  // DoublePropertyBean<NodeBase>._(NodeBase.xPropertyKey, (o) => o.x_, (o, v) => o.x = v),
+  // DoublePropertyBean<NodeBase>._(NodeBase.yPropertyKey, (o) => o.y_, (o, v) => o.y = v),
+  // DoublePropertyBean<VertexBase>._(VertexBase.xPropertyKey, (o) => o.x_, (o, v) => o.x = v),
+  // DoublePropertyBean<VertexBase>._(VertexBase.yPropertyKey, (o) => o.y_, (o, v) => o.y = v),
   DoublePropertyBean<CubicDetachedVertexBase>._(CubicDetachedVertexBase.outRotationPropertyKey, (o) => o.outRotation_, (o, v) => o.outRotation = v),
   DoublePropertyBean<CubicDetachedVertexBase>._(CubicDetachedVertexBase.outDistancePropertyKey, (o) => o.outDistance_, (o, v) => o.outDistance = v),
   DoublePropertyBean<CubicDetachedVertexBase>._(CubicDetachedVertexBase.inRotationPropertyKey, (o) => o.inRotation_, (o, v) => o.inRotation = v),
@@ -291,4 +307,34 @@ abstract class PropertyBeans {
   static void _dumpFallbacks() {
     info('\n${_map.values.whereType<FallbackBean>().sorted((b1, b2) => b2._hits.compareTo(b1._hits)).map((b) => '$b').join('\n')}');
   }
+}
+
+class XPropertyBean extends _DoublePropertyBean<NodeBase> {
+  XPropertyBean._(): super._(NodeBase.xPropertyKey);
+  @override
+  double getDouble(NodeBase o) => o.x_;
+  @override
+  void setDouble(NodeBase o, double v) => o.x = v;
+}
+class YPropertyBean extends _DoublePropertyBean<NodeBase> {
+  YPropertyBean._(): super._(NodeBase.yPropertyKey);
+  @override
+  double getDouble(NodeBase o) => o.y_;
+  @override
+  void setDouble(NodeBase o, double v) => o.y = v;
+}
+
+class VertexBaseXPropertyBean extends _DoublePropertyBean<VertexBase> {
+  VertexBaseXPropertyBean._(): super._(VertexBase.xPropertyKey);
+  @override
+  double getDouble(VertexBase o) => o.x_;
+  @override
+  void setDouble(VertexBase o, double v) => o.x = v;
+}
+class VertexBaseYPropertyBean extends _DoublePropertyBean<VertexBase> {
+  VertexBaseYPropertyBean._(): super._(VertexBase.yPropertyKey);
+  @override
+  double getDouble(VertexBase o) => o.y_;
+  @override
+  void setDouble(VertexBase o, double v) => o.y = v;
 }

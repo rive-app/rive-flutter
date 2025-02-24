@@ -7,6 +7,10 @@ export 'package:rive/src/generated/animation/keyframe_interpolator_base.dart';
 
 abstract class KeyFrameInterpolator extends KeyFrameInterpolatorBase
     implements Interpolator {
+
+  @override
+  bool get late => false;
+
   @override
   void onAdded() => updateInterpolator();
 

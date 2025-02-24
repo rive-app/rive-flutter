@@ -6,6 +6,7 @@ import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/notifier.dart';
+// import 'package:stokanal/logging.dart';
 
 /// Adds getters for linear animations and state machines
 extension RuntimeArtboardGetters on RuntimeArtboard {
@@ -287,4 +288,9 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   @override
   bool get isPlaying => _isPlaying;
+
+  // @override
+  void dispose() {
+    // log('DISPOSING > $runtimeType ${artboard.name}');
+  }
 }
