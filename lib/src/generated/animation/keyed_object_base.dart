@@ -20,8 +20,15 @@ abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
   static const int objectIdInitialValue = 0;
 
   /// Identifier used to track the object that is keyed.
+  // @nonVirtual
+  // int objectId = objectIdInitialValue;
+
   @nonVirtual
-  int objectId = objectIdInitialValue;
+  int get objectId => high;
+  @nonVirtual
+  set objectId(int frame) => high = frame;
+
+
 
   // /// Identifier used to track the object that is keyed.
   // int get objectId => _objectId;

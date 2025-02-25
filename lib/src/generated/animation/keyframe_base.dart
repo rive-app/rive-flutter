@@ -16,37 +16,13 @@ abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
   static const int frameInitialValue = 0;
 
   /// Timecode as frame number can be converted to time by dividing by animation fps
+  // @nonVirtual
+  // int frame = frameInitialValue;
+
   @nonVirtual
-  int frame = frameInitialValue;
-
-  // var _meta = CoreMetas.frameInitialValue;
-  // @nonVirtual
-  // int get frame => _meta.frame;
-  // @nonVirtual
-  // set frame(int frame) {
-  //   if (this.frame != frame) {
-  //     _meta = _meta.setFrame(frame);
-  //   }
-  // }
-
-  // /// Timecode as frame number can be converted to time by dividing by animation
-  // /// fps.
-  // int get frame => _frame;
-  //
-  // /// Change the [_frame] field value.
-  // /// [frameChanged] will be invoked only if the field's value has changed.
-  // set frame(int value) {
-  //   if (_frame == value) {
-  //     return;
-  //   }
-  //   int from = _frame;
-  //   _frame = value;
-  //   if (hasValidated) {
-  //     frameChanged(from, value);
-  //   }
-  // }
-
-  // void frameChanged(int from, int to);
+  int get frame => high;
+  @nonVirtual
+  set frame(int frame) => high = frame;
 
   @override
   void copy(Core source) {

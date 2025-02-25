@@ -38,6 +38,45 @@ typedef BatchAddCallback = void Function();
 
 const _coreTypes = <int>{};
 
+const _highInt = 0xFFFFFFFF00000000;
+const _lowInt = 0xFFFFFFFF;
+const _negative = 0x80000000;
+const _module = 0x7FFFFFFF;
+
+int _to(int s) {
+  // // TODO comment me
+  // if (s > _module || s < -_module) {
+  //   throw Exception('_to=$s');
+  // }
+
+  if (s < 0) {
+    return _negative + (-s);
+  } else {
+    return s;
+  }
+}
+
+int _from(int s) => (s & _negative > 0 ? -1 : 1) * (s & _module);
+
+int _setLow(final int v, final int s) {
+  var r = (v & _highInt) + _to(s);
+  // // TODO comment me
+  // if (_getLow(r) != s) {
+  //   throw Exception('v=${v.toRadixString(2)} s=${s.toRadixString(2)} r=${r.toRadixString(2)} low=${_getLow(r).toRadixString(2)}');
+  // }
+  return r;
+}
+int _getLow(int v) => _from(v & _lowInt);
+int _setHigh(final int v, final int s) {
+  var r = (_to(s) << 32) + (v & _lowInt);
+  // // TODO comment me
+  // if (_getHigh(r) != s) {
+  //   throw Exception('v=${v.toRadixString(2)} s=${s.toRadixString(2)} r=${r.toRadixString(2)} high=${_getHigh(r).toRadixString(2)}');
+  // }
+  return r;
+}
+int _getHigh(int v) => _from((v & _highInt) >> 32);
+
 abstract class Core<T extends CoreContext> {
   static const int missingId = -1;
   covariant late T context;
@@ -46,39 +85,26 @@ abstract class Core<T extends CoreContext> {
   @mustCallSuper
   void onRemoved() {}
 
-  int id = missingId;
-  // var _meta = missing;
-  // int get id => _meta.id;
-  // set id(int id) {
-  //   if (this.id != id) {
-  //     _meta = _meta.setId(id);
-  //   }
-  // }
+  // int id = missingId;
 
-  // static const int disposedId = -2;
-  // void onRemoved() => calloc.free(_id);
-  // final Pointer<Uint8> _id = using((Arena arena) => arena<Uint8>(2));
-  // final Pointer<Uint8> _id = calloc<Uint8>(2);
-  // int get id => _id.cast<Int64>().value;
-  // set id(int value) => _id.cast<Int64>().value = value;
+  int _value = _setLow(0, missingId);
+  // @nonVirtual
+  // int get id => _getLow(_value);
+  // @nonVirtual
+  // set id(int id) => _value = _setLow(_value, id);
+  // @nonVirtual
+  // int get high => _getHigh(_value);
+  // @nonVirtual
+  // set high(int high) => _value = _setHigh(_value, high);
+  @nonVirtual
+  int get id => _from(_value & _lowInt);
+  @nonVirtual
+  set id(int id) => _value = (_value & _highInt) + _to(id);
+  @nonVirtual
+  int get high => _from((_value & _highInt) >> 32);
+  @nonVirtual
+  set high(int high) => _value = (_to(high) << 32) + (_value & _lowInt);
 
-  // Core() {
-  //   id = missingId;
-  // }
-
-  // @mustCallSuper
-  // bool dispose() {
-  //   if (id == disposedId) { // already disposed
-  //     return false;
-  //   }
-  //   id = disposedId;
-  //   // if (Randoms().hit(0.01)) {
-  //   //   print('REMOVING > $runtimeType');
-  //   // }
-  //   calloc.free(_id);
-  //   print('FREE > ${_id.address} ${id}');
-  //   return true;
-  // }
 
   // TODO override this method with a static field, see KeyFrameDoubleBase as example
   Set<int> get coreTypes => _coreTypes;//{};
@@ -92,13 +118,6 @@ abstract class Core<T extends CoreContext> {
   bool import(ImportStack stack) => true;
 
   void remove() => context.removeObject(this);
-  // @nonVirtual
-  // void remove() {
-  //   context.removeObject(this);
-  //   if (Randoms().hit(0.1)) {
-  //     print('REMOVING > $runtimeType');
-  //   }
-  // }
 
   bool validate() => true;
 

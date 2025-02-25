@@ -12,11 +12,8 @@ abstract class InterpolatingKeyFrame extends InterpolatingKeyFrameBase {
   @override
   bool get canInterpolate => true;
 
-  KeyFrameInterpolation get interpolation =>
-      enumAt(KeyFrameInterpolation.values, interpolationType);
-  set interpolation(KeyFrameInterpolation value) {
-    interpolationType = value.index;
-  }
+  KeyFrameInterpolation get interpolation => enumAt(KeyFrameInterpolation.values, interpolationType);
+  set interpolation(KeyFrameInterpolation value) => interpolationType = value.index;
 
   Interpolator _interpolator = Interpolators.initial;
   Interpolator? get interpolator => _interpolator == Interpolators.initial ? null : _interpolator;
