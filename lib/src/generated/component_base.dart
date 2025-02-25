@@ -3,12 +3,14 @@
 
 import 'package:rive/src/core/core.dart';
 
+const _coreTypes = {ComponentBase.typeKey};
+
 abstract class ComponentBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 10;
   @override
   int get coreType => ComponentBase.typeKey;
   @override
-  Set<int> get coreTypes => {ComponentBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Name field with key 4.

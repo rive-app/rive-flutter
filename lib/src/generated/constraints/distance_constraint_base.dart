@@ -7,17 +7,19 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/rive_core/constraints/targeted_constraint.dart';
 
+const _coreTypes = {
+  DistanceConstraintBase.typeKey,
+  TargetedConstraintBase.typeKey,
+  ConstraintBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class DistanceConstraintBase extends TargetedConstraint {
   static const int typeKey = 82;
   @override
   int get coreType => DistanceConstraintBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        DistanceConstraintBase.typeKey,
-        TargetedConstraintBase.typeKey,
-        ConstraintBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Distance field with key 177.

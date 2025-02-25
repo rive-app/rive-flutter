@@ -5,16 +5,18 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 
+const _coreTypes = {
+  VertexBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class VertexBase extends ContainerComponent {
   static const int typeKey = 107;
   @override
   int get coreType => VertexBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        VertexBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// X field with key 24.

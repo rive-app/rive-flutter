@@ -7,17 +7,19 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
 
+const _coreTypes = {
+  TransformComponentBase.typeKey,
+  WorldTransformComponentBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class TransformComponentBase extends WorldTransformComponent {
   static const int typeKey = 38;
   @override
   int get coreType => TransformComponentBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        TransformComponentBase.typeKey,
-        WorldTransformComponentBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 15.

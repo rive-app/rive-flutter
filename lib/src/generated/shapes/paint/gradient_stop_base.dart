@@ -5,12 +5,14 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
+const _coreTypes = {GradientStopBase.typeKey, ComponentBase.typeKey};
+
 abstract class GradientStopBase extends Component {
   static const int typeKey = 19;
   @override
   int get coreType => GradientStopBase.typeKey;
   @override
-  Set<int> get coreTypes => {GradientStopBase.typeKey, ComponentBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// ColorValue field with key 38.

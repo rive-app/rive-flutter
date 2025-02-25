@@ -3,12 +3,14 @@
 
 import 'package:rive/src/core/core.dart';
 
+const _coreTypes = {KeyFrameBase.typeKey};
+
 abstract class KeyFrameBase<T extends CoreContext> extends Core<T> {
   static const int typeKey = 29;
   @override
   int get coreType => KeyFrameBase.typeKey;
   @override
-  Set<int> get coreTypes => {KeyFrameBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Frame field with key 67.

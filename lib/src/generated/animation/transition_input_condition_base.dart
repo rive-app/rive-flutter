@@ -5,13 +5,14 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/transition_condition.dart';
 
+const _coreTypes = {TransitionInputConditionBase.typeKey, TransitionConditionBase.typeKey};
+
 abstract class TransitionInputConditionBase extends TransitionCondition {
   static const int typeKey = 67;
   @override
   int get coreType => TransitionInputConditionBase.typeKey;
   @override
-  Set<int> get coreTypes =>
-      {TransitionInputConditionBase.typeKey, TransitionConditionBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// InputId field with key 155.

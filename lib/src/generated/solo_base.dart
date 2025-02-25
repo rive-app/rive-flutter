@@ -8,19 +8,21 @@ import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/node.dart';
 
+const _coreTypes = {
+  SoloBase.typeKey,
+  NodeBase.typeKey,
+  TransformComponentBase.typeKey,
+  WorldTransformComponentBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class SoloBase extends Node {
   static const int typeKey = 147;
   @override
   int get coreType => SoloBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        SoloBase.typeKey,
-        NodeBase.typeKey,
-        TransformComponentBase.typeKey,
-        WorldTransformComponentBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// ActiveComponentId field with key 296.

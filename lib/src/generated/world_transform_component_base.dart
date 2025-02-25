@@ -6,16 +6,18 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 
+const _coreTypes = {
+  WorldTransformComponentBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class WorldTransformComponentBase extends ContainerComponent {
   static const int typeKey = 91;
   @override
   int get coreType => WorldTransformComponentBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        WorldTransformComponentBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Opacity field with key 18.

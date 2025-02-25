@@ -9,18 +9,20 @@ import 'package:rive/src/generated/shapes/vertex_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/shapes/path_vertex.dart';
 
+const _coreTypes = {
+  StraightVertexBase.typeKey,
+  PathVertexBase.typeKey,
+  VertexBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class StraightVertexBase extends PathVertex<Weight> {
   static const int typeKey = 5;
   @override
   int get coreType => StraightVertexBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        StraightVertexBase.typeKey,
-        PathVertexBase.typeKey,
-        VertexBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Radius field with key 26.

@@ -5,12 +5,14 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
+const _coreTypes = {SolidColorBase.typeKey, ComponentBase.typeKey};
+
 abstract class SolidColorBase extends Component {
   static const int typeKey = 18;
   @override
   int get coreType => SolidColorBase.typeKey;
   @override
-  Set<int> get coreTypes => {SolidColorBase.typeKey, ComponentBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// ColorValue field with key 37.

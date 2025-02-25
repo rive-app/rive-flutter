@@ -7,18 +7,20 @@ import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/transform_component.dart';
 
+const _coreTypes = <int>{
+  NodeBase.typeKey,
+  TransformComponentBase.typeKey,
+  WorldTransformComponentBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class NodeBase extends TransformComponent {
   static const int typeKey = 2;
   @override
   int get coreType => NodeBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        NodeBase.typeKey,
-        TransformComponentBase.typeKey,
-        WorldTransformComponentBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// X field with key 13.

@@ -5,16 +5,18 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 
+const _coreTypes = {
+  DrawRulesBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class DrawRulesBase extends ContainerComponent {
   static const int typeKey = 49;
   @override
   int get coreType => DrawRulesBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        DrawRulesBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// DrawTargetId field with key 121.
