@@ -3,6 +3,7 @@ import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/rive_core/animation/interpolating_keyframe.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
+import 'package:stokanal/rive/rive_settings.dart' as rive_settings;
 
 import '../../../rive.dart';
 import '../../generated/animation/nested_trigger_base.dart';
@@ -135,7 +136,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   KeyFrame getFrameAt(int index) => _keyframes[index];
 
   /// Return from and to frames
-  _ClosestFrame _closestFramePair(double seconds) {
+  _ClosestFrame _closestFramePair(final double seconds) {
 
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
@@ -143,13 +144,15 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
     // If it's the last keyframe, we skip the binary search
     final last = _keyframes[lastIndex];
+    final secondsMin = seconds - rive_settings.interpolationExactSecondsTolerance;
+    final secondsMax = seconds + rive_settings.interpolationExactSecondsTolerance;
     if (seconds >= last.seconds) {
-      return _ClosestFrame(null, last, seconds);
+      return _ClosestFrame(null, last, secondsMin, secondsMax);
     }
 
     var first = _keyframes[0];
     if (seconds <= first.seconds) {
-      return _ClosestFrame(null, first, seconds);
+      return _ClosestFrame(null, first, secondsMin, secondsMax);
     }
 
     int start = 1;
@@ -157,16 +160,16 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     while (start <= end) {
       int mid = (start + end) >> 1;
       var keyframe = _keyframes[mid];
-      if (keyframe.seconds < seconds - _ClosestFrame._exactSecondsTolerance) {
+      if (keyframe.seconds < secondsMin) {
         start = mid + 1;
-      } else if (keyframe.seconds > seconds + _ClosestFrame._exactSecondsTolerance) {
+      } else if (keyframe.seconds > secondsMax) {
         end = mid - 1;
       } else {
-        return _ClosestFrame(null, keyframe, seconds);
+        return _ClosestFrame(null, keyframe, secondsMin, secondsMax);
       }
     }
 
-    return _ClosestFrame(_keyframes[start-1] as InterpolatingKeyFrame, _keyframes[start], seconds);
+    return _ClosestFrame(_keyframes[start-1] as InterpolatingKeyFrame, _keyframes[start], secondsMin, secondsMax);
   }
 
   int _closestFrameIndex(double seconds, {int exactOffset = 0}) {
@@ -299,7 +302,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   _ClosestFrame? _pair;
 
-  // uncomment me for stats
+  // // uncomment me for stats
   // static var _applies = 0;
   // static var _hits = 0;
   // static var _toleranceHits = 0;
@@ -311,9 +314,11 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     }
 
     // _applies++;
-    if (_pair != null && seconds >= _pair!.seconds - _ClosestFrame._exactSecondsTolerance && seconds <= _pair!.seconds + _ClosestFrame._exactSecondsTolerance) { // it's a hit
+    if (_pair != null &&
+        seconds >= _pair!.secondsMin &&
+        seconds <= _pair!.secondsMax) { // it's a hit
       // _hits++;
-      // if (seconds != _pair!.seconds) {
+      // if (seconds != _pair!._seconds) {
       //   _toleranceHits++;
       // }
       // if (_hits % 1000000 == 0) {
@@ -322,10 +327,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     } else {
       _pair = _closestFramePair(seconds);
     }
-
-    // if (_pair == null || _pair!.seconds != seconds) {
-    //   _pair = _closestFramePair(seconds);
-    // }
 
     var fromFrame = _pair!.fromFrame;
 
@@ -355,10 +356,14 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 class _ClosestFrame {
   final InterpolatingKeyFrame? fromFrame;
   final KeyFrame toFrame;
-  final double seconds;
-  _ClosestFrame(this.fromFrame, this.toFrame, this.seconds);
+  // final double seconds;
+  final double secondsMin;
+  final double secondsMax;
+  _ClosestFrame(this.fromFrame, this.toFrame, this.secondsMin, this.secondsMax);
 
-  /// This value creates a tolerance when resolving frames.
-  /// Increasing it will make animations less smooth (less interpolations) and improve performance.
-  static const _exactSecondsTolerance = 0.06;
+  // double get _seconds => (secondsMin + secondsMax)/2.0;
+
+  // /// This value creates a tolerance when resolving frames.
+  // /// Increasing it will make animations less smooth (less interpolations) and improve performance.
+  // static const _exactSecondsTolerance = 0.06;
 }

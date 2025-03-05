@@ -102,42 +102,46 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   final Path path = Path();
   List<Component> _dependencyOrder = [];
-  final List<Drawable> _drawables = [];
   final List<DrawRules> _rules = [];
   List<DrawTarget> _sortedDrawRules = [];
 
   final _components = UniqueList.of<Component>();
 
-  List<Drawable> get drawables => _drawables;
+  @nonVirtual
+  final List<Drawable> drawables = [];
+  // List<Drawable> get drawables => _drawables;
 
-  final AnimationList _animations = AnimationList();
-  final EventList _events = EventList();
+  @nonVirtual
+  final AnimationList animations = AnimationList();
+  @nonVirtual
+  final EventList events = EventList();
 
   /// List of animations and state machines in the artboard.
-  AnimationList get animations => _animations;
+  // AnimationList get animations => _animations;
 
   /// List of events in the artboard.
-  EventList get events => _events;
+  // EventList get events => _events;
 
   DataContext? dataContext;
   final List<DataBind> globalDataBinds = [];
 
   /// List of linear animations in the artboard.
   Iterable<LinearAnimation> get linearAnimations =>
-      _animations.whereType<LinearAnimation>();
+      animations.whereType<LinearAnimation>();
 
   /// List of state machines in the artboard.
   Iterable<StateMachine> get stateMachines =>
-      _animations.whereType<StateMachine>();
+      animations.whereType<StateMachine>();
 
   int _dirtDepth = 0;
 
   /// Iterate each component and call callback for it.
   void forEachComponent(void Function(Component) callback) {
-    for (final c in _components) {
-      callback(c);
+    var t = _components.length;
+    for (var i = 0; i < t; i++) {
+    // for (final c in _components) {
+      callback(_components[i]);
     }
-    // _components.forEach(callback);
   }
 
   /// Find a component of a specific type with a specific name.
@@ -540,10 +544,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to add an Animation to an Artboard. This should be
   /// @internal when it's supported.
   bool internalAddAnimation(Animation animation) {
-    if (_animations.contains(animation)) {
+    if (animations.contains(animation)) {
       return false;
     }
-    _animations.add(animation);
+    animations.add(animation);
 
     return true;
   }
@@ -551,7 +555,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to remove an Animation from an Artboard. This should
   /// be @internal when it's supported.
   bool internalRemoveAnimation(Animation animation) {
-    bool removed = _animations.remove(animation);
+    bool removed = animations.remove(animation);
 
     return removed;
   }
@@ -559,10 +563,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to add an Event to an Artboard. This should be
   /// @internal when it's supported.
   bool internalAddEvent(Event event) {
-    if (_events.contains(event)) {
+    if (events.contains(event)) {
       return false;
     }
-    _events.add(event);
+    events.add(event);
 
     return true;
   }
@@ -570,7 +574,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to remove an Event from an Artboard. This should
   /// be @internal when it's supported.
   bool internalRemoveEvent(Event event) {
-    bool removed = _events.remove(event);
+    bool removed = events.remove(event);
 
     return removed;
   }
@@ -634,9 +638,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   Drawable? firstDrawable;
 
   void computeDrawOrder() {
-    _drawables.clear();
+    drawables.clear();
     _rules.clear();
-    buildDrawOrder(_drawables, null, _rules);
+    buildDrawOrder(drawables, null, _rules);
 
     // Build rule dependencies. In practice this'll need to happen anytime a
     // target drawable is changed or rule is added/removed.
@@ -714,10 +718,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
     firstDrawable = null;
     Drawable? lastDrawable;
-    length = _drawables.length;
+    length = drawables.length;
     for (var i = 0; i < length; i++) {
     // for (final drawable in _drawables) {
-      final drawable = _drawables[i];
+      final drawable = drawables[i];
       var rules = drawable.flattenedDrawRules;
 
       var target = rules?.activeTarget;
