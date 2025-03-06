@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/rive_core/animation/interpolating_keyframe.dart';
@@ -324,6 +322,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   // static var _applies = 0;
   // static var _hits = 0;
   // static var _toleranceHits = 0;
+  // var _skips = 0;
 
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
@@ -337,7 +336,9 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     if (pair != null) {
       if (_skipInterpolation) { // no interpolation, lookup and don't reset
         pair = _closestFramePair(seconds);
-        log('SKIP INTERPOLATION');
+        // if (_skips++ % 1000 == 0) {
+        //   log('SKIP INTERPOLATION');
+        // }
       } else if (seconds >= pair.secondsMin && seconds <= pair.secondsMax) { // reuse
         // _hits++;
         // if (seconds != _pair!._seconds) {
