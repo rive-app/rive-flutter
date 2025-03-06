@@ -16,12 +16,14 @@ abstract class KeyFrameInterface {
 
 class KeyFrameList<T extends KeyFrameInterface> {
 
-  var _keyframes = <T>[];
-  List<T> get keyframes => _keyframes;
-  set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
+  @nonVirtual
+  List<T> keyframes = <T>[];
+
+  // var _keyframes = <T>[];
+  // List<T> get keyframes => _keyframes;
+  // set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
 
   // T get firstKeyframe => _keyframes.first;
-
   // void remove(T keyframe) {
   //   _keyframes.remove(keyframe);
   //   onKeyframesChanged();
@@ -31,9 +33,9 @@ class KeyFrameList<T extends KeyFrameInterface> {
 
   /// Get the keyframe immediately following the provided one.
   T? after(T keyframe) {
-    var index = _keyframes.indexOf(keyframe);
-    if (index != -1 && index + 1 < _keyframes.length) {
-      return _keyframes[index + 1];
+    var index = keyframes.indexOf(keyframe);
+    if (index != -1 && index + 1 < keyframes.length) {
+      return keyframes[index + 1];
     }
     return null;
   }
@@ -45,11 +47,11 @@ class KeyFrameList<T extends KeyFrameInterface> {
     int mid = 0;
     int closestFrame = 0;
     int start = 0;
-    int end = _keyframes.length - 1;
+    int end = keyframes.length - 1;
 
     while (start <= end) {
       mid = (start + end) >> 1;
-      closestFrame = _keyframes[mid].frame;
+      closestFrame = keyframes[mid].frame;
       if (closestFrame < frame) {
         start = mid + 1;
       } else if (closestFrame > frame) {
@@ -65,7 +67,7 @@ class KeyFrameList<T extends KeyFrameInterface> {
   }
 
   void sort() {
-    _keyframes.sort((a, b) => a.frame.compareTo(b.frame));
+    keyframes.sort((a, b) => a.frame.compareTo(b.frame));
   }
 }
 
@@ -85,10 +87,10 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   /// Called by rive_core to add a KeyFrame to this KeyedProperty. This should
   /// be @internal when it's supported.
   bool internalAddKeyFrame(KeyFrame frame) {
-    if (_keyframes.contains(frame)) {
+    if (keyframes.contains(frame)) {
       return false;
     }
-    _keyframes.add(frame);
+    keyframes.add(frame);
     markKeyFrameOrderDirty();
     onKeyframesChanged();
     return true;
@@ -97,8 +99,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   /// Called by rive_core to remove a KeyFrame from this KeyedProperty. This
   /// should be @internal when it's supported.
   bool internalRemoveKeyFrame(KeyFrame frame) {
-    var removed = _keyframes.remove(frame);
-    if (_keyframes.isEmpty) {
+    var removed = keyframes.remove(frame);
+    if (keyframes.isEmpty) {
       // If they keyframes are now empty, we might want to remove this keyed
       // property. Wait for any other pending changes to complete before
       // checking.
@@ -112,7 +114,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   }
 
   void _checkShouldRemove() {
-    if (_keyframes.isEmpty) {
+    if (keyframes.isEmpty) {
       // Remove this keyed property.
       context.removeObject(this);
     }
@@ -131,19 +133,19 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   }
 
   /// Number of keyframes for this keyed property.
-  int get numFrames => _keyframes.length;
+  int get numFrames => keyframes.length;
 
-  KeyFrame getFrameAt(int index) => _keyframes[index];
+  KeyFrame getFrameAt(int index) => keyframes[index];
 
   /// Return from and to frames
   _ClosestFrame _closestFramePair(final double seconds) {
 
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
-    final lastIndex = _keyframes.length - 1;
+    final lastIndex = keyframes.length - 1;
 
     // If it's the last keyframe, we skip the binary search
-    final last = _keyframes[lastIndex];
+    final last = keyframes[lastIndex];
 
     final double secondsMin;
     final double secondsMax;
@@ -159,7 +161,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       return _ClosestFrame(null, last, secondsMin, secondsMax);
     }
 
-    var first = _keyframes[0];
+    var first = keyframes[0];
     if (seconds <= first.seconds) {
       return _ClosestFrame(null, first, secondsMin, secondsMax);
     }
@@ -168,7 +170,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     int end = lastIndex;
     while (start <= end) {
       int mid = (start + end) >> 1;
-      var keyframe = _keyframes[mid];
+      var keyframe = keyframes[mid];
       if (keyframe.seconds < secondsMin) {
         start = mid + 1;
       } else if (keyframe.seconds > secondsMax) {
@@ -178,16 +180,16 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       }
     }
 
-    return _ClosestFrame(_keyframes[start-1] as InterpolatingKeyFrame, _keyframes[start], secondsMin, secondsMax);
+    return _ClosestFrame(keyframes[start-1] as InterpolatingKeyFrame, keyframes[start], secondsMin, secondsMax);
   }
 
   int _closestFrameIndex(double seconds, {int exactOffset = 0}) {
 
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
-    var length = _keyframes.length;
+    var length = keyframes.length;
     int end = length - 1;
-    var totalSeconds = _keyframes[end].seconds;
+    var totalSeconds = keyframes[end].seconds;
 
     // If it's the last keyframe, we skip the binary search
     if (seconds > totalSeconds) {
@@ -197,7 +199,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     if (seconds == totalSeconds) {
       return end + exactOffset;
     }
-    if (seconds < _keyframes[0].seconds) {
+    if (seconds < keyframes[0].seconds) {
       return 0;
     }
     int mid = (length * seconds/totalSeconds).toInt(); // try to guess an optimal starting seconds
@@ -209,7 +211,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     double closestSeconds;
 
     while (start <= end) {
-      closestSeconds = _keyframes[mid].seconds;
+      closestSeconds = keyframes[mid].seconds;
       if (closestSeconds < seconds) {
         start = mid + 1;
       } else if (closestSeconds > seconds) {
@@ -296,7 +298,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     }
 
     while (idxTo > idx) {
-      var frame = _keyframes[idx];
+      var frame = keyframes[idx];
       reporter.reportKeyedCallback(
           objectId, propertyKey, secondsTo - frame.seconds);
       idx++;
@@ -326,20 +328,22 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
-    if (_keyframes.length == 0) {
+    if (keyframes.length == 0) {
       return;
     }
 
     // _applies++;
 
-    var pair = _pair;
-    if (pair != null) {
-      if (_skipInterpolation) { // no interpolation, lookup and don't reset
-        pair = _closestFramePair(seconds);
-        // if (_skips++ % 1000 == 0) {
-        //   log('SKIP INTERPOLATION');
-        // }
-      } else if (seconds >= pair.secondsMin && seconds <= pair.secondsMax) { // reuse
+    final _ClosestFrame pair;
+
+    if (_skipInterpolation) { // no interpolation, lookup and don't reset
+      pair = _closestFramePair(seconds);
+      // if (_skips++ % 1000 == 0) {
+      //   log('SKIP INTERPOLATION');
+      // }
+    } else {
+      if (_pair != null && seconds >= _pair!.secondsMin && seconds <= _pair!.secondsMax) { // reuse
+        pair = _pair!;
         // _hits++;
         // if (seconds != _pair!._seconds) {
         //   _toleranceHits++;
@@ -348,10 +352,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
         //   print('HITS > $_hits $_toleranceHits > hits=${(_hits/_applies).toStringAsFixed(2)} tolerance=${(_toleranceHits/_hits).toStringAsFixed(2)}');
         // }
       } else { // lookup and reset
-        _pair = pair = _closestFramePair(seconds);
+        pair = _pair = _closestFramePair(seconds);
       }
-    } else { // lookup and reset
-      _pair = pair = _closestFramePair(seconds);
     }
 
     // if (_pair != null &&

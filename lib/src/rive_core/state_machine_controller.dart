@@ -291,7 +291,11 @@ class LayerController {
           stateFrom, ignoreTriggers, viewModelInstance);
     }
     final transitions = stateFrom.state.transitions;
-    for (final transition in transitions) {
+
+    final t = transitions.length;
+    for (var i = 0; i < t; i++) {
+    // for (final transition in transitions) {
+      var transition = transitions[i];
       var allowed = transition.allowed(stateFrom, controller._inputValues,
           ignoreTriggers, viewModelInstance);
       if (allowed == AllowTransition.yes &&
