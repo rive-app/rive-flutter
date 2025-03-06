@@ -243,7 +243,8 @@ class FallbackBean extends PropertyBean {
   String toString() => 'FallbackBean[$propertyKey, $_hits]';
 }
 
-final _map = <int, PropertyBean>{};
+// final _map = <int, PropertyBean>{};
+final _list = List<PropertyBean?>.filled(1000, null); // use a list to map from property keys
 final _invalid = PropertyBean._(CoreContext.invalidPropertyKey);
 var _first = true;
 final _implements = <PropertyBean>[
@@ -297,15 +298,20 @@ abstract class PropertyBeans {
 
     if (_first) {
       _first = false;
-      _implements.forEach((bean) => _map[bean.propertyKey] = bean);
+      // _implements.forEach((bean) => _map[bean.propertyKey] = bean);
+      _implements.forEach((bean) => _list[bean.propertyKey] = bean);
     }
 
-    return _map.putIfAbsent(propertyKey, () => FallbackBean._(propertyKey));
+    // return _map.putIfAbsent(propertyKey, () => FallbackBean._(propertyKey));
+    return _list[propertyKey] ?? (_list[propertyKey] = FallbackBean._(propertyKey));
   }
 
   // ignore: unused_element
   static void _dumpFallbacks() {
-    info('\n${_map.values.whereType<FallbackBean>().sorted((b1, b2) => b2._hits.compareTo(b1._hits)).map((b) => '$b').join('\n')}');
+    info('\n${
+        // _map.values
+        _list.whereNotNull()
+        .whereType<FallbackBean>().sorted((b1, b2) => b2._hits.compareTo(b1._hits)).map((b) => '$b').join('\n')}');
   }
 }
 

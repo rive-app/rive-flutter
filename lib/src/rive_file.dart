@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -42,6 +43,7 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive_common/rive_text.dart';
 import 'package:rive_common/utilities.dart';
+import 'package:stokanal/rive/rive_settings.dart';
 
 typedef Core<CoreContext>? ObjectGenerator(int coreTypeKey);
 
@@ -166,12 +168,21 @@ class RiveFile {
     return false;
   }
 
+  // final String? path;
+  // late final bool skipInterpolation;
+
   RiveFile._(
     BinaryReader reader,
     this.header,
     ObjectGenerator? generator,
-    this._assetLoader,
-  ) {
+    this._assetLoader, {
+      String? path,
+   }) {
+
+    var skipInterpolation = path != null && skipInterpolationRiveFiles.any(path.contains);
+    log('RIVE-FILE >> $path${skipInterpolation?' > SKIP_INTERPOLATION':''}');
+    // debugPrintStack();
+
     /// Property fields table of contents
     final propertyToField = _propertyToFieldLookup(header);
 
@@ -318,16 +329,39 @@ class RiveFile {
       throw const RiveFormatErrorException('Rive file is missing a backboard.');
     }
 
+    // var objects = 0;
+    // var keyedProperties = 0;
+
     for (final artboard in _artboards) {
       var runtimeArtboard = artboard as RuntimeArtboard;
-      for (final object in runtimeArtboard.objects.whereNotNull()) {
-        if (object.validate()) {
-          InternalCoreHelper.markValid(object);
+      final t = runtimeArtboard.objects.length;
+      // for (final object in runtimeArtboard.objects.whereNotNull()) {
+      for (var i = 0; i < t; i++) {
+        var object = runtimeArtboard.objects[i];
+        if (object == null) {
+          continue;
+        }
+        // objects++;
+        // if (object is KeyedProperty) {
+        //   keyedProperties++;
+        // }
+        if (skipInterpolation && object is KeyedProperty) {
+          object.skipInterpolationTolerance();
+        }
+
+        if (kDebugMode && true) {
+          if (object.validate()) {
+            InternalCoreHelper.markValid(object);
+          } else {
+            throw RiveFormatErrorException('Rive file is corrupt. Invalid $object.');
+          }
         } else {
-          throw RiveFormatErrorException('Rive file is corrupt. Invalid $object.');
+          InternalCoreHelper.markValid(object);
         }
       }
     }
+
+    // log('RIVE-FILE >> $path >> objects=$objects keyedProperties=$keyedProperties');
   }
 
   /// Imports a Rive file from an array of bytes.
@@ -354,9 +388,9 @@ class RiveFile {
     FileAssetLoader? assetLoader,
     ObjectGenerator? objectGenerator,
     bool loadCdnAssets = true,
+    String? path,
   }) {
-    // TODO: in the next major version add an assert here to make this a
-    // requirement
+    // TODO: in the next major version add an assert here to make this a requirement
     if (!_initializedText) {
       /// STOKANAL-FORK-EDIT
       // debugPrint('''Rive: RiveFile.import called before RiveFile.initialize(). Consider calling `await RiveFile.initialize()` before using `RiveFile.import`''');
@@ -364,6 +398,7 @@ class RiveFile {
 
     var reader = BinaryReader(bytes);
     return RiveFile._(
+      path: path,
       reader,
       RuntimeHeader.read(reader),
       objectGenerator,
@@ -410,6 +445,7 @@ class RiveFile {
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
     ObjectGenerator? objectGenerator,
+    String? path,
   }) async {
     /// If the file looks like it needs the text runtime, let's load it.
     if (!_initializedText) {
@@ -420,6 +456,7 @@ class RiveFile {
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
+      path: path,
     );
   }
 
@@ -448,6 +485,7 @@ class RiveFile {
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
+      path: bundleKey,
     );
   }
 
@@ -494,6 +532,7 @@ class RiveFile {
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
+      path: path,
     );
   }
 

@@ -213,20 +213,22 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
-  final _activeNestedArtboards = UniqueList.of<NestedArtboard>();
-  Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
+  @nonVirtual
+  final activeNestedArtboards = UniqueList.of<NestedArtboard>();
+  // Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
-  final List<Joystick> _joysticks = [];
-  Iterable<Joystick> get joysticks => _joysticks;
+  @nonVirtual
+  final List<Joystick> joysticks = [];
+  // Iterable<Joystick> get joysticks => _joysticks;
 
   final List<DataBind> dataBinds = [];
   // Iterable<DataBind> get dataBinds => _dataBinds;
 
   bool canPreApplyJoysticks() {
-    if (_joysticks.length == 0) {
+    if (joysticks.length == 0) {
       return false;
     }
-    if (_joysticks.any((joystick) => joystick.isComplex)) {
+    if (joysticks.any((joystick) => joystick.isComplex)) {
       return false;
     }
     return true;
@@ -245,10 +247,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   bool applyJoysticks({bool isRoot = false}) {
-    if (_joysticks.isEmpty) {
+    if (joysticks.isEmpty) {
       return false;
     }
-    for (final joystick in _joysticks) {
+    for (final joystick in joysticks) {
       if (isRoot) {
         updateDataBinds();
       }
@@ -320,7 +322,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
     if (nested) {
       // var active = _activeNestedArtboards.toList(growable: false);
-      for (final activeNestedArtboard in _activeNestedArtboards){//.toList(growable: false)) {
+      for (final activeNestedArtboard in activeNestedArtboards){//.toList(growable: false)) {
         if (activeNestedArtboard.advance(elapsedSeconds)) {
           didUpdate = true;
         }
@@ -439,7 +441,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       case NestedTriggerBase.typeKey:
         break;
       case JoystickBase.typeKey:
-        _joysticks.add(component as Joystick);
+        joysticks.add(component as Joystick);
         break;
       case DataBindBase.typeKey:
       case DataBindContextBase.typeKey:
@@ -461,7 +463,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       case NestedTriggerBase.typeKey:
         break;
       case JoystickBase.typeKey:
-        _joysticks.remove(component as Joystick);
+        joysticks.remove(component as Joystick);
         break;
       case DataBindBase.typeKey:
       case DataBindContextBase.typeKey:
@@ -471,11 +473,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   void addNestedArtboard(NestedArtboard artboard) {
-    _activeNestedArtboards.add(artboard);
+    activeNestedArtboards.add(artboard);
   }
 
   void removeNestedArtboard(NestedArtboard artboard) {
-    _activeNestedArtboards.remove(artboard);
+    activeNestedArtboards.remove(artboard);
   }
 
   /// Let the artboard know that the drawables need to be resorted before
@@ -675,7 +677,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   void populateDataBinds(List<DataBind> globalDataBinds) {
     dataBinds.forEach(globalDataBinds.add);
 
-    for (final nestedArtboard in _activeNestedArtboards) {
+    for (final nestedArtboard in activeNestedArtboards) {
       final mountedArtboard = nestedArtboard.mountedArtboard;
       if (mountedArtboard != null) {
         mountedArtboard.populateDataBinds(globalDataBinds);
@@ -838,7 +840,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       DataContext? parentDataContext, bool isRoot) {
     dataContext = dataContextValue;
     dataContext!.parent = parentDataContext;
-    for (final nestedArtboard in _activeNestedArtboards) {
+    for (final nestedArtboard in activeNestedArtboards) {
       final mountedArtboard = nestedArtboard.mountedArtboard;
       if (mountedArtboard != null) {
         ViewModelInstance? nestedViewModelInstance =
