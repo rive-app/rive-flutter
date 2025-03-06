@@ -824,7 +824,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
         ViewModelInstance? nestedViewModelInstance =
             dataContext!.getViewModelInstance(nestedArtboard.dataBindPath);
         if (nestedViewModelInstance != null) {
-          mountedArtboard.setDataContextFromInstance(
+          mountedArtboard.bindViewModelInstance(
               nestedViewModelInstance, dataContext, false);
         } else {
           mountedArtboard.internalDataContext(
@@ -835,7 +835,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     computeBindings(isRoot);
   }
 
-  void setDataContextFromInstance(
+  void bindViewModelInstance(
       ViewModelInstance viewModelInstance, DataContext? parent, bool isRoot) {
     final dataContext = DataContext(viewModelInstance);
     internalDataContext(dataContext, parent, isRoot);

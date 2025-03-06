@@ -153,9 +153,9 @@ class RuntimeMountedArtboard extends MountedArtboard {
   }
 
   @override
-  void setDataContextFromInstance(ViewModelInstance viewModelInstance,
+  void bindViewModelInstance(ViewModelInstance viewModelInstance,
       DataContext? dataContextValue, bool isRoot) {
-    artboardInstance.setDataContextFromInstance(
+    artboardInstance.bindViewModelInstance(
         viewModelInstance, dataContextValue, isRoot);
   }
 
