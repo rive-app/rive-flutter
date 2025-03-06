@@ -334,26 +334,25 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
     // _applies++;
 
-    final _ClosestFrame pair;
+    // final _ClosestFrame pair;
 
-    if (_skipInterpolation) { // no interpolation, lookup and don't reset
-      pair = _closestFramePair(seconds);
-      // if (_skips++ % 1000 == 0) {
-      //   log('SKIP INTERPOLATION');
+    if (_pair != null && seconds >= _pair!.secondsMin && seconds <= _pair!.secondsMax) { // reuse
+      // _hits++;
+      // if (seconds != _pair!._seconds) {
+      //   _toleranceHits++;
       // }
-    } else {
-      if (_pair != null && seconds >= _pair!.secondsMin && seconds <= _pair!.secondsMax) { // reuse
-        pair = _pair!;
-        // _hits++;
-        // if (seconds != _pair!._seconds) {
-        //   _toleranceHits++;
+      // if (_hits % 1000000 == 0) {
+      //   print('HITS > $_hits $_toleranceHits > hits=${(_hits/_applies).toStringAsFixed(2)} tolerance=${(_toleranceHits/_hits).toStringAsFixed(2)}');
+      // }
+
+      if (_skipInterpolation) { // no interpolation, lookup and don't reset
+        _pair = _closestFramePair(seconds);
+        // if (_skips++ % 1000 == 0) {
+        //   log('SKIP INTERPOLATION');
         // }
-        // if (_hits % 1000000 == 0) {
-        //   print('HITS > $_hits $_toleranceHits > hits=${(_hits/_applies).toStringAsFixed(2)} tolerance=${(_toleranceHits/_hits).toStringAsFixed(2)}');
-        // }
-      } else { // lookup and reset
-        pair = _pair = _closestFramePair(seconds);
       }
+    } else { // lookup and reset
+      _pair = _closestFramePair(seconds);
     }
 
     // if (_pair != null &&
@@ -363,16 +362,16 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     //   _pair = _closestFramePair(seconds);
     // }
 
-    var fromFrame = pair.fromFrame;
+    var fromFrame = _pair!.fromFrame;
 
     if (fromFrame != null) { // interpolation
       if (fromFrame.interpolationType == 0) {
         fromFrame.apply(object, propertyBean, mix);
       } else {
-        fromFrame.applyInterpolation(object, propertyBean, seconds, pair.toFrame, mix);
+        fromFrame.applyInterpolation(object, propertyBean, seconds, _pair!.toFrame, mix);
       }
     } else {
-      pair.toFrame.apply(object, propertyBean, mix);
+      _pair!.toFrame.apply(object, propertyBean, mix);
     }
   }
 

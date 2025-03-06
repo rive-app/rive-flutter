@@ -57,25 +57,18 @@ int _to(int s) {
 }
 
 int _from(int s) => (s & _negative > 0 ? -1 : 1) * (s & _module);
+int _setLow(final int v, final int s) => (v & _highInt) + _to(s);
 
-int _setLow(final int v, final int s) {
-  var r = (v & _highInt) + _to(s);
-  // // TODO comment me
-  // if (_getLow(r) != s) {
-  //   throw Exception('v=${v.toRadixString(2)} s=${s.toRadixString(2)} r=${r.toRadixString(2)} low=${_getLow(r).toRadixString(2)}');
-  // }
-  return r;
-}
-int _getLow(int v) => _from(v & _lowInt);
-int _setHigh(final int v, final int s) {
-  var r = (_to(s) << 32) + (v & _lowInt);
-  // // TODO comment me
-  // if (_getHigh(r) != s) {
-  //   throw Exception('v=${v.toRadixString(2)} s=${s.toRadixString(2)} r=${r.toRadixString(2)} high=${_getHigh(r).toRadixString(2)}');
-  // }
-  return r;
-}
-int _getHigh(int v) => _from((v & _highInt) >> 32);
+// int _getLow(int v) => _from(v & _lowInt);
+// int _setHigh(final int v, final int s) {
+//   var r = (_to(s) << 32) + (v & _lowInt);
+//   // // TODO comment me
+//   // if (_getHigh(r) != s) {
+//   //   throw Exception('v=${v.toRadixString(2)} s=${s.toRadixString(2)} r=${r.toRadixString(2)} high=${_getHigh(r).toRadixString(2)}');
+//   // }
+//   return r;
+// }
+// int _getHigh(int v) => _from((v & _highInt) >> 32);
 
 abstract class Core<T extends CoreContext> {
   static const int missingId = -1;

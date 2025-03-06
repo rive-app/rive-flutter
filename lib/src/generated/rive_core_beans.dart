@@ -39,6 +39,10 @@ class PropertyBean<T extends Core> {
     setDouble(o, function(getDouble(o)));
   }
 
+  void applyDouble(T o, double multiplier, double sum) {
+    setDouble(o, getDouble(o) * multiplier + sum);
+  }
+
   int getColor(T o) => throw Exception();
   void setColor(T o, int v) => throw Exception();
 
@@ -62,9 +66,12 @@ class _DoublePropertyBean<T extends Core> extends PropertyBean<T> {
   @nonVirtual
   CoreFieldType? get coreType => RiveCoreContext.doubleType;
 
-  @override
-  void transformDouble(T o, double Function(double) function) =>
-      setDouble(o, function(getDouble(o)));
+  // @override
+  // void transformDouble(T o, double Function(double) function) =>
+  //     setDouble(o, function(getDouble(o)));
+  // @override
+  // void multiplyDouble(T o, double multiplier) =>
+  //   setDouble(o, getDouble(o) * multiplier);
 
   @override
   void setObjectProperty(Core o, Object v) => o is T && v is double ? setDouble(o, v) : {};
@@ -85,6 +92,10 @@ class DoublePropertyBean<T extends Core> extends _DoublePropertyBean<T> {
   @override
   void transformDouble(T o, double Function(double) function) =>
     setter(o, function(getter(o)));
+
+  @override
+  void applyDouble(T o, double multiplier, double sum) =>
+      setter(o, getter(o) * multiplier + sum);
 
   @override
   void setObjectProperty(Core o, Object v) => o is T && v is double ? setter(o, v) : {};

@@ -184,6 +184,7 @@ class StateTransition extends StateTransitionBase {
       return AllowTransition.no;
     }
 
+    var conditions = this.conditions.values;
     final t = conditions.length;
     for (var i = 0; i < t; i++) {
     // for (final condition in conditions) {

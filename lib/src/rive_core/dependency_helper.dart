@@ -26,9 +26,10 @@ class DependencyHelper<T extends dynamic, U extends dynamic> {
     /// STOKANAL-FORK-EDIT: do not use forEach
 
     // UniqueList
-    final t = dependents.length;
+    var list = dependents.list;
+    final t = list.length;
     for (var i = 0; i < t; i++) {
-      dependents[i].addDirt(dirt, recurse: recurse);
+      list[i].addDirt(dirt, recurse: recurse);
     }
 
     // // Set

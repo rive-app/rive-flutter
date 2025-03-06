@@ -21,7 +21,8 @@ class KeyFrameDouble extends KeyFrameDoubleBase {
     if (mix == 1) {
       bean.setDouble(object, value);
     } else {
-      bean.transformDouble(object, (v) => v * (1.0 - mix) + value * mix);
+      // bean.transformDouble(object, (v) => v * (1.0 - mix) + value * mix);
+      bean.applyDouble(object, 1.0 - mix, value * mix);
     }
   }
 
