@@ -29,19 +29,22 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
   /// Rotation field with key 82.
   static const int rotationPropertyKey = 82;
   static const double rotationInitialValue = 0;
-  double _rotation = rotationInitialValue;
+
+  @nonVirtual
+  double rotation_ = rotationInitialValue;
 
   /// The control points' angle.
-  double get rotation => _rotation;
+  @nonVirtual
+  double get rotation => rotation_;
 
-  /// Change the [_rotation] field value.
+  /// Change the [rotation_] field value.
   /// [rotationChanged] will be invoked only if the field's value has changed.
   set rotation(double value) {
-    if (_rotation == value) {
+    if (rotation_ == value) {
       return;
     }
-    double from = _rotation;
-    _rotation = value;
+    double from = rotation_;
+    rotation_ = value;
     if (hasValidated) {
       rotationChanged(from, value);
     }
@@ -53,19 +56,22 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
   /// Distance field with key 83.
   static const int distancePropertyKey = 83;
   static const double distanceInitialValue = 0;
-  double _distance = distanceInitialValue;
+
+  @nonVirtual
+  double distance_ = distanceInitialValue;
 
   /// The control points' distance from the translation of the point.
-  double get distance => _distance;
+  @nonVirtual
+  double get distance => distance_;
 
-  /// Change the [_distance] field value.
+  /// Change the [distance_] field value.
   /// [distanceChanged] will be invoked only if the field's value has changed.
   set distance(double value) {
-    if (_distance == value) {
+    if (distance_ == value) {
       return;
     }
-    double from = _distance;
-    _distance = value;
+    double from = distance_;
+    distance_ = value;
     if (hasValidated) {
       distanceChanged(from, value);
     }
@@ -77,8 +83,8 @@ abstract class CubicMirroredVertexBase extends CubicVertex {
   void copy(Core source) {
     super.copy(source);
     if (source is CubicMirroredVertexBase) {
-      _rotation = source._rotation;
-      _distance = source._distance;
+      rotation_ = source.rotation_;
+      distance_ = source.distance_;
     }
   }
 }

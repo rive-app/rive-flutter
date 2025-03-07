@@ -23,17 +23,20 @@ abstract class WorldTransformComponentBase extends ContainerComponent {
   /// Opacity field with key 18.
   static const int opacityPropertyKey = 18;
   static const double opacityInitialValue = 1;
-  double _opacity = opacityInitialValue;
-  double get opacity => _opacity;
 
-  /// Change the [_opacity] field value.
+  @nonVirtual
+  double opacity_ = opacityInitialValue;
+  @nonVirtual
+  double get opacity => opacity_;
+
+  /// Change the [opacity_] field value.
   /// [opacityChanged] will be invoked only if the field's value has changed.
   set opacity(double value) {
-    if (_opacity == value) {
+    if (opacity_ == value) {
       return;
     }
-    double from = _opacity;
-    _opacity = value;
+    double from = opacity_;
+    opacity_ = value;
     if (hasValidated) {
       opacityChanged(from, value);
     }
@@ -45,7 +48,7 @@ abstract class WorldTransformComponentBase extends ContainerComponent {
   void copy(Core source) {
     super.copy(source);
     if (source is WorldTransformComponentBase) {
-      _opacity = source._opacity;
+      opacity_ = source.opacity_;
     }
   }
 }

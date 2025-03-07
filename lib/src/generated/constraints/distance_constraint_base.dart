@@ -25,20 +25,23 @@ abstract class DistanceConstraintBase extends TargetedConstraint {
   /// Distance field with key 177.
   static const int distancePropertyKey = 177;
   static const double distanceInitialValue = 100.0;
-  double _distance = distanceInitialValue;
+
+  @nonVirtual
+  double distance_ = distanceInitialValue;
 
   /// The unit distance the constraint will move the constrained object relative
   /// to the target.
-  double get distance => _distance;
+  @nonVirtual
+  double get distance => distance_;
 
-  /// Change the [_distance] field value.
+  /// Change the [distance_] field value.
   /// [distanceChanged] will be invoked only if the field's value has changed.
   set distance(double value) {
-    if (_distance == value) {
+    if (distance_ == value) {
       return;
     }
-    double from = _distance;
-    _distance = value;
+    double from = distance_;
+    distance_ = value;
     if (hasValidated) {
       distanceChanged(from, value);
     }
@@ -74,7 +77,7 @@ abstract class DistanceConstraintBase extends TargetedConstraint {
   void copy(Core source) {
     super.copy(source);
     if (source is DistanceConstraintBase) {
-      _distance = source._distance;
+      distance_ = source.distance_;
       _modeValue = source._modeValue;
     }
   }

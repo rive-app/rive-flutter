@@ -28,19 +28,22 @@ abstract class StraightVertexBase extends PathVertex<Weight> {
   /// Radius field with key 26.
   static const int radiusPropertyKey = 26;
   static const double radiusInitialValue = 0;
-  double _radius = radiusInitialValue;
+
+  @nonVirtual
+  double radius_ = radiusInitialValue;
 
   /// Radius of the vertex
-  double get radius => _radius;
+  @nonVirtual
+  double get radius => radius_;
 
-  /// Change the [_radius] field value.
+  /// Change the [radius_] field value.
   /// [radiusChanged] will be invoked only if the field's value has changed.
   set radius(double value) {
-    if (_radius == value) {
+    if (radius_ == value) {
       return;
     }
-    double from = _radius;
-    _radius = value;
+    double from = radius_;
+    radius_ = value;
     if (hasValidated) {
       radiusChanged(from, value);
     }
@@ -52,7 +55,7 @@ abstract class StraightVertexBase extends PathVertex<Weight> {
   void copy(Core source) {
     super.copy(source);
     if (source is StraightVertexBase) {
-      _radius = source._radius;
+      radius_ = source.radius_;
     }
   }
 }

@@ -26,6 +26,7 @@ abstract class NodeBase extends TransformComponent {
   /// X field with key 13.
   static const int xPropertyKey = 13;
   static const double xInitialValue = 0;
+  @nonVirtual
   double x_ = xInitialValue;
   @override
   @nonVirtual
@@ -52,6 +53,7 @@ abstract class NodeBase extends TransformComponent {
   /// Y field with key 14.
   static const int yPropertyKey = 14;
   static const double yInitialValue = 0;
+  @nonVirtual
   double y_ = yInitialValue;
   @override
   @nonVirtual

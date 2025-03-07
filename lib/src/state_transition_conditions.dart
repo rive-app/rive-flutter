@@ -8,7 +8,7 @@ class StateTransitionConditions extends ListBase<TransitionCondition> {
   // List<TransitionCondition> get values => _values.cast<TransitionCondition>();
 
   @nonVirtual
-  @override
+  // @override
   final List<TransitionCondition?> values = <TransitionCondition?>[]; // has to be nullable
   // List<TransitionCondition> get values => _values.cast<TransitionCondition>();
 

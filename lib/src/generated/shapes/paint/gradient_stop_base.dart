@@ -40,17 +40,20 @@ abstract class GradientStopBase extends Component {
   /// Position field with key 39.
   static const int positionPropertyKey = 39;
   static const double positionInitialValue = 0;
-  double _position = positionInitialValue;
-  double get position => _position;
 
-  /// Change the [_position] field value.
+  @nonVirtual
+  double position_ = positionInitialValue;
+  @nonVirtual
+  double get position => position_;
+
+  /// Change the [position_] field value.
   /// [positionChanged] will be invoked only if the field's value has changed.
   set position(double value) {
-    if (_position == value) {
+    if (position_ == value) {
       return;
     }
-    double from = _position;
-    _position = value;
+    double from = position_;
+    position_ = value;
     if (hasValidated) {
       positionChanged(from, value);
     }
@@ -63,7 +66,7 @@ abstract class GradientStopBase extends Component {
     super.copy(source);
     if (source is GradientStopBase) {
       _colorValue = source._colorValue;
-      _position = source._position;
+      position_ = source.position_;
     }
   }
 }

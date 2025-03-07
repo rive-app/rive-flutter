@@ -23,6 +23,7 @@ abstract class VertexBase extends ContainerComponent {
   static const int xPropertyKey = 24;
   static const double xInitialValue = 0;
 
+  @nonVirtual
   double x_ = xInitialValue;
 
   /// X value for the translation of the vertex.
@@ -50,6 +51,7 @@ abstract class VertexBase extends ContainerComponent {
   static const int yPropertyKey = 25;
   static const double yInitialValue = 0;
 
+  @nonVirtual
   double y_ = yInitialValue;
 
   /// Y value for the translation of the vertex.

@@ -29,6 +29,8 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   /// Rotation field with key 79.
   static const int rotationPropertyKey = 79;
   static const double rotationInitialValue = 0;
+
+  @nonVirtual
   double rotation_ = rotationInitialValue;
 
   /// The control points' angle.
@@ -55,6 +57,8 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   /// InDistance field with key 80.
   static const int inDistancePropertyKey = 80;
   static const double inDistanceInitialValue = 0;
+
+  @nonVirtual
   double inDistance_ = inDistanceInitialValue;
 
   /// The in point's distance from the translation of the point.
@@ -81,20 +85,23 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   /// OutDistance field with key 81.
   static const int outDistancePropertyKey = 81;
   static const double outDistanceInitialValue = 0;
-  double _outDistance = outDistanceInitialValue;
+
+  @nonVirtual
+  double outDistance_ = outDistanceInitialValue;
 
   /// The out point's distance from the translation of the point.
-  double get outDistance => _outDistance;
+  @nonVirtual
+  double get outDistance => outDistance_;
 
-  /// Change the [_outDistance] field value.
+  /// Change the [outDistance_] field value.
   /// [outDistanceChanged] will be invoked only if the field's value has
   /// changed.
   set outDistance(double value) {
-    if (_outDistance == value) {
+    if (outDistance_ == value) {
       return;
     }
-    double from = _outDistance;
-    _outDistance = value;
+    double from = outDistance_;
+    outDistance_ = value;
     if (hasValidated) {
       outDistanceChanged(from, value);
     }
@@ -108,7 +115,7 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
     if (source is CubicAsymmetricVertexBase) {
       rotation_ = source.rotation_;
       inDistance_ = source.inDistance_;
-      _outDistance = source._outDistance;
+      outDistance_ = source.outDistance_;
     }
   }
 }
