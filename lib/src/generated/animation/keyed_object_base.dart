@@ -29,7 +29,6 @@ abstract class KeyedObjectBase<T extends CoreContext> extends Core<T> {
   set objectId(int frame) => high = frame;
 
 
-
   // /// Identifier used to track the object that is keyed.
   // int get objectId => _objectId;
   //

@@ -18,17 +18,20 @@ abstract class SolidColorBase extends Component {
   /// ColorValue field with key 37.
   static const int colorValuePropertyKey = 37;
   static const int colorValueInitialValue = 0xFF747474;
-  int _colorValue = colorValueInitialValue;
-  int get colorValue => _colorValue;
 
-  /// Change the [_colorValue] field value.
+  @nonVirtual
+  int colorValue_ = colorValueInitialValue;
+  @nonVirtual
+  int get colorValue => colorValue_;
+
+  /// Change the [colorValue_] field value.
   /// [colorValueChanged] will be invoked only if the field's value has changed.
   set colorValue(int value) {
-    if (_colorValue == value) {
+    if (colorValue_ == value) {
       return;
     }
-    int from = _colorValue;
-    _colorValue = value;
+    int from = colorValue_;
+    colorValue_ = value;
     if (hasValidated) {
       colorValueChanged(from, value);
     }
@@ -40,7 +43,7 @@ abstract class SolidColorBase extends Component {
   void copy(Core source) {
     super.copy(source);
     if (source is SolidColorBase) {
-      _colorValue = source._colorValue;
+      colorValue_ = source.colorValue_;
     }
   }
 }

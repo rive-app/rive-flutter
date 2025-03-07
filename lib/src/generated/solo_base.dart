@@ -28,20 +28,23 @@ abstract class SoloBase extends Node {
   /// ActiveComponentId field with key 296.
   static const int activeComponentIdPropertyKey = 296;
   static const int activeComponentIdInitialValue = 0;
-  int _activeComponentId = activeComponentIdInitialValue;
+
+  @nonVirtual
+  int activeComponentId_ = activeComponentIdInitialValue;
 
   /// Identifier of the active child in the solo set.
-  int get activeComponentId => _activeComponentId;
+  @nonVirtual
+  int get activeComponentId => activeComponentId_;
 
-  /// Change the [_activeComponentId] field value.
+  /// Change the [activeComponentId_] field value.
   /// [activeComponentIdChanged] will be invoked only if the field's value has
   /// changed.
   set activeComponentId(int value) {
-    if (_activeComponentId == value) {
+    if (activeComponentId_ == value) {
       return;
     }
-    int from = _activeComponentId;
-    _activeComponentId = value;
+    int from = activeComponentId_;
+    activeComponentId_ = value;
     if (hasValidated) {
       activeComponentIdChanged(from, value);
     }
@@ -53,7 +56,7 @@ abstract class SoloBase extends Node {
   void copy(Core source) {
     super.copy(source);
     if (source is SoloBase) {
-      _activeComponentId = source._activeComponentId;
+      activeComponentId_ = source.activeComponentId_;
     }
   }
 }

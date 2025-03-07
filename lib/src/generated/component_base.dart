@@ -16,20 +16,23 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
   /// Name field with key 4.
   static const int namePropertyKey = 4;
   static const String nameInitialValue = '';
-  String _name = nameInitialValue;
+
+  @nonVirtual
+  String name_ = nameInitialValue;
 
   /// Non-unique identifier, used to give friendly names to elements in the
   /// hierarchy. Runtimes provide an API for finding components by this [name].
-  String get name => _name;
+  @nonVirtual
+  String get name => name_;
 
-  /// Change the [_name] field value.
+  /// Change the [name_] field value.
   /// [nameChanged] will be invoked only if the field's value has changed.
   set name(String value) {
-    if (_name == value) {
+    if (name_ == value) {
       return;
     }
-    String from = _name;
-    _name = value;
+    String from = name_;
+    name_ = value;
     if (hasValidated) {
       nameChanged(from, value);
     }
@@ -41,19 +44,22 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
   /// ParentId field with key 5.
   static const int parentIdPropertyKey = 5;
   static const int parentIdInitialValue = 0;
-  int _parentId = parentIdInitialValue;
+
+  @nonVirtual
+  int parentId_ = parentIdInitialValue;
 
   /// Identifier used to track parent ContainerComponent.
-  int get parentId => _parentId;
+  @nonVirtual
+  int get parentId => parentId_;
 
-  /// Change the [_parentId] field value.
+  /// Change the [parentId_] field value.
   /// [parentIdChanged] will be invoked only if the field's value has changed.
   set parentId(int value) {
-    if (_parentId == value) {
+    if (parentId_ == value) {
       return;
     }
-    int from = _parentId;
-    _parentId = value;
+    int from = parentId_;
+    parentId_ = value;
     if (hasValidated) {
       parentIdChanged(from, value);
     }
@@ -65,8 +71,8 @@ abstract class ComponentBase<T extends CoreContext> extends Core<T> {
   void copy(Core source) {
     super.copy(source);
     if (source is ComponentBase) {
-      _name = source._name;
-      _parentId = source._parentId;
+      name_ = source.name_;
+      parentId_ = source.parentId_;
     }
   }
 }

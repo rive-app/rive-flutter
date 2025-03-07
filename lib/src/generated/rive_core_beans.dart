@@ -66,8 +66,8 @@ class _DoublePropertyBean<T extends Core> extends PropertyBean<T> {
   @nonVirtual
   CoreFieldType? get coreType => RiveCoreContext.doubleType;
 
-  @override
-  void setObjectProperty(Core o, Object v) => o is T && v is double ? setDouble(o, v) : {};
+  // @override
+  // void setObjectProperty(Core o, Object v) => o is T && v is double ? setDouble(o, v) : {};
 }
 
 // class DoublePropertyBean<T extends Core> extends _DoublePropertyBean<T> {
@@ -101,66 +101,88 @@ class _UintPropertyBean<T extends Core> extends PropertyBean<T> {
   @nonVirtual
   CoreFieldType? get coreType => RiveCoreContext.uintType;
 
-  @override
-  void setObjectProperty(Core o, Object v) => o is T && v is int ? setUint(o, v) : {};
+  // @override
+  // void setObjectProperty(Core o, Object v) => o is T && v is int ? setUint(o, v) : {};
 }
 
-class UintPropertyBean<T extends Core> extends _UintPropertyBean<T> {
+// class UintPropertyBean<T extends Core> extends _UintPropertyBean<T> {
+//
+//   final int Function(T) getter;
+//   final void Function(T, int) setter;
+//   UintPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
+//
+//   @override
+//   int getUint(T o) => getter(o);
+//
+//   @override
+//   void setUint(T o, int v) => setter(o, v);
+//
+//   @override
+//   void setObjectProperty(Core o, Object v) => o is T && v is int ? setter(o, v) : {};
+//
+//   // @override
+//   // CoreFieldType? get coreType => RiveCoreContext.uintType;
+// }
 
-  final int Function(T) getter;
-  final void Function(T, int) setter;
-  UintPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
+class _ColorPropertyBean<T extends Core> extends PropertyBean<T> {
+  _ColorPropertyBean._(super.propertyKey): super._();
 
   @override
-  int getUint(T o) => getter(o);
-
-  @override
-  void setUint(T o, int v) => setter(o, v);
-
-  @override
-  void setObjectProperty(Core o, Object v) => o is T && v is int ? setter(o, v) : {};
+  @nonVirtual
+  CoreFieldType? get coreType => RiveCoreContext.colorType;
 
   // @override
-  // CoreFieldType? get coreType => RiveCoreContext.uintType;
+  // void setObjectProperty(Core o, Object v) => o is T && v is int ? setUint(o, v) : {};
 }
 
-class ColorPropertyBean<T extends Core> extends PropertyBean<T> {
+// class ColorPropertyBean<T extends Core> extends PropertyBean<T> {
+//
+//   final int Function(T) getter;
+//   final void Function(T, int) setter;
+//   ColorPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
+//
+//   @override
+//   int getColor(T o) => getter(o);
+//
+//   @override
+//   void setColor(T o, int v) => setter(o, v);
+//
+//   @override
+//   void setObjectProperty(Core o, Object v) => o is T && v is int ? setter(o, v) : {};
+//
+//   @override
+//   CoreFieldType? get coreType => RiveCoreContext.colorType;
+// }
 
-  final int Function(T) getter;
-  final void Function(T, int) setter;
-  ColorPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
-
-  @override
-  int getColor(T o) => getter(o);
-
-  @override
-  void setColor(T o, int v) => setter(o, v);
-
-  @override
-  void setObjectProperty(Core o, Object v) => o is T && v is int ? setter(o, v) : {};
-
-  @override
-  CoreFieldType? get coreType => RiveCoreContext.colorType;
-}
-
-class StringPropertyBean<T extends Core> extends PropertyBean<T> {
-
-  final String Function(T) getter;
-  final void Function(T, String) setter;
-  StringPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
+class _StringPropertyBean<T extends Core> extends PropertyBean<T> {
+  _StringPropertyBean._(super.propertyKey): super._();
 
   @override
-  String getString(T o) => getter(o);
-
-  @override
-  void setString(T o, String v) => setter(o, v);
-
-  @override
-  void setObjectProperty(Core o, Object v) => o is T && v is String ? setter(o, v) : {};
-
-  @override
+  @nonVirtual
   CoreFieldType? get coreType => RiveCoreContext.stringType;
+
+  // @override
+  // void setObjectProperty(Core o, Object v) => o is T && v is int ? setUint(o, v) : {};
 }
+
+// class StringPropertyBean<T extends Core> extends _StringPropertyBean<T> {
+//
+//   final String Function(T) getter;
+//   final void Function(T, String) setter;
+//   StringPropertyBean._(super.propertyKey, this.getter, this.setter): super._();
+//
+//   @override
+//   String getString(T o) => getter(o);
+//
+//   @override
+//   void setString(T o, String v) => setter(o, v);
+//
+//   @override
+//   void setObjectProperty(Core o, Object v) => o is T && v is String ? setter(o, v) : {};
+//
+//   // @override
+//   // CoreFieldType? get coreType => RiveCoreContext.stringType;
+// }
 
 class FallbackBean extends PropertyBean {
 
@@ -289,20 +311,20 @@ final _implements = <PropertyBean>[
   CubicMirroredVertexBaseDistanceBean._(),
   GradientStopBasePositionBean._(),
 
-  UintPropertyBean<InterpolatingKeyFrameBase>._(InterpolatingKeyFrameBase.interpolatorIdPropertyKey, (o) => o.interpolatorId, (o, v) => o.interpolatorId = v),
-  UintPropertyBean<KeyedPropertyBase>._(KeyedPropertyBase.propertyKeyPropertyKey, (o) => o.propertyKey, (o, v) => o.propertyKey = v),
-  UintPropertyBean<KeyFrameBase>._(KeyFrameBase.framePropertyKey, (o) => o.frame, (o, v) => o.frame = v),
-  UintPropertyBean<InterpolatingKeyFrameBase>._(InterpolatingKeyFrameBase.interpolationTypePropertyKey, (o) => o.interpolationType, (o, v) => o.interpolationType = v),
-  UintPropertyBean<SoloBase>._(SoloBase.activeComponentIdPropertyKey, (o) => o.activeComponentId, (o, v) => o.activeComponentId = v),
-  UintPropertyBean<KeyedObjectBase>._(KeyedObjectBase.objectIdPropertyKey, (o) => o.objectId, (o, v) => o.objectId = v),
-  UintPropertyBean<DrawRulesBase>._(DrawRulesBase.drawTargetIdPropertyKey, (o) => o.drawTargetId, (o, v) => o.drawTargetId = v),
-  UintPropertyBean<ComponentBase>._(ComponentBase.parentIdPropertyKey, (o) => o.parentId, (o, v) => o.parentId = v),
-  UintPropertyBean<TransitionInputConditionBase>._(TransitionInputConditionBase.inputIdPropertyKey, (o) => o.inputId, (o, v) => o.inputId = v),
+  InterpolatingKeyFrameBaseInterpolatorIdBean._(),
+  KeyedPropertyBasePropertyKeyBean._(),
+  KeyFrameBaseFrameBean._(),
+  InterpolatingKeyFrameBaseInterpolationTypeBean._(),
+  SoloBaseActiveComponentIdBean._(),
+  KeyedObjectBaseObjectIdBean._(),
+  DrawRulesBaseDrawTargetIdBean._(),
+  ComponentBaseParentIdBean._(),
+  TransitionInputConditionBaseInputIdBean._(),
 
-  StringPropertyBean<ComponentBase>._(ComponentBase.namePropertyKey, (o) => o.name, (o, v) => o.name = v),
+  ComponentBaseNameBean._(),
 
-  ColorPropertyBean<SolidColorBase>._(SolidColorBase.colorValuePropertyKey, (o) => o.colorValue, (o, v) => o.colorValue = v),
-  ColorPropertyBean<GradientStopBase>._(GradientStopBase.colorValuePropertyKey, (o) => o.colorValue, (o, v) => o.colorValue = v),
+  SolidColorBaseColorValueBean._(),
+  GradientStopBaseColorValueBean._(),
 
 ];
 
@@ -657,5 +679,135 @@ class GradientStopBasePositionBean extends _DoublePropertyBean<GradientStopBase>
   void setObjectProperty(Core o, Object v) => o is GradientStopBase && v is double ? o.position = v : {};
 }
 
+// UintPropertyBean<InterpolatingKeyFrameBase>._(InterpolatingKeyFrameBase.interpolatorIdPropertyKey, (o) => o.interpolatorId, (o, v) => o.interpolatorId = v),
+class InterpolatingKeyFrameBaseInterpolatorIdBean extends _UintPropertyBean<InterpolatingKeyFrameBase> {
+  InterpolatingKeyFrameBaseInterpolatorIdBean._(): super._(InterpolatingKeyFrameBase.interpolatorIdPropertyKey);
+  @override
+  int getUint(InterpolatingKeyFrameBase o) => o.interpolatorId;
+  @override
+  void setUint(InterpolatingKeyFrameBase o, int v) => o.interpolatorId = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is InterpolatingKeyFrameBase && v is int ? o.interpolatorId = v : {};
+}
 
-// TODO review accessors from here
+// UintPropertyBean<KeyedPropertyBase>._(KeyedPropertyBase.propertyKeyPropertyKey, (o) => o.propertyKey, (o, v) => o.propertyKey = v),
+class KeyedPropertyBasePropertyKeyBean extends _UintPropertyBean<KeyedPropertyBase> {
+  KeyedPropertyBasePropertyKeyBean._(): super._(KeyedPropertyBase.propertyKeyPropertyKey);
+  @override
+  int getUint(KeyedPropertyBase o) => o.propertyKey;
+  @override
+  void setUint(KeyedPropertyBase o, int v) => o.propertyKey = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is KeyedPropertyBase && v is int ? o.propertyKey = v : {};
+}
+
+// UintPropertyBean<KeyFrameBase>._(KeyFrameBase.framePropertyKey, (o) => o.frame, (o, v) => o.frame = v),
+class KeyFrameBaseFrameBean extends _UintPropertyBean<KeyFrameBase> {
+  KeyFrameBaseFrameBean._(): super._(KeyFrameBase.framePropertyKey);
+  @override
+  int getUint(KeyFrameBase o) => o.high;
+  @override
+  void setUint(KeyFrameBase o, int v) => o.high = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is KeyFrameBase && v is int ? o.high = v : {};
+}
+
+// UintPropertyBean<InterpolatingKeyFrameBase>._(InterpolatingKeyFrameBase.interpolationTypePropertyKey, (o) => o.interpolationType, (o, v) => o.interpolationType = v),
+class InterpolatingKeyFrameBaseInterpolationTypeBean extends _UintPropertyBean<InterpolatingKeyFrameBase> {
+  InterpolatingKeyFrameBaseInterpolationTypeBean._(): super._(InterpolatingKeyFrameBase.interpolationTypePropertyKey);
+  @override
+  int getUint(InterpolatingKeyFrameBase o) => o.interpolationType;
+  @override
+  void setUint(InterpolatingKeyFrameBase o, int v) => o.interpolationType = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is InterpolatingKeyFrameBase && v is int ? o.interpolationType = v : {};
+}
+
+// UintPropertyBean<SoloBase>._(SoloBase.activeComponentIdPropertyKey, (o) => o.activeComponentId, (o, v) => o.activeComponentId = v),
+class SoloBaseActiveComponentIdBean extends _UintPropertyBean<SoloBase> {
+  SoloBaseActiveComponentIdBean._(): super._(SoloBase.activeComponentIdPropertyKey);
+  @override
+  int getUint(SoloBase o) => o.activeComponentId_;
+  @override
+  void setUint(SoloBase o, int v) => o.activeComponentId = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is SoloBase && v is int ? o.activeComponentId = v : {};
+}
+
+// UintPropertyBean<KeyedObjectBase>._(KeyedObjectBase.objectIdPropertyKey, (o) => o.objectId, (o, v) => o.objectId = v),
+class KeyedObjectBaseObjectIdBean extends _UintPropertyBean<KeyedObjectBase> {
+  KeyedObjectBaseObjectIdBean._(): super._(KeyedObjectBase.objectIdPropertyKey);
+  @override
+  int getUint(KeyedObjectBase o) => o.high;
+  @override
+  void setUint(KeyedObjectBase o, int v) => o.high = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is KeyedObjectBase && v is int ? o.high = v : {};
+}
+
+// UintPropertyBean<DrawRulesBase>._(DrawRulesBase.drawTargetIdPropertyKey, (o) => o.drawTargetId, (o, v) => o.drawTargetId = v),
+class DrawRulesBaseDrawTargetIdBean extends _UintPropertyBean<DrawRulesBase> {
+  DrawRulesBaseDrawTargetIdBean._(): super._(DrawRulesBase.drawTargetIdPropertyKey);
+  @override
+  int getUint(DrawRulesBase o) => o.drawTargetId_;
+  @override
+  void setUint(DrawRulesBase o, int v) => o.drawTargetId = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is DrawRulesBase && v is int ? o.drawTargetId = v : {};
+}
+
+// UintPropertyBean<ComponentBase>._(ComponentBase.parentIdPropertyKey, (o) => o.parentId, (o, v) => o.parentId = v),
+class ComponentBaseParentIdBean extends _UintPropertyBean<ComponentBase> {
+  ComponentBaseParentIdBean._(): super._(ComponentBase.parentIdPropertyKey);
+  @override
+  int getUint(ComponentBase o) => o.parentId_;
+  @override
+  void setUint(ComponentBase o, int v) => o.parentId = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is ComponentBase && v is int ? o.parentId = v : {};
+}
+
+// UintPropertyBean<TransitionInputConditionBase>._(TransitionInputConditionBase.inputIdPropertyKey, (o) => o.inputId, (o, v) => o.inputId = v),
+class TransitionInputConditionBaseInputIdBean extends _UintPropertyBean<TransitionInputConditionBase> {
+  TransitionInputConditionBaseInputIdBean._(): super._(TransitionInputConditionBase.inputIdPropertyKey);
+  @override
+  int getUint(TransitionInputConditionBase o) => o.inputId_;
+  @override
+  void setUint(TransitionInputConditionBase o, int v) => o.inputId = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is TransitionInputConditionBase && v is int ? o.inputId = v : {};
+}
+
+// StringPropertyBean<ComponentBase>._(ComponentBase.namePropertyKey, (o) => o.name, (o, v) => o.name = v),
+class ComponentBaseNameBean extends _StringPropertyBean<ComponentBase> {
+  ComponentBaseNameBean._(): super._(ComponentBase.namePropertyKey);
+  @override
+  String getString(ComponentBase o) => o.name_;
+  @override
+  void setString(ComponentBase o, String v) => o.name = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is ComponentBase && v is String ? o.name = v : {};
+}
+
+// ColorPropertyBean<SolidColorBase>._(SolidColorBase.colorValuePropertyKey, (o) => o.colorValue, (o, v) => o.colorValue = v),
+class SolidColorBaseColorValueBean extends _ColorPropertyBean<SolidColorBase> {
+  SolidColorBaseColorValueBean._(): super._(SolidColorBase.colorValuePropertyKey);
+  @override
+  int getColor(SolidColorBase o) => o.colorValue_;
+  @override
+  void setColor(SolidColorBase o, int v) => o.colorValue = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is SolidColorBase && v is int ? o.colorValue = v : {};
+}
+
+// ColorPropertyBean<GradientStopBase>._(GradientStopBase.colorValuePropertyKey, (o) => o.colorValue, (o, v) => o.colorValue = v),
+class GradientStopBaseColorValueBean extends _ColorPropertyBean<GradientStopBase> {
+  GradientStopBaseColorValueBean._(): super._(GradientStopBase.colorValuePropertyKey);
+  @override
+  int getColor(GradientStopBase o) => o.colorValue_;
+  @override
+  void setColor(GradientStopBase o, int v) => o.colorValue = v;
+  @override
+  void setObjectProperty(Core o, Object v) => o is GradientStopBase && v is int ? o.colorValue = v : {};
+}
+

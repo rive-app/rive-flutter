@@ -29,11 +29,6 @@ abstract class InterpolatingKeyFrameBase extends KeyFrame {
   static const int interpolatorIdPropertyKey = 69;
   static const int interpolatorIdInitialValue = -1;
 
-  // int _interpolatorId = interpolatorIdInitialValue;
-
-  /// The id of the custom interpolator used when interpolation is Cubic.
-  // int get interpolatorId => _interpolatorId;
-
   int get interpolatorId;
 
   /// Change the [_interpolatorId] field value.

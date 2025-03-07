@@ -18,19 +18,22 @@ abstract class TransitionInputConditionBase extends TransitionCondition {
   /// InputId field with key 155.
   static const int inputIdPropertyKey = 155;
   static const int inputIdInitialValue = -1;
-  int _inputId = inputIdInitialValue;
+
+  @nonVirtual
+  int inputId_ = inputIdInitialValue;
 
   /// Id of the StateMachineInput referenced.
-  int get inputId => _inputId;
+  @nonVirtual
+  int get inputId => inputId_;
 
-  /// Change the [_inputId] field value.
+  /// Change the [inputId_] field value.
   /// [inputIdChanged] will be invoked only if the field's value has changed.
   set inputId(int value) {
-    if (_inputId == value) {
+    if (inputId_ == value) {
       return;
     }
-    int from = _inputId;
-    _inputId = value;
+    int from = inputId_;
+    inputId_ = value;
     if (hasValidated) {
       inputIdChanged(from, value);
     }
@@ -42,7 +45,7 @@ abstract class TransitionInputConditionBase extends TransitionCondition {
   void copy(Core source) {
     super.copy(source);
     if (source is TransitionInputConditionBase) {
-      _inputId = source._inputId;
+      inputId_ = source.inputId_;
     }
   }
 }
