@@ -11,6 +11,9 @@ class CubicInterpolatorComponent extends CubicInterpolatorComponentBase
   CubicEase _ease = CubicEase.make(0.42, 0, 0.58, 1);
 
   @override
+  bool get late => false;
+
+  @override
   void update(int dirt) {}
 
   @override

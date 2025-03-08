@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyed_object_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
@@ -15,10 +16,21 @@ abstract class KeyedCallbackReporter {
 }
 
 class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
-  final HashMap<int, KeyedProperty> _keyedProperties =
-      HashMap<int, KeyedProperty>();
 
-  Iterable<KeyedProperty> get keyedProperties => _keyedProperties.values;
+  final Map<int, KeyedProperty> _keyedProperties = HashMap<int, KeyedProperty>();
+
+  /// STOKANAL-FORK-EDIT: Keeping a copy of values lazily
+  List<KeyedProperty>? _props;
+  List<KeyedProperty> get keyedProperties =>
+    _props ??= _keyedProperties.values.toList();
+
+  List<KeyedProperty>? _propsNonCallback;
+  List<KeyedProperty> get propsNonCallback =>
+      _propsNonCallback ??= keyedProperties.whereNot((p) => p.isCallback).toList();
+
+  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  @override
+  K? clone<K extends Core>() => this as K;
 
   @override
   void onAddedDirty() {}
@@ -48,6 +60,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
       return false;
     }
     _keyedProperties[property.propertyKey] = property;
+    _propsNonCallback = _props = null;
 
     return true;
   }
@@ -56,6 +69,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   /// be @internal when it's supported.
   bool internalRemoveKeyedProperty(KeyedProperty property) {
     var removed = _keyedProperties.remove(property.propertyKey);
+    _propsNonCallback = _props = null;
 
     if (_keyedProperties.isEmpty) {
       // Remove this keyed property.
@@ -73,8 +87,18 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-    for (final keyedProperty
-        in _keyedProperties.values.where((property) => property.isCallback)) {
+
+    var ps = keyedProperties;
+    var t = ps.length;
+    KeyedProperty keyedProperty;
+    for (var i = 0; i < t; i++) {
+      keyedProperty = ps[i];
+    // for (final keyedProperty in keyedProperties) {
+
+      if (!keyedProperty.isCallback) {
+        continue;
+      }
+
       keyedProperty.reportKeyedCallbacks(
         objectId,
         secondsFrom,
@@ -90,20 +114,23 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     double mix,
     CoreContext coreContext,
   ) {
-    Core? object = coreContext.resolve(objectId);
+    var object = coreContext.resolve(objectId);
     if (object == null) {
       return;
     }
-    for (final keyedProperty in _keyedProperties.values) {
-      if (keyedProperty.isCallback) {
-        continue;
-      }
-      keyedProperty.apply(time, mix, object);
+
+    var ps = propsNonCallback;
+    var t = ps.length;
+    for (var i = 0; i < t; i++) {
+      ps[i].apply(time, mix, object);
     }
+    // for (final keyedProperty in propsNonCallback) {
+    //   keyedProperty.apply(time, mix, object);
+    // }
   }
 
-  @override
-  void objectIdChanged(int from, int to) {}
+  // @override
+  // void objectIdChanged(int from, int to) {}
 
   @override
   bool import(ImportStack stack) {

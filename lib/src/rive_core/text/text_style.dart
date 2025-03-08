@@ -44,6 +44,16 @@ class TextVariationHelper extends Component {
     _font = null;
   }
 
+  // @override
+  // bool dispose() {
+  //   if (!super.dispose()) {
+  //     return false;
+  //   }
+  //   _font?.dispose();
+  //   _font = null;
+  //   return true;
+  // }
+
   @override
   void buildDependencies() {
     var text = style.text;
@@ -56,10 +66,10 @@ class TextVariationHelper extends Component {
 
 class TextStyle extends TextStyleBase
     with ShapePaintContainer, FileAssetReferencer<FontAsset> {
-  final Set<TextValueRun> _referencers = {};
+  final _referencers = <TextValueRun>{};
   Text? get text => parent as Text?;
-  final Set<TextStyleAxis> _variations = {};
-  final Set<TextStyleFeature> _features = {};
+  final _variations = <TextStyleAxis>{};
+  final _features = <TextStyleFeature>{};
   Iterable<TextStyleAxis> get variations => _variations;
   Iterable<TextStyleFeature> get features => _features;
 
@@ -133,7 +143,13 @@ class TextStyle extends TextStyleBase
     _variationHelper?.buildDependencies();
   }
 
-  void removeVariations() => _variations.toSet().forEach(context.removeObject);
+  // void removeVariations() => _variations.toSet().forEach(context.removeObject);
+  // void removeVariations() => _variations.forEach(context.removeObject);
+  void removeVariations() {
+    for (final v in _variations) {
+      context.removeObject(v);
+    }
+  }
 
   @override
   set asset(FontAsset? value) {

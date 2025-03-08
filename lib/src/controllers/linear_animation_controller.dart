@@ -1,9 +1,11 @@
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/generated/rive_core_beans.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/linear_animation_instance.dart'
     as core;
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/runtime_mounted_artboard.dart';
+
 export 'package:rive/src/runtime_mounted_artboard.dart';
 
 /// An AnimationController which controls a StateMachine and provides access to
@@ -27,9 +29,12 @@ class LinearAnimationInstance extends core.LinearAnimationInstance
 
   @override
   void reportEvent(Event event) {
-    _runtimeEventListeners.toList().forEach((callback) {
-      callback(event);
-    });
+    for (final t in _runtimeEventListeners) {
+      t(event);
+    }
+    // _runtimeEventListeners.toList().forEach((callback) {
+    //   callback(event);
+    // });
   }
 
   @override
@@ -37,9 +42,8 @@ class LinearAnimationInstance extends core.LinearAnimationInstance
       int objectId, int propertyKey, double elapsedSeconds) {
     var coreObject = context?.resolve(objectId);
     if (coreObject != null) {
-      RiveCoreContext.setCallback(
+      PropertyBeans.get(propertyKey).setCallback(
         coreObject,
-        propertyKey,
         CallbackData(this, delay: elapsedSeconds),
       );
     }

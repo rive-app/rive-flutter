@@ -41,7 +41,7 @@ class NestedStateMachine extends NestedStateMachineBase {
   @override
   bool get isEnabled => _stateMachineInstance?.isActive ?? false;
 
-  final Set<NestedInput> _nestedInputs = {};
+  final _nestedInputs = <NestedInput>{};
   Set<NestedInput> get nestedInputs => _nestedInputs;
 
   NestedStateMachineInstance? _stateMachineInstance;

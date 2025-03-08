@@ -5,28 +5,33 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/component.dart';
 
+const _coreTypes = {GradientStopBase.typeKey, ComponentBase.typeKey};
+
 abstract class GradientStopBase extends Component {
   static const int typeKey = 19;
   @override
   int get coreType => GradientStopBase.typeKey;
   @override
-  Set<int> get coreTypes => {GradientStopBase.typeKey, ComponentBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// ColorValue field with key 38.
   static const int colorValuePropertyKey = 38;
   static const int colorValueInitialValue = 0xFFFFFFFF;
-  int _colorValue = colorValueInitialValue;
-  int get colorValue => _colorValue;
 
-  /// Change the [_colorValue] field value.
+  @nonVirtual
+  int colorValue_ = colorValueInitialValue;
+  @nonVirtual
+  int get colorValue => colorValue_;
+
+  /// Change the [colorValue_] field value.
   /// [colorValueChanged] will be invoked only if the field's value has changed.
   set colorValue(int value) {
-    if (_colorValue == value) {
+    if (colorValue_ == value) {
       return;
     }
-    int from = _colorValue;
-    _colorValue = value;
+    int from = colorValue_;
+    colorValue_ = value;
     if (hasValidated) {
       colorValueChanged(from, value);
     }
@@ -38,17 +43,20 @@ abstract class GradientStopBase extends Component {
   /// Position field with key 39.
   static const int positionPropertyKey = 39;
   static const double positionInitialValue = 0;
-  double _position = positionInitialValue;
-  double get position => _position;
 
-  /// Change the [_position] field value.
+  @nonVirtual
+  double position_ = positionInitialValue;
+  @nonVirtual
+  double get position => position_;
+
+  /// Change the [position_] field value.
   /// [positionChanged] will be invoked only if the field's value has changed.
   set position(double value) {
-    if (_position == value) {
+    if (position_ == value) {
       return;
     }
-    double from = _position;
-    _position = value;
+    double from = position_;
+    position_ = value;
     if (hasValidated) {
       positionChanged(from, value);
     }
@@ -60,8 +68,8 @@ abstract class GradientStopBase extends Component {
   void copy(Core source) {
     super.copy(source);
     if (source is GradientStopBase) {
-      _colorValue = source._colorValue;
-      _position = source._position;
+      colorValue_ = source.colorValue_;
+      position_ = source.position_;
     }
   }
 }

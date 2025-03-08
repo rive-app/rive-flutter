@@ -10,21 +10,17 @@ import 'package:rive/src/generated/animation/advanceable_state_base.dart';
 import 'package:rive/src/generated/animation/blend_animation_base.dart';
 import 'package:rive/src/generated/animation/cubic_ease_interpolator_base.dart';
 import 'package:rive/src/generated/animation/cubic_interpolator_base.dart';
-import 'package:rive/src/generated/animation/interpolating_keyframe_base.dart';
-import 'package:rive/src/generated/animation/keyframe_base.dart';
 import 'package:rive/src/generated/animation/keyframe_string_base.dart';
 import 'package:rive/src/generated/animation/layer_state_base.dart';
 import 'package:rive/src/generated/animation/listener_input_change_base.dart';
 import 'package:rive/src/generated/animation/nested_input_base.dart';
 import 'package:rive/src/generated/animation/nested_linear_animation_base.dart';
 import 'package:rive/src/generated/animation/state_machine_component_base.dart';
-import 'package:rive/src/generated/animation/transition_input_condition_base.dart';
 import 'package:rive/src/generated/animation/transition_value_condition_base.dart';
 import 'package:rive/src/generated/assets/asset_base.dart';
 import 'package:rive/src/generated/assets/drawable_asset_base.dart';
 import 'package:rive/src/generated/assets/export_audio_base.dart';
 import 'package:rive/src/generated/assets/file_asset_base.dart';
-import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/constraints/constraint_base.dart';
 import 'package:rive/src/generated/constraints/targeted_constraint_base.dart';
 import 'package:rive/src/generated/constraints/transform_component_constraint_base.dart';
@@ -36,10 +32,7 @@ import 'package:rive/src/generated/nested_animation_base.dart';
 import 'package:rive/src/generated/shapes/paint/shape_paint_base.dart';
 import 'package:rive/src/generated/shapes/parametric_path_base.dart';
 import 'package:rive/src/generated/shapes/path_base.dart';
-import 'package:rive/src/generated/shapes/vertex_base.dart';
-import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/generated/viewmodel/viewmodel_instance_value_base.dart';
-import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/animation/animation.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
@@ -190,7 +183,35 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_property_viewmodel.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class RiveCoreContext {
+
+  // static final _counter = HashMap<dynamic, IntCapsule>();
+
+  /// STOKANAL-FORK-EDIT
   static Core? makeCoreInstance(int typeKey) {
+
+    switch (typeKey) {
+      case KeyFrameDoubleBase.typeKey: return KeyFrameDouble();
+      case KeyedPropertyBase.typeKey: return KeyedProperty();
+      case KeyedObjectBase.typeKey: return KeyedObject();
+      case KeyFrameIdBase.typeKey: return KeyFrameId();
+      case TransitionNumberConditionBase.typeKey: return TransitionNumberCondition();
+      case TransitionBoolConditionBase.typeKey: return TransitionBoolCondition();
+      case CubicEaseInterpolatorBase.typeKey: return CubicEaseInterpolator();
+      case CubicDetachedVertexBase.typeKey: return CubicDetachedVertex();
+      case StateTransitionBase.typeKey: return StateTransition();
+      case CubicValueInterpolatorBase.typeKey: return CubicValueInterpolator();
+      case StraightVertexBase.typeKey: return StraightVertex();
+      case AnimationStateBase.typeKey: return AnimationState();
+      case ImageBase.typeKey: return Image();
+      case NodeBase.typeKey: return Node();
+      case LinearAnimationBase.typeKey: return LinearAnimation();
+    }
+
+    // _counter.putIfAbsent(typeKey, IntCapsule.new).increment();
+    // if (Randoms().hit(0.001)) {
+    //   info('makeCoreInstance > ${_counter.entries.sorted((e1, e2) => e2.value.value - e1.value.value).map((e) => '${e.key}:${e.value}').join(',')}');
+    // }
+
     switch (typeKey) {
       case ViewModelInstanceListItemBase.typeKey:
         return ViewModelInstanceListItem();
@@ -252,8 +273,6 @@ class RiveCoreContext {
         return ScaleConstraint();
       case RotationConstraintBase.typeKey:
         return RotationConstraint();
-      case NodeBase.typeKey:
-        return Node();
       case NestedArtboardBase.typeKey:
         return NestedArtboard();
       case SoloBase.typeKey:
@@ -266,40 +285,26 @@ class RiveCoreContext {
         return KeyFrameUint();
       case AnimationBase.typeKey:
         return Animation();
-      case LinearAnimationBase.typeKey:
-        return LinearAnimation();
       case NestedSimpleAnimationBase.typeKey:
         return NestedSimpleAnimation();
-      case AnimationStateBase.typeKey:
-        return AnimationState();
       case NestedTriggerBase.typeKey:
         return NestedTrigger();
-      case KeyedObjectBase.typeKey:
-        return KeyedObject();
       case BlendAnimationDirectBase.typeKey:
         return BlendAnimationDirect();
       case StateMachineNumberBase.typeKey:
         return StateMachineNumber();
-      case CubicValueInterpolatorBase.typeKey:
-        return CubicValueInterpolator();
       case TransitionTriggerConditionBase.typeKey:
         return TransitionTriggerCondition();
-      case KeyedPropertyBase.typeKey:
-        return KeyedProperty();
       case StateMachineListenerBase.typeKey:
         return StateMachineListener();
       case TransitionPropertyViewModelComparatorBase.typeKey:
         return TransitionPropertyViewModelComparator();
-      case KeyFrameIdBase.typeKey:
-        return KeyFrameId();
       case KeyFrameBoolBase.typeKey:
         return KeyFrameBool();
       case ListenerBoolChangeBase.typeKey:
         return ListenerBoolChange();
       case ListenerAlignTargetBase.typeKey:
         return ListenerAlignTarget();
-      case TransitionNumberConditionBase.typeKey:
-        return TransitionNumberCondition();
       case TransitionValueBooleanComparatorBase.typeKey:
         return TransitionValueBooleanComparator();
       case AnyStateBase.typeKey:
@@ -314,14 +319,8 @@ class RiveCoreContext {
         return ListenerNumberChange();
       case TransitionViewModelConditionBase.typeKey:
         return TransitionViewModelCondition();
-      case CubicEaseInterpolatorBase.typeKey:
-        return CubicEaseInterpolator();
-      case StateTransitionBase.typeKey:
-        return StateTransition();
       case NestedBoolBase.typeKey:
         return NestedBool();
-      case KeyFrameDoubleBase.typeKey:
-        return KeyFrameDouble();
       case KeyFrameColorBase.typeKey:
         return KeyFrameColor();
       case StateMachineBase.typeKey:
@@ -362,8 +361,6 @@ class RiveCoreContext {
         return TransitionValueStringComparator();
       case NestedRemapAnimationBase.typeKey:
         return NestedRemapAnimation();
-      case TransitionBoolConditionBase.typeKey:
-        return TransitionBoolCondition();
       case BlendStateTransitionBase.typeKey:
         return BlendStateTransition();
       case StateMachineBoolBase.typeKey:
@@ -388,8 +385,6 @@ class RiveCoreContext {
         return Shape();
       case WeightBase.typeKey:
         return Weight();
-      case StraightVertexBase.typeKey:
-        return StraightVertex();
       case CubicWeightBase.typeKey:
         return CubicWeight();
       case CubicAsymmetricVertexBase.typeKey:
@@ -414,10 +409,6 @@ class RiveCoreContext {
         return Polygon();
       case StarBase.typeKey:
         return Star();
-      case ImageBase.typeKey:
-        return Image();
-      case CubicDetachedVertexBase.typeKey:
-        return CubicDetachedVertex();
       case EventBase.typeKey:
         return Event();
       case DrawRulesBase.typeKey:
@@ -491,7 +482,15 @@ class RiveCoreContext {
     }
   }
 
+  /// STOKANAL-FORK-EDIT
   static void setObjectProperty(Core object, int propertyKey, Object value) {
+
+    switch (propertyKey) {
+      case LayoutComponentStyleBase.interpolatorIdPropertyKey:
+        (object as LayoutComponentStyleBase).interpolatorId = value as int;
+        return;
+    }
+
     switch (propertyKey) {
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
         if (object is ViewModelInstanceListItemBase && value is bool) {
@@ -546,16 +545,6 @@ class RiveCoreContext {
       case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
         if (object is ViewModelPropertyViewModelBase && value is int) {
           object.viewModelReferenceId = value;
-        }
-        break;
-      case ComponentBase.namePropertyKey:
-        if (object is ComponentBase && value is String) {
-          object.name = value;
-        }
-        break;
-      case ComponentBase.parentIdPropertyKey:
-        if (object is ComponentBase && value is int) {
-          object.parentId = value;
         }
         break;
       case ViewModelInstanceBase.viewModelIdPropertyKey:
@@ -616,11 +605,6 @@ class RiveCoreContext {
       case TargetedConstraintBase.targetIdPropertyKey:
         if (object is TargetedConstraintBase && value is int) {
           object.targetId = value;
-        }
-        break;
-      case DistanceConstraintBase.distancePropertyKey:
-        if (object is DistanceConstraintBase && value is double) {
-          object.distance = value;
         }
         break;
       case DistanceConstraintBase.modeValuePropertyKey:
@@ -743,36 +727,6 @@ class RiveCoreContext {
           object.originY = value;
         }
         break;
-      case WorldTransformComponentBase.opacityPropertyKey:
-        if (object is WorldTransformComponentBase && value is double) {
-          object.opacity = value;
-        }
-        break;
-      case TransformComponentBase.rotationPropertyKey:
-        if (object is TransformComponentBase && value is double) {
-          object.rotation = value;
-        }
-        break;
-      case TransformComponentBase.scaleXPropertyKey:
-        if (object is TransformComponentBase && value is double) {
-          object.scaleX = value;
-        }
-        break;
-      case TransformComponentBase.scaleYPropertyKey:
-        if (object is TransformComponentBase && value is double) {
-          object.scaleY = value;
-        }
-        break;
-      case NodeBase.xPropertyKey:
-        if (object is NodeBase && value is double) {
-          object.x = value;
-        }
-        break;
-      case NodeBase.yPropertyKey:
-        if (object is NodeBase && value is double) {
-          object.y = value;
-        }
-        break;
       case DrawableBase.blendModeValuePropertyKey:
         if (object is DrawableBase && value is int) {
           object.blendModeValue = value;
@@ -806,11 +760,6 @@ class RiveCoreContext {
       case NestedAnimationBase.animationIdPropertyKey:
         if (object is NestedAnimationBase && value is int) {
           object.animationId = value;
-        }
-        break;
-      case SoloBase.activeComponentIdPropertyKey:
-        if (object is SoloBase && value is int) {
-          object.activeComponentId = value;
         }
         break;
       case LayoutComponentStyleBase.gapHorizontalPropertyKey:
@@ -966,11 +915,6 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.interpolationTypePropertyKey:
         if (object is LayoutComponentStyleBase && value is int) {
           object.interpolationType = value;
-        }
-        break;
-      case LayoutComponentStyleBase.interpolatorIdPropertyKey:
-        if (object is LayoutComponentStyleBase && value is int) {
-          object.interpolatorId = value;
         }
         break;
       case LayoutComponentStyleBase.interpolationTimePropertyKey:
@@ -1163,21 +1107,6 @@ class RiveCoreContext {
           object.flags = value;
         }
         break;
-      case KeyFrameBase.framePropertyKey:
-        if (object is KeyFrameBase && value is int) {
-          object.frame = value;
-        }
-        break;
-      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
-        if (object is InterpolatingKeyFrameBase && value is int) {
-          object.interpolationType = value;
-        }
-        break;
-      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
-        if (object is InterpolatingKeyFrameBase && value is int) {
-          object.interpolatorId = value;
-        }
-        break;
       case KeyFrameUintBase.valuePropertyKey:
         if (object is KeyFrameUintBase && value is int) {
           object.value = value;
@@ -1268,11 +1197,6 @@ class RiveCoreContext {
           object.inputId = value;
         }
         break;
-      case KeyedObjectBase.objectIdPropertyKey:
-        if (object is KeyedObjectBase && value is int) {
-          object.objectId = value;
-        }
-        break;
       case BlendAnimationBase.animationIdPropertyKey:
         if (object is BlendAnimationBase && value is int) {
           object.animationId = value;
@@ -1321,16 +1245,6 @@ class RiveCoreContext {
       case CubicInterpolatorBase.y2PropertyKey:
         if (object is CubicInterpolatorBase && value is double) {
           object.y2 = value;
-        }
-        break;
-      case TransitionInputConditionBase.inputIdPropertyKey:
-        if (object is TransitionInputConditionBase && value is int) {
-          object.inputId = value;
-        }
-        break;
-      case KeyedPropertyBase.propertyKeyPropertyKey:
-        if (object is KeyedPropertyBase && value is int) {
-          object.propertyKey = value;
         }
         break;
       case StateMachineListenerBase.targetIdPropertyKey:
@@ -1473,11 +1387,6 @@ class RiveCoreContext {
           object.nestedValue = value;
         }
         break;
-      case KeyFrameDoubleBase.valuePropertyKey:
-        if (object is KeyFrameDoubleBase && value is double) {
-          object.value = value;
-        }
-        break;
       case KeyFrameColorBase.valuePropertyKey:
         if (object is KeyFrameColorBase && value is int) {
           object.value = value;
@@ -1588,11 +1497,6 @@ class RiveCoreContext {
           object.opacity = value;
         }
         break;
-      case StrokeBase.thicknessPropertyKey:
-        if (object is StrokeBase && value is double) {
-          object.thickness = value;
-        }
-        break;
       case StrokeBase.capPropertyKey:
         if (object is StrokeBase && value is int) {
           object.cap = value;
@@ -1606,21 +1510,6 @@ class RiveCoreContext {
       case StrokeBase.transformAffectsStrokePropertyKey:
         if (object is StrokeBase && value is bool) {
           object.transformAffectsStroke = value;
-        }
-        break;
-      case SolidColorBase.colorValuePropertyKey:
-        if (object is SolidColorBase && value is int) {
-          object.colorValue = value;
-        }
-        break;
-      case GradientStopBase.colorValuePropertyKey:
-        if (object is GradientStopBase && value is int) {
-          object.colorValue = value;
-        }
-        break;
-      case GradientStopBase.positionPropertyKey:
-        if (object is GradientStopBase && value is double) {
-          object.position = value;
         }
         break;
       case TrimPathBase.startPropertyKey:
@@ -1648,16 +1537,6 @@ class RiveCoreContext {
           object.fillRule = value;
         }
         break;
-      case VertexBase.xPropertyKey:
-        if (object is VertexBase && value is double) {
-          object.x = value;
-        }
-        break;
-      case VertexBase.yPropertyKey:
-        if (object is VertexBase && value is double) {
-          object.y = value;
-        }
-        break;
       case MeshVertexBase.uPropertyKey:
         if (object is MeshVertexBase && value is double) {
           object.u = value;
@@ -1683,11 +1562,6 @@ class RiveCoreContext {
           object.indices = value;
         }
         break;
-      case StraightVertexBase.radiusPropertyKey:
-        if (object is StraightVertexBase && value is double) {
-          object.radius = value;
-        }
-        break;
       case CubicWeightBase.inValuesPropertyKey:
         if (object is CubicWeightBase && value is int) {
           object.inValues = value;
@@ -1706,21 +1580,6 @@ class RiveCoreContext {
       case CubicWeightBase.outIndicesPropertyKey:
         if (object is CubicWeightBase && value is int) {
           object.outIndices = value;
-        }
-        break;
-      case CubicAsymmetricVertexBase.rotationPropertyKey:
-        if (object is CubicAsymmetricVertexBase && value is double) {
-          object.rotation = value;
-        }
-        break;
-      case CubicAsymmetricVertexBase.inDistancePropertyKey:
-        if (object is CubicAsymmetricVertexBase && value is double) {
-          object.inDistance = value;
-        }
-        break;
-      case CubicAsymmetricVertexBase.outDistancePropertyKey:
-        if (object is CubicAsymmetricVertexBase && value is double) {
-          object.outDistance = value;
         }
         break;
       case MeshBase.triangleIndexBytesPropertyKey:
@@ -1778,16 +1637,6 @@ class RiveCoreContext {
           object.cornerRadiusBR = value;
         }
         break;
-      case CubicMirroredVertexBase.rotationPropertyKey:
-        if (object is CubicMirroredVertexBase && value is double) {
-          object.rotation = value;
-        }
-        break;
-      case CubicMirroredVertexBase.distancePropertyKey:
-        if (object is CubicMirroredVertexBase && value is double) {
-          object.distance = value;
-        }
-        break;
       case ClippingShapeBase.sourceIdPropertyKey:
         if (object is ClippingShapeBase && value is int) {
           object.sourceId = value;
@@ -1831,31 +1680,6 @@ class RiveCoreContext {
       case ImageBase.originYPropertyKey:
         if (object is ImageBase && value is double) {
           object.originY = value;
-        }
-        break;
-      case CubicDetachedVertexBase.inRotationPropertyKey:
-        if (object is CubicDetachedVertexBase && value is double) {
-          object.inRotation = value;
-        }
-        break;
-      case CubicDetachedVertexBase.inDistancePropertyKey:
-        if (object is CubicDetachedVertexBase && value is double) {
-          object.inDistance = value;
-        }
-        break;
-      case CubicDetachedVertexBase.outRotationPropertyKey:
-        if (object is CubicDetachedVertexBase && value is double) {
-          object.outRotation = value;
-        }
-        break;
-      case CubicDetachedVertexBase.outDistancePropertyKey:
-        if (object is CubicDetachedVertexBase && value is double) {
-          object.outDistance = value;
-        }
-        break;
-      case DrawRulesBase.drawTargetIdPropertyKey:
-        if (object is DrawRulesBase && value is int) {
-          object.drawTargetId = value;
         }
         break;
       case CustomPropertyBooleanBase.propertyValuePropertyKey:
@@ -2393,8 +2217,12 @@ class RiveCoreContext {
   static CoreFieldType doubleType = CoreDoubleType();
   static CoreFieldType bytesType = CoreBytesType();
   static CoreFieldType callbackType = CoreCallbackType();
+
+  /// STOKANAL-FORK-EDIT
   static CoreFieldType? coreType(int propertyKey) {
+
     switch (propertyKey) {
+
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
       case ViewModelInstanceBooleanBase.propertyValuePropertyKey:
       case TransformComponentConstraintBase.offsetPropertyKey:
@@ -2434,7 +2262,6 @@ class RiveCoreContext {
       case ViewModelInstanceEnumBase.propertyValuePropertyKey:
       case ViewModelBase.defaultInstanceIdPropertyKey:
       case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
-      case ComponentBase.parentIdPropertyKey:
       case ViewModelInstanceBase.viewModelIdPropertyKey:
       case ViewModelPropertyEnumBase.enumIdPropertyKey:
       case ViewModelInstanceViewModelBase.propertyValuePropertyKey:
@@ -2452,11 +2279,9 @@ class RiveCoreContext {
       case NestedArtboardBase.fitPropertyKey:
       case NestedArtboardBase.alignmentPropertyKey:
       case NestedAnimationBase.animationIdPropertyKey:
-      case SoloBase.activeComponentIdPropertyKey:
       case LayoutComponentStyleBase.scaleTypePropertyKey:
       case LayoutComponentStyleBase.layoutAlignmentTypePropertyKey:
       case LayoutComponentStyleBase.animationStyleTypePropertyKey:
-      case LayoutComponentStyleBase.interpolationTypePropertyKey:
       case LayoutComponentStyleBase.interpolatorIdPropertyKey:
       case LayoutComponentStyleBase.displayValuePropertyKey:
       case LayoutComponentStyleBase.positionTypeValuePropertyKey:
@@ -2494,9 +2319,6 @@ class RiveCoreContext {
       case LayoutComponentStyleBase.maxHeightUnitsValuePropertyKey:
       case ListenerFireEventBase.eventIdPropertyKey:
       case LayerStateBase.flagsPropertyKey:
-      case KeyFrameBase.framePropertyKey:
-      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
-      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
       case KeyFrameUintBase.valuePropertyKey:
       case LinearAnimationBase.fpsPropertyKey:
       case LinearAnimationBase.durationPropertyKey:
@@ -2507,12 +2329,9 @@ class RiveCoreContext {
       case ListenerInputChangeBase.nestedInputIdPropertyKey:
       case AnimationStateBase.animationIdPropertyKey:
       case NestedInputBase.inputIdPropertyKey:
-      case KeyedObjectBase.objectIdPropertyKey:
       case BlendAnimationBase.animationIdPropertyKey:
       case BlendAnimationDirectBase.inputIdPropertyKey:
       case BlendAnimationDirectBase.blendSourcePropertyKey:
-      case TransitionInputConditionBase.inputIdPropertyKey:
-      case KeyedPropertyBase.propertyKeyPropertyKey:
       case StateMachineListenerBase.targetIdPropertyKey:
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
       case StateMachineListenerBase.eventIdPropertyKey:
@@ -2551,7 +2370,6 @@ class RiveCoreContext {
       case ClippingShapeBase.fillRulePropertyKey:
       case PolygonBase.pointsPropertyKey:
       case ImageBase.assetIdPropertyKey:
-      case DrawRulesBase.drawTargetIdPropertyKey:
       case LayoutComponentBase.styleIdPropertyKey:
       case ArtboardBase.defaultStateMachineIdPropertyKey:
       case ArtboardBase.viewModelIdPropertyKey:
@@ -2584,17 +2402,15 @@ class RiveCoreContext {
       case TextValueRunBase.styleIdPropertyKey:
       case FileAssetBase.assetIdPropertyKey:
       case AudioEventBase.assetIdPropertyKey:
+      case LayoutComponentStyleBase.interpolationTypePropertyKey:
         return uintType;
       case ViewModelInstanceColorBase.propertyValuePropertyKey:
       case KeyFrameColorBase.valuePropertyKey:
       case TransitionValueColorComparatorBase.valuePropertyKey:
-      case SolidColorBase.colorValuePropertyKey:
-      case GradientStopBase.colorValuePropertyKey:
       case BindablePropertyColorBase.propertyValuePropertyKey:
         return colorType;
       case ViewModelComponentBase.namePropertyKey:
       case ViewModelInstanceStringBase.propertyValuePropertyKey:
-      case ComponentBase.namePropertyKey:
       case DataEnumValueBase.keyPropertyKey:
       case DataEnumValueBase.valuePropertyKey:
       case AnimationBase.namePropertyKey:
@@ -2612,7 +2428,6 @@ class RiveCoreContext {
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
       case CustomPropertyNumberBase.propertyValuePropertyKey:
       case ConstraintBase.strengthPropertyKey:
-      case DistanceConstraintBase.distancePropertyKey:
       case TransformComponentConstraintBase.copyFactorPropertyKey:
       case TransformComponentConstraintBase.minValuePropertyKey:
       case TransformComponentConstraintBase.maxValuePropertyKey:
@@ -2622,12 +2437,6 @@ class RiveCoreContext {
       case FollowPathConstraintBase.distancePropertyKey:
       case TransformConstraintBase.originXPropertyKey:
       case TransformConstraintBase.originYPropertyKey:
-      case WorldTransformComponentBase.opacityPropertyKey:
-      case TransformComponentBase.rotationPropertyKey:
-      case TransformComponentBase.scaleXPropertyKey:
-      case TransformComponentBase.scaleYPropertyKey:
-      case NodeBase.xPropertyKey:
-      case NodeBase.yPropertyKey:
       case LayoutComponentStyleBase.gapHorizontalPropertyKey:
       case LayoutComponentStyleBase.gapVerticalPropertyKey:
       case LayoutComponentStyleBase.maxWidthPropertyKey:
@@ -2672,7 +2481,6 @@ class RiveCoreContext {
       case CubicInterpolatorComponentBase.x2PropertyKey:
       case CubicInterpolatorComponentBase.y2PropertyKey:
       case ListenerNumberChangeBase.valuePropertyKey:
-      case KeyFrameDoubleBase.valuePropertyKey:
       case TransitionValueNumberComparatorBase.valuePropertyKey:
       case ElasticInterpolatorBase.amplitudePropertyKey:
       case ElasticInterpolatorBase.periodPropertyKey:
@@ -2684,19 +2492,11 @@ class RiveCoreContext {
       case LinearGradientBase.endXPropertyKey:
       case LinearGradientBase.endYPropertyKey:
       case LinearGradientBase.opacityPropertyKey:
-      case StrokeBase.thicknessPropertyKey:
-      case GradientStopBase.positionPropertyKey:
       case TrimPathBase.startPropertyKey:
       case TrimPathBase.endPropertyKey:
       case TrimPathBase.offsetPropertyKey:
-      case VertexBase.xPropertyKey:
-      case VertexBase.yPropertyKey:
       case MeshVertexBase.uPropertyKey:
       case MeshVertexBase.vPropertyKey:
-      case StraightVertexBase.radiusPropertyKey:
-      case CubicAsymmetricVertexBase.rotationPropertyKey:
-      case CubicAsymmetricVertexBase.inDistancePropertyKey:
-      case CubicAsymmetricVertexBase.outDistancePropertyKey:
       case ParametricPathBase.widthPropertyKey:
       case ParametricPathBase.heightPropertyKey:
       case ParametricPathBase.originXPropertyKey:
@@ -2705,16 +2505,10 @@ class RiveCoreContext {
       case RectangleBase.cornerRadiusTRPropertyKey:
       case RectangleBase.cornerRadiusBLPropertyKey:
       case RectangleBase.cornerRadiusBRPropertyKey:
-      case CubicMirroredVertexBase.rotationPropertyKey:
-      case CubicMirroredVertexBase.distancePropertyKey:
       case PolygonBase.cornerRadiusPropertyKey:
       case StarBase.innerRadiusPropertyKey:
       case ImageBase.originXPropertyKey:
       case ImageBase.originYPropertyKey:
-      case CubicDetachedVertexBase.inRotationPropertyKey:
-      case CubicDetachedVertexBase.inDistancePropertyKey:
-      case CubicDetachedVertexBase.outRotationPropertyKey:
-      case CubicDetachedVertexBase.outDistancePropertyKey:
       case LayoutComponentBase.widthPropertyKey:
       case LayoutComponentBase.heightPropertyKey:
       case ArtboardBase.xPropertyKey:
@@ -2787,16 +2581,6 @@ class RiveCoreContext {
     }
   }
 
-  static bool isCallback(int propertyKey) {
-    switch (propertyKey) {
-      case NestedTriggerBase.firePropertyKey:
-      case EventBase.triggerPropertyKey:
-        return true;
-      default:
-        return false;
-    }
-  }
-
   static bool getBool(Core object, int propertyKey) {
     switch (propertyKey) {
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
@@ -2866,6 +2650,7 @@ class RiveCoreContext {
   }
 
   static int getUint(Core object, int propertyKey) {
+
     switch (propertyKey) {
       case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
         return (object as ViewModelInstanceListItemBase).viewModelId;
@@ -2881,8 +2666,6 @@ class RiveCoreContext {
         return (object as ViewModelBase).defaultInstanceId;
       case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
         return (object as ViewModelPropertyViewModelBase).viewModelReferenceId;
-      case ComponentBase.parentIdPropertyKey:
-        return (object as ComponentBase).parentId;
       case ViewModelInstanceBase.viewModelIdPropertyKey:
         return (object as ViewModelInstanceBase).viewModelId;
       case ViewModelPropertyEnumBase.enumIdPropertyKey:
@@ -2908,7 +2691,7 @@ class RiveCoreContext {
       case DrawableBase.blendModeValuePropertyKey:
         return (object as DrawableBase).blendModeValue;
       case DrawableBase.drawableFlagsPropertyKey:
-        return (object as DrawableBase).drawableFlags;
+        return (object as DrawableBase).drawableFlags_;
       case NestedArtboardBase.artboardIdPropertyKey:
         return (object as NestedArtboardBase).artboardId;
       case NestedArtboardBase.fitPropertyKey:
@@ -2917,8 +2700,6 @@ class RiveCoreContext {
         return (object as NestedArtboardBase).alignment;
       case NestedAnimationBase.animationIdPropertyKey:
         return (object as NestedAnimationBase).animationId;
-      case SoloBase.activeComponentIdPropertyKey:
-        return (object as SoloBase).activeComponentId;
       case LayoutComponentStyleBase.scaleTypePropertyKey:
         return (object as LayoutComponentStyleBase).scaleType;
       case LayoutComponentStyleBase.layoutAlignmentTypePropertyKey:
@@ -3001,12 +2782,6 @@ class RiveCoreContext {
         return (object as ListenerFireEventBase).eventId;
       case LayerStateBase.flagsPropertyKey:
         return (object as LayerStateBase).flags;
-      case KeyFrameBase.framePropertyKey:
-        return (object as KeyFrameBase).frame;
-      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
-        return (object as InterpolatingKeyFrameBase).interpolationType;
-      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
-        return (object as InterpolatingKeyFrameBase).interpolatorId;
       case KeyFrameUintBase.valuePropertyKey:
         return (object as KeyFrameUintBase).value;
       case LinearAnimationBase.fpsPropertyKey:
@@ -3027,18 +2802,12 @@ class RiveCoreContext {
         return (object as AnimationStateBase).animationId;
       case NestedInputBase.inputIdPropertyKey:
         return (object as NestedInputBase).inputId;
-      case KeyedObjectBase.objectIdPropertyKey:
-        return (object as KeyedObjectBase).objectId;
       case BlendAnimationBase.animationIdPropertyKey:
         return (object as BlendAnimationBase).animationId;
       case BlendAnimationDirectBase.inputIdPropertyKey:
         return (object as BlendAnimationDirectBase).inputId;
       case BlendAnimationDirectBase.blendSourcePropertyKey:
         return (object as BlendAnimationDirectBase).blendSource;
-      case TransitionInputConditionBase.inputIdPropertyKey:
-        return (object as TransitionInputConditionBase).inputId;
-      case KeyedPropertyBase.propertyKeyPropertyKey:
-        return (object as KeyedPropertyBase).propertyKey;
       case StateMachineListenerBase.targetIdPropertyKey:
         return (object as StateMachineListenerBase).targetId;
       case StateMachineListenerBase.listenerTypeValuePropertyKey:
@@ -3115,8 +2884,6 @@ class RiveCoreContext {
         return (object as PolygonBase).points;
       case ImageBase.assetIdPropertyKey:
         return (object as ImageBase).assetId;
-      case DrawRulesBase.drawTargetIdPropertyKey:
-        return (object as DrawRulesBase).drawTargetId;
       case LayoutComponentBase.styleIdPropertyKey:
         return (object as LayoutComponentBase).styleId;
       case ArtboardBase.defaultStateMachineIdPropertyKey:
@@ -3186,6 +2953,7 @@ class RiveCoreContext {
   }
 
   static int getColor(Core object, int propertyKey) {
+
     switch (propertyKey) {
       case ViewModelInstanceColorBase.propertyValuePropertyKey:
         return (object as ViewModelInstanceColorBase).propertyValue;
@@ -3193,10 +2961,6 @@ class RiveCoreContext {
         return (object as KeyFrameColorBase).value;
       case TransitionValueColorComparatorBase.valuePropertyKey:
         return (object as TransitionValueColorComparatorBase).value;
-      case SolidColorBase.colorValuePropertyKey:
-        return (object as SolidColorBase).colorValue;
-      case GradientStopBase.colorValuePropertyKey:
-        return (object as GradientStopBase).colorValue;
       case BindablePropertyColorBase.propertyValuePropertyKey:
         return (object as BindablePropertyColorBase).propertyValue;
     }
@@ -3204,13 +2968,12 @@ class RiveCoreContext {
   }
 
   static String getString(Core object, int propertyKey) {
+
     switch (propertyKey) {
       case ViewModelComponentBase.namePropertyKey:
         return (object as ViewModelComponentBase).name;
       case ViewModelInstanceStringBase.propertyValuePropertyKey:
         return (object as ViewModelInstanceStringBase).propertyValue;
-      case ComponentBase.namePropertyKey:
-        return (object as ComponentBase).name;
       case DataEnumValueBase.keyPropertyKey:
         return (object as DataEnumValueBase).key;
       case DataEnumValueBase.valuePropertyKey:
@@ -3241,7 +3004,9 @@ class RiveCoreContext {
     return '';
   }
 
+  /// STOKANAL-FORK-EDIT
   static double getDouble(Core object, int propertyKey) {
+
     switch (propertyKey) {
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
         return (object as ViewModelInstanceNumberBase).propertyValue;
@@ -3249,8 +3014,6 @@ class RiveCoreContext {
         return (object as CustomPropertyNumberBase).propertyValue;
       case ConstraintBase.strengthPropertyKey:
         return (object as ConstraintBase).strength;
-      case DistanceConstraintBase.distancePropertyKey:
-        return (object as DistanceConstraintBase).distance;
       case TransformComponentConstraintBase.copyFactorPropertyKey:
         return (object as TransformComponentConstraintBase).copyFactor;
       case TransformComponentConstraintBase.minValuePropertyKey:
@@ -3269,18 +3032,6 @@ class RiveCoreContext {
         return (object as TransformConstraintBase).originX;
       case TransformConstraintBase.originYPropertyKey:
         return (object as TransformConstraintBase).originY;
-      case WorldTransformComponentBase.opacityPropertyKey:
-        return (object as WorldTransformComponentBase).opacity;
-      case TransformComponentBase.rotationPropertyKey:
-        return (object as TransformComponentBase).rotation;
-      case TransformComponentBase.scaleXPropertyKey:
-        return (object as TransformComponentBase).scaleX;
-      case TransformComponentBase.scaleYPropertyKey:
-        return (object as TransformComponentBase).scaleY;
-      case NodeBase.xPropertyKey:
-        return (object as NodeBase).x;
-      case NodeBase.yPropertyKey:
-        return (object as NodeBase).y;
       case LayoutComponentStyleBase.gapHorizontalPropertyKey:
         return (object as LayoutComponentStyleBase).gapHorizontal;
       case LayoutComponentStyleBase.gapVerticalPropertyKey:
@@ -3301,6 +3052,9 @@ class RiveCoreContext {
         return (object as LayoutComponentStyleBase).borderTop;
       case LayoutComponentStyleBase.borderBottomPropertyKey:
         return (object as LayoutComponentStyleBase).borderBottom;
+    }
+
+    switch (propertyKey) {
       case LayoutComponentStyleBase.marginLeftPropertyKey:
         return (object as LayoutComponentStyleBase).marginLeft;
       case LayoutComponentStyleBase.marginRightPropertyKey:
@@ -3369,8 +3123,6 @@ class RiveCoreContext {
         return (object as CubicInterpolatorComponentBase).y2;
       case ListenerNumberChangeBase.valuePropertyKey:
         return (object as ListenerNumberChangeBase).value;
-      case KeyFrameDoubleBase.valuePropertyKey:
-        return (object as KeyFrameDoubleBase).value;
       case TransitionValueNumberComparatorBase.valuePropertyKey:
         return (object as TransitionValueNumberComparatorBase).value;
       case ElasticInterpolatorBase.amplitudePropertyKey:
@@ -3393,32 +3145,16 @@ class RiveCoreContext {
         return (object as LinearGradientBase).endY;
       case LinearGradientBase.opacityPropertyKey:
         return (object as LinearGradientBase).opacity;
-      case StrokeBase.thicknessPropertyKey:
-        return (object as StrokeBase).thickness;
-      case GradientStopBase.positionPropertyKey:
-        return (object as GradientStopBase).position;
       case TrimPathBase.startPropertyKey:
         return (object as TrimPathBase).start;
       case TrimPathBase.endPropertyKey:
         return (object as TrimPathBase).end;
       case TrimPathBase.offsetPropertyKey:
         return (object as TrimPathBase).offset;
-      case VertexBase.xPropertyKey:
-        return (object as VertexBase).x;
-      case VertexBase.yPropertyKey:
-        return (object as VertexBase).y;
       case MeshVertexBase.uPropertyKey:
         return (object as MeshVertexBase).u;
       case MeshVertexBase.vPropertyKey:
         return (object as MeshVertexBase).v;
-      case StraightVertexBase.radiusPropertyKey:
-        return (object as StraightVertexBase).radius;
-      case CubicAsymmetricVertexBase.rotationPropertyKey:
-        return (object as CubicAsymmetricVertexBase).rotation;
-      case CubicAsymmetricVertexBase.inDistancePropertyKey:
-        return (object as CubicAsymmetricVertexBase).inDistance;
-      case CubicAsymmetricVertexBase.outDistancePropertyKey:
-        return (object as CubicAsymmetricVertexBase).outDistance;
       case ParametricPathBase.widthPropertyKey:
         return (object as ParametricPathBase).width;
       case ParametricPathBase.heightPropertyKey:
@@ -3435,10 +3171,6 @@ class RiveCoreContext {
         return (object as RectangleBase).cornerRadiusBL;
       case RectangleBase.cornerRadiusBRPropertyKey:
         return (object as RectangleBase).cornerRadiusBR;
-      case CubicMirroredVertexBase.rotationPropertyKey:
-        return (object as CubicMirroredVertexBase).rotation;
-      case CubicMirroredVertexBase.distancePropertyKey:
-        return (object as CubicMirroredVertexBase).distance;
       case PolygonBase.cornerRadiusPropertyKey:
         return (object as PolygonBase).cornerRadius;
       case StarBase.innerRadiusPropertyKey:
@@ -3447,14 +3179,6 @@ class RiveCoreContext {
         return (object as ImageBase).originX;
       case ImageBase.originYPropertyKey:
         return (object as ImageBase).originY;
-      case CubicDetachedVertexBase.inRotationPropertyKey:
-        return (object as CubicDetachedVertexBase).inRotation;
-      case CubicDetachedVertexBase.inDistancePropertyKey:
-        return (object as CubicDetachedVertexBase).inDistance;
-      case CubicDetachedVertexBase.outRotationPropertyKey:
-        return (object as CubicDetachedVertexBase).outRotation;
-      case CubicDetachedVertexBase.outDistancePropertyKey:
-        return (object as CubicDetachedVertexBase).outDistance;
       case LayoutComponentBase.widthPropertyKey:
         return (object as LayoutComponentBase).width;
       case LayoutComponentBase.heightPropertyKey:
@@ -3574,6 +3298,7 @@ class RiveCoreContext {
   }
 
   static Uint8List getBytes(Core object, int propertyKey) {
+
     switch (propertyKey) {
       case NestedArtboardBase.dataBindPathIdsPropertyKey:
         return (object as NestedArtboardBase).dataBindPathIds;
@@ -3589,8 +3314,18 @@ class RiveCoreContext {
     return Uint8List(0);
   }
 
+  /// STOKANAL-FORK-EDIT
   static void setBool(Core object, int propertyKey, bool value) {
+
     switch (propertyKey) {
+
+      case NestedSimpleAnimationBase.isPlayingPropertyKey:
+        (object as NestedSimpleAnimationBase).isPlaying = value;
+        // if (object is NestedSimpleAnimationBase) {
+        //   object.isPlaying = value;
+        // }
+        break;
+
       case ViewModelInstanceListItemBase.useLinkedArtboardPropertyKey:
         if (object is ViewModelInstanceListItemBase) {
           object.useLinkedArtboard = value;
@@ -3664,11 +3399,6 @@ class RiveCoreContext {
       case LinearAnimationBase.quantizePropertyKey:
         if (object is LinearAnimationBase) {
           object.quantize = value;
-        }
-        break;
-      case NestedSimpleAnimationBase.isPlayingPropertyKey:
-        if (object is NestedSimpleAnimationBase) {
-          object.isPlaying = value;
         }
         break;
       case KeyFrameBoolBase.valuePropertyKey:
@@ -3749,8 +3479,11 @@ class RiveCoreContext {
     }
   }
 
+  /// STOKANAL-FORK-EDIT
   static void setUint(Core object, int propertyKey, int value) {
+
     switch (propertyKey) {
+
       case ViewModelInstanceListItemBase.viewModelIdPropertyKey:
         if (object is ViewModelInstanceListItemBase) {
           object.viewModelId = value;
@@ -3784,11 +3517,6 @@ class RiveCoreContext {
       case ViewModelPropertyViewModelBase.viewModelReferenceIdPropertyKey:
         if (object is ViewModelPropertyViewModelBase) {
           object.viewModelReferenceId = value;
-        }
-        break;
-      case ComponentBase.parentIdPropertyKey:
-        if (object is ComponentBase) {
-          object.parentId = value;
         }
         break;
       case ViewModelInstanceBase.viewModelIdPropertyKey:
@@ -3874,11 +3602,6 @@ class RiveCoreContext {
       case NestedAnimationBase.animationIdPropertyKey:
         if (object is NestedAnimationBase) {
           object.animationId = value;
-        }
-        break;
-      case SoloBase.activeComponentIdPropertyKey:
-        if (object is SoloBase) {
-          object.activeComponentId = value;
         }
         break;
       case LayoutComponentStyleBase.scaleTypePropertyKey:
@@ -4086,21 +3809,6 @@ class RiveCoreContext {
           object.flags = value;
         }
         break;
-      case KeyFrameBase.framePropertyKey:
-        if (object is KeyFrameBase) {
-          object.frame = value;
-        }
-        break;
-      case InterpolatingKeyFrameBase.interpolationTypePropertyKey:
-        if (object is InterpolatingKeyFrameBase) {
-          object.interpolationType = value;
-        }
-        break;
-      case InterpolatingKeyFrameBase.interpolatorIdPropertyKey:
-        if (object is InterpolatingKeyFrameBase) {
-          object.interpolatorId = value;
-        }
-        break;
       case KeyFrameUintBase.valuePropertyKey:
         if (object is KeyFrameUintBase) {
           object.value = value;
@@ -4151,11 +3859,6 @@ class RiveCoreContext {
           object.inputId = value;
         }
         break;
-      case KeyedObjectBase.objectIdPropertyKey:
-        if (object is KeyedObjectBase) {
-          object.objectId = value;
-        }
-        break;
       case BlendAnimationBase.animationIdPropertyKey:
         if (object is BlendAnimationBase) {
           object.animationId = value;
@@ -4169,16 +3872,6 @@ class RiveCoreContext {
       case BlendAnimationDirectBase.blendSourcePropertyKey:
         if (object is BlendAnimationDirectBase) {
           object.blendSource = value;
-        }
-        break;
-      case TransitionInputConditionBase.inputIdPropertyKey:
-        if (object is TransitionInputConditionBase) {
-          object.inputId = value;
-        }
-        break;
-      case KeyedPropertyBase.propertyKeyPropertyKey:
-        if (object is KeyedPropertyBase) {
-          object.propertyKey = value;
         }
         break;
       case StateMachineListenerBase.targetIdPropertyKey:
@@ -4371,11 +4064,6 @@ class RiveCoreContext {
           object.assetId = value;
         }
         break;
-      case DrawRulesBase.drawTargetIdPropertyKey:
-        if (object is DrawRulesBase) {
-          object.drawTargetId = value;
-        }
-        break;
       case LayoutComponentBase.styleIdPropertyKey:
         if (object is LayoutComponentBase) {
           object.styleId = value;
@@ -4539,7 +4227,10 @@ class RiveCoreContext {
     }
   }
 
+  /// STOKANAL-FORK-EDIT
   static void setColor(Core object, int propertyKey, int value) {
+
+    // reordered
     switch (propertyKey) {
       case ViewModelInstanceColorBase.propertyValuePropertyKey:
         if (object is ViewModelInstanceColorBase) {
@@ -4556,16 +4247,6 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
-      case SolidColorBase.colorValuePropertyKey:
-        if (object is SolidColorBase) {
-          object.colorValue = value;
-        }
-        break;
-      case GradientStopBase.colorValuePropertyKey:
-        if (object is GradientStopBase) {
-          object.colorValue = value;
-        }
-        break;
       case BindablePropertyColorBase.propertyValuePropertyKey:
         if (object is BindablePropertyColorBase) {
           object.propertyValue = value;
@@ -4575,6 +4256,7 @@ class RiveCoreContext {
   }
 
   static void setString(Core object, int propertyKey, String value) {
+
     switch (propertyKey) {
       case ViewModelComponentBase.namePropertyKey:
         if (object is ViewModelComponentBase) {
@@ -4584,11 +4266,6 @@ class RiveCoreContext {
       case ViewModelInstanceStringBase.propertyValuePropertyKey:
         if (object is ViewModelInstanceStringBase) {
           object.propertyValue = value;
-        }
-        break;
-      case ComponentBase.namePropertyKey:
-        if (object is ComponentBase) {
-          object.name = value;
         }
         break;
       case DataEnumValueBase.keyPropertyKey:
@@ -4659,7 +4336,9 @@ class RiveCoreContext {
     }
   }
 
+  /// STOKANAL-FORK-EDIT
   static void setDouble(Core object, int propertyKey, double value) {
+
     switch (propertyKey) {
       case ViewModelInstanceNumberBase.propertyValuePropertyKey:
         if (object is ViewModelInstanceNumberBase) {
@@ -4674,11 +4353,6 @@ class RiveCoreContext {
       case ConstraintBase.strengthPropertyKey:
         if (object is ConstraintBase) {
           object.strength = value;
-        }
-        break;
-      case DistanceConstraintBase.distancePropertyKey:
-        if (object is DistanceConstraintBase) {
-          object.distance = value;
         }
         break;
       case TransformComponentConstraintBase.copyFactorPropertyKey:
@@ -4724,36 +4398,6 @@ class RiveCoreContext {
       case TransformConstraintBase.originYPropertyKey:
         if (object is TransformConstraintBase) {
           object.originY = value;
-        }
-        break;
-      case WorldTransformComponentBase.opacityPropertyKey:
-        if (object is WorldTransformComponentBase) {
-          object.opacity = value;
-        }
-        break;
-      case TransformComponentBase.rotationPropertyKey:
-        if (object is TransformComponentBase) {
-          object.rotation = value;
-        }
-        break;
-      case TransformComponentBase.scaleXPropertyKey:
-        if (object is TransformComponentBase) {
-          object.scaleX = value;
-        }
-        break;
-      case TransformComponentBase.scaleYPropertyKey:
-        if (object is TransformComponentBase) {
-          object.scaleY = value;
-        }
-        break;
-      case NodeBase.xPropertyKey:
-        if (object is NodeBase) {
-          object.x = value;
-        }
-        break;
-      case NodeBase.yPropertyKey:
-        if (object is NodeBase) {
-          object.y = value;
         }
         break;
       case LayoutComponentStyleBase.gapHorizontalPropertyKey:
@@ -4976,11 +4620,6 @@ class RiveCoreContext {
           object.value = value;
         }
         break;
-      case KeyFrameDoubleBase.valuePropertyKey:
-        if (object is KeyFrameDoubleBase) {
-          object.value = value;
-        }
-        break;
       case TransitionValueNumberComparatorBase.valuePropertyKey:
         if (object is TransitionValueNumberComparatorBase) {
           object.value = value;
@@ -5036,16 +4675,6 @@ class RiveCoreContext {
           object.opacity = value;
         }
         break;
-      case StrokeBase.thicknessPropertyKey:
-        if (object is StrokeBase) {
-          object.thickness = value;
-        }
-        break;
-      case GradientStopBase.positionPropertyKey:
-        if (object is GradientStopBase) {
-          object.position = value;
-        }
-        break;
       case TrimPathBase.startPropertyKey:
         if (object is TrimPathBase) {
           object.start = value;
@@ -5061,16 +4690,6 @@ class RiveCoreContext {
           object.offset = value;
         }
         break;
-      case VertexBase.xPropertyKey:
-        if (object is VertexBase) {
-          object.x = value;
-        }
-        break;
-      case VertexBase.yPropertyKey:
-        if (object is VertexBase) {
-          object.y = value;
-        }
-        break;
       case MeshVertexBase.uPropertyKey:
         if (object is MeshVertexBase) {
           object.u = value;
@@ -5079,26 +4698,6 @@ class RiveCoreContext {
       case MeshVertexBase.vPropertyKey:
         if (object is MeshVertexBase) {
           object.v = value;
-        }
-        break;
-      case StraightVertexBase.radiusPropertyKey:
-        if (object is StraightVertexBase) {
-          object.radius = value;
-        }
-        break;
-      case CubicAsymmetricVertexBase.rotationPropertyKey:
-        if (object is CubicAsymmetricVertexBase) {
-          object.rotation = value;
-        }
-        break;
-      case CubicAsymmetricVertexBase.inDistancePropertyKey:
-        if (object is CubicAsymmetricVertexBase) {
-          object.inDistance = value;
-        }
-        break;
-      case CubicAsymmetricVertexBase.outDistancePropertyKey:
-        if (object is CubicAsymmetricVertexBase) {
-          object.outDistance = value;
         }
         break;
       case ParametricPathBase.widthPropertyKey:
@@ -5141,16 +4740,6 @@ class RiveCoreContext {
           object.cornerRadiusBR = value;
         }
         break;
-      case CubicMirroredVertexBase.rotationPropertyKey:
-        if (object is CubicMirroredVertexBase) {
-          object.rotation = value;
-        }
-        break;
-      case CubicMirroredVertexBase.distancePropertyKey:
-        if (object is CubicMirroredVertexBase) {
-          object.distance = value;
-        }
-        break;
       case PolygonBase.cornerRadiusPropertyKey:
         if (object is PolygonBase) {
           object.cornerRadius = value;
@@ -5169,26 +4758,6 @@ class RiveCoreContext {
       case ImageBase.originYPropertyKey:
         if (object is ImageBase) {
           object.originY = value;
-        }
-        break;
-      case CubicDetachedVertexBase.inRotationPropertyKey:
-        if (object is CubicDetachedVertexBase) {
-          object.inRotation = value;
-        }
-        break;
-      case CubicDetachedVertexBase.inDistancePropertyKey:
-        if (object is CubicDetachedVertexBase) {
-          object.inDistance = value;
-        }
-        break;
-      case CubicDetachedVertexBase.outRotationPropertyKey:
-        if (object is CubicDetachedVertexBase) {
-          object.outRotation = value;
-        }
-        break;
-      case CubicDetachedVertexBase.outDistancePropertyKey:
-        if (object is CubicDetachedVertexBase) {
-          object.outDistance = value;
         }
         break;
       case LayoutComponentBase.widthPropertyKey:

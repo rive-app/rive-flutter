@@ -1,9 +1,6 @@
-import 'dart:collection';
-
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
-
-export 'dart:typed_data';
+import 'package:stokanal/collections.dart';
 
 export 'package:flutter/foundation.dart';
 export 'package:rive/src/animation_list.dart';
@@ -39,20 +36,81 @@ export 'package:rive/src/viewmodel_properties.dart';
 typedef PropertyChangeCallback = void Function(dynamic from, dynamic to);
 typedef BatchAddCallback = void Function();
 
+const _coreTypes = <int>{};
+
+const _highInt = 0xFFFFFFFF00000000;
+const _lowInt = 0xFFFFFFFF;
+const _negative = 0x80000000;
+const _module = 0x7FFFFFFF;
+
+int _to(int s) {
+  // // TODO comment me
+  // if (s > _module || s < -_module) {
+  //   throw Exception('_to=$s');
+  // }
+
+  if (s < 0) {
+    return _negative + (-s);
+  } else {
+    return s;
+  }
+}
+
+int _from(int s) => (s & _negative > 0 ? -1 : 1) * (s & _module);
+int _setLow(final int v, final int s) => (v & _highInt) + _to(s);
+
+// int _getLow(int v) => _from(v & _lowInt);
+// int _setHigh(final int v, final int s) {
+//   var r = (_to(s) << 32) + (v & _lowInt);
+//   // // TODO comment me
+//   // if (_getHigh(r) != s) {
+//   //   throw Exception('v=${v.toRadixString(2)} s=${s.toRadixString(2)} r=${r.toRadixString(2)} high=${_getHigh(r).toRadixString(2)}');
+//   // }
+//   return r;
+// }
+// int _getHigh(int v) => _from((v & _highInt) >> 32);
+
 abstract class Core<T extends CoreContext> {
   static const int missingId = -1;
   covariant late T context;
   int get coreType;
-  int id = missingId;
-  Set<int> get coreTypes => {};
-  bool _hasValidated = false;
-  bool get hasValidated => _hasValidated;
+
+  @mustCallSuper
+  void onRemoved() {}
+
+  // int id = missingId;
+
+  int _value = _setLow(0, missingId);
+  // @nonVirtual
+  // int get id => _getLow(_value);
+  // @nonVirtual
+  // set id(int id) => _value = _setLow(_value, id);
+  // @nonVirtual
+  // int get high => _getHigh(_value);
+  // @nonVirtual
+  // set high(int high) => _value = _setHigh(_value, high);
+  @nonVirtual
+  int get id => _from(_value & _lowInt);
+  @nonVirtual
+  set id(int id) => _value = (_value & _highInt) + _to(id);
+  @nonVirtual
+  int get high => _from((_value & _highInt) >> 32);
+  @nonVirtual
+  set high(int high) => _value = (_to(high) << 32) + (_value & _lowInt);
+
+
+  // TODO override this method with a static field, see KeyFrameDoubleBase as example
+  Set<int> get coreTypes => _coreTypes;//{};
+
+  @nonVirtual
+  bool hasValidated = false;
+  // bool get hasValidated => _hasValidated;
 
   void onAddedDirty();
   void onAdded() {}
-  void onRemoved() {}
-  void remove() => context.removeObject(this);
   bool import(ImportStack stack) => true;
+
+  void remove() => context.removeObject(this);
 
   bool validate() => true;
 
@@ -72,9 +130,8 @@ abstract class Core<T extends CoreContext> {
 
 // ignore: avoid_classes_with_only_static_members
 class InternalCoreHelper {
-  static void markValid(Core object) {
-    object._hasValidated = true;
-  }
+  static void markValid(Core object) =>
+    object.hasValidated = true;
 }
 
 abstract class CoreContext {
@@ -93,7 +150,7 @@ abstract class CoreContext {
 
 // ignore: one_member_abstracts
 abstract class ImportStackObject {
-  final _resolveBefore = <ImportStackObject>{};
+  final _resolveBefore = UniqueList.of<ImportStackObject>();
   bool _resolved = false;
 
   bool initStack(ImportStack stack) {
@@ -116,11 +173,9 @@ abstract class ImportStackObject {
       return true;
     }
     _resolved = true;
-    if (_resolveBefore.isNotEmpty) {
-      for (final before in _resolveBefore) {
-        if (!before._internalResolve()) {
-          return false;
-        }
+    for (final before in _resolveBefore) {
+      if (!before._internalResolve()) {
+        return false;
       }
     }
     return resolve();
@@ -132,7 +187,7 @@ abstract class ImportStackObject {
 /// Stack to help the RiveFile locate latest ImportStackObject created of a
 /// certain type.
 class ImportStack {
-  final _latests = HashMap<int, ImportStackObject>();
+  final _latests = <int, ImportStackObject>{};
   T? latest<T extends ImportStackObject>(int coreType) {
     var latest = _latests[coreType];
     if (latest is T) {

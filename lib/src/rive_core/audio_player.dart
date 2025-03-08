@@ -95,7 +95,7 @@ class AudioPlayer {
       return;
     }
 
-    var completed = _sounds.where((sound) => sound.completed).toList();
+    var completed = _sounds.where((sound) => sound.completed);//.toList();
 
     _sounds.removeWhere((sound) => sound.completed);
     for (final sound in completed) {

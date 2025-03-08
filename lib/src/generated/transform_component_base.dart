@@ -7,33 +7,38 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/world_transform_component.dart';
 
+const _coreTypes = {
+  TransformComponentBase.typeKey,
+  WorldTransformComponentBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class TransformComponentBase extends WorldTransformComponent {
   static const int typeKey = 38;
   @override
   int get coreType => TransformComponentBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        TransformComponentBase.typeKey,
-        WorldTransformComponentBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 15.
   static const int rotationPropertyKey = 15;
   static const double rotationInitialValue = 0;
-  double _rotation = rotationInitialValue;
-  double get rotation => _rotation;
 
-  /// Change the [_rotation] field value.
+  @nonVirtual
+  double rotation_ = rotationInitialValue;
+  @nonVirtual
+  double get rotation => rotation_;
+
+  /// Change the [rotation_] field value.
   /// [rotationChanged] will be invoked only if the field's value has changed.
   set rotation(double value) {
-    if (_rotation == value) {
+    if (rotation_ == value) {
       return;
     }
-    double from = _rotation;
-    _rotation = value;
+    double from = rotation_;
+    rotation_ = value;
     if (hasValidated) {
       rotationChanged(from, value);
     }
@@ -45,17 +50,21 @@ abstract class TransformComponentBase extends WorldTransformComponent {
   /// ScaleX field with key 16.
   static const int scaleXPropertyKey = 16;
   static const double scaleXInitialValue = 1;
-  double _scaleX = scaleXInitialValue;
-  double get scaleX => _scaleX;
 
-  /// Change the [_scaleX] field value.
+  @nonVirtual
+  double scaleX_ = scaleXInitialValue;
+
+  @nonVirtual
+  double get scaleX => scaleX_;
+
+  /// Change the [scaleX_] field value.
   /// [scaleXChanged] will be invoked only if the field's value has changed.
   set scaleX(double value) {
-    if (_scaleX == value) {
+    if (scaleX_ == value) {
       return;
     }
-    double from = _scaleX;
-    _scaleX = value;
+    double from = scaleX_;
+    scaleX_ = value;
     if (hasValidated) {
       scaleXChanged(from, value);
     }
@@ -67,17 +76,21 @@ abstract class TransformComponentBase extends WorldTransformComponent {
   /// ScaleY field with key 17.
   static const int scaleYPropertyKey = 17;
   static const double scaleYInitialValue = 1;
-  double _scaleY = scaleYInitialValue;
-  double get scaleY => _scaleY;
 
-  /// Change the [_scaleY] field value.
+  @nonVirtual
+  double scaleY_ = scaleYInitialValue;
+
+  @nonVirtual
+  double get scaleY => scaleY_;
+
+  /// Change the [scaleY_] field value.
   /// [scaleYChanged] will be invoked only if the field's value has changed.
   set scaleY(double value) {
-    if (_scaleY == value) {
+    if (scaleY_ == value) {
       return;
     }
-    double from = _scaleY;
-    _scaleY = value;
+    double from = scaleY_;
+    scaleY_ = value;
     if (hasValidated) {
       scaleYChanged(from, value);
     }
@@ -89,9 +102,9 @@ abstract class TransformComponentBase extends WorldTransformComponent {
   void copy(Core source) {
     super.copy(source);
     if (source is TransformComponentBase) {
-      _rotation = source._rotation;
-      _scaleX = source._scaleX;
-      _scaleY = source._scaleY;
+      rotation_ = source.rotation_;
+      scaleX_ = source.scaleX_;
+      scaleY_ = source.scaleY_;
     }
   }
 }

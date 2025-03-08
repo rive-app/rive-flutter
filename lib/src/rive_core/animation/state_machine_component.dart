@@ -41,7 +41,6 @@ abstract class StateMachineComponent
   @override
   void onRemoved() {
     super.onRemoved();
-
     stateMachine = null;
   }
 

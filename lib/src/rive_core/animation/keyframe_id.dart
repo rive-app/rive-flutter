@@ -1,6 +1,8 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/keyframe_id_base.dart';
 
+import '../../generated/rive_core_beans.dart';
+
 export 'package:rive/src/generated/animation/keyframe_id_base.dart';
 
 class KeyFrameId extends KeyFrameIdBase {
@@ -8,14 +10,14 @@ class KeyFrameId extends KeyFrameIdBase {
   bool get canInterpolate => false;
 
   @override
-  void apply(Core<CoreContext> object, int propertyKey, double mix) {
-    RiveCoreContext.setUint(object, propertyKey, value);
+  void apply(Core<CoreContext> object, PropertyBean bean, double mix) {
+    bean.setUint(object, value);
   }
 
   @override
-  void applyInterpolation(Core<CoreContext> object, int propertyKey,
+  void applyInterpolation(Core<CoreContext> object, PropertyBean bean,
       double currentTime, KeyFrameId nextFrame, double mix) {
-    RiveCoreContext.setUint(object, propertyKey, value);
+    bean.setUint(object, value);
   }
 
   @override

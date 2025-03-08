@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
@@ -30,11 +29,12 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/utilities.dart';
+import 'package:stokanal/collections.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
 class Artboard extends ArtboardBase with ShapePaintContainer {
-  final HashSet<LayoutComponent> _dirtyLayout = HashSet<LayoutComponent>();
+  final _dirtyLayout = <LayoutComponent>{};
 
   void markLayoutDirty(LayoutComponent layoutComponent) {
     _dirtyLayout.add(layoutComponent);
@@ -102,39 +102,47 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   final Path path = Path();
   List<Component> _dependencyOrder = [];
-  final List<Drawable> _drawables = [];
   final List<DrawRules> _rules = [];
   List<DrawTarget> _sortedDrawRules = [];
 
-  final Set<Component> _components = {};
+  final _components = UniqueList.of<Component>();
 
-  List<Drawable> get drawables => _drawables;
+  @nonVirtual
+  final List<Drawable> drawables = [];
+  // List<Drawable> get drawables => _drawables;
 
-  final AnimationList _animations = AnimationList();
-  final EventList _events = EventList();
+  @nonVirtual
+  final AnimationList animations = AnimationList();
+  @nonVirtual
+  final EventList events = EventList();
 
   /// List of animations and state machines in the artboard.
-  AnimationList get animations => _animations;
+  // AnimationList get animations => _animations;
 
   /// List of events in the artboard.
-  EventList get events => _events;
+  // EventList get events => _events;
 
   DataContext? dataContext;
   final List<DataBind> globalDataBinds = [];
 
   /// List of linear animations in the artboard.
   Iterable<LinearAnimation> get linearAnimations =>
-      _animations.whereType<LinearAnimation>();
+      animations.whereType<LinearAnimation>();
 
   /// List of state machines in the artboard.
   Iterable<StateMachine> get stateMachines =>
-      _animations.whereType<StateMachine>();
+      animations.whereType<StateMachine>();
 
   int _dirtDepth = 0;
 
   /// Iterate each component and call callback for it.
-  void forEachComponent(void Function(Component) callback) =>
-      _components.forEach(callback);
+  void forEachComponent(void Function(Component) callback) {
+    var t = _components.length;
+    for (var i = 0; i < t; i++) {
+    // for (final c in _components) {
+      callback(_components[i]);
+    }
+  }
 
   /// Find a component of a specific type with a specific name.
   T? component<T>(String name) {
@@ -205,20 +213,22 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return didUpdate;
   }
 
-  final Set<NestedArtboard> _activeNestedArtboards = {};
-  Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
+  @nonVirtual
+  final activeNestedArtboards = UniqueList.of<NestedArtboard>();
+  // Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
-  final List<Joystick> _joysticks = [];
-  Iterable<Joystick> get joysticks => _joysticks;
+  @nonVirtual
+  final List<Joystick> joysticks = [];
+  // Iterable<Joystick> get joysticks => _joysticks;
 
-  final List<DataBind> _dataBinds = [];
-  Iterable<DataBind> get dataBinds => _dataBinds;
+  final List<DataBind> dataBinds = [];
+  // Iterable<DataBind> get dataBinds => _dataBinds;
 
   bool canPreApplyJoysticks() {
-    if (_joysticks.isEmpty) {
+    if (joysticks.length == 0) {
       return false;
     }
-    if (_joysticks.any((joystick) => joystick.isComplex)) {
+    if (joysticks.any((joystick) => joystick.isComplex)) {
       return false;
     }
     return true;
@@ -237,10 +247,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   bool applyJoysticks({bool isRoot = false}) {
-    if (_joysticks.isEmpty) {
+    if (joysticks.isEmpty) {
       return false;
     }
-    for (final joystick in _joysticks) {
+    for (final joystick in joysticks) {
       if (isRoot) {
         updateDataBinds();
       }
@@ -311,8 +321,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
 
     if (nested) {
-      var active = _activeNestedArtboards.toList(growable: false);
-      for (final activeNestedArtboard in active) {
+      // var active = _activeNestedArtboards.toList(growable: false);
+      for (final activeNestedArtboard in activeNestedArtboards){//.toList(growable: false)) {
         if (activeNestedArtboard.advance(elapsedSeconds)) {
           didUpdate = true;
         }
@@ -431,11 +441,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       case NestedTriggerBase.typeKey:
         break;
       case JoystickBase.typeKey:
-        _joysticks.add(component as Joystick);
+        joysticks.add(component as Joystick);
         break;
       case DataBindBase.typeKey:
       case DataBindContextBase.typeKey:
-        _dataBinds.add(component as DataBind);
+        dataBinds.add(component as DataBind);
         break;
     }
   }
@@ -453,21 +463,21 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       case NestedTriggerBase.typeKey:
         break;
       case JoystickBase.typeKey:
-        _joysticks.remove(component as Joystick);
+        joysticks.remove(component as Joystick);
         break;
       case DataBindBase.typeKey:
       case DataBindContextBase.typeKey:
-        _dataBinds.remove(component as DataBind);
+        dataBinds.remove(component as DataBind);
         break;
     }
   }
 
   void addNestedArtboard(NestedArtboard artboard) {
-    _activeNestedArtboards.add(artboard);
+    activeNestedArtboards.add(artboard);
   }
 
   void removeNestedArtboard(NestedArtboard artboard) {
-    _activeNestedArtboards.remove(artboard);
+    activeNestedArtboards.remove(artboard);
   }
 
   /// Let the artboard know that the drawables need to be resorted before
@@ -536,10 +546,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to add an Animation to an Artboard. This should be
   /// @internal when it's supported.
   bool internalAddAnimation(Animation animation) {
-    if (_animations.contains(animation)) {
+    if (animations.contains(animation)) {
       return false;
     }
-    _animations.add(animation);
+    animations.add(animation);
 
     return true;
   }
@@ -547,7 +557,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to remove an Animation from an Artboard. This should
   /// be @internal when it's supported.
   bool internalRemoveAnimation(Animation animation) {
-    bool removed = _animations.remove(animation);
+    bool removed = animations.remove(animation);
 
     return removed;
   }
@@ -555,10 +565,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to add an Event to an Artboard. This should be
   /// @internal when it's supported.
   bool internalAddEvent(Event event) {
-    if (_events.contains(event)) {
+    if (events.contains(event)) {
       return false;
     }
-    _events.add(event);
+    events.add(event);
 
     return true;
   }
@@ -566,14 +576,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   /// Called by rive_core to remove an Event from an Artboard. This should
   /// be @internal when it's supported.
   bool internalRemoveEvent(Event event) {
-    bool removed = _events.remove(event);
+    bool removed = events.remove(event);
 
     return removed;
   }
 
   /// The animation controllers that are called back whenever the artboard
   /// advances.
-  final Set<RiveAnimationController> _animationControllers = {};
+  final _animationControllers = UniqueList.of<RiveAnimationController>();
 
   /// Access a read-only iterator of currently applied animation controllers.
   Iterable<RiveAnimationController> get animationControllers =>
@@ -630,9 +640,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   Drawable? firstDrawable;
 
   void computeDrawOrder() {
-    _drawables.clear();
+    drawables.clear();
     _rules.clear();
-    buildDrawOrder(_drawables, null, _rules);
+    buildDrawOrder(drawables, null, _rules);
 
     // Build rule dependencies. In practice this'll need to happen anytime a
     // target drawable is changed or rule is added/removed.
@@ -665,11 +675,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   }
 
   void populateDataBinds(List<DataBind> globalDataBinds) {
-    dataBinds.forEach((dataBind) {
-      globalDataBinds.add(dataBind);
-    });
+    dataBinds.forEach(globalDataBinds.add);
 
-    for (final nestedArtboard in _activeNestedArtboards) {
+    for (final nestedArtboard in activeNestedArtboards) {
       final mountedArtboard = nestedArtboard.mountedArtboard;
       if (mountedArtboard != null) {
         mountedArtboard.populateDataBinds(globalDataBinds);
@@ -685,9 +693,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     if (dataContext == null) {
       return;
     }
-    for (final dataBind in dataBinds) {
-      dataBind.bind(dataContext);
+
+    var length = dataBinds.length;
+    for (var i = 0; i < length; i++) {
+    // for (final dataBind in dataBinds) {
+      dataBinds[i].bind(dataContext);
     }
+
     if (isRoot) {
       globalDataBinds.clear();
       populateDataBinds(globalDataBinds);
@@ -697,14 +709,21 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   void sortDrawOrder() {
     hasChangedDrawOrderInLastUpdate = true;
+
     // Clear out rule first/last items.
-    for (final rule in _sortedDrawRules) {
+    var length = _sortedDrawRules.length;
+    for (var i = 0; i < length; i++) {
+    // for (final rule in _sortedDrawRules) {
+      final rule = _sortedDrawRules[i];
       rule.first = rule.last = null;
     }
 
     firstDrawable = null;
     Drawable? lastDrawable;
-    for (final drawable in _drawables) {
+    length = drawables.length;
+    for (var i = 0; i < length; i++) {
+    // for (final drawable in _drawables) {
+      final drawable = drawables[i];
       var rules = drawable.flattenedDrawRules;
 
       var target = rules?.activeTarget;
@@ -730,7 +749,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
 
-    for (final rule in _sortedDrawRules) {
+    length = _sortedDrawRules.length;
+    for (var i = 0; i < length; i++) {
+    // for (final rule in _sortedDrawRules) {
+      final rule = _sortedDrawRules[i];
       if (rule.first == null) {
         continue;
       }
@@ -818,7 +840,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       DataContext? parentDataContext, bool isRoot) {
     dataContext = dataContextValue;
     dataContext!.parent = parentDataContext;
-    for (final nestedArtboard in _activeNestedArtboards) {
+    for (final nestedArtboard in activeNestedArtboards) {
       final mountedArtboard = nestedArtboard.mountedArtboard;
       if (mountedArtboard != null) {
         ViewModelInstance? nestedViewModelInstance =
