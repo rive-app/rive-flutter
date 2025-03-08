@@ -227,10 +227,15 @@ class RiveAnimationState extends State<RiveAnimation> {
   }
 
   /// Loads [RiveFile] and calls [_init]
-  Future<void> _configure() async {
+  // Future<void> _configure() async {
+  void _configure() {
     if (!mounted) return;
 
-    _init(await _loadRiveFile());
+    // log('RIVE-ANIMATION CONFIGURE $runtimeType:$hashCode > ${widget.artboard}:${widget.file}');
+    // debugPrintStack(maxFrames: 10);
+
+    _loadRiveFile().then(_init);
+    // _init(await _loadRiveFile());
   }
 
   /// STOKANAL-FORK-EDIT: start
@@ -281,10 +286,10 @@ class RiveAnimationState extends State<RiveAnimation> {
     if (widget.name != oldWidget.name ||
         widget.file != oldWidget.file ||
         widget.src != oldWidget.src) {
-      _configure(); // Rife file has changed
+      _configure(); // Rive file has changed
     } else if (_requiresInit(oldWidget)) {
       if (_riveFile == null) {
-        _configure(); // Rife file not yet loaded
+        _configure(); // Rive file not yet loaded
       } else {
         _init(_riveFile!);
       }
@@ -312,7 +317,6 @@ class RiveAnimationState extends State<RiveAnimation> {
 
     // Clear current local controllers.
     // _controllers.forEach((c) {
-
     for (final c in _controllers) {
       c.dispose();
     }
@@ -359,7 +363,7 @@ class RiveAnimationState extends State<RiveAnimation> {
     setState(() => _artboard = artboard);
 
     // Call the onInit callback if provided
-    widget.onInit?.call(_artboard!);
+    widget.onInit?.call(artboard);
   }
 
   @override
