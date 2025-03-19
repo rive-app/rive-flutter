@@ -167,7 +167,7 @@ class LayerController {
   }
 
   static int _maxIterations = 0;
-  static bool _tooMuchIterationsCollected = false;
+  static final _tooManyIterationsCollected = <String>{};
 
   String _dumpState(StateInstance<LayerState>? state) {
     if (state == null) {
@@ -200,14 +200,10 @@ class LayerController {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
         var runtime = core is RuntimeArtboard ? core : null;
-        var message = 'TOO MANY ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} ${runtime?.artboard.name} > '
-            '${_dumpState(_currentState)} ${_dumpState(_stateFrom)}';
-        if (_tooMuchIterationsCollected) {
-          print(message);
-        } else {
-          _tooMuchIterationsCollected = true;
+        var state = _dumpState(_currentState);
+        if (_tooManyIterationsCollected.add(state)) {
           Telemetry()
-              .collect(message)
+              .collect('TOO MANY ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} ${runtime?.artboard.name} > $state ${_dumpState(_stateFrom)}')
               .error(StackTrace.current, 'Too many iterations', fatal: false);
         }
         return false;
