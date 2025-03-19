@@ -174,7 +174,8 @@ class LayerController {
       return 'null';
     }
     var animationState = state.state is AnimationState ? state.state as AnimationState : null;
-    return '${state.runtimeType}:${state.state.runtimeType} ${animationState?.animation?.name} > $state ${state.state}';
+    // return '${state.runtimeType}:${state.state.runtimeType} ${animationState?.animation?.name} > $state ${state.state}';
+    return '${animationState?.animation?.name}';
   }
 
   bool apply(CoreContext core, double elapsedSeconds) {
@@ -200,10 +201,10 @@ class LayerController {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
         var runtime = core is RuntimeArtboard ? core : null;
-        var state = _dumpState(_currentState);
-        if (_tooManyIterationsCollected.add(state)) {
+        var transition = '${_dumpState(_currentState)} |> ${_dumpState(_stateFrom)}';
+        if (_tooManyIterationsCollected.add(transition)) {
           Telemetry()
-              .collect('TOO MANY ITERATIONS > $i max=$_maxIterations >> ${core.runtimeType} ${runtime?.artboard.name} > $state ${_dumpState(_stateFrom)}')
+              .collect('TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} || $transition')
               .error(StackTrace.current, 'Too many iterations', fatal: false);
         }
         return false;

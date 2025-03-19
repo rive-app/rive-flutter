@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -179,7 +180,9 @@ class RiveFile {
    }) {
 
     var skipInterpolation = path != null && skipInterpolationRiveFiles.any(path.contains);
-    // log('RIVE-FILE >> $path${skipInterpolation?' > SKIP_INTERPOLATION':''}');
+    if (skipInterpolation) {
+      log('RIVE-FILE >> $path${skipInterpolation ? ' > SKIP_INTERPOLATION' : ''}');
+    }
     // debugPrintStack();
 
     /// Property fields table of contents
