@@ -12,38 +12,61 @@ abstract class InterpolatingKeyFrame extends InterpolatingKeyFrameBase {
   @override
   bool get canInterpolate => true;
 
-  KeyFrameInterpolation get interpolation =>
-      enumAt(KeyFrameInterpolation.values, interpolationType);
-  set interpolation(KeyFrameInterpolation value) {
-    interpolationType = value.index;
-  }
+  KeyFrameInterpolation get interpolation => enumAt(KeyFrameInterpolation.values, interpolationType);
+  set interpolation(KeyFrameInterpolation value) => interpolationType = value.index;
 
-  @override
-  void interpolationTypeChanged(int from, int to) {}
-
-  Interpolator? _interpolator;
-  Interpolator? get interpolator => _interpolator;
+  Interpolator _interpolator = Interpolators.initial;
+  Interpolator? get interpolator => _interpolator == Interpolators.initial ? null : _interpolator;
   set interpolator(Interpolator? value) {
     if (_interpolator == value) {
       return;
     }
 
-    _interpolator = value;
-    interpolatorId = value?.id ?? Core.missingId;
+    _interpolator = value ?? Interpolators.initial;
+    // interpolatorId = value?.id ?? Core.missingId;
+    // interpolatorId = value;//?.id ?? Core.missingId;
   }
+
+  @override
+  void copy(Core source) {
+    super.copy(source);
+    if (source is InterpolatingKeyFrame) {
+      _interpolator = source._interpolator;
+    }
+  }
+
+  /// The id of the custom interpolator used when interpolation is Cubic.
+  @override
+  // int get interpolatorId => _interpolator?.id ?? Core.missingId;
+  int get interpolatorId => _interpolator.id;
+
+  // Interpolator _interpolator = nullInterpolator;
+  // Interpolator? get interpolator => _interpolator == nullInterpolator ? null : _interpolator;
+  // set interpolator(Interpolator? value) {
+  //   if (_interpolator == value) {
+  //     return;
+  //   }
+  //
+  //   _interpolator = value == null ? nullInterpolator :  value;
+  //   interpolatorId = value?.id ?? Core.missingId;
+  // }
 
   @override
   void interpolatorIdChanged(int from, int to) {
     // This might resolve to null during a load or if context isn't available
     // yet so we also do this in onAddedDirty.
-    interpolator = context.resolve(to);
+    if (hasValidated) {
+      _interpolator = context.resolve(to) ?? Interpolators.late(to);
+    } else {
+      _interpolator = Interpolators.late(to);
+    }
   }
 
   @override
   void onAddedDirty() {
     super.onAddedDirty();
-    if (interpolatorId != Core.missingId) {
-      interpolator = context.resolve(interpolatorId);
+    if (interpolatorId != Core.missingId && _interpolator.late) {
+      _interpolator = context.resolve(interpolatorId) ?? Interpolators.late(interpolatorId);
     }
     // Ensure interpolation types are valid, correct them if not.
     switch (interpolation) {

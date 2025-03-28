@@ -158,8 +158,8 @@ class StateTransition extends StateTransitionBase {
     return removed;
   }
 
-  @override
-  void flagsChanged(int from, int to) {}
+  // @override
+  // void flagsChanged(int from, int to) {}
 
   @override
   void durationChanged(int from, int to) {}
@@ -183,7 +183,12 @@ class StateTransition extends StateTransitionBase {
     if (isDisabled) {
       return AllowTransition.no;
     }
-    for (final condition in conditions) {
+
+    var conditions = this.conditions.values;
+    final t = conditions.length;
+    for (var i = 0; i < t; i++) {
+    // for (final condition in conditions) {
+      var condition = conditions[i];
       if (condition is TransitionViewModelCondition) {
         return AllowTransition.no;
       } else if (condition is TransitionInputCondition &&

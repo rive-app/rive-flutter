@@ -49,18 +49,21 @@ abstract class DrawableBase extends Node {
   /// DrawableFlags field with key 129.
   static const int drawableFlagsPropertyKey = 129;
   static const int drawableFlagsInitialValue = 0;
-  int _drawableFlags = drawableFlagsInitialValue;
-  int get drawableFlags => _drawableFlags;
+
+  // exposing it
+  int drawableFlags_ = drawableFlagsInitialValue;
+  @nonVirtual
+  int get drawableFlags => drawableFlags_;
 
   /// Change the [_drawableFlags] field value.
   /// [drawableFlagsChanged] will be invoked only if the field's value has
   /// changed.
   set drawableFlags(int value) {
-    if (_drawableFlags == value) {
+    if (drawableFlags_ == value) {
       return;
     }
-    int from = _drawableFlags;
-    _drawableFlags = value;
+    int from = drawableFlags_;
+    drawableFlags_ = value;
     if (hasValidated) {
       drawableFlagsChanged(from, value);
     }
@@ -73,7 +76,7 @@ abstract class DrawableBase extends Node {
     super.copy(source);
     if (source is DrawableBase) {
       _blendModeValue = source._blendModeValue;
-      _drawableFlags = source._drawableFlags;
+      drawableFlags_ = source.drawableFlags_;
     }
   }
 }

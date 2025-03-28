@@ -4,6 +4,7 @@ import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/dependency_helper.dart';
 import 'package:rive_common/utilities.dart';
+import 'package:stokanal/collections.dart';
 
 export 'package:rive/src/generated/component_base.dart';
 
@@ -27,7 +28,9 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
       dirt &= ~ComponentDirt.collapsed;
     }
     onDirty(dirt);
-    _dependencyHelper.onComponentDirty(this);
+
+    // _dependencyHelper.onComponentDirty(this);
+    _dependencyHelper.dependencyRoot?.onComponentDirty(this); // avoid invocking
     return true;
   }
 
@@ -54,7 +57,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
     dirt |= value;
 
     onDirty(dirt);
-    _dependencyHelper.onComponentDirty(this);
+    _dependencyHelper.dependencyRoot?.onComponentDirty(this); // avoid calling one method
 
     if (!recurse) {
       return true;
@@ -163,13 +166,16 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   }
 
   /// Components that this component depends on.
-  final Set<Component> _dependsOn = {};
+  final _dependsOn = UniqueList.of<Component>();
 
   @override
   Set<Component> get dependents => _dependencyHelper.dependents;
 
+  @nonVirtual
+  UniqueList<Component> get dependentsList => _dependencyHelper.dependents;
+
   Set<Component> get dependencies {
-    Set<Component> components = {};
+    var components = <Component>{};
     allDependencies(components);
     return components;
   }

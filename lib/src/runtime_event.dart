@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/widgets.dart';
 import 'package:rive/src/rive_core/custom_property_boolean.dart';
 import 'package:rive/src/rive_core/custom_property_number.dart';
@@ -28,7 +30,7 @@ class RiveEvent {
   });
 
   factory RiveEvent.fromCoreEvent(Event event) {
-    final Map<String, dynamic> properties = {};
+    final Map<String, dynamic> properties = HashMap<String, dynamic>();//{};
     for (final property in event.customProperties) {
       dynamic value;
       switch (property.coreType) {

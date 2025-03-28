@@ -8,38 +8,43 @@ import 'package:rive/src/generated/transform_component_base.dart';
 import 'package:rive/src/generated/world_transform_component_base.dart';
 import 'package:rive/src/rive_core/node.dart';
 
+const _coreTypes = {
+  SoloBase.typeKey,
+  NodeBase.typeKey,
+  TransformComponentBase.typeKey,
+  WorldTransformComponentBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class SoloBase extends Node {
   static const int typeKey = 147;
   @override
   int get coreType => SoloBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        SoloBase.typeKey,
-        NodeBase.typeKey,
-        TransformComponentBase.typeKey,
-        WorldTransformComponentBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// ActiveComponentId field with key 296.
   static const int activeComponentIdPropertyKey = 296;
   static const int activeComponentIdInitialValue = 0;
-  int _activeComponentId = activeComponentIdInitialValue;
+
+  @nonVirtual
+  int activeComponentId_ = activeComponentIdInitialValue;
 
   /// Identifier of the active child in the solo set.
-  int get activeComponentId => _activeComponentId;
+  @nonVirtual
+  int get activeComponentId => activeComponentId_;
 
-  /// Change the [_activeComponentId] field value.
+  /// Change the [activeComponentId_] field value.
   /// [activeComponentIdChanged] will be invoked only if the field's value has
   /// changed.
   set activeComponentId(int value) {
-    if (_activeComponentId == value) {
+    if (activeComponentId_ == value) {
       return;
     }
-    int from = _activeComponentId;
-    _activeComponentId = value;
+    int from = activeComponentId_;
+    activeComponentId_ = value;
     if (hasValidated) {
       activeComponentIdChanged(from, value);
     }
@@ -51,7 +56,7 @@ abstract class SoloBase extends Node {
   void copy(Core source) {
     super.copy(source);
     if (source is SoloBase) {
-      _activeComponentId = source._activeComponentId;
+      activeComponentId_ = source.activeComponentId_;
     }
   }
 }

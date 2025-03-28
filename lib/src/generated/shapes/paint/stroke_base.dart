@@ -7,33 +7,38 @@ import 'package:rive/src/generated/component_base.dart';
 import 'package:rive/src/generated/container_component_base.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint.dart';
 
+const _coreTypes = {
+  StrokeBase.typeKey,
+  ShapePaintBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class StrokeBase extends ShapePaint {
   static const int typeKey = 24;
   @override
   int get coreType => StrokeBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        StrokeBase.typeKey,
-        ShapePaintBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Thickness field with key 47.
   static const int thicknessPropertyKey = 47;
   static const double thicknessInitialValue = 1;
-  double _thickness = thicknessInitialValue;
-  double get thickness => _thickness;
 
-  /// Change the [_thickness] field value.
+  @nonVirtual
+  double thickness_ = thicknessInitialValue;
+  @nonVirtual
+  double get thickness => thickness_;
+
+  /// Change the [thickness_] field value.
   /// [thicknessChanged] will be invoked only if the field's value has changed.
   set thickness(double value) {
-    if (_thickness == value) {
+    if (thickness_ == value) {
       return;
     }
-    double from = _thickness;
-    _thickness = value;
+    double from = thickness_;
+    thickness_ = value;
     if (hasValidated) {
       thicknessChanged(from, value);
     }
@@ -112,7 +117,7 @@ abstract class StrokeBase extends ShapePaint {
   void copy(Core source) {
     super.copy(source);
     if (source is StrokeBase) {
-      _thickness = source._thickness;
+      thickness_ = source.thickness_;
       _cap = source._cap;
       _join = source._join;
       _transformAffectsStroke = source._transformAffectsStroke;

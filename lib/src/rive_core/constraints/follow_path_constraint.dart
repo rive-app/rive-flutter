@@ -19,7 +19,8 @@ class FollowPathConstraint extends FollowPathConstraintBase {
 
   Mat2D get targetTransform {
     if (target is Shape || target is Path) {
-      var metrics = _worldPath.computeMetrics().toList(growable: false);
+      // var metrics = _worldPath.computeMetrics().toList(growable: false);
+      var metrics = _worldPath.computeMetrics();
       if (metrics.isEmpty) {
         return Mat2D();
       }

@@ -17,29 +17,33 @@ abstract class LayerStateBase extends StateMachineLayerComponent {
   /// Flags field with key 536.
   static const int flagsPropertyKey = 536;
   static const int flagsInitialValue = 0;
-  int _flags = flagsInitialValue;
-  int get flags => _flags;
 
-  /// Change the [_flags] field value.
-  /// [flagsChanged] will be invoked only if the field's value has changed.
-  set flags(int value) {
-    if (_flags == value) {
-      return;
-    }
-    int from = _flags;
-    _flags = value;
-    if (hasValidated) {
-      flagsChanged(from, value);
-    }
-  }
+  int flags = flagsInitialValue;
 
-  void flagsChanged(int from, int to);
+  // int _flags = flagsInitialValue;
+  // int get flags => _flags;
+  //
+  // /// Change the [_flags] field value.
+  // /// [flagsChanged] will be invoked only if the field's value has changed.
+  // set flags(int value) {
+  //   if (_flags == value) {
+  //     return;
+  //   }
+  //   int from = _flags;
+  //   _flags = value;
+  //   if (hasValidated) {
+  //     flagsChanged(from, value);
+  //   }
+  // }
+  //
+  // void flagsChanged(int from, int to);
 
   @override
   void copy(Core source) {
     super.copy(source);
     if (source is LayerStateBase) {
-      _flags = source._flags;
+      // _flags = source._flags;
+      flags = source.flags;
     }
   }
 }

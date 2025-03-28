@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' hide log;
 import 'dart:ui';
 
 import 'package:rive/src/generated/text/text_base.dart';
@@ -76,7 +76,9 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   // Shapes that should be cleaned before next shaping call.
   final List<TextShapeResult> _cleanupShapes = [];
   BreakLinesResult? _lines;
-  // TextShapeResult? get shape => _shape;
+
+  /// STOKANAL-FORK-EDIT: exposing
+  TextShapeResult? get shape => _shape;
   BreakLinesResult? get lines => _lines;
 
   // Used by text effectors.
@@ -263,8 +265,13 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
   }
 
   final List<rive.TextStyle> _renderStyles = [];
+  
+  /// STOKANAL-FORK-EDIT: exposing
+  List<rive.TextStyle> get renderStyles => _renderStyles;
+
   Size _measuredSizeMax = Size.zero;
   Size _measuredSize = Size.zero;
+  
   Size _measure(Size maxSize) {
     if (_measuredSizeMax == maxSize) {
       return _measuredSize;
@@ -363,6 +370,9 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     return _measuredSize = Size(min(maxSize.width, bounds.width.ceilToDouble()),
         min(maxSize.height, bounds.height.ceilToDouble()));
   }
+
+  /// STOKANAL-FORK-EDIT: expose method
+  void buildRenderStyles() => _buildRenderStyles();
 
   void _buildRenderStyles() {
     var lines = _lines;
@@ -668,6 +678,13 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     if (lines == null || shape == null) {
       return;
     }
+
+    /// STOKANAL-FORK-EDIT: logging
+    // if (text == 'F' && Random().nextDouble() < 0.01) {
+    //   log('TEXT DRAW F > ${hashCode} lines=${_lines?.length} shape=${_shape!=null} styles=${_renderStyles.length} runs=${runs.map((r) => '${r.name}=${r.text}').join(",")}');
+    // } else if (text == 'C' && Random().nextDouble() < 0.01) {
+    //   log('TEXT DRAW C > ${hashCode} lines=${_lines?.length} shape=${_shape!=null} styles=${_renderStyles.length} runs=${runs.map((r) => '${r.name}=${r.text}').join(",")}');
+    // }
 
     if (!clip(canvas)) {
       canvas.save();

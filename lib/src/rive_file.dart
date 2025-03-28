@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:rive/src/generated/animation/entry_state_base.dart';
 import 'package:rive/src/generated/animation/exit_state_base.dart';
 import 'package:rive/src/generated/assets/font_asset_base.dart';
 import 'package:rive/src/generated/nested_artboard_base.dart';
+import 'package:rive/src/generated/rive_core_beans.dart';
 import 'package:rive/src/generated/text/text_base.dart';
 import 'package:rive/src/local_file_io.dart'
     if (dart.library.js_interop) 'package:rive/src/local_file_web.dart';
@@ -41,6 +43,7 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive_common/rive_text.dart';
 import 'package:rive_common/utilities.dart';
+import 'package:stokanal/rive/rive_settings.dart';
 
 typedef Core<CoreContext>? ObjectGenerator(int coreTypeKey);
 
@@ -67,12 +70,15 @@ Core<CoreContext>? _readRuntimeObject(BinaryReader reader,
       break;
     }
 
-    var fieldType = RiveCoreContext.coreType(propertyKey);
+    // var fieldType = RiveCoreContext.coreType(propertyKey);
+    var fieldType = PropertyBeans.get(propertyKey).coreType;
+
     if (fieldType == null || object == null) {
       _skipProperty(reader, propertyKey, propertyToField);
     } else {
-      RiveCoreContext.setObjectProperty(
-          object, propertyKey, fieldType.deserialize(reader));
+      PropertyBeans.get(propertyKey).setObjectProperty(object, fieldType.deserialize(reader));
+      // RiveCoreContext.setObjectProperty(
+      //     object, propertyKey, fieldType.deserialize(reader));
     }
   }
   return object;
@@ -97,7 +103,7 @@ int _peekRuntimeObjectType(
 void _skipProperty(BinaryReader reader, int propertyKey,
     HashMap<int, CoreFieldType> propertyToField) {
   var field =
-      RiveCoreContext.coreType(propertyKey) ?? propertyToField[propertyKey];
+      PropertyBeans.get(propertyKey).coreType ?? propertyToField[propertyKey];
   if (field == null) {
     throw UnsupportedError('Unsupported property key $propertyKey. '
         'A new runtime is likely necessary to play this file.');
@@ -162,12 +168,23 @@ class RiveFile {
     return false;
   }
 
+  // final String? path;
+  // late final bool skipInterpolation;
+
   RiveFile._(
     BinaryReader reader,
     this.header,
     ObjectGenerator? generator,
-    this._assetLoader,
-  ) {
+    this._assetLoader, {
+      String? path,
+   }) {
+
+    var skipInterpolation = path != null && skipInterpolationRiveFiles.any(path.contains);
+    if (skipInterpolation) {
+      log('RIVE-FILE >> $path${skipInterpolation ? ' > SKIP_INTERPOLATION' : ''}');
+    }
+    // debugPrintStack();
+
     /// Property fields table of contents
     final propertyToField = _propertyToFieldLookup(header);
 
@@ -314,17 +331,39 @@ class RiveFile {
       throw const RiveFormatErrorException('Rive file is missing a backboard.');
     }
 
+    // var objects = 0;
+    // var keyedProperties = 0;
+
     for (final artboard in _artboards) {
       var runtimeArtboard = artboard as RuntimeArtboard;
-      for (final object in runtimeArtboard.objects.whereNotNull()) {
-        if (object.validate()) {
-          InternalCoreHelper.markValid(object);
+      final t = runtimeArtboard.objects.length;
+      // for (final object in runtimeArtboard.objects.whereNotNull()) {
+      for (var i = 0; i < t; i++) {
+        var object = runtimeArtboard.objects[i];
+        if (object == null) {
+          continue;
+        }
+        // objects++;
+        // if (object is KeyedProperty) {
+        //   keyedProperties++;
+        // }
+        if (skipInterpolation && object is KeyedProperty) {
+          object.skipInterpolationTolerance();
+        }
+
+        if (kDebugMode && true) {
+          if (object.validate()) {
+            InternalCoreHelper.markValid(object);
+          } else {
+            throw RiveFormatErrorException('Rive file is corrupt. Invalid $object.');
+          }
         } else {
-          throw RiveFormatErrorException(
-              'Rive file is corrupt. Invalid $object.');
+          InternalCoreHelper.markValid(object);
         }
       }
     }
+
+    // log('RIVE-FILE >> $path >> objects=$objects keyedProperties=$keyedProperties');
   }
 
   /// Imports a Rive file from an array of bytes.
@@ -351,17 +390,17 @@ class RiveFile {
     FileAssetLoader? assetLoader,
     ObjectGenerator? objectGenerator,
     bool loadCdnAssets = true,
+    String? path,
   }) {
-    // TODO: in the next major version add an assert here to make this a
-    // requirement
+    // TODO: in the next major version add an assert here to make this a requirement
     if (!_initializedText) {
-      debugPrint('''Rive: RiveFile.import called before RiveFile.initialize()
-
-Consider calling `await RiveFile.initialize()` before using `RiveFile.import`''');
+      /// STOKANAL-FORK-EDIT
+      // debugPrint('''Rive: RiveFile.import called before RiveFile.initialize(). Consider calling `await RiveFile.initialize()` before using `RiveFile.import`''');
     }
 
     var reader = BinaryReader(bytes);
     return RiveFile._(
+      path: path,
       reader,
       RuntimeHeader.read(reader),
       objectGenerator,
@@ -408,6 +447,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
     FileAssetLoader? assetLoader,
     bool loadCdnAssets = true,
     ObjectGenerator? objectGenerator,
+    String? path,
   }) async {
     /// If the file looks like it needs the text runtime, let's load it.
     if (!_initializedText) {
@@ -418,6 +458,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
+      path: path,
     );
   }
 
@@ -446,6 +487,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
+      path: bundleKey,
     );
   }
 
@@ -492,6 +534,7 @@ Consider calling `await RiveFile.initialize()` before using `RiveFile.import`'''
       assetLoader: assetLoader,
       loadCdnAssets: loadCdnAssets,
       objectGenerator: objectGenerator,
+      path: path,
     );
   }
 

@@ -9,7 +9,7 @@ typedef bool BoneCallback(Bone bone);
 class Bone extends BoneBase {
   /// Child constraints applied to some child of this bone which also affect
   /// this bone.
-  final Set<Constraint> _peerConstraints = {};
+  final _peerConstraints = <Constraint>{};
   Iterable<Constraint> get peerConstraints => _peerConstraints;
 
   bool addPeerConstraint(Constraint child) => _peerConstraints.add(child);

@@ -9,7 +9,7 @@ import 'package:rive_common/rive_text.dart';
 export 'package:rive/src/generated/assets/font_asset_base.dart';
 
 class FontAsset extends FontAssetBase {
-  final Set<VoidCallback> _callbacks = {};
+  final _callbacks = <VoidCallback>{};
 
   /// Call [callback] when the font is ready. Set [notifyAlreadySet] to
   /// specify if you want to be called if the font is already set.

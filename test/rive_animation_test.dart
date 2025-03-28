@@ -269,7 +269,7 @@ void main() {
           riveFile.mainArtboard, 'State Machine 1');
       expect(controller, isNotNull);
 
-      Set<String> receivedEvents = {};
+      var receivedEvents = <String>{};
       controller!.addEventListener((event) {
         receivedEvents.add(event.name);
       });
@@ -316,7 +316,7 @@ void main() {
           riveFile.mainArtboard, 'State Machine 1');
       expect(controller, isNotNull);
 
-      Set<String> receivedEvents = {};
+      var receivedEvents = <String>{};
       controller!.addEventListener((event) {
         receivedEvents.add(event.name);
       });

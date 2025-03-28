@@ -207,8 +207,7 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   void _hitHelper(PointerEvent event,
       void Function(StateMachineController, Vec2D) callback) {
     final artboardPosition = _toArtboard(event.localPosition);
-    final stateMachineControllers =
-        _artboard.animationControllers.whereType<StateMachineController>();
+    final stateMachineControllers = _artboard.animationControllers.whereType<StateMachineController>();
     for (final stateMachineController in stateMachineControllers) {
       callback(stateMachineController, artboardPosition);
     }
@@ -367,6 +366,7 @@ class RiveRenderObject extends RiveRenderBox implements MouseTrackerAnnotation {
   @override
   void dispose() {
     _artboard.redraw.removeListener(scheduleRepaint);
+    _artboard.dispose();
     _recognizer.dispose();
     super.dispose();
   }

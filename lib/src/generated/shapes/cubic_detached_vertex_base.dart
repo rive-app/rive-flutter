@@ -9,37 +9,43 @@ import 'package:rive/src/generated/shapes/path_vertex_base.dart';
 import 'package:rive/src/generated/shapes/vertex_base.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
 
+const _coreTypes = <int>{
+  CubicDetachedVertexBase.typeKey,
+  CubicVertexBase.typeKey,
+  PathVertexBase.typeKey,
+  VertexBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class CubicDetachedVertexBase extends CubicVertex {
   static const int typeKey = 6;
   @override
   int get coreType => CubicDetachedVertexBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        CubicDetachedVertexBase.typeKey,
-        CubicVertexBase.typeKey,
-        PathVertexBase.typeKey,
-        VertexBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// InRotation field with key 84.
   static const int inRotationPropertyKey = 84;
   static const double inRotationInitialValue = 0;
-  double _inRotation = inRotationInitialValue;
+
+  @nonVirtual
+  double inRotation_ = inRotationInitialValue;
 
   /// The in point's angle.
-  double get inRotation => _inRotation;
+  @nonVirtual
+  double get inRotation => inRotation_;
 
-  /// Change the [_inRotation] field value.
+  /// Change the [inRotation_] field value.
   /// [inRotationChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set inRotation(double value) {
-    if (_inRotation == value) {
+    if (inRotation_ == value) {
       return;
     }
-    double from = _inRotation;
-    _inRotation = value;
+    double from = inRotation_;
+    inRotation_ = value;
     if (hasValidated) {
       inRotationChanged(from, value);
     }
@@ -51,19 +57,23 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
   /// InDistance field with key 85.
   static const int inDistancePropertyKey = 85;
   static const double inDistanceInitialValue = 0;
-  double _inDistance = inDistanceInitialValue;
+
+  @nonVirtual
+  double inDistance_ = inDistanceInitialValue;
 
   /// The in point's distance from the translation of the point.
-  double get inDistance => _inDistance;
+  @nonVirtual
+  double get inDistance => inDistance_;
 
-  /// Change the [_inDistance] field value.
+  /// Change the [inDistance_] field value.
   /// [inDistanceChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set inDistance(double value) {
-    if (_inDistance == value) {
+    if (inDistance_ == value) {
       return;
     }
-    double from = _inDistance;
-    _inDistance = value;
+    double from = inDistance_;
+    inDistance_ = value;
     if (hasValidated) {
       inDistanceChanged(from, value);
     }
@@ -75,20 +85,24 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
   /// OutRotation field with key 86.
   static const int outRotationPropertyKey = 86;
   static const double outRotationInitialValue = 0;
-  double _outRotation = outRotationInitialValue;
+
+  @nonVirtual
+  double outRotation_ = outRotationInitialValue;
 
   /// The out point's angle.
-  double get outRotation => _outRotation;
+  @nonVirtual
+  double get outRotation => outRotation_;
 
-  /// Change the [_outRotation] field value.
+  /// Change the [outRotation_] field value.
   /// [outRotationChanged] will be invoked only if the field's value has
   /// changed.
+  @nonVirtual
   set outRotation(double value) {
-    if (_outRotation == value) {
+    if (outRotation_ == value) {
       return;
     }
-    double from = _outRotation;
-    _outRotation = value;
+    double from = outRotation_;
+    outRotation_ = value;
     if (hasValidated) {
       outRotationChanged(from, value);
     }
@@ -100,20 +114,24 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
   /// OutDistance field with key 87.
   static const int outDistancePropertyKey = 87;
   static const double outDistanceInitialValue = 0;
-  double _outDistance = outDistanceInitialValue;
+
+  @nonVirtual
+  double outDistance_ = outDistanceInitialValue;
 
   /// The out point's distance from the translation of the point.
-  double get outDistance => _outDistance;
+  @nonVirtual
+  double get outDistance => outDistance_;
 
-  /// Change the [_outDistance] field value.
+  /// Change the [outDistance_] field value.
   /// [outDistanceChanged] will be invoked only if the field's value has
   /// changed.
+  @nonVirtual
   set outDistance(double value) {
-    if (_outDistance == value) {
+    if (outDistance_ == value) {
       return;
     }
-    double from = _outDistance;
-    _outDistance = value;
+    double from = outDistance_;
+    outDistance_ = value;
     if (hasValidated) {
       outDistanceChanged(from, value);
     }
@@ -125,10 +143,10 @@ abstract class CubicDetachedVertexBase extends CubicVertex {
   void copy(Core source) {
     super.copy(source);
     if (source is CubicDetachedVertexBase) {
-      _inRotation = source._inRotation;
-      _inDistance = source._inDistance;
-      _outRotation = source._outRotation;
-      _outDistance = source._outDistance;
+      inRotation_ = source.inRotation_;
+      inDistance_ = source.inDistance_;
+      outRotation_ = source.outRotation_;
+      outDistance_ = source.outDistance_;
     }
   }
 }

@@ -9,37 +9,43 @@ import 'package:rive/src/generated/shapes/path_vertex_base.dart';
 import 'package:rive/src/generated/shapes/vertex_base.dart';
 import 'package:rive/src/rive_core/shapes/cubic_vertex.dart';
 
+const _coreTypes = {
+  CubicAsymmetricVertexBase.typeKey,
+  CubicVertexBase.typeKey,
+  PathVertexBase.typeKey,
+  VertexBase.typeKey,
+  ContainerComponentBase.typeKey,
+  ComponentBase.typeKey
+};
+
 abstract class CubicAsymmetricVertexBase extends CubicVertex {
   static const int typeKey = 34;
   @override
   int get coreType => CubicAsymmetricVertexBase.typeKey;
   @override
-  Set<int> get coreTypes => {
-        CubicAsymmetricVertexBase.typeKey,
-        CubicVertexBase.typeKey,
-        PathVertexBase.typeKey,
-        VertexBase.typeKey,
-        ContainerComponentBase.typeKey,
-        ComponentBase.typeKey
-      };
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// Rotation field with key 79.
   static const int rotationPropertyKey = 79;
   static const double rotationInitialValue = 0;
-  double _rotation = rotationInitialValue;
+
+  @nonVirtual
+  double rotation_ = rotationInitialValue;
 
   /// The control points' angle.
-  double get rotation => _rotation;
+  @nonVirtual
+  double get rotation => rotation_;
 
-  /// Change the [_rotation] field value.
+  /// Change the [rotation_] field value.
   /// [rotationChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set rotation(double value) {
-    if (_rotation == value) {
+    if (rotation_ == value) {
       return;
     }
-    double from = _rotation;
-    _rotation = value;
+    double from = rotation_;
+    rotation_ = value;
     if (hasValidated) {
       rotationChanged(from, value);
     }
@@ -51,19 +57,23 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   /// InDistance field with key 80.
   static const int inDistancePropertyKey = 80;
   static const double inDistanceInitialValue = 0;
-  double _inDistance = inDistanceInitialValue;
+
+  @nonVirtual
+  double inDistance_ = inDistanceInitialValue;
 
   /// The in point's distance from the translation of the point.
-  double get inDistance => _inDistance;
+  @nonVirtual
+  double get inDistance => inDistance_;
 
-  /// Change the [_inDistance] field value.
+  /// Change the [inDistance_] field value.
   /// [inDistanceChanged] will be invoked only if the field's value has changed.
+  @nonVirtual
   set inDistance(double value) {
-    if (_inDistance == value) {
+    if (inDistance_ == value) {
       return;
     }
-    double from = _inDistance;
-    _inDistance = value;
+    double from = inDistance_;
+    inDistance_ = value;
     if (hasValidated) {
       inDistanceChanged(from, value);
     }
@@ -75,20 +85,23 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   /// OutDistance field with key 81.
   static const int outDistancePropertyKey = 81;
   static const double outDistanceInitialValue = 0;
-  double _outDistance = outDistanceInitialValue;
+
+  @nonVirtual
+  double outDistance_ = outDistanceInitialValue;
 
   /// The out point's distance from the translation of the point.
-  double get outDistance => _outDistance;
+  @nonVirtual
+  double get outDistance => outDistance_;
 
-  /// Change the [_outDistance] field value.
+  /// Change the [outDistance_] field value.
   /// [outDistanceChanged] will be invoked only if the field's value has
   /// changed.
   set outDistance(double value) {
-    if (_outDistance == value) {
+    if (outDistance_ == value) {
       return;
     }
-    double from = _outDistance;
-    _outDistance = value;
+    double from = outDistance_;
+    outDistance_ = value;
     if (hasValidated) {
       outDistanceChanged(from, value);
     }
@@ -100,9 +113,9 @@ abstract class CubicAsymmetricVertexBase extends CubicVertex {
   void copy(Core source) {
     super.copy(source);
     if (source is CubicAsymmetricVertexBase) {
-      _rotation = source._rotation;
-      _inDistance = source._inDistance;
-      _outDistance = source._outDistance;
+      rotation_ = source.rotation_;
+      inDistance_ = source.inDistance_;
+      outDistance_ = source.outDistance_;
     }
   }
 }

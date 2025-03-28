@@ -31,7 +31,7 @@ class ArtboardImporter extends ImportStackObject {
     }
     assert(!artboard.children.contains(artboard),
         'artboard should never contain itself as a child');
-    for (final object in artboard.objects.toList(growable: false)) {
+    for (final object in artboard.objects) {//.toList(growable: false)) {
       if (object == null) {
         continue;
       }

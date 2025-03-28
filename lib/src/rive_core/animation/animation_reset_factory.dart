@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/animation_state.dart';
 import 'package:rive/src/rive_core/animation/blend_state.dart';
@@ -9,15 +11,13 @@ import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/state_instance.dart';
 import 'package:rive_common/utilities.dart';
 
-bool _isDouble(int propertyKey, Core object) {
-  final coreType = RiveCoreContext.coreType(propertyKey);
-  return coreType == RiveCoreContext.doubleType;
-}
+import '../../generated/rive_core_beans.dart';
 
-bool _isColor(int propertyKey, Core object) {
-  final coreType = RiveCoreContext.coreType(propertyKey);
-  return coreType == RiveCoreContext.colorType;
-}
+bool _isDouble(int propertyKey, Core object) =>
+    PropertyBeans.get(propertyKey).coreType == RiveCoreContext.doubleType;
+
+bool _isColor(int propertyKey, Core object) =>
+    PropertyBeans.get(propertyKey).coreType == RiveCoreContext.colorType;
 
 class AnimationReset {
   BinaryReader? _reader;
@@ -86,10 +86,10 @@ class AnimationReset {
         // Fourth we read the property value for each property
         if (_isDouble(propertyKey, object!)) {
           double value = reader.readFloat32();
-          RiveCoreContext.setDouble(object, propertyKey, value);
+          PropertyBeans.get(propertyKey).setDouble(object, value);
         } else if (_isColor(propertyKey, object)) {
           int value = reader.readInt32();
-          RiveCoreContext.setColor(object, propertyKey, value);
+          PropertyBeans.get(propertyKey).setColor(object, value);
         }
         currentPropertyIndex += 1;
       }
@@ -108,27 +108,26 @@ class _KeyedProperty {
     return false;
   }
 
-  int get propertyKey {
-    return property.propertyKey;
-  }
-
-  int get size {
-    return 1 + 4; // property id + float value
-  }
+  int get propertyKey => property.propertyKey;
+  PropertyBean get propertyBean => property.propertyBean;
+  int get size => 1 + 4; // property id + float value
 }
 
 class _KeyedObject {
   final List<_KeyedProperty> properties = [];
   final KeyedObject data;
-  final Set<int> visitedProperties = {};
+  final visitedProperties = <int>{};
   _KeyedObject(this.data);
+
   void addProperties(
-      List<KeyedProperty> props, Core object, bool storeAsBaseline) {
+      Iterable<KeyedProperty> props, Core object, bool storeAsBaseline) {
     for (final property in props) {
-      if (!visitedProperties.contains(property.propertyKey)) {
-        visitedProperties.add(property.propertyKey);
-        if (_isColor(property.propertyKey, object) ||
-            _isDouble(property.propertyKey, object)) {
+      var prop = property.propertyKey;
+
+      if (visitedProperties.add(prop)) {
+        // visitedProperties.add(prop);
+        if (_isColor(prop, object) ||
+            _isDouble(prop, object)) {
           properties.add(_KeyedProperty(property, storeAsBaseline));
         }
       }
@@ -151,12 +150,15 @@ class _AnimationsData {
   int size = 0;
 
   List<_KeyedObject> keyedObjects = [];
-  Map<int, _KeyedObject> visitedObjects = {};
-  _AnimationsData(List<LinearAnimation> animations, CoreContext core,
+  Map<int, _KeyedObject> visitedObjects = HashMap<int, _KeyedObject>();//{};
+
+  _AnimationsData(Iterable<LinearAnimation> animations, CoreContext core,
       bool useFirstAsBaseline) {
     bool isFirstAnimation = useFirstAsBaseline;
+
     for (final animation in animations) {
-      animation.keyedObjects.forEach((keyedObject) {
+
+      for (final keyedObject in animation.keyedObjects) {
         final objectIntId = resolveId(keyedObject.objectId);
         final object = core.resolve<Core>(keyedObject.objectId);
         if (!visitedObjects.containsKey(objectIntId)) {
@@ -164,13 +166,19 @@ class _AnimationsData {
           keyedObjects.add(visitedObjects[objectIntId]!);
         }
         visitedObjects[objectIntId]!.addProperties(
-            keyedObject.keyedProperties.toList(), object!, isFirstAnimation);
-      });
+            keyedObject.keyedProperties, object!, isFirstAnimation);
+      }
       isFirstAnimation = false;
     }
-    for (final object in keyedObjects) {
-      size += object.size;
+
+    var t = keyedObjects.length;
+    for (var i = 0; i < t; i++) {
+      size += keyedObjects[i].size;
     }
+
+    // for (final object in keyedObjects) {
+    //   size += object.size;
+    // }
   }
 
   int resolveId(int intId) {
@@ -178,7 +186,9 @@ class _AnimationsData {
   }
 
   void writeObjects(AnimationReset animationReset, CoreContext core) {
-    keyedObjects.forEach((keyedObject) {
+
+    // keyedObjects.forEach((keyedObject) {
+    for (final keyedObject in keyedObjects) {
       // We might have added keyed objects but no properties need resetting
       if (keyedObject.properties.isNotEmpty) {
         int objectIntId = resolveId(keyedObject.data.objectId);
@@ -194,9 +204,9 @@ class _AnimationsData {
               animationReset.writeColor(
                   (property.property.keyframes.first as KeyFrameColor).value);
             } else {
-              animationReset.writeColor(RiveCoreContext.getColor(
-                  core.resolve(keyedObject.data.objectId),
-                  property.propertyKey));
+
+              animationReset.writeColor(PropertyBeans.get(property.propertyKey).getColor(core.resolve(keyedObject.data.objectId)));
+
             }
           } else if (_isDouble(property.propertyKey, object)) {
             animationReset.writePropertyKey(property.propertyKey);
@@ -204,21 +214,25 @@ class _AnimationsData {
               animationReset.writeDouble(
                   (property.property.keyframes.first as KeyFrameDouble).value);
             } else {
-              animationReset.writeDouble(RiveCoreContext.getDouble(
-                  core.resolve(keyedObject.data.objectId),
-                  property.propertyKey));
+
+              // animationReset.writeDouble(RiveCoreContext.getDouble(
+              //     core.resolve(keyedObject.data.objectId),
+              //     property.propertyKey));
+              animationReset.writeDouble(
+                  property.propertyBean.getDouble(
+                      core.resolve(keyedObject.data.objectId)));
             }
           }
         }
       }
-    });
+    }//);
     animationReset.createReader();
   }
 }
 
 List<AnimationReset> _pool = [];
 
-AnimationReset fromAnimations(List<LinearAnimation> animations,
+AnimationReset fromAnimations(Iterable<LinearAnimation> animations,
     CoreContext core, bool useFirstAsBaseline) {
   final animationData = _AnimationsData(animations, core, useFirstAsBaseline);
   AnimationReset? animationReset;
@@ -247,13 +261,15 @@ List<LinearAnimation> _fromState(
     if (state is AnimationState && state.animation != null) {
       animations.add(state.animation!);
     } else if (state is BlendState) {
-      state.animations.forEach((blend1DAnimation) {
+
+      // state.animations.forEach((blend1DAnimation) {
+      for (final blend1DAnimation in state.animations) {
         final animation =
             core.resolve<LinearAnimation>(blend1DAnimation.animationId);
         if (animation != null) {
           animations.add(animation);
         }
-      });
+      }//);
     }
   }
   return animations;
@@ -270,9 +286,10 @@ AnimationReset fromStates(
 void release(AnimationReset value) {
   value.clear();
   int index = 0;
-  while (index < _pool.length) {
-    final animationReset = _pool.elementAt(index);
-    if (animationReset.size > value.size) {
+  final length = _pool.length;
+  final valueSize = value.size;
+  while (index < length) {
+    if (_pool[index].size > valueSize) {
       break;
     }
     index++;

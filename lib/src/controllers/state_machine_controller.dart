@@ -7,6 +7,7 @@ import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 import 'package:rive/src/runtime_mounted_artboard.dart';
+
 export 'package:rive/src/runtime_mounted_artboard.dart';
 
 /// [StateMachine]s supports three input types. The StateMachine mostly
@@ -114,10 +115,13 @@ class SMITrigger extends SMIInput<bool> {
 /// the inputs of the StateMachine.
 class StateMachineController extends core.StateMachineController
     with RuntimeEventReporter {
-  final List<SMIInput> _inputs = <SMIInput>[];
 
   /// A list of inputs available in the StateMachine.
-  Iterable<SMIInput> get inputs => _inputs;
+  @nonVirtual
+  final List<SMIInput> inputs = <SMIInput>[];
+
+  // /// A list of inputs available in the StateMachine.
+  // Iterable<SMIInput> get inputs => _inputs;
 
   final _runtimeEventListeners = <OnRuntimeEvent>{};
 
@@ -130,13 +134,13 @@ class StateMachineController extends core.StateMachineController
     for (final input in stateMachine.inputs) {
       switch (input.coreType) {
         case StateMachineNumberBase.typeKey:
-          _inputs.add(SMINumber._(input as StateMachineNumber, this));
+          inputs.add(SMINumber._(input as StateMachineNumber, this));
           break;
         case StateMachineBoolBase.typeKey:
-          _inputs.add(SMIBool._(input as StateMachineBool, this));
+          inputs.add(SMIBool._(input as StateMachineBool, this));
           break;
         case StateMachineTriggerBase.typeKey:
-          _inputs.add(SMITrigger._(input as StateMachineTrigger, this));
+          inputs.add(SMITrigger._(input as StateMachineTrigger, this));
           break;
       }
     }
@@ -168,7 +172,7 @@ class StateMachineController extends core.StateMachineController
   /// For easier to use methods, see [getBoolInput], [getTriggerInput],
   /// [getNumberInput].
   SMIInput<T>? findInput<T>(String name) {
-    for (final input in _inputs) {
+    for (final input in inputs) {
       if (input._is<T>() && input.name == name) {
         return input as SMIInput<T>;
       }
@@ -181,7 +185,7 @@ class StateMachineController extends core.StateMachineController
   /// For easier to use methods, see [getBoolInput], [getTriggerInput],
   /// [getNumberInput].
   T? findSMI<T>(String name) {
-    for (final input in _inputs) {
+    for (final input in inputs) {
       if (input is T && input.name == name) {
         return input as T;
       }
@@ -209,8 +213,11 @@ class StateMachineController extends core.StateMachineController
 
   @override
   void advanceInputs() {
-    for (final input in _inputs) {
-      input.advance();
+    final t = inputs.length;
+    for (var i = 0; i < t; i++) {
+    // for (final input in _inputs) {
+      inputs[i].advance();
+      // input.advance();
     }
   }
 
@@ -224,8 +231,16 @@ class StateMachineController extends core.StateMachineController
 
   @override
   void applyEvents() {
-    var events = reportedEvents.toList(growable: false);
     super.applyEvents();
-    _runtimeEventListeners.toList().forEach(events.forEach);
+
+    for (final event in _runtimeEventListeners) {
+      // reportedEvents.forEach(event);
+
+      var list = reportedEvents;
+      var t = list.length;
+      for (var i = 0; i < t; i++) {
+        event(list[i]);
+      }
+    }
   }
 }

@@ -1,27 +1,43 @@
+
+
+import 'package:stokanal/collections.dart';
+
 class DependencyHelper<T extends dynamic, U extends dynamic> {
-  Set<U> dependents = {};
+
+  final dependents = UniqueList.of<U>(); // set should stay ordered
   T? dependencyRoot;
 
   DependencyHelper();
 
   bool addDependent(U value) {
-    if (!dependents.contains(value)) {
-      dependents.add(value);
-      return true;
-    }
-    return false;
+
+    // if (!dependents.contains(value)) {
+    //   dependents.add(value);
+    //   return true;
+    // }
+    // return false;
+
+    // using set or unique list
+    return dependents.add(value);
   }
 
   void addDirt(int dirt, {bool recurse = false}) {
-    dependents
-        .forEach((dependent) => dependent.addDirt(dirt, recurse: recurse));
+
+    /// STOKANAL-FORK-EDIT: do not use forEach
+
+    // UniqueList
+    var list = dependents.list;
+    final t = list.length;
+    for (var i = 0; i < t; i++) {
+      list[i].addDirt(dirt, recurse: recurse);
+    }
+
+    // // Set
+    // for (final dependent in dependents) {
+    //   dependent.addDirt(dirt, recurse: recurse);
+    // }
   }
 
-  void onComponentDirty(U component) {
-    dependencyRoot?.onComponentDirty(component);
-  }
-
-  void clear() {
+  void clear() =>
     dependents.clear();
-  }
 }

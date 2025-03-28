@@ -5,13 +5,14 @@
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine_layer_component.dart';
 
+const _coreTypes = <int>{StateTransitionBase.typeKey, StateMachineLayerComponentBase.typeKey};
+
 abstract class StateTransitionBase extends StateMachineLayerComponent {
   static const int typeKey = 65;
   @override
   int get coreType => StateTransitionBase.typeKey;
   @override
-  Set<int> get coreTypes =>
-      {StateTransitionBase.typeKey, StateMachineLayerComponentBase.typeKey};
+  Set<int> get coreTypes => _coreTypes;
 
   /// --------------------------------------------------------------------------
   /// StateToId field with key 151.
@@ -41,23 +42,25 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
   /// Flags field with key 152.
   static const int flagsPropertyKey = 152;
   static const int flagsInitialValue = 0;
-  int _flags = flagsInitialValue;
-  int get flags => _flags;
 
-  /// Change the [_flags] field value.
-  /// [flagsChanged] will be invoked only if the field's value has changed.
-  set flags(int value) {
-    if (_flags == value) {
-      return;
-    }
-    int from = _flags;
-    _flags = value;
-    if (hasValidated) {
-      flagsChanged(from, value);
-    }
-  }
+  int flags = flagsInitialValue;
 
-  void flagsChanged(int from, int to);
+  // int _flags = flagsInitialValue;
+  // int get flags => _flags;
+  //
+  // /// Change the [_flags] field value.
+  // /// [flagsChanged] will be invoked only if the field's value has changed.
+  // set flags(int value) {
+  //   if (_flags == value) {
+  //     return;
+  //   }
+  //   int from = _flags;
+  //   _flags = value;
+  //   if (hasValidated) {
+  //     flagsChanged(from, value);
+  //   }
+  // }
+  // void flagsChanged(int from, int to);
 
   /// --------------------------------------------------------------------------
   /// Duration field with key 158.
@@ -191,7 +194,8 @@ abstract class StateTransitionBase extends StateMachineLayerComponent {
     super.copy(source);
     if (source is StateTransitionBase) {
       _stateToId = source._stateToId;
-      _flags = source._flags;
+      // _flags = source._flags;
+      flags = source.flags;
       _duration = source._duration;
       _exitTime = source._exitTime;
       _interpolationType = source._interpolationType;
