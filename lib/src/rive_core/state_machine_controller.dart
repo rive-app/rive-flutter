@@ -56,6 +56,9 @@ typedef OnLayerStateChange = void Function(LayerState);
 /// Callback signature for events firing.
 typedef OnEvent = void Function(RiveEvent);
 
+int _maxIterations = 0;
+final _tooManyIterationsCollected = <String>{};
+
 class LayerController {
   final StateMachineLayer layer;
   final StateInstance anyStateInstance;
@@ -166,9 +169,6 @@ class LayerController {
     }
   }
 
-  static int _maxIterations = 0;
-  static final _tooManyIterationsCollected = <String>{};
-
   String _dumpState(StateInstance<LayerState>? state) {
     if (state == null) {
       return 'null';
@@ -197,14 +197,14 @@ class LayerController {
     int i = 0;
     for (; updateState(i != 0); i++) {
       _apply(core);
-      if (i == 30) {
+      if (i == 10) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
         var runtime = core is RuntimeArtboard ? core : null;
         var transition = '${_dumpState(_currentState)} |> ${_dumpState(_stateFrom)}';
         if (_tooManyIterationsCollected.add(transition)) {
           Telemetry()
-              .collect('TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} || $transition')
+              .collect('TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
               .error(StackTrace.current, 'Too many iterations', fatal: false);
         }
         return false;
