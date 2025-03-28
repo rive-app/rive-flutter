@@ -31,10 +31,10 @@ dependencies:
 
   # STOKANAL-FORK-EDIT: added stokanal
   stokanal:
-    # path: ../stokanal-flutter/
-    git:
-      url: https://github.com/kaypora-games/stokanal-flutter.git
-      ref: develop
+    path: ../stokanal-flutter/
+#    git:
+#      url: https://github.com/kaypora-games/stokanal-flutter.git
+#      ref: develop
 
 dev_dependencies:
   flutter_test:
