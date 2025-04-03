@@ -151,6 +151,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return null;
   }
 
+  /// Find all components of a specific type with a specific name.
+  List<T?> components<T>(String name) {
+    return _components
+      .forEach((component is T && component.name == name))
+      .map((component) => component as T)
+      .toList();
+  }
+
   @override
   Artboard get artboard => this;
 
