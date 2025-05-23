@@ -163,8 +163,10 @@ class _AnimationsData {
           visitedObjects[objectIntId] = _KeyedObject(keyedObject);
           keyedObjects.add(visitedObjects[objectIntId]!);
         }
-        visitedObjects[objectIntId]!.addProperties(
-            keyedObject.keyedProperties.toList(), object!, isFirstAnimation);
+        if(object!=null) {
+          visitedObjects[objectIntId]!.addProperties(
+              keyedObject.keyedProperties.toList(), object!, isFirstAnimation);
+        }
       });
       isFirstAnimation = false;
     }
