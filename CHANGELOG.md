@@ -1,7 +1,45 @@
+## 0.14.0-dev.1
+
+This is a significant update for Rive Flutter. We've completely removed all of the Dart code that was used for the Rive runtime and replaced it with our underlying [C++ Runtime](https://github.com/rive-app/rive-runtime).
+
+This has resulted in significant changes to the underlying API.
+
+Please see the [migration guide](https://rive.app/docs/runtimes/flutter/migration-guide), [Rive Flutter documentation](https://rive.app/docs/runtimes/flutter/flutter), and the updated example app for more information.
+
+### What's New in 0.14.0
+
+This release of Rive Flutter adds:
+
+- The [Rive Renderer](https://rive.app/renderer)
+- Support for [Data Binding](https://rive.app/docs/editor/data-binding/overview)
+- Support for [Layouts](https://rive.app/docs/editor/layouts/layouts-overview)
+- Support for [Scrolling](https://rive.app/docs/editor/layouts/scrolling)
+- Support for N-[Slicing](https://rive.app/docs/editor/layouts/n-slicing)
+- Support for [Vector Feathering](https://rive.app/blog/introducing-vector-feathering)
+- All other features added to Rive that did not make it to the previous versions of Rive Flutter
+- Includes the latest fixes and improvements for the Rive C++ runtime
+- Adds prebuilt libraries, with the ability to build manually. See the [rive_native](https://pub.dev/packages/rive_native) package for more information
+- Removes the `rive_common` package and replaces it with `rive_native`
+
+Now that Rive Flutter makes use of the core Rive C++ runtime, you can expect new Rive features to be supported sooner for Rive Flutter.
+
+**Note:** All your Rive graphics will still look and function the same as they did before.
+
+## Requirements
+
+### Dart and Flutter Versions
+
+This release bumps to these versions:
+
+```yaml
+sdk: ">=3.5.0 <4.0.0"
+flutter: ">=3.3.0"
+```
+
 ## 0.13.20
 
 - Fix: Windows/Linux building. Undefined symbol `hb_style_get_value`, see issue [437](https://github.com/rive-app/rive-flutter/issues/437)
-  
+
 ## 0.13.19
 
 - Adds the `isTouchScrollEnabled` property to `RiveAnimation` and `Rive` widgets. When `true` allows scrolling behavior to occur on Rive widgets when a touch/drag action is performed on touch-enabled devices. Defauls to `false`, which means Rive will "absorb" the pointer down event and a scroll cannot be triggered if the touch occured within a Rive Listener area. Setting to `true` will impact Rive's capability to handle multiple gestures simultaneously.

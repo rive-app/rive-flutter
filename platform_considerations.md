@@ -5,10 +5,10 @@ In order to support some of our more low level features, Rive brings some of its
 | Platform | Technology | Dependencies                     |
 | -------- | ---------- | -------------------------------- |
 | iOS      | FFI        | statically linked                |
-| Android  | FFI        | `rive_text.so`                   |
-| Windows  | FFI        | `rive_plugin.dll`                |
+| Android  | FFI        | `rive_native.so`                   |
+| Windows  | FFI        | `rive_native.dll`                |
 | Mac      | FFI        | statically linked                |
-| Web      | WASM       | `rive_text.js`, `rive_text.wasm` |
+| Web      | WASM       | `rive_native.js`, `rive_native.wasm` |
 
 ## iOS & Mac
 
@@ -20,7 +20,7 @@ We use Gradle & CMake to build `rive_text.so`. Rive's runtime uses modern featur
 
 ```gradle
 android {
-  compileSdkVersion 31
+  compileSdkVersion 35
   ndkVersion "27.2.12479018"
   ...
 }

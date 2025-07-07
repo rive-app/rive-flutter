@@ -1,29 +1,28 @@
 name: rive
-version: 0.13.20
+version: 0.14.0-dev.1
 homepage: https://rive.app
-description: Rive Flutter Runtime. This package provides runtime functionality for playing back and interacting with animations built with the Rive editor available at https://rive.app.
+description: Rive Flutter Runtime. This package provides runtime functionality for Rive graphics built with the Rive editor available at https://rive.app.
 repository: https://github.com/rive-app/rive-flutter
 topics:
   - animation
   - ui
   - effects
-  - widgets
-  - widget
+  - design
+  - games
+  
 environment:
-  sdk: ">=2.17.0 <4.0.0"
-  flutter: ">=2.5.0"
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.3.0"
+
 dependencies:
-  collection: ^1.15.0
   flutter:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  http: ">=0.13.3 <2.0.0"
-  meta: ^1.3.0
-  plugin_platform_interface: ^2.0.2
-  rive_common: 0.4.15
+  rive_native:
+    path: ../rive_native  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail:
-  path: ^1.8.3
+  flutter_lints: ^5.0.0

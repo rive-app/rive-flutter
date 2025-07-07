@@ -1,138 +1,433 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:rive_example/examples/databinding_images.dart';
+import 'package:rive_example/examples/examples.dart';
+import 'package:rive/rive.dart' as rive;
 
-import 'package:rive_example/artboard_nested_inputs.dart';
-import 'package:rive_example/custom_asset_loading.dart';
-import 'package:rive_example/custom_cached_asset_loading.dart';
-import 'package:rive_example/carousel.dart';
-import 'package:rive_example/custom_controller.dart';
-import 'package:rive_example/event_open_url_button.dart';
-import 'package:rive_example/event_star_rating.dart';
-import 'package:rive_example/example_state_machine.dart';
-import 'package:rive_example/liquid_download.dart';
-import 'package:rive_example/little_machine.dart';
-import 'package:rive_example/play_one_shot_animation.dart';
-import 'package:rive_example/play_pause_animation.dart';
-import 'package:rive_example/rive_audio.dart';
-import 'package:rive_example/rive_audio_out_of_band.dart';
-import 'package:rive_example/simple_animation.dart';
-import 'package:rive_example/simple_animation_network.dart';
-import 'package:rive_example/simple_machine_listener.dart';
-import 'package:rive_example/simple_state_machine.dart';
-import 'package:rive_example/skinning_demo.dart';
-import 'package:rive_example/state_machine_skills.dart';
-import 'package:rive_example/basic_text.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await rive.RiveNative.init();
 
-void main() {
-  /// Initialize Rive's text, audio, and layout engines.
-  /// This will automatically be called the first time a RiveFile is loaded if
-  /// it has not been initialized. And does not need to be called.
-  ///
-  /// However, calling it early here makes the first
-  /// visible Rive graphic load faster.
-  unawaited(RiveFile.initialize());
   runApp(
     MaterialApp(
       title: 'Rive Example',
       home: const RiveExampleApp(),
-      darkTheme: ThemeData.dark().copyWith(
+      darkTheme: ThemeData(
+        fontFamily: 'JetBrainsMono',
+        brightness: Brightness.dark,
         scaffoldBackgroundColor: _backgroundColor,
         appBarTheme: const AppBarTheme(backgroundColor: _appBarColor),
-        colorScheme: ColorScheme.fromSwatch().copyWith(primary: _primaryColor),
+        colorScheme: ColorScheme.fromSwatch(brightness: Brightness.dark)
+            .copyWith(primary: _primaryColor),
       ),
       themeMode: ThemeMode.dark,
     ),
   );
 }
 
+/// Determines which factory/renderer to use for the Rive examples.
+///
+/// In your app you can combine the usage of the Rive Renderer and the Flutter
+/// Renderer. For this example app we have a static variable to determine which
+/// factory to use app wide.
+///
+/// - `rive` uses the Rive Renderer
+/// - `flutter` uses the Flutter Renderer (Skia / Impeller)
+enum RiveFactoryToUse {
+  rive,
+  flutter,
+}
+
 /// An example application demoing Rive.
 class RiveExampleApp extends StatefulWidget {
   const RiveExampleApp({Key? key}) : super(key: key);
+
+  static RiveFactoryToUse factoryToUse = RiveFactoryToUse.rive;
+
+  static rive.Factory get getCurrentFactory => switch (factoryToUse) {
+        RiveFactoryToUse.rive => rive.Factory.rive,
+        RiveFactoryToUse.flutter => rive.Factory.flutter,
+      };
 
   @override
   State<RiveExampleApp> createState() => _RiveExampleAppState();
 }
 
 class _RiveExampleAppState extends State<RiveExampleApp> {
-  // Examples
-  final _pages = [
-    const _Page('Simple Animation - Asset', SimpleAssetAnimation()),
-    const _Page('Simple Animation - Network', SimpleNetworkAnimation()),
-    const _Page('Play/Pause Animation', PlayPauseAnimation()),
-    const _Page('Play One-Shot Animation', PlayOneShotAnimation()),
-    const _Page('Button State Machine', ExampleStateMachine()),
-    const _Page('Skills Machine', StateMachineSkills()),
-    const _Page('Little Machine', LittleMachine()),
-    const _Page('Nested Inputs', ArtboardNestedInputs()),
-    const _Page('Liquid Download', LiquidDownload()),
-    const _Page('Custom Controller - Speed', SpeedyAnimation()),
-    const _Page('Simple State Machine', SimpleStateMachine()),
-    const _Page('State Machine with Listener', StateMachineListener()),
-    const _Page('Skinning Demo', SkinningDemo()),
-    const _Page('Animation Carousel', AnimationCarousel()),
-    const _Page('Basic Text', BasicText()),
-    const _Page('Asset Loading', CustomAssetLoading()),
-    const _Page('Cached Asset Loading', CustomCachedAssetLoading()),
-    const _Page('Event Open URL Button', EventOpenUrlButton()),
-    const _Page('Event Star Rating', EventStarRating()),
-    const _Page('Rive Audio', RiveAudioExample()),
-    const _Page('Rive Audio [Out-of-Band]', RiveAudioOutOfBandExample()),
+  // ScrollController for the CustomScrollView
+  final ScrollController _scrollController = ScrollController();
+
+  // Examples organized into sections
+  final _sections = [
+    const _Section(
+      'Getting Started',
+      [
+        _Page('Rive Widget', ExampleRiveWidget(),
+            'Simple example usage of the Rive widget with common parameters.'),
+        _Page('Rive Widget Builder', ExampleRiveWidgetBuilder(),
+            'Example usage of the Rive builder widget with common parameters.'),
+      ],
+    ),
+    const _Section(
+      'Rive Features',
+      [
+        _Page('Data Binding', ExampleDataBinding(),
+            'Example using Rive data binding at runtime.'),
+        _Page('Data Binding - Images', ExampleDataBindingImages(),
+            'Example using Rive data binding images at runtime.'),
+        _Page('Data Binding - Lists', Todo(),
+            'Example using Rive data binding lists at runtime.'),
+        _Page('Responsive Layouts', ExampleResponsiveLayouts(),
+            'Create responsive Rive graphics that adapt to screen size.'),
+        _Page('Events', ExampleEvents(), 'Handle Rive events.'),
+        _Page('Audio', ExampleRiveAudio(), 'Example Rive file with audio.'),
+      ],
+    ),
+    const _Section(
+      'Asset Loading',
+      [
+        _Page('Network .riv Asset', ExampleNetworkAsset(),
+            'Load and display Rive graphics from network URLs.'),
+        _Page('Out-of-band Assets', ExampleOutOfBandAssetLoading(),
+            'Load Rive files with external assets (images, audio) separately.'),
+        _Page(
+          'Out-of-band Assets - Cached',
+          ExampleOutOfBandCachedAssetLoading(),
+          'Load Rive files with cached external assets for better immediate availability.',
+        ),
+      ],
+    ),
+    const _Section(
+      'Painters [Advanced]',
+      [
+        _Page('State Machine Painter', ExampleStateMachinePainter(),
+            'Advanced: Custom painter for state machines.'),
+        _Page('Single Animation Painter', ExampleSingleAnimationPainter(),
+            'Advanced: Custom painter for single animation playback.'),
+      ],
+    ),
+    const _Section(
+      'Flutter Concepts/Integration',
+      [
+        // _Page('Flutter Lists', Todo(),
+        //     'Integrate Rive graphics with Flutter list widgets.'),
+        _Page('Flutter Hit Test + Cursor Behaviour', ExampleHitTestBehaviour(),
+            'Specifying hit test and cursor behaviour.'),
+        _Page('Flutter Ticker Mode', ExampleTickerMode(),
+            'Rive graphics respect Flutter ticker mode.'),
+        _Page('Flutter Time Dilation', ExampleTimeDilation(),
+            'Rive graphics respect Flutter time dilation.'),
+        // _Page('Flutter Hero Transitions', Todo(),
+        //     'Create smooth transitions between pages with Rive graphics.'),
+        // _Page('Flutter State Management', Todo(),
+        //     'Manage Rive state with Flutter state management.'),
+        // _Page('Flutter Localization', Todo(),
+        //     'Localize Rive graphics for different languages.'),
+        // _Page('Flutter Internationalization', Todo(),
+        //     'Internationalize Rive graphics with Flutter i18n.'),
+      ],
+    ),
+    const _Section(
+      'Legacy Features [Use data binding instead]',
+      [
+        _Page('Inputs [Nested]', ExampleInputs(),
+            'Legacy: Handle input [nested] controls in Rive graphics.'),
+        _Page('Text Runs [Nested]', ExampleTextRuns(),
+            'Legacy: Handle text runs [nested] components in Rive graphics.'),
+      ],
+    ),
   ];
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Rive Examples')),
-      body: Center(
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemBuilder: (context, index) => _NavButton(page: _pages[index]),
-          separatorBuilder: (context, index) => const SizedBox(height: 16),
-          itemCount: _pages.length,
+      body: Column(children: [
+        Expanded(
+          child: Scrollbar(
+            controller: _scrollController,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.all(8.0),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        // Calculate which section and item we're at
+                        int itemIndex = index;
+
+                        for (int i = 0; i < _sections.length; i++) {
+                          if (itemIndex == 0) {
+                            // This is a section header
+                            return _SectionHeader(_sections[i].title);
+                          }
+                          itemIndex--;
+
+                          if (itemIndex < _sections[i].pages.length) {
+                            // This is a page within the current section
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: _NavButton(
+                                  page: _sections[i].pages[itemIndex]),
+                            );
+                          }
+                          itemIndex -= _sections[i].pages.length;
+                        }
+
+                        return null;
+                      },
+                      childCount: _getTotalItemCount(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        ColoredBox(
+          color: Colors.black,
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              const Text('Factory to use:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Radio<RiveFactoryToUse>(
+                          value: RiveFactoryToUse.rive,
+                          groupValue: RiveExampleApp.factoryToUse,
+                          onChanged: (value) {
+                            setState(() {
+                              RiveExampleApp.factoryToUse =
+                                  value as RiveFactoryToUse;
+                            });
+                          },
+                        ),
+                        const Text('Rive Renderer',
+                            style: TextStyle(fontSize: 14)),
+                      ],
+                    ),
+                    const SizedBox(width: 32),
+                    Row(
+                      children: [
+                        Radio<RiveFactoryToUse>(
+                          value: RiveFactoryToUse.flutter,
+                          groupValue: RiveExampleApp.factoryToUse,
+                          onChanged: (value) {
+                            setState(() {
+                              RiveExampleApp.factoryToUse =
+                                  value as RiveFactoryToUse;
+                            });
+                          },
+                        ),
+                        const Text('Flutter Renderer',
+                            style: TextStyle(fontSize: 14)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
+
+  int _getTotalItemCount() {
+    int count = 0;
+    for (final section in _sections) {
+      count += 1; // Section header
+      count += section.pages.length; // Pages in section
+    }
+    return count;
+  }
+}
+
+/// Class used to organize demo sections.
+class _Section {
+  final String title;
+  final List<_Page> pages;
+
+  const _Section(this.title, this.pages);
 }
 
 /// Class used to organize demo pages.
 class _Page {
   final String name;
   final Widget page;
+  final String description;
 
-  const _Page(this.name, this.page);
+  const _Page(this.name, this.page, this.description);
 }
 
-/// Button to navigate to demo pages.
-class _NavButton extends StatelessWidget {
+/// Section header widget with divider.
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: _primaryColor,
+                ),
+          ),
+        ),
+        const Divider(
+          color: _primaryColor,
+          thickness: 0.5,
+          height: 1,
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+}
+
+/// Button to navigate to demo pages with hover overlay.
+class _NavButton extends StatefulWidget {
   const _NavButton({required this.page});
 
   final _Page page;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        child: SizedBox(
-          width: 250,
-          child: Center(
+  State<_NavButton> createState() => _NavButtonState();
+}
+
+class _NavButtonState extends State<_NavButton> {
+  bool _isHovered = false;
+  OverlayEntry? _overlayEntry;
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _showOverlay() {
+    _removeOverlay();
+
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: position.dy - 80, // Position above the button
+        left: position.dx + (size.width / 2) - 150, // Center horizontally
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 300,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: _primaryColor, width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Text(
-              page.name,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              widget.page.description,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                height: 1.4,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (context) => page.page,
-            ),
-          );
-        },
       ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() => _isHovered = true);
+        _showOverlay();
+      },
+      onExit: (_) {
+        setState(() => _isHovered = false);
+        _removeOverlay();
+      },
+      child: Center(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _isHovered ? _primaryColor.withOpacity(0.1) : null,
+            elevation: _isHovered ? 8 : 2,
+          ),
+          child: SizedBox(
+            width: 300,
+            child: Center(
+              child: Text(
+                widget.page.name,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            ),
+          ),
+          onPressed: () {
+            _removeOverlay();
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (context) => _WrappedPage(page: widget.page),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Scaffold wrapper for the page.
+class _WrappedPage extends StatelessWidget {
+  const _WrappedPage({required this.page});
+
+  final _Page page;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(page.name)),
+      body: page.page,
     );
   }
 }
