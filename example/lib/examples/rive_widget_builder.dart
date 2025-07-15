@@ -31,12 +31,12 @@ class _ExampleRiveWidgetBuilderState extends State<ExampleRiveWidgetBuilder> {
       dataBind: DataBind.auto(),
       // Optional `onFailed` callback to handle loading errors
       onFailed: (error, stackTrace) {
-        print(error);
-        print(stackTrace);
+        debugPrint(error.toString());
+        debugPrint(stackTrace.toString());
       },
       // Optional `onLoaded` callback to access the loaded state
       onLoaded: (state) {
-        print('Rive loaded');
+        debugPrint('Rive loaded');
       },
       // Optionally specify the controller to create
       // controller: (file) => RiveWidgetController(file),

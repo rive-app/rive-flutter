@@ -12,6 +12,7 @@ export 'package:rive_native/rive_native.dart'
         InternalViewModelInstanceString,
         InternalViewModelInstance,
         InternalViewModelInstanceViewModel,
+        InternalViewModelInstanceArtboard,
         InternalDataBind;
 
 export 'src/errors.dart';

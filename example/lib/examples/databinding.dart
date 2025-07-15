@@ -44,11 +44,12 @@ class _ExampleBasicState extends State<ExampleDataBinding> {
     viewModelInstance = controller!.dataBind(DataBind.auto());
     _selectRandomToken();
     // Print the view model instance properties
-    print(viewModelInstance.properties);
+    debugPrint(viewModelInstance.properties.toString());
     // Get the rewards view model
     coinItemVM = viewModelInstance.viewModel('Coin')!;
     gemItemVM = viewModelInstance.viewModel('Gem')!;
-    print(coinItemVM); // Print the view model instance properties
+    debugPrint(
+        coinItemVM.toString()); // Print the view model instance properties
 
     coinValue = coinItemVM.number('Item_Value')!;
     gemValue = gemItemVM.number('Item_Value')!;
@@ -70,11 +71,11 @@ class _ExampleBasicState extends State<ExampleDataBinding> {
   }
 
   void _onCoinValueChange(double value) {
-    print('New coin value: $value');
+    debugPrint('New coin value: $value');
   }
 
   void _onGemValueChange(double value) {
-    print('New gem value: $value');
+    debugPrint('New gem value: $value');
   }
 
   @override

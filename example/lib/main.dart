@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:rive_example/examples/databinding_images.dart';
 import 'package:rive_example/examples/examples.dart';

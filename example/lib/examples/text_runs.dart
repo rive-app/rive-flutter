@@ -42,10 +42,10 @@ class _ExampleTextRunsState extends State<ExampleTextRuns> {
     // You can access nested text runs by providing an optional path
     final initialText =
         _controller?.artboard.getText('button_text', path: null);
-    print('Initial text: $initialText');
+    debugPrint('Initial text: $initialText');
     _controller?.artboard.setText('button_text', 'Hello, world!');
     final updatedText = _controller?.artboard.getText('button_text');
-    print('Updated text: $updatedText');
+    debugPrint('Updated text: $updatedText');
     setState(() {});
   }
 

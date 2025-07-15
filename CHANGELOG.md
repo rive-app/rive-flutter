@@ -6,6 +6,8 @@ This has resulted in significant changes to the underlying API.
 
 Please see the [migration guide](https://rive.app/docs/runtimes/flutter/migration-guide), [Rive Flutter documentation](https://rive.app/docs/runtimes/flutter/flutter), and the updated example app for more information.
 
+The core runtime code is now in [rive_native](https://pub.dev/packages/rive_native). This release uses `v0.0.4` of that package.
+
 ### What's New in 0.14.0
 
 This release of Rive Flutter adds:

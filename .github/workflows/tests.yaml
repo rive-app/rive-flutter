@@ -29,20 +29,5 @@ jobs:
           flutter channel stable
           flutter doctor
 
-      - name: Build rive_common shared library
-        run: |
-          flutter pub get
-          VERSION=$(dart pub deps -s list | grep rive_common | sed 's/[^0-9.]*//g')
-          echo "Rive Common Version: $VERSION"
-          pushd ~/.pub-cache/hosted/pub.dev/rive_common-$VERSION
-          ./update_dependencies.sh force
-          pushd shared_lib
-          ./build_shared.sh
-          RIVE_TEXT_DYLIB=$PWD/build/bin/debug/librive_text.dylib
-          popd
-          popd
-          mkdir -p shared_lib/build/bin/debug/
-          cp $RIVE_TEXT_DYLIB shared_lib/build/bin/debug/
-
       - name: Run tests
         run: flutter test
