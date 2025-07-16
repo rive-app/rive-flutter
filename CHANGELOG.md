@@ -1,3 +1,9 @@
+## 0.14.0-dev.2
+
+### Fixes
+
+- Fixed a crash on iOS for the Flutter renderer on cleanup
+
 ## 0.14.0-dev.1
 
 This is a significant update for Rive Flutter. We've completely removed all of the Dart code that was used for the Rive runtime and replaced it with our underlying [C++ Runtime](https://github.com/rive-app/rive-runtime).

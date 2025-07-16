@@ -1,5 +1,8 @@
 export 'animation_painter.dart';
 export 'databinding.dart';
+export 'databinding_artboards.dart';
+export 'databinding_images.dart';
+export 'databinding_lists.dart';
 export 'events.dart';
 export 'hit_test_behaviour.dart';
 export 'inputs.dart';

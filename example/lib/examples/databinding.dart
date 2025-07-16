@@ -6,15 +6,15 @@ import 'package:rive_example/main.dart' show RiveExampleApp;
 
 /// Example using Rive data binding at runtime.
 ///
-/// See: https://rive.app/docs/dart/data-binding
+/// See: https://rive.app/docs/runtimes/data-binding
 class ExampleDataBinding extends StatefulWidget {
   const ExampleDataBinding({super.key});
 
   @override
-  State<ExampleDataBinding> createState() => _ExampleBasicState();
+  State<ExampleDataBinding> createState() => _ExampleDataBindingState();
 }
 
-class _ExampleBasicState extends State<ExampleDataBinding> {
+class _ExampleDataBindingState extends State<ExampleDataBinding> {
   File? file;
   RiveWidgetController? controller;
 

@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:rive_example/examples/databinding_images.dart';
+import 'package:rive_example/colors.dart';
 import 'package:rive_example/examples/examples.dart';
 import 'package:rive/rive.dart' as rive;
 
@@ -16,10 +16,10 @@ void main() async {
       darkTheme: ThemeData(
         fontFamily: 'JetBrainsMono',
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: _backgroundColor,
-        appBarTheme: const AppBarTheme(backgroundColor: _appBarColor),
+        scaffoldBackgroundColor: backgroundColor,
+        appBarTheme: const AppBarTheme(backgroundColor: appBarColor),
         colorScheme: ColorScheme.fromSwatch(brightness: Brightness.dark)
-            .copyWith(primary: _primaryColor),
+            .copyWith(primary: primaryColor),
       ),
       themeMode: ThemeMode.dark,
     ),
@@ -76,7 +76,9 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
             'Example using Rive data binding at runtime.'),
         _Page('Data Binding - Images', ExampleDataBindingImages(),
             'Example using Rive data binding images at runtime.'),
-        _Page('Data Binding - Lists', Todo(),
+        _Page('Data Binding - Artboards', ExampleDataBindingArtboards(),
+            'Example using Rive data binding artboards at runtime.'),
+        _Page('Data Binding - Lists', ExampleDataBindingLists(),
             'Example using Rive data binding lists at runtime.'),
         _Page('Responsive Layouts', ExampleResponsiveLayouts(),
             'Create responsive Rive graphics that adapt to screen size.'),
@@ -203,10 +205,13 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 16,
+                  runSpacing: 8,
                   children: [
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Radio<RiveFactoryToUse>(
                           value: RiveFactoryToUse.rive,
@@ -222,8 +227,8 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
                             style: TextStyle(fontSize: 14)),
                       ],
                     ),
-                    const SizedBox(width: 32),
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Radio<RiveFactoryToUse>(
                           value: RiveFactoryToUse.flutter,
@@ -293,12 +298,12 @@ class _SectionHeader extends StatelessWidget {
           child: Text(
             title,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: _primaryColor,
+                  color: primaryColor,
                 ),
           ),
         ),
         const Divider(
-          color: _primaryColor,
+          color: primaryColor,
           thickness: 0.5,
           height: 1,
         ),
@@ -352,7 +357,7 @@ class _NavButtonState extends State<_NavButton> {
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.9),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _primaryColor, width: 1),
+              border: Border.all(color: primaryColor, width: 1),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3),
@@ -392,7 +397,7 @@ class _NavButtonState extends State<_NavButton> {
       child: Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: _isHovered ? _primaryColor.withOpacity(0.1) : null,
+            backgroundColor: _isHovered ? primaryColor.withOpacity(0.1) : null,
             elevation: _isHovered ? 8 : 2,
           ),
           child: SizedBox(
@@ -433,7 +438,3 @@ class _WrappedPage extends StatelessWidget {
     );
   }
 }
-
-const _appBarColor = Color(0xFF323232);
-const _backgroundColor = Color(0xFF1D1D1D);
-const _primaryColor = Color(0xFF57A5E0);

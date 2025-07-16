@@ -28,6 +28,7 @@ class _ExampleHitTestBehaviourState extends State<ExampleHitTestBehaviour> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Stack(
@@ -76,15 +77,20 @@ class _ExampleHitTestBehaviourState extends State<ExampleHitTestBehaviour> {
             ],
           ),
         ),
-        Text('Underlying Flutter container tapped: $count'),
-        const SizedBox(
-          height: 16,
-        ),
-        Text('Current hit test behaviour: $hitTestBehavior'),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Text('Underlying Flutter container tapped: $count'),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('Current hit test behaviour: $hitTestBehavior'),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.start,
             children: [
               ElevatedButton(
                 onPressed: () {
@@ -121,45 +127,52 @@ class _ExampleHitTestBehaviourState extends State<ExampleHitTestBehaviour> {
             ],
           ),
         ),
-        Text('Current mouse cursor: $cursor'),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    cursor = MouseCursor.defer;
-                  });
-                },
-                child: const Text('defer'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    cursor = MouseCursor.uncontrolled;
-                  });
-                },
-                child: const Text('unconrolled'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    cursor = SystemMouseCursors.contextMenu;
-                  });
-                },
-                child: const Text('context menu'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    cursor = SystemMouseCursors.text;
-                  });
-                },
-                child: const Text('text'),
-              ),
-            ],
+          child: Text('Current mouse cursor: $cursor'),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      cursor = MouseCursor.defer;
+                    });
+                  },
+                  child: const Text('defer'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      cursor = MouseCursor.uncontrolled;
+                    });
+                  },
+                  child: const Text('unconrolled'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      cursor = SystemMouseCursors.contextMenu;
+                    });
+                  },
+                  child: const Text('context menu'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      cursor = SystemMouseCursors.text;
+                    });
+                  },
+                  child: const Text('text'),
+                ),
+              ],
+            ),
           ),
         )
       ],
