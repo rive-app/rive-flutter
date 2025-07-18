@@ -1,8 +1,19 @@
+## 0.14.0-dev.3
+
+Bumps to `rive_native: 0.0.6`
+
+- Updates the Rive C++ runtime and renderer for the latest bug fixes and performance improvements.
+
+### Fixes
+
+- A dual mutex deadlock on iOS/macOS during window/texture resizing under certain conditions.
+- An issue where the Rive Renderer requests a repaint on a disposed render object.
+
 ## 0.14.0-dev.2
 
 ### Fixes
 
-- Fixed a crash on iOS for the Flutter renderer on cleanup
+- Fixed a crash on iOS for the Flutter renderer on cleanup.
 
 ## 0.14.0-dev.1
 
