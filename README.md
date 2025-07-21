@@ -134,7 +134,25 @@ dart run rive_native:setup --verbose --clean --build --platform macos
 
 ## Testing
 
-Shared libraries are included in the download/build process. If you encounter issues using `rive_native` in your tests, please reach out to us for assistance.
+Shared libraries are included in the download/build process. If you've done `flutter run` on the native platform, the libraries should already be available.
+
+Otherwise, manually download the prebuilt libraries by doing:
+
+```bash
+dart run rive_native:setup --verbose --clean --platform macos
+```
+
+Specify the desired `--platform`, options are `macos`, `windows`, and `linux`.
+
+Now you can run `flutter test`.
+
+Optionally build the libraries if desired:
+
+```bash
+dart run rive_native:setup --verbose --clean --build --platform macos
+```
+
+If you encounter issues using `rive_native` in your tests, please reach out to us for assistance.
 
 ## Contributing
 
