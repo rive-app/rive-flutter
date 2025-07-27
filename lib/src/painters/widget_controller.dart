@@ -167,10 +167,8 @@ base class RiveWidgetController extends BasicArtboardPainter
   }
 
   @override
-  bool advance(double elapsedSeconds) {
-    if (!active) return false;
-    return stateMachine.advanceAndApply(elapsedSeconds);
-  }
+  bool advance(double elapsedSeconds) =>
+      stateMachine.advanceAndApply(elapsedSeconds) && active;
 
   @override
   void dispose() {

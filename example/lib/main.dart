@@ -114,6 +114,8 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
       [
         // _Page('Flutter Lists', Todo(),
         //     'Integrate Rive graphics with Flutter list widgets.'),
+        _Page(
+            'Pause/Play', ExamplePausePlay(), 'Pause and play Rive graphics.'),
         _Page('Flutter Hit Test + Cursor Behaviour', ExampleHitTestBehaviour(),
             'Specifying hit test and cursor behaviour.'),
         _Page('Flutter Ticker Mode', ExampleTickerMode(),

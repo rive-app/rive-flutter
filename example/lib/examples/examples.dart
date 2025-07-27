@@ -6,6 +6,7 @@ export 'databinding_lists.dart';
 export 'events.dart';
 export 'hit_test_behaviour.dart';
 export 'inputs.dart';
+export 'pause_play.dart';
 export 'network_asset.dart';
 export 'out_of_band_assets.dart';
 export 'out_of_band_assets_cached.dart';
