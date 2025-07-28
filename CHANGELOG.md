@@ -1,3 +1,21 @@
+## 0.14.0-dev.4
+
+Bumps to `rive_native: 0.0.7`
+
+- Updates the Rive C++ runtime and renderer for the latest bug fixes and performance improvements.
+
+### Fixes
+
+- Fixed running out of GL contexts by recycling HTML canvases
+- Fixed an issue on Web (Rive Renderer) where certain graphics would settle (pause) too soon when exiting a settled state.
+- Fixed an issue where the state machine would settle/pause too soon when resizing the widget (or native window) and when re entering from a backgrounded state (Android). See issue [496](https://github.com/rive-app/rive-flutter/issues/496)
+- Fixed an issue where nothing is drawn on the first frame when `active` is false in `RiveWidgetController`. See issue [495](https://github.com/rive-app/rive-flutter/issues/495)
+
+### Build & Platform Updates
+
+- Linux: Initial Linux support (Flutter renderer).
+- Fixed testing libraries not available when using `rive_native` as a Pub package. `rive_native` now copies the native libraries to the local app `build` directory.
+
 ## 0.14.0-dev.3
 
 Bumps to `rive_native: 0.0.6`
