@@ -1,8 +1,21 @@
+## 0.14.0-dev.5
+
+Bumps to `rive_native: 0.0.8`
+
+- Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+- Expose `width` and `height` getters for `ImageAsset`. See issue [501](https://github.com/rive-app/rive-flutter/issues/501). This is only exposed to support older workflows. We now recommend using [Data Binding images](https://rive.app/docs/runtimes/data-binding#images). You can also alternatively expose the width and height of the component through data binding and listen to changes.
+
+### Fixes
+
+- Fixed a memory leak when listening to Rive Events that had Audio events. See issue [494](https://github.com/rive-app/rive-flutter/issues/494)
+- Fixed a memory issue on WASM where large .riv files could invalidate our backing TypedArray views. This fix recreates these views if they are detached. See: https://github.com/emscripten-core/emscripten/issues/7294
+
 ## 0.14.0-dev.4
 
 Bumps to `rive_native: 0.0.7`
 
-- Updates the Rive C++ runtime and renderer for the latest bug fixes and performance improvements.
+- Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Fixes
 
@@ -20,7 +33,7 @@ Bumps to `rive_native: 0.0.7`
 
 Bumps to `rive_native: 0.0.6`
 
-- Updates the Rive C++ runtime and renderer for the latest bug fixes and performance improvements.
+- Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Fixes
 
