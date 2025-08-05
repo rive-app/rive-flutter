@@ -1,3 +1,9 @@
+## Upcoming
+
+### Fixes
+
+- Add missing `pointerExit` event logic.
+
 ## 0.14.0-dev.5
 
 Bumps to `rive_native: 0.0.8`

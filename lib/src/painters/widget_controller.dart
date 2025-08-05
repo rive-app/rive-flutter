@@ -163,6 +163,8 @@ base class RiveWidgetController extends BasicArtboardPainter
       stateMachine.pointerMove(position);
     } else if (event is PointerHoverEvent) {
       stateMachine.pointerMove(position);
+    } else if (event is PointerExitEvent) {
+      stateMachine.pointerExit(position);
     }
   }
 
