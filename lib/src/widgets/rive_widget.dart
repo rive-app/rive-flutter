@@ -105,7 +105,6 @@ class _RiveWidgetState extends State<RiveWidget> {
   @override
   Widget build(BuildContext context) {
     return RiveArtboardWidget(
-      key: widget.key,
       artboard: widget.controller.artboard,
       painter: widget.controller,
     );
