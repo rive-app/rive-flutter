@@ -1,8 +1,14 @@
-## Upcoming
+## 0.14.0-dev.6
+
+Bumps to `rive_native: 0.0.9`
+
+- Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Fixes
 
 - Add missing `pointerExit` event logic.
+- Fixed [507](https://github.com/rive-app/rive-flutter/issues/507) - Tests fail on Linux and Windows as native libs are not discoverable.
+- Fixed incorrect key forwarding to child widgets.
 
 ## 0.14.0-dev.5
 
