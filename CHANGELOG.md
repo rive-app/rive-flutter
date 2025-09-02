@@ -1,3 +1,9 @@
+## Upcoming
+
+### Fixes
+
+- Fixed [496](https://github.com/rive-app/rive-flutter/issues/496) - playback now properly resumes during pointer interactions, preventing graphics from appearing frozen when users interact with them.
+
 ## 0.14.0-dev.6
 
 Bumps to `rive_native: 0.0.9`

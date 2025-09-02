@@ -33,6 +33,17 @@ base class RiveWidgetController extends BasicArtboardPainter
     stateMachine = _createStateMachine(artboard, stateMachineSelector);
   }
 
+  /// Whether the state machine advanced during the last tick.
+  var _didAdvance = false;
+
+  /// Whether the state machine has been scheduled for repaint.
+  ///
+  /// Set to false in [advance] (paint).
+  var _repaintScheduled = false;
+
+  /// The previous hit result observed.
+  var _previousHitResult = HitResult.none;
+
   // TODO (Gordon): Remove this once we have polling or a general callback
   // The editor uses this, and we're copying that behavior for now.
   CallbackHandler? _inputCallbackHandler;
@@ -130,7 +141,9 @@ base class RiveWidgetController extends BasicArtboardPainter
 
   @override
   bool hitTest(Offset position) {
-    final value = stateMachine.hitTest(
+    if (!active) return false;
+
+    final hit = stateMachine.hitTest(
       localToArtboard(
         position: position,
         artboardBounds: artboard.bounds,
@@ -140,11 +153,15 @@ base class RiveWidgetController extends BasicArtboardPainter
         scaleFactor: layoutScaleFactor,
       ),
     );
-    return value;
+    // We need to process another state machine pointer event, to account for
+    // potential exit events.
+    return hit || _previousHitResult != HitResult.none;
   }
 
   @override
   pointerEvent(PointerEvent event, HitTestEntry<HitTestTarget> entry) {
+    if (!active) return;
+
     final stateMachine = this.stateMachine;
     final position = localToArtboard(
       position: event.localPosition,
@@ -154,23 +171,46 @@ base class RiveWidgetController extends BasicArtboardPainter
       size: lastSize / lastPaintPixelRatio,
       scaleFactor: layoutScaleFactor,
     );
-
+    final HitResult hitResult;
     if (event is PointerDownEvent) {
-      stateMachine.pointerDown(position);
+      hitResult = stateMachine.pointerDown(position);
     } else if (event is PointerUpEvent) {
-      stateMachine.pointerUp(position);
+      hitResult = stateMachine.pointerUp(position);
     } else if (event is PointerMoveEvent) {
-      stateMachine.pointerMove(position);
+      hitResult = stateMachine.pointerMove(position);
     } else if (event is PointerHoverEvent) {
-      stateMachine.pointerMove(position);
+      hitResult = stateMachine.pointerMove(position);
     } else if (event is PointerExitEvent) {
-      stateMachine.pointerExit(position);
+      hitResult = stateMachine.pointerExit(position);
+    } else {
+      hitResult = HitResult.none;
+    }
+
+    // We handle the _previousHitResult as well to account for potential exit
+    // events that may not have been processed.
+    if (hitResult != HitResult.none || _previousHitResult != HitResult.none) {
+      scheduleRepaint();
+    }
+    _previousHitResult = hitResult;
+  }
+
+  @override
+  void scheduleRepaint() {
+    if (_didAdvance) {
+      return; // Already in an active ticker state
+    }
+    if (!_repaintScheduled) {
+      super.scheduleRepaint();
+      _repaintScheduled = true;
     }
   }
 
   @override
-  bool advance(double elapsedSeconds) =>
-      stateMachine.advanceAndApply(elapsedSeconds) && active;
+  bool advance(double elapsedSeconds) {
+    _repaintScheduled = false;
+    _didAdvance = stateMachine.advanceAndApply(elapsedSeconds);
+    return _didAdvance && active;
+  }
 
   @override
   void dispose() {
