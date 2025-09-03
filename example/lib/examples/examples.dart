@@ -14,6 +14,7 @@ export 'responsive_layouts.dart';
 export 'rive_audio.dart';
 export 'rive_widget.dart';
 export 'rive_widget_builder.dart';
+export 'rive_panel.dart';
 export 'state_machine_painter.dart';
 export 'text_runs.dart';
 export 'ticker_mode.dart';

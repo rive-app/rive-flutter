@@ -22,5 +22,8 @@ export 'src/models/data_bind.dart';
 export 'src/models/state_machine_selector.dart';
 export 'src/painters/widget_controller.dart';
 export 'src/rive_extensions.dart';
+export 'src/widgets/inherited_widgets.dart';
 export 'src/widgets/rive_builder.dart';
+export 'src/widgets/rive_panel.dart';
 export 'src/widgets/rive_widget.dart';
+export 'src/widgets/shared_texture_view.dart';

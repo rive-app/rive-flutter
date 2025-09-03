@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:rive_example/advanced/advanced.dart';
 import 'package:rive_example/colors.dart';
 import 'package:rive_example/examples/examples.dart';
 import 'package:rive/rive.dart' as rive;
@@ -67,6 +68,8 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
             'Simple example usage of the Rive widget with common parameters.'),
         _Page('Rive Widget Builder', ExampleRiveWidgetBuilder(),
             'Example usage of the Rive builder widget with common parameters.'),
+        _Page('Rive Panel [Shared Texture]', ExampleRivePanel(),
+            'Example usage of the Shared Texture View widget.'),
       ],
     ),
     const _Section(
@@ -107,6 +110,7 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
             'Advanced: Custom painter for state machines.'),
         _Page('Single Animation Painter', ExampleSingleAnimationPainter(),
             'Advanced: Custom painter for single animation playback.'),
+        _Page('Centaur Game', CentaurGameWidget(), 'Advanced: Centaur Game.'),
       ],
     ),
     const _Section(
