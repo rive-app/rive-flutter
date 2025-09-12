@@ -1,5 +1,7 @@
 ## Upcoming
 
+- Expose `localBounds` on `Component`.
+
 ### Fixes
 
 - Fixed [496](https://github.com/rive-app/rive-flutter/issues/496) - playback now properly resumes during pointer interactions, preventing graphics from appearing frozen when users interact with them.
