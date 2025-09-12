@@ -26,6 +26,8 @@ class RiveWidget extends StatefulWidget {
     this.useSharedTexture = false,
     this.drawOrder = 1,
   });
+
+  /// The controller of the graphic. Manages the artboard, state machine and data binding.
   final RiveWidgetController controller;
 
   /// The fit of the artboard.
