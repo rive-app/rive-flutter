@@ -1,10 +1,21 @@
-## Upcoming
+## 0.14.0-dev.7
 
+Bumps to `rive_native: 0.0.10`
+
+- Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+### Features
+
+- Added [RivePanel] - a shared texture to draw multiple `RiveWidget`s to. This can have a big performance benefit when using `Factory.rive`. Read more [here](https://rive.app/docs/runtimes/flutter/flutter#using-rivepanel) and [here](https://rive.app/docs/runtimes/flutter/flutter#rivepanel) .
 - Expose `localBounds` on `Component`.
 
 ### Fixes
 
 - Fixed [496](https://github.com/rive-app/rive-flutter/issues/496) - playback now properly resumes during pointer interactions, preventing graphics from appearing frozen when users interact with them.
+- Fixes an issue where graphics might settle (pause) too soon, by forcing an advance when the `elapsedSeconds` is zero.
+- Fixes a potential crash in Android when a native pointer is no longer valid
+- Fixed a crash when shutting down on Windows
+- Fixed deleting the wrong texture from the wrong WebGL context
 
 ## 0.14.0-dev.6
 
