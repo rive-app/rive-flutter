@@ -1,3 +1,15 @@
+## 0.14.0-dev.8
+
+Bumps to `rive_native: 0.0.11`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+### Fixes
+
+- Fixed a crash in `preCommitCallback` for iOS and macOS.
+
+### Build & Platform Updates
+
+- Builds the native iOS and macOS libraries with Xcode 16.1 (bumped up from 15.4)
+
 ## 0.14.0-dev.7
 
 Bumps to `rive_native: 0.0.10`
