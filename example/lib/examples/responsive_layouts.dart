@@ -39,7 +39,7 @@ class _ExampleResponsiveLayoutsState extends State<ExampleResponsiveLayouts> {
         RiveLoaded() => RiveWidget(
             controller: state.controller,
             fit: Fit.layout, // pass Fit.layout to use Rive's layout system
-            // layoutScaleFactor: 1 / 2, // Optionally: scale the layout
+            layoutScaleFactor: 1 / 2, // Optionally: scale the layout
           )
       },
     );
