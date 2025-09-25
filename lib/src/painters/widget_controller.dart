@@ -44,11 +44,6 @@ base class RiveWidgetController extends BasicArtboardPainter
   /// The previous hit result observed.
   var _previousHitResult = HitResult.none;
 
-  // TODO (Gordon): Remove this once we have polling or a general callback
-  // The editor uses this, and we're copying that behavior for now.
-  CallbackHandler? _inputCallbackHandler;
-  void _onInputChanged(int inputId) => notifyListeners();
-
   Artboard _createArtboard(File file, ArtboardSelector artboardSelector) {
     final artboard = switch (artboardSelector) {
       ArtboardDefault() => file.defaultArtboard(),
@@ -67,7 +62,9 @@ base class RiveWidgetController extends BasicArtboardPainter
   }
 
   StateMachine _createStateMachine(
-      Artboard artboard, StateMachineSelector stateMachineSelector) {
+    Artboard artboard,
+    StateMachineSelector stateMachineSelector,
+  ) {
     final stateMachine = switch (stateMachineSelector) {
       StateMachineDefault() => artboard.defaultStateMachine(),
       StateMachineNamed(:final name) => artboard.stateMachine(name),
@@ -83,7 +80,7 @@ base class RiveWidgetController extends BasicArtboardPainter
       };
       throw RiveStateMachineException(message);
     }
-    _inputCallbackHandler = stateMachine.onInputChanged(_onInputChanged);
+    stateMachine.addAdvanceRequestListener(scheduleRepaint);
     return stateMachine;
   }
 
@@ -214,10 +211,9 @@ base class RiveWidgetController extends BasicArtboardPainter
 
   @override
   void dispose() {
+    stateMachine.removeAdvanceRequestListener(scheduleRepaint);
     artboard.dispose();
     stateMachine.dispose();
-    _inputCallbackHandler?.dispose();
-    _inputCallbackHandler = null;
     super.dispose();
   }
 }

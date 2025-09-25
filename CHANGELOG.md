@@ -1,3 +1,9 @@
+## Upcoming
+
+### Fixes
+
+- Fixed [487](https://github.com/rive-app/rive-flutter/issues/487) - automatically advances/paints a graphic when updating any view model property or any state machine input.
+
 ## 0.14.0-dev.8
 
 Bumps to `rive_native: 0.0.11`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
