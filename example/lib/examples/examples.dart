@@ -20,3 +20,4 @@ export 'text_runs.dart';
 export 'ticker_mode.dart';
 export 'time_dilation.dart';
 export 'todo.dart';
+export 'transform.dart';

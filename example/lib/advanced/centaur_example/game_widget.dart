@@ -72,16 +72,13 @@ class _CentaurGameWidgetState extends State<CentaurGameWidget> {
                       },
                     )..requestFocus(),
                     child: MouseRegion(
-                      onHover: (event) => _centaurPainter!.aimAt(
-                        event.localPosition * View.of(context).devicePixelRatio,
-                      ),
+                      onHover: (event) =>
+                          _centaurPainter!.aimAt(event.localPosition),
                       child: Listener(
                         behavior: HitTestBehavior.opaque,
                         onPointerDown: _centaurPainter!.pointerDown,
-                        onPointerMove: (event) => _centaurPainter!.aimAt(
-                          event.localPosition *
-                              View.of(context).devicePixelRatio,
-                        ),
+                        onPointerMove: (event) =>
+                            _centaurPainter!.aimAt(event.localPosition),
                         child: _renderTexture.widget(
                           painter: _centaurPainter!,
                         ),

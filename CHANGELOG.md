@@ -1,7 +1,15 @@
 ## Upcoming
 
+- Reduced the number of texture allocations made when resizing widgets using `Factory.rive`, improving memory efficiency and performance.
+- Enhanced painting and texture creation behavior when resizing widgets or windows with `Factory.rive`, resulting in smoother widget resizing.
+- Better aligned the native and web implementations to ensure consistent behavior across all platforms.
+
 ### Fixes
 
+- Fixed an issue where `RivePanel` would not render anything after resizing if all graphics are settled.
+- Resolved [issue #498](https://github.com/rive-app/rive-flutter/issues/498) where `Fit.scaleDown` was not working correctly with `Factory.rive`.
+- Resolved [an issue](https://community.rive.app/c/support/rive-native-rendering-visible-aliasing-jagged-edges) where upscaling Rive widget transforms resulted in blurry textures when using `Factory.rive`.
+- Fixed layout problems that occurred when certain `Fit` modes were used and the user switched to a different DPI screen.
 - Fixed [487](https://github.com/rive-app/rive-flutter/issues/487) - automatically advances/paints a graphic when updating any view model property or any state machine input.
 
 ## 0.14.0-dev.8

@@ -91,16 +91,17 @@ class SharedTextureViewRenderer extends LeafRenderObjectWidget {
 
   @override
   void didUnmountRenderObject(
-    covariant SharedTextureViewRenderObject renderObject,
-  ) {}
+      covariant SharedTextureViewRenderObject renderObject) {
+    renderObject.painter = null;
+  }
 }
 
-class SharedTextureViewRenderObject
-    extends RiveNativeRenderBox<RenderTexturePainter>
+class SharedTextureViewRenderObject extends RiveNativeRenderBox
     implements SharedTexturePainter {
   SharedRenderTexture _shared;
 
-  SharedTextureViewRenderObject(this._shared) {
+  SharedTextureViewRenderObject(this._shared)
+      : super(UnimplementedRenderTexture()) {
     _shared.texture.onTextureChanged = _onRiveTextureChanged;
   }
 
@@ -130,13 +131,21 @@ class SharedTextureViewRenderObject
   void _onRiveTextureChanged() => markNeedsLayout();
 
   @override
+  void paintTexture(double elapsedSeconds, {bool forceShouldAdvance = false}) {
+    // do nothing. we draw to the shared texture.
+  }
+
+  @override
   bool get sizedByParent => true;
 
   @override
   Size computeDryLayout(BoxConstraints constraints) => constraints.smallest;
 
   @override
-  void paint(PaintingContext context, Offset offset) => _shared.schedulePaint();
+  void paint(PaintingContext context, Offset offset) {
+    super.paint(context, offset);
+    _shared.schedulePaint();
+  }
 
   ScrollPosition? _scrollPosition;
   set scrollPosition(ScrollPosition? v) {
@@ -176,16 +185,24 @@ class SharedTextureViewRenderObject
     final renderer = texture.renderer;
 
     renderer.save();
-    renderer.translate(
-      globalPosition.dx * devicePixelRatio,
-      globalPosition.dy * devicePixelRatio,
-    );
-    final scaledSize = size * devicePixelRatio;
-    final needsAdvance = rivePainter?.paint(
-            texture, devicePixelRatio, scaledSize, elapsedSeconds) ??
-        false;
 
-    _shouldAdvance = elapsedSeconds == 0 ? true : needsAdvance;
+    // Create a single matrix that does: scale(devicePixelRatio) -> translate(position) -> scale(transform)
+    final scaledTranslateX = globalPosition.dx * devicePixelRatio;
+    final scaledTranslateY = globalPosition.dy * devicePixelRatio;
+    renderer.transform(Mat2D.fromScaleAndTranslation(
+        scaleWidth, scaleHeight, scaledTranslateX, scaledTranslateY));
+    _shouldAdvance = rivePainter?.paint(
+          texture,
+          devicePixelRatio,
+          size,
+          elapsedSeconds,
+        ) ??
+        false;
+    if (_shouldAdvance) {
+      restartTickerIfStopped();
+    } else {
+      stopTicker();
+    }
 
     renderer.restore();
   }

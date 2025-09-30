@@ -126,6 +126,8 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
             'Rive graphics respect Flutter ticker mode.'),
         _Page('Flutter Time Dilation', ExampleTimeDilation(),
             'Rive graphics respect Flutter time dilation.'),
+        _Page('Flutter Transform', ExampleTransform(),
+            'Rive graphics respect Flutter transform.'),
         // _Page('Flutter Hero Transitions', Todo(),
         //     'Create smooth transitions between pages with Rive graphics.'),
         // _Page('Flutter State Management', Todo(),
