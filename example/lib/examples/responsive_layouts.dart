@@ -11,6 +11,8 @@ class ExampleResponsiveLayouts extends StatefulWidget {
 }
 
 class _ExampleResponsiveLayoutsState extends State<ExampleResponsiveLayouts> {
+  late ViewModelInstance viewModelInstance;
+
   late final fileLoader = FileLoader.fromAsset(
     'assets/layout_test.riv',
     // Choose which renderer to use
@@ -21,13 +23,19 @@ class _ExampleResponsiveLayoutsState extends State<ExampleResponsiveLayouts> {
   void dispose() {
     // This widget state owns the file loader, dispose it.
     fileLoader.dispose();
+    viewModelInstance.dispose();
     super.dispose();
+  }
+
+  void _onLoaded(RiveLoaded state) {
+    viewModelInstance = state.controller.dataBind(DataBind.auto());
   }
 
   @override
   Widget build(BuildContext context) {
     return RiveWidgetBuilder(
       fileLoader: fileLoader,
+      onLoaded: _onLoaded,
       builder: (context, state) => switch (state) {
         RiveLoading() => const Center(
             child: Center(child: CircularProgressIndicator()),
