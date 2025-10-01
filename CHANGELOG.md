@@ -1,4 +1,6 @@
-## Upcoming
+## 0.14.0-dev.9
+
+Bumps to `rive_native: 0.0.12`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 - Reduced the number of texture allocations made when resizing widgets using `Factory.rive`, improving memory efficiency and performance.
 - Enhanced painting and texture creation behavior when resizing widgets or windows with `Factory.rive`, resulting in smoother widget resizing.
@@ -11,6 +13,7 @@
 - Resolved [an issue](https://community.rive.app/c/support/rive-native-rendering-visible-aliasing-jagged-edges) where upscaling Rive widget transforms resulted in blurry textures when using `Factory.rive`.
 - Fixed layout problems that occurred when certain `Fit` modes were used and the user switched to a different DPI screen.
 - Fixed [487](https://github.com/rive-app/rive-flutter/issues/487) - automatically advances/paints a graphic when updating any view model property or any state machine input.
+- Fixed instances where pointer exit was not working
 
 ## 0.14.0-dev.8
 
