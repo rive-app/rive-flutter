@@ -2,6 +2,7 @@
 
 Bumps to `rive_native: 0.0.12`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
+- Added multi-touch support
 - Reduced the number of texture allocations made when resizing widgets using `Factory.rive`, improving memory efficiency and performance.
 - Enhanced painting and texture creation behavior when resizing widgets or windows with `Factory.rive`, resulting in smoother widget resizing.
 - Better aligned the native and web implementations to ensure consistent behavior across all platforms.

@@ -170,15 +170,15 @@ base class RiveWidgetController extends BasicArtboardPainter
     );
     final HitResult hitResult;
     if (event is PointerDownEvent) {
-      hitResult = stateMachine.pointerDown(position);
+      hitResult = stateMachine.pointerDown(position, pointerId: event.pointer);
     } else if (event is PointerUpEvent) {
-      hitResult = stateMachine.pointerUp(position);
+      hitResult = stateMachine.pointerUp(position, pointerId: event.pointer);
     } else if (event is PointerMoveEvent) {
-      hitResult = stateMachine.pointerMove(position);
+      hitResult = stateMachine.pointerMove(position, pointerId: event.pointer);
     } else if (event is PointerHoverEvent) {
-      hitResult = stateMachine.pointerMove(position);
+      hitResult = stateMachine.pointerMove(position, pointerId: event.pointer);
     } else if (event is PointerExitEvent) {
-      hitResult = stateMachine.pointerExit(position);
+      hitResult = stateMachine.pointerExit(position, pointerId: event.pointer);
     } else {
       hitResult = HitResult.none;
     }

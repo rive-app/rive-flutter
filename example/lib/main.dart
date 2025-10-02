@@ -128,6 +128,8 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
             'Rive graphics respect Flutter time dilation.'),
         _Page('Flutter Transform', ExampleTransform(),
             'Rive graphics respect Flutter transform.'),
+        _Page('Flutter Multi Touch', ExampleMultiTouch(),
+            'Rive graphics respect Flutter multi touch.'),
         // _Page('Flutter Hero Transitions', Todo(),
         //     'Create smooth transitions between pages with Rive graphics.'),
         // _Page('Flutter State Management', Todo(),
