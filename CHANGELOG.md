@@ -1,3 +1,11 @@
+## Upcoming
+
+- Added multi-touch support
+
+### Fixes
+
+- Fixed [544](https://github.com/rive-app/rive-flutter/issues/544), which resulted in settled graphics not being visible after backgrounding the app when using `Factory.rive`.
+
 ## 0.14.0-dev.9
 
 Bumps to `rive_native: 0.0.12`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
