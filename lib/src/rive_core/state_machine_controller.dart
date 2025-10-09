@@ -39,7 +39,7 @@ import 'package:rive/src/rive_core/shapes/shape.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_event.dart';
 import 'package:rive_common/math.dart';
-import 'package:stokanal/telemetry.dart';
+import 'package:stokanal/core.dart' hide Event, Node;
 
 import '../generated/rive_core_beans.dart';
 
@@ -390,7 +390,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
   final _reportedEvents = <Event>[];
-  // Keep a seperate list of nested events because we also need to store
+  // Keep a separate list of nested events because we also need to store
   // the source of the nested event in order to compare to listener target
   final Map<int, List<Event>> _reportedNestedEvents = HashMap<int, List<Event>>();//{};
 

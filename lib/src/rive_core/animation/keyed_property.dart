@@ -3,7 +3,7 @@ import 'package:rive/src/generated/animation/keyed_property_base.dart';
 import 'package:rive/src/rive_core/animation/interpolating_keyframe.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyframe.dart';
-import 'package:stokanal/rive/rive_settings.dart' as rive_settings;
+import 'package:stokanal/core.dart' as rive_settings;
 
 import '../../../rive.dart';
 import '../../generated/animation/nested_trigger_base.dart';

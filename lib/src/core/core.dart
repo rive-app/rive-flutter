@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
-import 'package:stokanal/collections.dart';
+import 'package:stokanal/core.dart';
 
 export 'package:flutter/foundation.dart';
 export 'package:rive/src/animation_list.dart';

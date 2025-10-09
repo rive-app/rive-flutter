@@ -43,7 +43,7 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive_common/rive_text.dart';
 import 'package:rive_common/utilities.dart';
-import 'package:stokanal/rive/rive_settings.dart';
+import 'package:stokanal/core.dart' hide log;
 
 typedef Core<CoreContext>? ObjectGenerator(int coreTypeKey);
 

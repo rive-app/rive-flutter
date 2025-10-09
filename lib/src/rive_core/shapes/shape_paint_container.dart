@@ -5,7 +5,7 @@ import 'package:rive/src/rive_core/shapes/paint/fill.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive_common/math.dart';
-import 'package:stokanal/collections.dart';
+import 'package:stokanal/core.dart';
 
 /// An abstraction to give a common interface to any component that can contain
 /// fills and strokes.

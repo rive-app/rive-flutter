@@ -21,7 +21,7 @@ import 'package:rive/src/rive_core/shapes/paint/solid_color.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/rive_core/solo.dart';
-import 'package:stokanal/logging.dart';
+import 'package:stokanal/core.dart';
 
 import '../core/field_types/core_field_type.dart';
 

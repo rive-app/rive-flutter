@@ -29,7 +29,7 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/utilities.dart';
-import 'package:stokanal/collections.dart';
+import 'package:stokanal/core.dart' hide Event;
 
 export 'package:rive/src/generated/artboard_base.dart';
 

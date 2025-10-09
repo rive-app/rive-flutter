@@ -1,6 +1,4 @@
-
-
-import 'package:stokanal/collections.dart';
+import 'package:stokanal/core.dart';
 
 class DependencyHelper<T extends dynamic, U extends dynamic> {
 
