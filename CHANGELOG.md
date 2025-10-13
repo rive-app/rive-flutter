@@ -5,6 +5,11 @@
 ### Fixes
 
 - Fixed [544](https://github.com/rive-app/rive-flutter/issues/544), which resulted in settled graphics not being visible after backgrounding the app when using `Factory.rive`.
+- Fixed [529](https://github.com/rive-app/rive-flutter/issues/529), an assertion/crash on Windows debug builds when accessing `front()` on an empty vector.
+
+### Build & Platform Updates
+
+- Included `pdb` symbol files for `rive_native` on Windows to assist in debuging native errors.
 
 ## 0.14.0-dev.9
 
