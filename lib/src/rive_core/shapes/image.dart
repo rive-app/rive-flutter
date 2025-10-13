@@ -10,11 +10,10 @@ import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/mesh.dart';
 import 'package:rive/src/rive_core/shapes/mesh_vertex.dart';
 import 'package:rive_common/math.dart';
-import 'package:stokanal/core.dart';
 
 export 'package:rive/src/generated/shapes/image_base.dart';
 
-const _logr = Debugr(true, prefix: 'image');
+// const _logr = Debugr(true, prefix: 'image');
 
 class Image extends ImageBase
     with
