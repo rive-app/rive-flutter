@@ -10,8 +10,11 @@ import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/shapes/mesh.dart';
 import 'package:rive/src/rive_core/shapes/mesh_vertex.dart';
 import 'package:rive_common/math.dart';
+import 'package:stokanal/core.dart';
 
 export 'package:rive/src/generated/shapes/image_base.dart';
+
+const _logr = Debugr(true, prefix: 'image');
 
 class Image extends ImageBase
     with
@@ -52,6 +55,11 @@ class Image extends ImageBase
       return;
     }
     bool clipped = clip(canvas);
+
+    // if (width == 256 && height == 256 && {'badge_outline', 'ai_badge'}.contains(name) && Randoms().hit(0.005)) {
+    //   _logr.log(() => 'DRAW > $runtimeType $name:$name_ assetId=$assetId size=$width:$height asset=${asset?.fileExtension}');
+    //   debugPrintStack();
+    // }
 
     final paint = ui.Paint()
       ..color = ui.Color.fromRGBO(0, 0, 0, renderOpacity)
