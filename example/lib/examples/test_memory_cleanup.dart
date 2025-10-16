@@ -4,6 +4,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
+/// A widget that tests the memory cleanup of Rive resources.
+/// This widget will create and destroy a Rive graphic's resources with
+/// rendering multiple times a second.
 class TestMemoryCleanup extends StatefulWidget {
   const TestMemoryCleanup({super.key});
 
@@ -40,7 +43,7 @@ class _TestMemoryCleanupState extends State<TestMemoryCleanup> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: _isVisible ? const RiveFileWidget() : const SizedBox.shrink(),
+      child: _isVisible ? const _RiveFileWidget() : const SizedBox.shrink(),
     );
   }
 }
@@ -48,21 +51,21 @@ class _TestMemoryCleanupState extends State<TestMemoryCleanup> {
 /// Widget that handles loading and displaying a Rive file.
 /// This widget will be created and destroyed each time visibility toggles,
 /// ensuring proper lifecycle management of Rive resources.
-class RiveFileWidget extends StatefulWidget {
-  const RiveFileWidget({super.key});
+class _RiveFileWidget extends StatefulWidget {
+  const _RiveFileWidget({super.key});
 
   @override
-  State<RiveFileWidget> createState() => _RiveFileWidgetState();
+  State<_RiveFileWidget> createState() => _RiveFileWidgetState();
 }
 
-class _RiveFileWidgetState extends State<RiveFileWidget> {
+class _RiveFileWidgetState extends State<_RiveFileWidget> {
   File? _riveFile;
   RiveWidgetController? _controller;
 
   @override
   void initState() {
     super.initState();
-    print('RiveFileWidget: initState - loading file');
+    // print('RiveFileWidget: initState - loading file');
     _init();
   }
 
@@ -77,7 +80,7 @@ class _RiveFileWidgetState extends State<RiveFileWidget> {
 
   @override
   void dispose() {
-    print('RiveFileWidget: dispose - cleaning up resources');
+    // print('RiveFileWidget: dispose - cleaning up resources');
     _controller?.dispose();
     _riveFile?.dispose();
     super.dispose();
