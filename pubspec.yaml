@@ -1,5 +1,5 @@
 name: rive
-version: 0.14.0-dev.10
+version: 0.14.0-dev.11
 homepage: https://rive.app
 description: Rive Flutter Runtime. This package provides runtime functionality for Rive graphics built with the Rive editor available at https://rive.app
 repository: https://github.com/rive-app/rive-flutter
@@ -20,7 +20,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   meta: ^1.9.0
-  rive_native: 0.0.13
+  rive_native: 0.0.14
 
 dev_dependencies:
   flutter_test:

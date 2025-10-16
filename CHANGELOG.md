@@ -1,3 +1,11 @@
+## 0.14.0-dev.11
+
+Bumps to `rive_native: 0.0.14`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+### Fixes
+
+- Graphics memory leak on Android when using the Rive Renderer.
+
 ## 0.14.0-dev.10
 
 Bumps to `rive_native: 0.0.13`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
