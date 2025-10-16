@@ -141,6 +141,13 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
       ],
     ),
     const _Section(
+      'Performance/Memory testing',
+      [
+        _Page('Memory cleanup test', TestMemoryCleanup(),
+            'Test memory cleanup by toggling the visibility of a Rive file widget.'),
+      ],
+    ),
+    const _Section(
       'Legacy Features [Use data binding instead]',
       [
         _Page('Inputs [Nested]', ExampleInputs(),
