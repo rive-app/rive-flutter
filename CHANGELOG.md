@@ -1,3 +1,11 @@
+## Upcomming
+
+- Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+### Fixes
+
+- Fixed [556](https://github.com/rive-app/rive-flutter/issues/556). `getTransformTo` can return a negative width and height scale resulting in a texture creation with a negative width/height.
+
 ## 0.14.0-dev.11
 
 Bumps to `rive_native: 0.0.14`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
