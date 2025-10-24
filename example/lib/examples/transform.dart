@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
+import 'package:vector_math/vector_math_64.dart';
+
 class ExampleTransform extends StatelessWidget {
   const ExampleTransform({super.key});
 
@@ -89,7 +91,8 @@ class _MyRiveWidgetState extends State<_MyRiveWidget>
         }
       },
       child: Transform(
-        transform: Matrix4.identity()..scale(scale, scale, scale),
+        transform: Matrix4.identity()
+          ..scaleByVector3(Vector3(scale, scale, scale)),
         alignment: Alignment.center,
         // filterQuality: FilterQuality.high,
         child: RiveWidget(

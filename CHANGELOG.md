@@ -1,3 +1,9 @@
+## Upcoming
+
+### Build & Platform Updates
+
+- Bump minimum supported dependency for Flutter to `3.27.0` and Dart to `3.6.0`
+
 ## 0.14.0-dev.12
 
 Bumps to `rive_native: 0.0.15`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.

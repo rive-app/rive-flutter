@@ -52,7 +52,7 @@ class _TestMemoryCleanupState extends State<TestMemoryCleanup> {
 /// This widget will be created and destroyed each time visibility toggles,
 /// ensuring proper lifecycle management of Rive resources.
 class _RiveFileWidget extends StatefulWidget {
-  const _RiveFileWidget({super.key});
+  const _RiveFileWidget();
 
   @override
   State<_RiveFileWidget> createState() => _RiveFileWidgetState();
