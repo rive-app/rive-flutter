@@ -15,7 +15,7 @@ dependencies:
     path: ../
   http:
   url_launcher: ^6.3.1
-  vector_math: ^2.2.0
+  vector_math: ^2.0.0
 
 dev_dependencies:
   flutter_test:

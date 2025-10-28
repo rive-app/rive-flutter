@@ -1,4 +1,10 @@
-## Upcoming
+## 0.14.0-dev.13
+
+Bumps to `rive_native: 0.0.16`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+### Fixes
+
+- Fixes rendering issues on certain Android devices.
 
 ### Fixes
 

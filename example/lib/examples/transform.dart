@@ -91,8 +91,7 @@ class _MyRiveWidgetState extends State<_MyRiveWidget>
         }
       },
       child: Transform(
-        transform: Matrix4.identity()
-          ..scaleByVector3(Vector3(scale, scale, scale)),
+        transform: Matrix4.identity()..scale(scale, scale, scale),
         alignment: Alignment.center,
         // filterQuality: FilterQuality.high,
         child: RiveWidget(
