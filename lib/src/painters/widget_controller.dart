@@ -146,7 +146,7 @@ base class RiveWidgetController extends BasicArtboardPainter
         artboardBounds: artboard.bounds,
         fit: fit,
         alignment: alignment,
-        size: lastSize,
+        size: size,
         scaleFactor: layoutScaleFactor,
       ),
     );
@@ -165,7 +165,7 @@ base class RiveWidgetController extends BasicArtboardPainter
       artboardBounds: artboard.bounds,
       fit: fit,
       alignment: alignment,
-      size: lastSize,
+      size: size,
       scaleFactor: layoutScaleFactor,
     );
     final HitResult hitResult;
