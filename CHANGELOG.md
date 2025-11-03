@@ -1,3 +1,11 @@
+## Upcoming
+
+### Fixes
+
+- Improved library loading and error message. See issue [566](https://github.com/rive-app/rive-flutter/issues/566)
+- Fixed layout issues that occurred on first render when using `Fit.layout` by correcting the order of artboard resizing and advancing calls. Added a new `RiveArtboardLayoutMixin` that provides common layout options for painters, including fit mode, alignment, and scale factor controls.
+- Resolves an issue where under some conditions the graphic may not restart the animation ticker. Adds a `isTickerActive` to `RivePainter`.
+
 ## 0.14.0-dev.13
 
 Bumps to `rive_native: 0.0.16`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
@@ -5,15 +13,12 @@ Bumps to `rive_native: 0.0.16`. Updates the Rive C++ runtime and renderer for th
 ### Fixes
 
 - Fixes rendering issues on certain Android devices.
-
-### Fixes
-
-- Fixed layout issues that occurred on first render when using `Fit.layout` by correcting the order of artboard resizing and advancing calls. Added a new `RiveArtboardLayoutMixin` that provides common layout options for painters, including fit mode, alignment, and scale factor controls.
+- Resolves an issue where under some conditions the graphic may not restart the animation ticker. Adds a `isTickerActive` to `RivePainter`.
+- Ensure a Rive graphic is in the correct starting state (matching the Rive Editor play mode not design mode)
 
 ### Build & Platform Updates
 
 - Bump minimum supported dependency for Flutter to `3.27.0` and Dart to `3.6.0`
-
 
 ## 0.14.0-dev.12
 

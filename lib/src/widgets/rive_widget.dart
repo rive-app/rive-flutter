@@ -88,6 +88,9 @@ class _RiveWidgetState extends State<RiveWidget> {
     controller.hitTestBehavior = widget.hitTestBehavior;
     controller.cursor = widget.cursor;
     controller.layoutScaleFactor = widget.layoutScaleFactor;
+
+    // Advance the state machine to ensure it is in a valid state.
+    controller.advance(0);
   }
 
   @override
@@ -133,13 +136,15 @@ class _RiveWidgetState extends State<RiveWidget> {
     if (widget.useSharedTexture) {
       if (widget.controller.artboard.riveFactory == Factory.flutter) {
         return errorWidget(
-            'useSharedTexture is only supported when using Factory.rive');
+          'useSharedTexture is only supported when using Factory.rive',
+        );
       }
       final sharedTexture = RiveSharedTexture.of(context);
       if (sharedTexture == null) {
         return errorWidget(
-            'RiveWidget requires a shared texture when useSharedTexture is true.\n'
-            'Make sure to wrap this widget with a RiveSharedTexture widget in the widget tree.');
+          'RiveWidget requires a shared texture when useSharedTexture is true.\n'
+          'Make sure to wrap this widget with a RiveSharedTexture widget in the widget tree.',
+        );
       } else {
         return SharedTextureView(
           artboard: widget.controller.artboard,

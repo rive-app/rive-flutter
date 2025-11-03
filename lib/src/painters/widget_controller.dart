@@ -13,7 +13,6 @@ base class RiveWidgetController extends BasicArtboardPainter
   final File file;
 
   @override
-
   /// The artboard that the [RiveWidgetController] is painting.
   late final Artboard artboard;
 
@@ -32,9 +31,6 @@ base class RiveWidgetController extends BasicArtboardPainter
     artboard = _createArtboard(file, artboardSelector);
     stateMachine = _createStateMachine(artboard, stateMachineSelector);
   }
-
-  /// Whether the state machine advanced during the last tick.
-  var _didAdvance = false;
 
   /// Whether the state machine has been scheduled for repaint.
   ///
@@ -193,7 +189,7 @@ base class RiveWidgetController extends BasicArtboardPainter
 
   @override
   void scheduleRepaint() {
-    if (_didAdvance) {
+    if (isTickerActive) {
       return; // Already in an active ticker state
     }
     if (!_repaintScheduled) {
@@ -205,8 +201,8 @@ base class RiveWidgetController extends BasicArtboardPainter
   @override
   bool advance(double elapsedSeconds) {
     _repaintScheduled = false;
-    _didAdvance = stateMachine.advanceAndApply(elapsedSeconds);
-    return _didAdvance && active;
+    final didAdvance = stateMachine.advanceAndApply(elapsedSeconds);
+    return didAdvance && active;
   }
 
   @override
