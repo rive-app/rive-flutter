@@ -6,6 +6,7 @@
 - Fixed layout issues that occurred on first render when using `Fit.layout` by correcting the order of artboard resizing and advancing calls. Added a new `RiveArtboardLayoutMixin` that provides common layout options for painters, including fit mode, alignment, and scale factor controls.
 - Resolves an issue where under some conditions the graphic may not restart the animation ticker. Adds a `isTickerActive` to `RivePainter`.
 - Fixed a lifetime issue with `FileAsset`s when the owning Rive `File` is destroyed.
+- Only send `textureFrameAvailable` on main (platform) thread (iOS and macOS). This likely resolves crashes observed during Flutter engine teardow when using `Factory.rive`.
 
 ## 0.14.0-dev.13
 
