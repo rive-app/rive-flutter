@@ -1,5 +1,7 @@
 ## Upcoming
 
+- Marks methods to access text runs and state machine inputs as deprecated. While this functionality won't be removed in the near future, we encourage adoption of data binding to future-proof your Rive usage.
+
 ### Fixes
 
 - Improved library loading and error message. See issue [566](https://github.com/rive-app/rive-flutter/issues/566)
