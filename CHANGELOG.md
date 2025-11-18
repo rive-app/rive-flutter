@@ -1,3 +1,13 @@
+## Upcoming
+
+### Fixes
+
+- Fixed Android build issues in certain environments. See issue [555](https://github.com/rive-app/rive-flutter/issues/555). Build commands are now executed from Gradle instead of CMakeLists, and the setup process automatically skips `rive_native:setup` if the required libraries are already downloaded.
+
+### Build & Platform Updates
+
+- Android: Added support for skipping automated setup by setting `rive.native.skipSetup=true` in your app's `gradle.properties`. When enabled, you must manually run `dart run rive_native:setup --verbose --clean --platform android` to download the required libraries.
+
 ## 0.14.0-dev.14
 
 - Marks methods to access text runs and state machine inputs as deprecated. While this functionality won't be removed in the near future, we encourage adoption of data binding to future-proof your Rive usage.
