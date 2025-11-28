@@ -179,7 +179,7 @@ class RiveFile {
       String? path,
    }) {
 
-    var skipInterpolation = path != null && skipInterpolationRiveFiles.any(path.contains);
+    var skipInterpolation = path != null && RiveSettings().skipInterpolation(path);
     if (skipInterpolation) {
       log('RIVE-FILE >> $path${skipInterpolation ? ' > SKIP_INTERPOLATION' : ''}');
     }
