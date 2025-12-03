@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
@@ -78,6 +80,7 @@ class RiveWidgetBuilder extends StatefulWidget {
 class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
   RiveState _state = RiveLoading();
   late File _file;
+  Future<void>? _currentSetup;
 
   @override
   void initState() {
@@ -98,10 +101,39 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
   }
 
   Future<void> _setup({required bool withFileLoad}) async {
+    final completer = Completer<void>();
+    _currentSetup = completer.future;
+
+    try {
+      await _setupImpl(completer.future, withFileLoad: withFileLoad);
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    } catch (e, stackTrace) {
+      if (!completer.isCompleted) {
+        completer.completeError(e, stackTrace);
+      }
+    } finally {
+      // Only clear if this is still the current setup
+      if (identical(_currentSetup, completer.future)) {
+        _currentSetup = null;
+      }
+    }
+  }
+
+  Future<void> _setupImpl(
+    Future<void> thisSetup, {
+    required bool withFileLoad,
+  }) async {
     try {
       if (withFileLoad) {
         _file = await widget.fileLoader.file();
+        // Check if this operation was cancelled or the widget was disposed
+        if (!mounted || !identical(_currentSetup, thisSetup)) {
+          return;
+        }
       }
+
       final controllerBuilder = widget.controller;
       final controller = controllerBuilder != null
           ? controllerBuilder(_file)
@@ -117,6 +149,13 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
         vmi = controller.dataBind(dataBind);
       }
 
+      // Check if this operation was cancelled or the widget was disposed
+      if (!mounted || !identical(_currentSetup, thisSetup)) {
+        controller.dispose();
+        vmi?.dispose();
+        return;
+      }
+
       setState(() {
         _state = RiveLoaded(
           file: _file,
@@ -126,6 +165,10 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
       });
       widget.onLoaded?.call(_state as RiveLoaded);
     } on Exception catch (e, stackTrace) {
+      // Check if this operation was cancelled or the widget was disposed
+      if (!mounted || !identical(_currentSetup, thisSetup)) {
+        return;
+      }
       setState(() {
         _state = RiveFailed(e, stackTrace);
       });

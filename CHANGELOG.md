@@ -3,6 +3,7 @@
 ### Fixes
 
 - Fixed Android build issues in certain environments. See issue [555](https://github.com/rive-app/rive-flutter/issues/555). Build commands are now executed from Gradle instead of CMakeLists, and the setup process automatically skips `rive_native:setup` if the required libraries are already downloaded.
+- Fixed [570](https://github.com/rive-app/rive-flutter/issues/570) - `setState` called after dispose. Add cancellation checks to prevent stale state updates.
 
 ### Build & Platform Updates
 
