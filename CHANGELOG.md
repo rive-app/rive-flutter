@@ -1,4 +1,11 @@
-## Upcoming
+## 0.14.0
+
+Major release, see the updated docs and migration guide:
+
+- https://rive.app/docs/runtimes/flutter/flutter
+- https://rive.app/docs/runtimes/flutter/migration-guide#version-0-14-0
+
+Bumps to `rive_native: 0.1.0`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Fixes
 
@@ -12,6 +19,7 @@
 ## 0.14.0-dev.14
 
 - Marks methods to access text runs and state machine inputs as deprecated. While this functionality won't be removed in the near future, we encourage adoption of data binding to future-proof your Rive usage.
+- Bumps to `rive_native: 0.0.17`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Fixes
 
