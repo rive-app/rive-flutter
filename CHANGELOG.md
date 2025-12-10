@@ -1,3 +1,9 @@
+## Upcoming
+
+### Fixes
+
+- Fixed [585](https://github.com/rive-app/rive-flutter/issues/585) - missing `artboard` `DataType` enum.
+
 ## 0.14.0
 
 Major release, see the updated docs and migration guide:
