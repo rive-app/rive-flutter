@@ -27,6 +27,7 @@ class _ExampleInputsState extends State<ExampleInputs> {
     );
     // You can access nested inputs by providing an optional path to the input
     _controller = RiveWidgetController(_riveFile!);
+    // ignore: deprecated_member_use
     _levelInput = _controller?.stateMachine.number('Level', path: null);
     /* EXAMPLE BOOLEAN INPUT API */
     // var boolInput = _controller?.stateMachine.boolean('some_bool');

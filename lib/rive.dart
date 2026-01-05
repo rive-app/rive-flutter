@@ -13,7 +13,8 @@ export 'package:rive_native/rive_native.dart'
         InternalViewModelInstance,
         InternalViewModelInstanceViewModel,
         InternalViewModelInstanceArtboard,
-        InternalDataBind;
+        InternalDataBind,
+        Key;
 
 export 'src/errors.dart';
 export 'src/file_loader.dart';
