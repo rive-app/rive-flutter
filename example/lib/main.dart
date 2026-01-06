@@ -46,9 +46,9 @@ class RiveExampleApp extends StatefulWidget {
   static RiveFactoryToUse factoryToUse = RiveFactoryToUse.rive;
 
   static rive.Factory get getCurrentFactory => switch (factoryToUse) {
-    RiveFactoryToUse.rive => rive.Factory.rive,
-    RiveFactoryToUse.flutter => rive.Factory.flutter,
-  };
+        RiveFactoryToUse.rive => rive.Factory.rive,
+        RiveFactoryToUse.flutter => rive.Factory.flutter,
+      };
 
   @override
   State<RiveExampleApp> createState() => _RiveExampleAppState();
@@ -116,6 +116,11 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
         'Out-of-band Assets',
         ExampleOutOfBandAssetLoading(),
         'Load Rive files with external assets (images, audio) separately.',
+      ),
+      _Page(
+        'Out-of-band Assets - Audio',
+        ExampleOutOfBandAssetAudioLoading(),
+        'Load Rive files with audio assets.',
       ),
       _Page(
         'Out-of-band Assets - Cached',

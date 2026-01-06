@@ -10,6 +10,7 @@ export 'multi_touch.dart';
 export 'pause_play.dart';
 export 'network_asset.dart';
 export 'out_of_band_assets.dart';
+export 'out_of_band_assets_audio.dart';
 export 'out_of_band_assets_cached.dart';
 export 'responsive_layouts.dart';
 export 'rive_audio.dart';
