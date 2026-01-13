@@ -79,6 +79,11 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     ]),
     const _Section('Rive Features', [
       _Page(
+        'Demo Scripting',
+        DemoScripting(),
+        'Example Rive file with scripting.',
+      ),
+      _Page(
         'Data Binding',
         ExampleDataBinding(),
         'Example using Rive data binding at runtime.',

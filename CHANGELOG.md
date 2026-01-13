@@ -1,5 +1,7 @@
 ## Upcoming
 
+- Adds runtime [Rive Scripting](https://rive.app/docs/scripting/getting-started) support.
+
 ### Fixes
 
 - Fixed [585](https://github.com/rive-app/rive-flutter/issues/585) - missing `artboard` `DataType` enum.
