@@ -12,6 +12,7 @@ import 'package:rive/src/rive_core/text/text_modifier_group.dart';
 import 'package:rive/src/rive_core/text/text_style.dart' as rive;
 import 'package:rive/src/rive_core/text/text_style_container.dart';
 import 'package:rive/src/rive_core/text/text_value_run.dart';
+import 'package:rive/src/rive_core/text/text_wrappers.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/rive_text.dart';
 
@@ -507,7 +508,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
 
     outer:
     for (final paragraphLines in lines) {
-      final paragraph = shape.paragraphs[paragraphIndex++];
+      final paragraph = ParagraphWrapper(shape.paragraphs[paragraphIndex++]);
       for (final line in paragraphLines) {
         drawLine = true;
         switch (overflow) {

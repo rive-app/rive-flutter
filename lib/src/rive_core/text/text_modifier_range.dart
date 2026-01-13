@@ -11,8 +11,8 @@ import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/enum_helper.dart';
 import 'package:rive/src/rive_core/text/text_modifier_group.dart';
 import 'package:rive/src/rive_core/text/text_value_run.dart';
+import 'package:rive/src/rive_core/text/text_wrappers.dart';
 import 'package:rive_common/rive_text.dart';
-import 'package:rive_common/src/math/vec2d.dart';
 
 export 'package:rive/src/generated/text/text_modifier_range_base.dart';
 
@@ -395,8 +395,8 @@ class RangeMapper {
 
     var paragraphIndex = 0;
     for (final paragraphLines in lines) {
-      final paragraph = shape.paragraphs[paragraphIndex++];
-      var glyphRuns = paragraph.runs.map(_GlyphRunWrapper.new).toList();
+      final paragraph = ParagraphWrapper(shape.paragraphs[paragraphIndex++]);
+      var glyphRuns = paragraph.runs;
       for (final line in paragraphLines) {
         var rf = glyphRuns[line.startRun];
         var indexFrom = rf.textIndexAt(line.startIndex);
@@ -433,48 +433,4 @@ class RangeMapper {
     }
     return characters;
   }
-}
-
-/// Created to override the TextDirection property of GlyphRun
-class _GlyphRunWrapper extends GlyphRun {
-
-  final GlyphRun run;
-
-  _GlyphRunWrapper(this.run);
-
-  @override
-  TextDirection get direction => TextDirection.ltr;
-
-  @override
-  double advanceAt(int index) => run.advanceAt(index);
-
-  @override
-  Font get font => run.font;
-
-  @override
-  double get fontSize => run.fontSize;
-
-  @override
-  int get glyphCount => run.glyphCount;
-
-  @override
-  int glyphIdAt(int index) => run.glyphIdAt(index);
-
-  @override
-  double get letterSpacing => run.letterSpacing;
-
-  @override
-  double get lineHeight => run.lineHeight;
-
-  @override
-  Vec2D offsetAt(int index) => run.offsetAt(index);
-
-  @override
-  int get styleId => run.styleId;
-
-  @override
-  int textIndexAt(int index) => run.textIndexAt(index);
-
-  @override
-  double xAt(int index) => run.xAt(index);
 }
