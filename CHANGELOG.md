@@ -1,6 +1,7 @@
-## Upcoming
+## 0.14.1
 
 - Adds runtime [Rive Scripting](https://rive.app/docs/scripting/getting-started) support.
+- Bumps to `rive_native: 0.1.1`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Fixes
 
