@@ -11,6 +11,7 @@ class ParagraphWrapper extends Paragraph {
 
   @override
   TextDirection get direction => TextDirection.ltr;
+
   @override
   List<GlyphRun> get runs => paragraph.runs
       .map((r) => r is GlyphRunWrapper ? r : GlyphRunWrapper(r))
