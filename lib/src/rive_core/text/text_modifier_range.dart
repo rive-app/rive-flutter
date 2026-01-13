@@ -435,7 +435,7 @@ class RangeMapper {
   }
 }
 
-/// Created to override the Text direction property of GlyphRun
+/// Created to override the TextDirection property of GlyphRun
 class _GlyphRunWrapper extends GlyphRun {
 
   final GlyphRun run;
@@ -443,7 +443,7 @@ class _GlyphRunWrapper extends GlyphRun {
   _GlyphRunWrapper(this.run);
 
   @override
-  TextDirection get direction => TextDirection.rtl;
+  TextDirection get direction => TextDirection.ltr;
 
   @override
   double advanceAt(int index) => run.advanceAt(index);
