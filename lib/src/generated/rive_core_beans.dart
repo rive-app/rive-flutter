@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/interpolating_keyframe_base.dart';
 import 'package:rive/src/generated/animation/keyframe_base.dart';
@@ -21,7 +20,6 @@ import 'package:rive/src/rive_core/shapes/paint/solid_color.dart';
 import 'package:rive/src/rive_core/shapes/paint/stroke.dart';
 import 'package:rive/src/rive_core/shapes/straight_vertex.dart';
 import 'package:rive/src/rive_core/solo.dart';
-import 'package:stokanal/core.dart';
 
 import '../core/field_types/core_field_type.dart';
 
@@ -345,13 +343,13 @@ abstract class PropertyBeans {
     return _list[propertyKey] ?? (_list[propertyKey] = FallbackBean._(propertyKey));
   }
 
-  // ignore: unused_element
-  static void _dumpFallbacks() {
-    info('\n${
-        // _map.values
-        _list.whereNotNull()
-        .whereType<FallbackBean>().sorted((b1, b2) => b2._hits.compareTo(b1._hits)).map((b) => '$b').join('\n')}');
-  }
+  // // ignore: unused_element
+  // static void _dumpFallbacks() {
+  //   info('\n${
+  //       // _map.values
+  //       _list.whereNotNull()
+  //       .whereType<FallbackBean>().sorted((b1, b2) => b2._hits.compareTo(b1._hits)).map((b) => '$b').join('\n')}');
+  // }
 }
 
 /// See EntityMeta.java for the auto generator
