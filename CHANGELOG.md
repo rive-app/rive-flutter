@@ -1,6 +1,12 @@
 ## Upcoming
 
 - Add `enumType` string getter to `ViewModelInstanceEnum` which returns the name of the enum (not the property name).
+- Add `valueStream<T>` to data binding properties that are observable (implementations of `ViewModelInstanceObservableValue`), which returns a `Stream<T>`. For example:
+
+```
+ViewModelInstanceNumber? numberProperty = viewModelInstance!.number('age');
+Stream<double> stream = numberProperty!.valueStream;
+```
 
 ## 0.14.1
 
