@@ -1,3 +1,7 @@
+## Upcoming
+
+- Add `enumType` string getter to `ViewModelInstanceEnum` which returns the name of the enum (not the property name).
+
 ## 0.14.1
 
 - Adds runtime [Rive Scripting](https://rive.app/docs/scripting/getting-started) support.
