@@ -1,5 +1,6 @@
 ## Upcoming
 
+- Updated the minimum Flutter version to `3.28.0`. The Android platform code requires the new `onSurfaceCleanup` and `onSurfaceAvailable` methods, see [SurfaceProducer](https://api.flutter.dev/javadoc/io/flutter/view/TextureRegistry.SurfaceProducer.Callback.html).
 - Add `enumType` string getter to `ViewModelInstanceEnum` which returns the name of the enum (not the property name).
 - Add `valueStream<T>` to data binding properties that are observable (implementations of `ViewModelInstanceObservableValue`), which returns a `Stream<T>`. For example:
 
