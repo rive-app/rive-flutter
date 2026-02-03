@@ -204,8 +204,8 @@ class LayerController {
         var transition = '${_dumpState(_currentState)} |> ${_dumpState(_stateFrom)}';
         if (_tooManyIterationsCollected.add(transition)) {
           Telemetry()
-              .log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
-              .error(StackTrace.current, 'Too many iterations', fatal: false);
+              ..log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
+              ..error(StackTrace.current, 'Too many iterations', fatal: false);
         }
         return false;
       }
