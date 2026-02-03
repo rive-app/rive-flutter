@@ -1,4 +1,4 @@
-## Upcoming
+## 0.14.2
 
 - Updated the minimum Flutter version to `3.28.0`. The Android platform code requires the new `onSurfaceCleanup` and `onSurfaceAvailable` methods, see [SurfaceProducer](https://api.flutter.dev/javadoc/io/flutter/view/TextureRegistry.SurfaceProducer.Callback.html).
 - Add `enumType` string getter to `ViewModelInstanceEnum` which returns the name of the enum (not the property name).
@@ -8,6 +8,10 @@
 ViewModelInstanceNumber? numberProperty = viewModelInstance!.number('age');
 Stream<double> stream = numberProperty!.valueStream;
 ```
+
+### Fixes
+
+- Fixed iOS/macOS build issues when using custom schemes and flavors. See issue [594](https://github.com/rive-app/rive-flutter/issues/594).
 
 ## 0.14.1
 
@@ -47,7 +51,7 @@ Bumps to `rive_native: 0.1.0`. Updates the Rive C++ runtime and renderer for the
 - Fixed layout issues that occurred on first render when using `Fit.layout` by correcting the order of artboard resizing and advancing calls. Added a new `RiveArtboardLayoutMixin` that provides common layout options for painters, including fit mode, alignment, and scale factor controls.
 - Resolves an issue where under some conditions the graphic may not restart the animation ticker. Adds a `isTickerActive` to `RivePainter`.
 - Fixed a lifetime issue with `FileAsset`s when the owning Rive `File` is destroyed.
-- Only send `textureFrameAvailable` on main (platform) thread (iOS and macOS). This likely resolves crashes observed during Flutter engine teardow when using `Factory.rive`.
+- Only send `textureFrameAvailable` on main (platform) thread (iOS and macOS). This likely resolves crashes observed during Flutter engine teardown when using `Factory.rive`.
 
 ## 0.14.0-dev.13
 
@@ -94,7 +98,7 @@ Bumps to `rive_native: 0.0.13`. Updates the Rive C++ runtime and renderer for th
 
 ### Build & Platform Updates
 
-- Included `pdb` symbol files for `rive_native` on Windows to assist in debuging native errors.
+- Included `pdb` symbol files for `rive_native` on Windows to assist in debugging native errors.
 
 ## 0.14.0-dev.9
 
@@ -251,7 +255,7 @@ flutter: ">=3.3.0"
 
 ## 0.13.19
 
-- Adds the `isTouchScrollEnabled` property to `RiveAnimation` and `Rive` widgets. When `true` allows scrolling behavior to occur on Rive widgets when a touch/drag action is performed on touch-enabled devices. Defauls to `false`, which means Rive will "absorb" the pointer down event and a scroll cannot be triggered if the touch occured within a Rive Listener area. Setting to `true` will impact Rive's capability to handle multiple gestures simultaneously.
+- Adds the `isTouchScrollEnabled` property to `RiveAnimation` and `Rive` widgets. When `true` allows scrolling behavior to occur on Rive widgets when a touch/drag action is performed on touch-enabled devices. Defaults to `false`, which means Rive will "absorb" the pointer down event and a scroll cannot be triggered if the touch occurred within a Rive Listener area. Setting to `true` will impact Rive's capability to handle multiple gestures simultaneously.
 - Bump to latest `rive_common`, v0.4.14.
 
 ## 0.13.18
@@ -298,7 +302,7 @@ flutter: ">=3.3.0"
 
 ## 0.13.9
 
-- Preperation for data binding ([databinding](https://github.com/rive-app/rive-flutter/commit/6ceb7a544e7124d303259f7d032641e5b38f7fc1), [data binding data context](https://github.com/rive-app/rive-flutter/commit/6d002300a6f0fd19f6dacac58a499ccc903a214d), [databinding add boolean](https://github.com/rive-app/rive-flutter/commit/90b8c81f0e496502b70db4d550341f5acabbbea6)).
+- Preparation for data binding ([databinding](https://github.com/rive-app/rive-flutter/commit/6ceb7a544e7124d303259f7d032641e5b38f7fc1), [data binding data context](https://github.com/rive-app/rive-flutter/commit/6d002300a6f0fd19f6dacac58a499ccc903a214d), [databinding add boolean](https://github.com/rive-app/rive-flutter/commit/90b8c81f0e496502b70db4d550341f5acabbbea6)).
 - Layout fixes and improvements ([animations for layouts](https://github.com/rive-app/rive-flutter/commit/8068e48eb2faa2a13eab1ba858b4e0737cf0265b), [layout UX fixes](https://github.com/rive-app/rive-flutter/commit/21bd3765ddc3ef8c3b1f0199f75eae21434cf52b)).
 - Android example project [fix](https://github.com/rive-app/rive-flutter/commit/9951f912df4c6f0574f57d5a152cd36e6ad2d7e0).
 
@@ -313,7 +317,7 @@ flutter: ">=3.3.0"
 
 ## 0.13.6
 
-- Add `getBoolInput(name, path)`, `getTriggerInput(name, path)`, and `getNumberInput(name, path` on `Artboard` to set nested inputs (inputs on nested artboards), see [the documentation](https://rive.app/community/doc/state-machines/docxeznG7iiK#nested-inputs).
+- Add `getBoolInput(name, path)`, `getTriggerInput(name, path)`, and `getNumberInput(name, path)` on `Artboard` to set nested inputs (inputs on nested artboards), see [the documentation](https://rive.app/community/doc/state-machines/docxeznG7iiK#nested-inputs).
 
 ## 0.13.5
 
