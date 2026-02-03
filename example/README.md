@@ -4,14 +4,20 @@ A demo application showcasing Rive Flutter.
 
 ## Getting Started
 
-Clone this repository:
+The `rive` package depends on `rive_native`, and the code on GitHub may reference an unpublished version of `rive_native`. We recommend using the published version from [Pub](https://pub.dev/packages/rive):
+
 ```bash
-git clone https://github.com/rive-app/rive-flutter
+dart pub unpack rive        # Unpack the package source code and example app
+cd rive/example             # Navigate to the example folder
+flutter create .            # Create the platform folders
+flutter pub get             # Fetch dependencies
+flutter run                 # Run the example app
 ```
 
-Run the example:
+Alternatively, clone this repository (requires building native libraries locally):
 
 ```bash
+git clone https://github.com/rive-app/rive-flutter
 cd rive-flutter/example
 flutter pub get
 flutter run

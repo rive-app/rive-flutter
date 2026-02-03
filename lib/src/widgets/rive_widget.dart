@@ -143,7 +143,7 @@ class _RiveWidgetState extends State<RiveWidget> {
       if (sharedTexture == null) {
         return errorWidget(
           'RiveWidget requires a shared texture when useSharedTexture is true.\n'
-          'Make sure to wrap this widget with a RiveSharedTexture widget in the widget tree.',
+          'Make sure to wrap this widget with a RivePanel widget in the widget tree.',
         );
       } else {
         return SharedTextureView(

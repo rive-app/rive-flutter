@@ -41,9 +41,19 @@ For more information, check out the following resources:
 
 ## Getting started
 
-To get started with Rive Flutter, check out the following resources:
+See the [Getting Started with Rive in Flutter](https://rive.app/docs/runtimes/flutter/flutter) documentation.
 
-- [Getting Started with Rive in Flutter](https://rive.app/docs/runtimes/flutter/flutter)
+**Example App**
+
+The `rive` package depends on `rive_native`, and the code on GitHub may reference an unpublished version of `rive_native`. To run the example app, we recommend using the published version from [Pub](https://pub.dev/packages/rive) unless you intend to build the native libraries locally (see [Building `rive_native`](#building-rive_native)).
+
+```bash
+dart pub unpack rive        # Unpack the package source code and example app
+cd rive/example             # Navigate to the example folder
+flutter create .            # Create the platform folders
+flutter pub get             # Fetch dependencies
+flutter run                 # Run the example app
+```
 
 For more information, see the Runtime sections of the Rive help documentation:
 
