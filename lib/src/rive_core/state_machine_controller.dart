@@ -205,7 +205,7 @@ class LayerController {
         if (_tooManyIterationsCollected.add(transition)) {
           Telemetry()
               ..log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
-              ..error(StackTrace.current, 'Too many iterations', fatal: false);
+              ..error('Too many iterations', fatal: false);
         }
         return false;
       }
