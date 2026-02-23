@@ -1,5 +1,14 @@
+## 0.14.3
+
+- Bumps to `rive_native: 0.1.3`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+### Build & Platform Updates
+
+- Adds Swift Package Manager support. Resolves issue [557](https://github.com/rive-app/rive-flutter/issues/557)
+
 ## 0.14.2
 
+- Bumps to `rive_native: 0.1.2`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 - Updated the minimum Flutter version to `3.28.0`. The Android platform code requires the new `onSurfaceCleanup` and `onSurfaceAvailable` methods, see [SurfaceProducer](https://api.flutter.dev/javadoc/io/flutter/view/TextureRegistry.SurfaceProducer.Callback.html).
 - Add `enumType` string getter to `ViewModelInstanceEnum` which returns the name of the enum (not the property name).
 - Add `valueStream<T>` to data binding properties that are observable (implementations of `ViewModelInstanceObservableValue`), which returns a `Stream<T>`. For example:
