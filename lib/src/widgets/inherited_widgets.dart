@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive_native/rive_native.dart' as rive;
@@ -27,6 +28,12 @@ class SharedRenderTexture {
   /// every scheduled paint runs the full cycle — identical to upstream.
   bool dirtyTrackingEnabled = false;
 
+  /// When > 0 and [dirtyTrackingEnabled] is true, the render object's
+  /// ticker automatically calls [markDirty] after this many seconds of
+  /// accumulated frame time, so the state machine advances at the desired
+  /// rate without being called every frame.
+  double advanceInterval = 0;
+
   SharedRenderTexture({
     required this.texture,
     required this.devicePixelRatio,
@@ -39,10 +46,37 @@ class SharedRenderTexture {
     _dirty = true;
   }
 
+  int _paintCount = 0;
+  int _skipCount = 0;
+
   /// Paint the shared render texture.
+  ///
+  /// When [dirtyTrackingEnabled] is true and the texture is clean, the entire
+  /// clear→paint→flush cycle is skipped. The render-object ticker stays alive
+  /// independently and calls [markDirty] when [advanceInterval] elapses, so
+  /// the state machine still advances at the desired rate.
   void _paintShared(_) {
     _scheduled = false;
-    if (dirtyTrackingEnabled && !_dirty) return;
+    if (dirtyTrackingEnabled && !_dirty) {
+      _skipCount++;
+      if (_skipCount % 60 == 1) {
+        developer.log(
+          '[DirtyTrack] _paintShared SKIPPED #$_skipCount '
+          '(painters=${painters.length})',
+          name: 'SharedRenderTexture',
+        );
+      }
+      return;
+    }
+
+    _paintCount++;
+    if (dirtyTrackingEnabled && _paintCount % 30 == 1) {
+      developer.log(
+        '[DirtyTrack] _paintShared PAINTING #$_paintCount '
+        '(dirty=$_dirty, painters=${painters.length}, skips=$_skipCount)',
+        name: 'SharedRenderTexture',
+      );
+    }
 
     texture.clear(backgroundColor);
     for (final painter in painters) {
