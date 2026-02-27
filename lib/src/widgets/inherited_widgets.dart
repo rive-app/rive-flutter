@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive_native/rive_native.dart' as rive;
@@ -46,9 +45,6 @@ class SharedRenderTexture {
     _dirty = true;
   }
 
-  int _paintCount = 0;
-  int _skipCount = 0;
-
   /// Paint the shared render texture.
   ///
   /// When [dirtyTrackingEnabled] is true and the texture is clean, the entire
@@ -57,26 +53,7 @@ class SharedRenderTexture {
   /// the state machine still advances at the desired rate.
   void _paintShared(_) {
     _scheduled = false;
-    if (dirtyTrackingEnabled && !_dirty) {
-      _skipCount++;
-      if (_skipCount % 60 == 1) {
-        developer.log(
-          '[DirtyTrack] _paintShared SKIPPED #$_skipCount '
-          '(painters=${painters.length})',
-          name: 'SharedRenderTexture',
-        );
-      }
-      return;
-    }
-
-    _paintCount++;
-    if (dirtyTrackingEnabled && _paintCount % 30 == 1) {
-      developer.log(
-        '[DirtyTrack] _paintShared PAINTING #$_paintCount '
-        '(dirty=$_dirty, painters=${painters.length}, skips=$_skipCount)',
-        name: 'SharedRenderTexture',
-      );
-    }
+    if (dirtyTrackingEnabled && !_dirty) return;
 
     texture.clear(backgroundColor);
     for (final painter in painters) {
