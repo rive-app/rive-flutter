@@ -136,7 +136,13 @@ class _RivePanelState extends State<RivePanel> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(child: _renderTexture!.widget(key: _panelKey)),
+        Positioned.fill(
+          // IgnorePointer is used to prevent the RivePanel from intercepting pointer events.
+          // Pointer events are handled by the individual RiveWidgets.
+          child: IgnorePointer(
+            child: _renderTexture!.widget(key: _panelKey),
+          ),
+        ),
         RiveSharedTexture(
           panelKey: _panelKey,
           backgroundColor: widget.backgroundColor,

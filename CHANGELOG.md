@@ -1,3 +1,9 @@
+## Upcoming
+
+### Fixes
+
+- Fixed an issue where `RivePanel` intercepted all pointer events. Hit testing now respects each `RiveWidget`'s configured `hitTestBehavior`.
+
 ## 0.14.3
 
 - Bumps to `rive_native: 0.1.3`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
