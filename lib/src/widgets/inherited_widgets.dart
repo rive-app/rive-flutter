@@ -27,11 +27,10 @@ class SharedRenderTexture {
   /// every scheduled paint runs the full cycle — identical to upstream.
   bool dirtyTrackingEnabled = false;
 
-  /// When > 0 and [dirtyTrackingEnabled] is true, the render object's
-  /// ticker automatically calls [markDirty] after this many seconds of
-  /// accumulated frame time, so the state machine advances at the desired
-  /// rate without being called every frame.
-  double advanceInterval = 0;
+  /// Called every frame by the render object's ticker with the frame's
+  /// elapsed seconds. Listeners can accumulate time and call [markDirty]
+  /// when a state-machine advance is needed.
+  void Function(double elapsedSeconds)? onFrameTick;
 
   SharedRenderTexture({
     required this.texture,
@@ -49,8 +48,8 @@ class SharedRenderTexture {
   ///
   /// When [dirtyTrackingEnabled] is true and the texture is clean, the entire
   /// clear→paint→flush cycle is skipped. The render-object ticker stays alive
-  /// independently and calls [markDirty] when [advanceInterval] elapses, so
-  /// the state machine still advances at the desired rate.
+  /// independently and invokes [onFrameTick] each frame so external code can
+  /// call [markDirty] when a state-machine advance is needed.
   void _paintShared(_) {
     _scheduled = false;
     if (dirtyTrackingEnabled && !_dirty) return;

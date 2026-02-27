@@ -231,17 +231,7 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   void frameCallback(Duration duration) {
     super.frameCallback(duration);
     _accumulatedElapsed += elapsedSeconds;
-
-    // When dirty tracking with an advance interval is active, mark the
-    // texture dirty once enough wall-clock time has accumulated. This
-    // decouples the ticker (which keeps running) from the state-machine
-    // advance (which only runs on dirty frames).
-    if (_shared.dirtyTrackingEnabled && _shared.advanceInterval > 0) {
-      if (_accumulatedElapsed >= _shared.advanceInterval) {
-        _shared.markDirty();
-      }
-    }
-
+    _shared.onFrameTick?.call(elapsedSeconds);
     _shared.schedulePaint();
   }
 
