@@ -19,6 +19,19 @@ class SharedRenderTexture {
   final List<SharedTexturePainter> painters = [];
   final GlobalKey panelKey;
 
+  bool _dirty = true;
+  bool _scheduled = false;
+
+  /// When true, [_paintShared] skips the clear→paint→flush cycle if no
+  /// painter called [markDirty] since the last flush. When false (default),
+  /// every scheduled paint runs the full cycle — identical to upstream.
+  bool dirtyTrackingEnabled = false;
+
+  /// Called every frame by the render object's ticker with the frame's
+  /// elapsed seconds. Listeners can accumulate time and call [markDirty]
+  /// when a state-machine advance is needed.
+  void Function(double elapsedSeconds)? onFrameTick;
+
   SharedRenderTexture({
     required this.texture,
     required this.devicePixelRatio,
@@ -26,18 +39,28 @@ class SharedRenderTexture {
     required this.panelKey,
   });
 
+  /// Mark the texture as needing a repaint on the next scheduled frame.
+  void markDirty() {
+    _dirty = true;
+  }
+
   /// Paint the shared render texture.
+  ///
+  /// When [dirtyTrackingEnabled] is true and the texture is clean, the entire
+  /// clear→paint→flush cycle is skipped. The render-object ticker stays alive
+  /// independently and invokes [onFrameTick] each frame so external code can
+  /// call [markDirty] when a state-machine advance is needed.
   void _paintShared(_) {
+    _scheduled = false;
+    if (dirtyTrackingEnabled && !_dirty) return;
+
     texture.clear(backgroundColor);
     for (final painter in painters) {
       painter.paintIntoSharedTexture(texture);
     }
     texture.flush(devicePixelRatio);
-
-    _scheduled = false;
+    _dirty = false;
   }
-
-  bool _scheduled = false;
 
   /// Schedule a paint of the shared render texture.
   void schedulePaint() {
@@ -52,11 +75,13 @@ class SharedRenderTexture {
   void addPainter(SharedTexturePainter painter) {
     painters.add(painter);
     painters.sort((a, b) => a.sharedDrawOrder.compareTo(b.sharedDrawOrder));
+    markDirty();
   }
 
   /// Remove a painter from the shared render texture.
   void removePainter(SharedTexturePainter painter) {
     painters.remove(painter);
+    markDirty();
   }
 }
 
