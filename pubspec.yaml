@@ -30,10 +30,10 @@ dependencies:
   rive_common: 0.4.15
 
   stokanal:
-    # path: ../stokanal-flutter/
-   git:
-     url: git@github.com:kaypora-games/stokanal-flutter.git
-     ref: develop-2
+    path: ../stokanal-flutter/
+#    git:
+#      url: git@github.com:kaypora-games/stokanal-flutter.git
+#      ref: develop-2
 
 dev_dependencies:
   flutter_test:
