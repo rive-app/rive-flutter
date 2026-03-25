@@ -1,10 +1,11 @@
+
 name: rive
 version: 0.13.20-2
 homepage: https://rive.app
 description: Rive Flutter Runtime. This package provides runtime functionality for playing back and interacting with animations built with the Rive editor available at https://rive.app.
 repository: https://github.com/rive-app/rive-flutter
 
-publish_to: none # STOKANAL-FORK-EDIT: added to include stokanal path dependency
+publish_to: none
 
 # topics:
   #   - animation
@@ -29,16 +30,14 @@ dependencies:
   plugin_platform_interface: ^2.0.2
   rive_common: 0.4.15
 
-  stokanal:
-#    path: ../stokanal-flutter/
-    git:
-      url: git@github.com:kaypora-games/stokanal-flutter.git
-      ref: develop-2
+  stokanal: # swappable
+    path: ../stokanal-flutter/
+    # git:
+      # url: git@github.com:kaypora-games/stokanal-flutter.git
+      # ref: develop-2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail:
   path: ^1.8.3
-
-# see STOKANAL-FORK-EDIT for edits against the fork
