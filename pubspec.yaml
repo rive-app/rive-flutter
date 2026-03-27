@@ -1,5 +1,6 @@
 
 
+
 name: rive
 version: 0.13.20-3
 homepage: https://rive.app
@@ -30,16 +31,16 @@ dependencies:
   meta: ^1.3.0
   plugin_platform_interface: ^2.0.2
   rive_common: # swappable
-    path: ../rive-common
-    # git:
-      # url: git@github.com:kaypora-games/rive-common.git
-      # ref: main
+    # path: ../rive-common
+    git:
+      url: git@github.com:kaypora-games/rive-common.git
+      ref: main
 
   stokanal: # swappable
-    path: ../stokanal-flutter/
-    # git:
-      # url: git@github.com:kaypora-games/stokanal-flutter.git
-      # ref: develop-2
+    # path: ../stokanal-flutter/
+    git:
+      url: git@github.com:kaypora-games/stokanal-flutter.git
+      ref: develop-2
 
 dev_dependencies:
   flutter_test:
