@@ -1,8 +1,22 @@
 ## Upcoming
 
+- Add optional `viewModelInstance` parameter to `File.artboardToBind`, allowing a `ViewModelInstance` to be bound to a `BindableArtboard`. When provided, the view model instance is set on the artboard property in the core runtime.
+
+## 0.14.4
+
+- Bumps to `rive_native: 0.1.4`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
 ### Fixes
 
 - Fixed an issue where `RivePanel` intercepted all pointer events. Hit testing now respects each `RiveWidget`'s configured `hitTestBehavior`.
+
+### Build & Platform Updates
+
+- Rive Renderer support for Linux
+- Linux is now fully supported. Known issue: arm64 builds are not yet included; for now, build manually: https://rive.app/docs/runtimes/flutter/rive-native#building-rive-native
+- Fixes a build issue where scripting build files were missing. We previously did not include the `scripting` folder, which is now required by other build files.
+- Fixed a build issue when running ``dart run rive_native:setup --build`.
+- Resolves `dart run rive_native:setup` concurrency issue [rive-flutter#609](https://github.com/rive-app/rive-flutter/issues/609). Downloads now use a unique temporary directory to support concurrent CLI runners.
 
 ## 0.14.3
 

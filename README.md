@@ -106,7 +106,7 @@ flutter run --no-enable-impeller
 | Android  | ✅               | ✅            |
 | macOS    | ✅               | ✅            |
 | Windows  | ✅               | ✅            |
-| Linux    | ❌               | ❌            |
+| Linux    | ✅               | ✅            |
 | Web      | ✅               | ✅            |
 
 Be sure to read the [platform specific considerations](platform_considerations.md) for the Rive Flutter package.
