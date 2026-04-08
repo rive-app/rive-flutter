@@ -1,4 +1,4 @@
-## Upcoming
+## 0.14.5
 
 - Add optional `viewModelInstance` parameter to `File.artboardToBind`, allowing a `ViewModelInstance` to be bound to a `BindableArtboard`. When provided, the view model instance is set on the artboard property in the core runtime.
 
