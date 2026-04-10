@@ -197,7 +197,7 @@ class LayerController {
     int i = 0;
     for (; updateState(i != 0); i++) {
       _apply(core);
-      if (i == 10) {
+      if (i == 15) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
         var runtime = core is RuntimeArtboard ? core : null;
