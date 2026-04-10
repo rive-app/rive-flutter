@@ -20,7 +20,6 @@ export 'package:rive_native/rive_native.dart'
 
 export 'src/errors.dart';
 export 'src/file_loader.dart';
-export 'src/ffi/rive_threaded_ffi.dart';
 export 'src/models/artboard_selector.dart';
 export 'src/models/data_bind.dart';
 export 'src/models/state_machine_selector.dart';

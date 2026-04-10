@@ -6,29 +6,28 @@ import 'package:rive/src/painters/background_widget_controller.dart';
 /// A Flutter widget that composites Rive content rendered by a C++ background
 /// thread.
 ///
-/// Unlike [RiveWidget], this widget never calls `advanceAndApply` or
-/// `draw` on the Flutter UI thread. Instead it:
+/// Unlike [RiveWidget], this widget never calls `advanceAndApply` or `draw`
+/// on the Flutter UI thread. Instead it:
 ///
-/// 1. Calls [BackgroundRiveWidgetController.initialize] with the physical pixel
-///    size of its layout slot.
-/// 2. Starts a [Ticker] that calls [BackgroundRiveWidgetController.advance]
-///    each frame, posting elapsed time to the background thread.
-/// 3. Composites the GPU texture written by the background thread via Flutter's
-///    [Texture] widget — a ~zero-cost blit.
+/// 1. After first layout, calls [BackgroundRiveWidgetController.initialize]
+///    to start the native [ThreadedScene] and register a Flutter GPU texture.
+/// 2. Runs a [Ticker] that calls [controller.advance] each frame, posting
+///    elapsed time to the background thread (non-blocking).
+/// 3. Composites the texture written by the background thread via Flutter's
+///    [Texture] widget — a ~zero-cost GPU blit with no pixel copy.
 ///
 /// ## Snapshot and event polling
 ///
-/// [BackgroundRiveView] does not poll snapshots or events internally. The
-/// caller (e.g., `CharacterRig`) should call
-/// [BackgroundRiveWidgetController.acquireSnapshot] and
-/// [BackgroundRiveWidgetController.pollEvents] from their own per-frame logic
-/// (e.g., registered via `addPostFrameCallback` or a separate ticker).
+/// This widget does not poll snapshots or events internally. The caller (e.g.
+/// `CharacterRig`) should call [controller.acquireSnapshot] and
+/// [controller.pollEvents] from its own per-frame logic, typically from an
+/// [addPostFrameCallback] registered in the enclosing widget's state.
 ///
 /// ## Platform support
 ///
 /// Background rendering requires Metal (iOS / macOS). On other platforms
 /// [BackgroundRiveWidgetController.initialize] returns false and this widget
-/// shows a transparent box.
+/// shows a transparent [SizedBox].
 class BackgroundRiveView extends StatefulWidget {
   const BackgroundRiveView({
     super.key,
@@ -36,11 +35,11 @@ class BackgroundRiveView extends StatefulWidget {
     this.freeze = false,
   });
 
-  /// The controller that manages the background thread and ViewModel inputs.
+  /// The controller that owns the background thread and ViewModel interactions.
   final BackgroundRiveWidgetController controller;
 
   /// When true, Flutter will not request new frames from the texture even when
-  /// the texture changes. Useful for pausing the animation without disposing.
+  /// the GPU content changes. Useful for pausing without disposing.
   final bool freeze;
 
   @override
@@ -50,19 +49,12 @@ class BackgroundRiveView extends StatefulWidget {
 class _BackgroundRiveViewState extends State<BackgroundRiveView>
     with SingleTickerProviderStateMixin {
   Ticker? _ticker;
-
-  /// True once [BackgroundRiveWidgetController.initialize] has succeeded.
   bool _initialized = false;
-
-  /// Elapsed seconds between the last two ticker callbacks. Updated in
-  /// [_onTick] and posted to [BackgroundRiveWidgetController.advance].
-  double _elapsedSeconds = 0;
   Duration _prevDuration = Duration.zero;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Re-initialize if the device pixel ratio changed and we haven't started.
     if (!_initialized) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryInitialize());
     }
@@ -75,49 +67,46 @@ class _BackgroundRiveViewState extends State<BackgroundRiveView>
     super.dispose();
   }
 
-  void _tryInitialize() {
+  Future<void> _tryInitialize() async {
     if (!mounted || _initialized) return;
 
     final renderBox = context.findRenderObject();
     if (renderBox is! RenderBox || !renderBox.hasSize) {
-      // Layout hasn't run yet; retry next frame.
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryInitialize());
       return;
     }
 
+    final size = renderBox.size;
     final dpr = MediaQuery.devicePixelRatioOf(context);
-    final logicalSize = renderBox.size;
-    final physicalWidth = (logicalSize.width * dpr).round();
-    final physicalHeight = (logicalSize.height * dpr).round();
+    final w = (size.width * dpr).round();
+    final h = (size.height * dpr).round();
 
-    if (physicalWidth <= 0 || physicalHeight <= 0) {
+    if (w <= 0 || h <= 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryInitialize());
       return;
     }
 
-    final success = widget.controller.initialize(
-      width: physicalWidth,
-      height: physicalHeight,
+    final success = await widget.controller.initialize(
+      width: w,
+      height: h,
+      devicePixelRatio: dpr,
     );
 
-    if (!success) return; // Non-Metal platform or Phase 2 not yet available.
+    if (!mounted || !success) return;
 
     _initialized = true;
-
     _ticker = createTicker(_onTick)..start();
-
-    setState(() {}); // Rebuild to show the Texture widget.
+    setState(() {});
   }
 
   void _onTick(Duration elapsed) {
     final dt = elapsed - _prevDuration;
     _prevDuration = elapsed;
-    _elapsedSeconds = dt.inMicroseconds / Duration.microsecondsPerSecond;
+    final elapsedSeconds =
+        dt.inMicroseconds / Duration.microsecondsPerSecond;
 
-    widget.controller.advance(_elapsedSeconds);
-
-    // Request a repaint so Flutter composites the latest background texture.
-    setState(() {});
+    widget.controller.advance(elapsedSeconds);
+    setState(() {}); // trigger repaint to composite the latest GPU texture
   }
 
   @override
@@ -126,7 +115,7 @@ class _BackgroundRiveViewState extends State<BackgroundRiveView>
       return const SizedBox.expand();
     }
     return Texture(
-      textureId: widget.controller.textureId,
+      textureId: widget.controller.renderTexture.textureId,
       freeze: widget.freeze,
     );
   }

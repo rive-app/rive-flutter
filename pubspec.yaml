@@ -19,7 +19,6 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  ffi: ^2.1.0
   meta: ^1.9.0
   rive_native: 0.1.4
 
@@ -27,3 +26,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+
+dependency_overrides:
+  rive_native:
+    path: /tmp/rive_native-0.1.4
