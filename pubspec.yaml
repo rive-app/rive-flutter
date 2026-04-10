@@ -29,4 +29,6 @@ dev_dependencies:
 
 dependency_overrides:
   rive_native:
-    path: /tmp/rive_native-0.1.4
+    git:
+      url: https://github.com/ElloTechnology/rive-native.git
+      ref: fccd4dbfe8daa6425f562435248f253d520f2beb
