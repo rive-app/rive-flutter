@@ -56,6 +56,9 @@ class BackgroundRiveWidgetController {
   RenderTexture? _renderTexture;
   RiveThreadedBindings? _bindings;
 
+  /// Properties queued via [watchProperty] before [initialize] completes.
+  final List<String> _pendingWatchProperties = [];
+
   bool get isInitialized => _bindings != null;
 
   /// The [RenderTexture] whose [textureId] [BackgroundRiveView] composites.
@@ -132,6 +135,13 @@ class BackgroundRiveWidgetController {
 
     _renderTexture = rt;
     _bindings = bindings;
+
+    // Flush any watchProperty calls made before initialization completed.
+    for (final name in _pendingWatchProperties) {
+      _bindings!.watchProperty(name);
+    }
+    _pendingWatchProperties.clear();
+
     return true;
   }
 
@@ -176,8 +186,18 @@ class BackgroundRiveWidgetController {
   // Snapshot / watch
   // ---------------------------------------------------------------------------
 
-  void watchProperty(String name) => _bindings?.watchProperty(name);
-  void unwatchProperty(String name) => _bindings?.unwatchProperty(name);
+  void watchProperty(String name) {
+    if (_bindings != null) {
+      _bindings!.watchProperty(name);
+    } else {
+      _pendingWatchProperties.add(name);
+    }
+  }
+
+  void unwatchProperty(String name) {
+    _pendingWatchProperties.remove(name);
+    _bindings?.unwatchProperty(name);
+  }
 
   /// Atomically acquires the latest ViewModel property snapshot.
   ///
