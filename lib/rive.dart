@@ -23,7 +23,8 @@ export 'src/file_loader.dart';
 export 'src/models/artboard_selector.dart';
 export 'src/models/data_bind.dart';
 export 'src/models/state_machine_selector.dart';
-export 'src/painters/background_widget_controller.dart';
+export 'src/painters/background_widget_controller_stub.dart'
+    if (dart.library.ffi) 'src/painters/background_widget_controller.dart';
 export 'src/painters/widget_controller.dart';
 export 'src/rive_extensions.dart';
 export 'src/widgets/background_rive_view.dart';

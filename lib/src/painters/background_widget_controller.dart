@@ -7,6 +7,8 @@ import 'package:rive_native/src/ffi/rive_ffi_reference.dart'
 // ignore: implementation_imports
 import 'package:rive_native/src/ffi/rive_ffi.dart'
     show FFIRiveArtboard, FFIStateMachine;
+// ignore: implementation_imports
+import 'package:rive_native/src/ffi/rive_threaded_ffi.dart';
 import 'package:rive_native/rive_native.dart';
 
 /// A controller for Rive content that advances and renders on a dedicated C++

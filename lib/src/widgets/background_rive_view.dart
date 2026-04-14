@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'package:rive/src/painters/background_widget_controller.dart';
+import 'package:rive/src/painters/background_widget_controller_stub.dart'
+    if (dart.library.ffi) 'package:rive/src/painters/background_widget_controller.dart';
 
 /// A Flutter widget that composites Rive content rendered by a C++ background
 /// thread.
