@@ -195,13 +195,19 @@ class LayerController {
     _apply(core);
 
     int i = 0;
+    var currentState = _currentState;
+    var stateFrom = _stateFrom;
+    var holdAnimation = _holdAnimation;
     for (; updateState(i != 0); i++) {
       _apply(core);
       if (i == 15) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
         var runtime = core is RuntimeArtboard ? core : null;
-        var transition = '${_dumpState(_currentState)} |> ${_dumpState(_stateFrom)}';
+        var transition =
+            '${_dumpState(_currentState)} |> ${_dumpState(_stateFrom)} ${_holdAnimation?.name} <=> '
+            '${_dumpState(currentState)} |> ${_dumpState(stateFrom)} ${holdAnimation?.name} <=> '
+            '$_transition' ;
         if (_tooManyIterationsCollected.add(transition)) {
           Telemetry()
               ..log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
