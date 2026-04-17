@@ -7,14 +7,33 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=2.17.0 <4.0.0"
+#  sdk: ^3.11.0 # pinned to plato
 
 dependencies:
   flutter:
     sdk: flutter
-  rive:
-    path: ../
+  plato:
   http:
+  rive:
+  stokanal:
   url_launcher: ^6.3.1
+
+dependency_overrides:
+
+  plato: # swappable
+    path: ../../plato/
+      # git:
+      # url: git@github.com:kaypora-games/plato.git
+    # ref: main
+
+  rive: # swappable
+    path: ../
+
+  stokanal: # swappable
+    path: ../../stokanal-flutter/
+      # git:
+      # url: git@github.com:kaypora-games/stokanal-flutter.git
+    # ref: master
 
 dev_dependencies:
   flutter_test:

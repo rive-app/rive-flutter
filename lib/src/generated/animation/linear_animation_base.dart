@@ -26,9 +26,7 @@ abstract class LinearAnimationBase extends Animation {
   /// Change the [_fps] field value.
   /// [fpsChanged] will be invoked only if the field's value has changed.
   set fps(int value) {
-    if (_fps == value) {
-      return;
-    }
+    if (_fps == value) return;
     int from = _fps;
     _fps = value;
     if (hasValidated) {
@@ -50,9 +48,7 @@ abstract class LinearAnimationBase extends Animation {
   /// Change the [_duration] field value.
   /// [durationChanged] will be invoked only if the field's value has changed.
   set duration(int value) {
-    if (_duration == value) {
-      return;
-    }
+    if (_duration == value) return;
     int from = _duration;
     _duration = value;
     if (hasValidated) {
@@ -122,9 +118,7 @@ abstract class LinearAnimationBase extends Animation {
   /// Change the [_workStart] field value.
   /// [workStartChanged] will be invoked only if the field's value has changed.
   set workStart(int value) {
-    if (_workStart == value) {
-      return;
-    }
+    if (_workStart == value) return;
     int from = _workStart;
     _workStart = value;
     if (hasValidated) {
