@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Rive Documentation
+    url: https://rive.app/docs/
+    about: Please refer to the Rive documentation for feature use, supported versions, and troubleshooting steps before submitting an issue.
+  - name: Rive Community Support
+    url: https://community.rive.app/
+    about: For general questions and answers, please use the Rive Community.
