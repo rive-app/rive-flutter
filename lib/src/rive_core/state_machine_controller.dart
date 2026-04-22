@@ -178,6 +178,8 @@ class LayerController {
     return '${animationState?.animation?.name}';
   }
 
+  bool layerApplySane = true;
+
   bool apply(CoreContext core, double elapsedSeconds) {
     if (_currentState != null) {
       _currentState!.advance(elapsedSeconds, controller);
@@ -198,6 +200,7 @@ class LayerController {
     var currentState = _currentState;
     var stateFrom = _stateFrom;
     var holdAnimation = _holdAnimation;
+    layerApplySane = true; // set flag to sane
     for (; updateState(i != 0); i++) {
       _apply(core);
       if (i == 15) {
@@ -209,6 +212,7 @@ class LayerController {
             '${_dumpState(currentState)} |> ${_dumpState(stateFrom)} ${holdAnimation?.name} <=> '
             '$_transition' ;
         if (_tooManyIterationsCollected.add(transition)) {
+          layerApplySane = false; // flag as not sane only when logging to telemetry
           Telemetry()
               ..log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
               ..error('Too many iterations', fatal: false);
@@ -221,7 +225,7 @@ class LayerController {
       _maxIterations = i;
     }
 
-    // give the current state the oportunity to clear spilled time, so that we
+    // give the current state the opportunity to clear spilled time, so that we
     // do not carry this over into another iteration.
     _currentState?.clearSpilledTime();
 
@@ -620,21 +624,25 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   }
 
   @override
-  void apply(CoreContext core, double elapsedSeconds) {
+  bool apply(CoreContext core, double elapsedSeconds) {
     if (artboard?.hasChangedDrawOrderInLastUpdate ?? false) {
       _sortHittableComponents();
     }
 
     bool keepGoing = false;
+    var layerApplySane = true;
     for (final layerController in layerControllers) {
       if (layerController.apply(core, elapsedSeconds)) {
         keepGoing = true;
       }
+      layerApplySane &= layerController.layerApplySane;
     }
     advanceInputs();
     isActive = keepGoing;
 
     applyEvents();
+
+    return layerApplySane;
   }
 
   void applyEvents() {

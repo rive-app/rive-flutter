@@ -35,12 +35,13 @@ class SpeedController extends SimpleAnimation {
   }) : super(animationName, mix: mix);
 
   @override
-  void apply(RuntimeArtboard artboard, double elapsedSeconds) {
+  bool apply(RuntimeArtboard artboard, double elapsedSeconds) {
     if (instance == null || !instance!.keepGoing) {
       isActive = false;
     }
     instance!
       ..animation.apply(instance!.time, coreContext: artboard, mix: mix)
       ..advance(elapsedSeconds * speedMultiplier);
+    return true;
   }
 }

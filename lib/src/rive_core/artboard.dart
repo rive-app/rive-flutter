@@ -33,6 +33,8 @@ import 'package:stokanal/core.dart' hide Event;
 
 export 'package:rive/src/generated/artboard_base.dart';
 
+const _logr = Logr.always(prefix: 'artboard');
+
 class Artboard extends ArtboardBase with ShapePaintContainer {
   final _dirtyLayout = <LayoutComponent>{};
 
@@ -262,6 +264,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     return true;
   }
 
+  /// True if last advance() call was sane, false otherwise
+  bool advanceSane = true;
+
   /// Update any dirty components in this artboard.
   bool advanceInternal(double elapsedSeconds,
       {bool nested = false, bool isRoot = false}) {
@@ -289,9 +294,13 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
 
+    advanceSane = true;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
-        controller.apply(context, elapsedSeconds);
+        if (!controller.apply(context, elapsedSeconds)) {
+          advanceSane = false;
+          _logr.info('ANIMATION-CONTROLLER FAILED TO APPLY > $name $controller');
+        }
         didUpdate = true;
       }
     }
