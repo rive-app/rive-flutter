@@ -215,7 +215,7 @@ class LayerController {
           layerApplySane = false; // flag as not sane only when logging to telemetry
           Telemetry()
               ..log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
-              ..error('Too many iterations', fatal: false);
+              ..error('Too many iterations', expected: true);
         }
         return false;
       }
