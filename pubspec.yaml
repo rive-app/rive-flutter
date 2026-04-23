@@ -1,5 +1,5 @@
 name: rive
-version: 0.13.20+1 # was 0.13.20-3
+version: 0.13.20+2 # was 0.13.20-3
 homepage: https://rive.app
 description: Rive Flutter Runtime. This package provides runtime functionality for playing back and interacting with animations built with the Rive editor available at https://rive.app.
 repository: https://github.com/rive-app/rive-flutter
@@ -41,22 +41,22 @@ dependencies:
 dependency_overrides:
 
   plato: # swappable
-    path: ../plato/
-      # git:
-      # url: git@github.com:kaypora-games/plato.git
-      # ref: main
+    # path: ../plato/
+      git:
+      url: git@github.com:kaypora-games/plato.git
+      ref: main
 
   rive_common: # swappable
-    path: ../rive-common
-      # git:
-      # url: git@github.com:kaypora-games/rive-common.git
-      # ref: main
+    # path: ../rive-common
+      git:
+      url: git@github.com:kaypora-games/rive-common.git
+      ref: main
 
   stokanal: # swappable
-    path: ../stokanal-flutter/
-      # git:
-      # url: git@github.com:kaypora-games/stokanal-flutter.git
-      # ref: master
+    # path: ../stokanal-flutter/
+      git:
+      url: git@github.com:kaypora-games/stokanal-flutter.git
+      ref: master
 
 dev_dependencies:
   flutter_test:
