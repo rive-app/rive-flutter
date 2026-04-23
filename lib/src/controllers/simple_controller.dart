@@ -35,7 +35,7 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
   set mix(double value) => _mix = value.clamp(0, 1).toDouble();
 
   @override
-  void apply(RuntimeArtboard artboard, double elapsedSeconds) {
+  bool apply(RuntimeArtboard artboard, double elapsedSeconds) {
     if (_instance == null || !_instance!.keepGoing) {
       isActive = false;
     }
@@ -49,6 +49,8 @@ class SimpleAnimation extends RiveAnimationController<RuntimeArtboard> {
     _instance!
       ..animation.apply(_instance!.time, coreContext: artboard, mix: mix)
       ..advance(elapsedSeconds);
+
+    return true;
   }
 
   @override

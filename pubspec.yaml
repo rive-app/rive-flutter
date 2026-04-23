@@ -1,9 +1,5 @@
-
-
-
-
 name: rive
-version: 0.13.20+1 # was 0.13.20-3
+version: 0.13.20+2 # was 0.13.20-3
 homepage: https://rive.app
 description: Rive Flutter Runtime. This package provides runtime functionality for playing back and interacting with animations built with the Rive editor available at https://rive.app.
 repository: https://github.com/rive-app/rive-flutter
@@ -20,32 +16,52 @@ publish_to: none
 environment:
   sdk: ">=2.17.0 <4.0.0"
   flutter: ">=2.5.0"
+#  sdk: ^3.11.0 # pinned to plato
+#  flutter: ^3.41.0 # pinned to plato
 
 dependencies:
-  collection: ^1.15.0
-#  ffi: ^2.1.4
+  charcode: ^1.4.0 # added to solve sdk conflict
+#  collection: ^1.15.0 # original
+  collection: ^1.19.1
+#  ffi: ^2.1.4 # original
   flutter:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
   http: ">=0.13.3 <2.0.0"
-  meta: ^1.3.0
-  plugin_platform_interface: ^2.0.2
+#  meta: ^1.3.0 # original
+  meta: ^1.17.0
+  plato:
+#  plugin_platform_interface: ^2.0.2 # original
+  plugin_platform_interface: ^2.1.8
+  rive_common:
+  stokanal:
+  typed_data: ^1.4.0 # added to solve sdk conflict
+
+dependency_overrides:
+
+  plato: # swappable
+    # path: ../plato/
+      git:
+      url: git@github.com:kaypora-games/plato.git
+      ref: main
 
   rive_common: # swappable
     # path: ../rive-common
-    git:
+      git:
       url: git@github.com:kaypora-games/rive-common.git
       ref: main
 
   stokanal: # swappable
     # path: ../stokanal-flutter/
-    git:
+      git:
       url: git@github.com:kaypora-games/stokanal-flutter.git
       ref: master
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail:
-  path: ^1.8.3
+#  mocktail: # original
+  mocktail: ^1.0.5
+#  path: ^1.8.3 # original
+  path: ^1.9.1

@@ -25,7 +25,8 @@ abstract class RiveAnimationController<T> {
 
   /// Apply animation to objects registered in [core]. Note that a [core]
   /// context is specified as animations can be applied to instances.
-  void apply(T core, double elapsedSeconds);
+  /// Return true if animation apply was successful, false otherwise
+  bool apply(T core, double elapsedSeconds);
 
   bool init(T core) => true;
   void dispose() {}
