@@ -1,5 +1,14 @@
+## 0.14.6
+
+- Bumps to `rive_native: 0.1.6`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
+### Fixes
+
+- Fixed [623](https://github.com/rive-app/rive-flutter/issues/623) - Explicitly nil Metal ivars in dealloc to prevent use-after-free on teardown
+
 ## 0.14.5
 
+- Bumps to `rive_native: 0.1.5`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 - Add optional `viewModelInstance` parameter to `File.artboardToBind`, allowing a `ViewModelInstance` to be bound to a `BindableArtboard`. When provided, the view model instance is set on the artboard property in the core runtime.
 
 ## 0.14.4
