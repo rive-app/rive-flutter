@@ -1,5 +1,17 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/gestures.dart';
 import 'package:rive/rive.dart';
+
+/// Global toggle for per-artboard advance profiling.
+///
+/// When enabled, each [RiveWidgetController.advance] call emits a
+/// `dart:developer` [developer.Timeline] sync event named
+/// `Rive.advance:<artboard>` with the advance duration in microseconds
+/// and whether the state machine reported a change.
+///
+/// Set to `true` from app code (e.g. behind a feature flag) to activate.
+bool riveAdvanceProfilingEnabled = false;
 
 /// {@template rive_controller}
 /// This controller builds on top of the concept of a Rive painter, but
@@ -19,6 +31,9 @@ base class RiveWidgetController extends BasicArtboardPainter
   /// The state machine that the [RiveWidgetController] is using.
   late final StateMachine stateMachine;
 
+  /// Cached label for profiling (avoids string allocation per frame).
+  late final String _profilingLabel;
+
   /// {@macro rive_controller}
   /// - The [file] parameter is the Rive file to paint.
   /// - The [artboardSelector] parameter specifies which artboard to use.
@@ -30,6 +45,7 @@ base class RiveWidgetController extends BasicArtboardPainter
   }) {
     artboard = _createArtboard(file, artboardSelector);
     stateMachine = _createStateMachine(artboard, stateMachineSelector);
+    _profilingLabel = 'Rive.advance:${artboard.name}';
   }
 
   /// Whether the state machine has been scheduled for repaint.
@@ -198,9 +214,30 @@ base class RiveWidgetController extends BasicArtboardPainter
     }
   }
 
+  static final Stopwatch _profilingStopwatch = Stopwatch();
+
   @override
   bool advance(double elapsedSeconds) {
     _repaintScheduled = false;
+
+    if (riveAdvanceProfilingEnabled) {
+      _profilingStopwatch.reset();
+      _profilingStopwatch.start();
+      final didAdvance = stateMachine.advanceAndApply(elapsedSeconds);
+      _profilingStopwatch.stop();
+
+      developer.Timeline.instantSync(
+        _profilingLabel,
+        arguments: {
+          'us': _profilingStopwatch.elapsedMicroseconds.toString(),
+          'didAdvance': didAdvance.toString(),
+          'elapsed': elapsedSeconds.toString(),
+        },
+      );
+
+      return didAdvance && active;
+    }
+
     final didAdvance = stateMachine.advanceAndApply(elapsedSeconds);
     return didAdvance && active;
   }

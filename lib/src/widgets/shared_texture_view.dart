@@ -107,6 +107,10 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
 
   int drawOrder = 1;
 
+  /// Accumulated elapsed seconds across frames while dirty tracking skips
+  /// the paint cycle. Reset to 0 after each [paintIntoSharedTexture] call.
+  double _accumulatedElapsed = 0;
+
   SharedRenderTexture get shared => _shared;
   set shared(SharedRenderTexture value) {
     if (_shared == value) {
@@ -182,6 +186,12 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     Offset panelPosition = renderBox.localToGlobal(Offset.zero);
     Offset globalPosition = localToGlobal(Offset.zero) - panelPosition;
 
+    // When dirty tracking is enabled, use accumulated elapsed time so the
+    // controller receives the full wall-clock delta since the last advance.
+    final effectiveElapsed =
+        _shared.dirtyTrackingEnabled ? _accumulatedElapsed : elapsedSeconds;
+    _accumulatedElapsed = 0;
+
     final renderer = texture.renderer;
 
     renderer.save();
@@ -195,7 +205,7 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
           texture,
           devicePixelRatio,
           size,
-          elapsedSeconds,
+          effectiveElapsed,
         ) ??
         false;
     if (_shouldAdvance) {
@@ -220,6 +230,8 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   @override
   void frameCallback(Duration duration) {
     super.frameCallback(duration);
+    _accumulatedElapsed += elapsedSeconds;
+    _shared.onFrameTick?.call(elapsedSeconds);
     _shared.schedulePaint();
   }
 
