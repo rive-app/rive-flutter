@@ -19,7 +19,7 @@ class AnimationStateInstance extends StateInstance<AnimationState> {
     return '${animation.name}['
       '${animation.loop.name},'
       '${animation.keyedObjects.length},'
-      '${animation.workStart}:${animation.workEnd}'
+      '${animation.enableWorkArea ? '${animation.workStart}:${animation.workEnd}' : '${animation.duration}'}'
       ']';
   }
 

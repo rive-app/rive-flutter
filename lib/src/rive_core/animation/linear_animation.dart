@@ -114,23 +114,25 @@ class LinearAnimation extends LinearAnimationBase {
   /// animations exist once but entire Rive file can be instanced multiple times
   /// playing different positions).
   void apply(double time, {required CoreContext coreContext, double mix = 1}) {
-    if (quantize) {
-      // ignore: parameter_assignments
-      time = (time * fps).floor() / fps;
-    }
-    // for (final keyedObject in _keyedObjects.values) {
-    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-    var t = _objects.length;
+
+    assert (!quantize_, 'rive not expected');
+    // if (quantize_) {
+    //   // ignore: parameter_assignments
+    //   time = (time * fps).floor() / fps;
+    // }
+
+    var t = _objects.length; // for indexed has the best performance in Dart
     for (var i = 0; i < t; i++) {
       _objects[i].apply(time, mix, coreContext);
     }
-    // for (final keyedObject in _objects) {
-    //   keyedObject.apply(time, mix, coreContext);
-    // }
   }
 
-  Loop get loop => Loop.values[loopValue];
-  set loop(Loop value) => loopValue = value.index;
+  Loop? loop_; // publicly exposed
+  Loop get loop => loop_ ??= Loop.values[loopValue];
+  set loop(Loop value) {
+    loop_ = value;
+    loopValue = value.index;
+  }
 
   @override
   void durationChanged(int from, int to) {}

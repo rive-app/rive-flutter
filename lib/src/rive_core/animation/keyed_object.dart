@@ -120,16 +120,13 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
 
     var ps = propsNonCallback;
     var t = ps.length;
-    for (var i = 0; i < t; i++) {
-      ps[i].apply(time, mix, object);
+    KeyedProperty p;
+    for (var i = 0; i < t; i++) { // for indexed has the best performance in Dart
+      p = ps[i];
+      if (p.keyframes.length == 0) continue;
+      p.apply(time, mix, object);
     }
-    // for (final keyedProperty in propsNonCallback) {
-    //   keyedProperty.apply(time, mix, object);
-    // }
   }
-
-  // @override
-  // void objectIdChanged(int from, int to) {}
 
   @override
   bool import(ImportStack stack) {

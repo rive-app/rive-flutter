@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_classes_with_only_static_members
 /// Objects to collect performance stats
 import 'package:plato/plato.dart';
 
@@ -67,9 +68,15 @@ class Stopwatcher {
 abstract class FrequencyPrinter {
 
   static var _count = 0;
-  static void print(String Function() string, [int divider = 1]) {
-    if (_count++ % 10000 == 10000-1 && _count % divider == 0) {
+  static void print(String Function() string, {int frequency = 10000, int divider = 1}) {
+    if (_count++ % frequency == frequency-1 && _count % divider == 0) {
       _logr.info(string(), 1);
     }
   }
+
+  // static void always(String Function() string, [int divider = 1]) {
+  //   if (_count % divider == 0) {
+  //     _logr.info(string(), 1);
+  //   }
+  // }
 }

@@ -184,9 +184,9 @@ class LayerController {
     //   _currentState!.advance(elapsedSeconds, controller);
     // }
 
-    FrequencyPrinter.print(() => '_currentState > ${_currentState?.ticker} '
+    FrequencyPrinter.print(divider: 10, () => '_currentState > ${_currentState?.ticker} '
       '${controller.artboard?.name} '
-      '${layer.name}', 10,
+      '${layer.name}',
     );
     _currentState?.advance(elapsedSeconds, controller);
 

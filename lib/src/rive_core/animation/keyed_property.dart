@@ -19,16 +19,6 @@ class KeyFrameList<T extends KeyFrameInterface> {
   @nonVirtual
   List<T> keyframes = <T>[];
 
-  // var _keyframes = <T>[];
-  // List<T> get keyframes => _keyframes;
-  // set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
-
-  // T get firstKeyframe => _keyframes.first;
-  // void remove(T keyframe) {
-  //   _keyframes.remove(keyframe);
-  //   onKeyframesChanged();
-  // }
-
   void onKeyframesChanged() {}
 
   /// Get the keyframe immediately following the provided one.
@@ -313,47 +303,20 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     _skipInterpolation = true;
   }
 
-  // // uncomment me for stats
-  // static var _applies = 0;
-  // static var _hits = 0;
-  // static var _toleranceHits = 0;
-  // var _skips = 0;
-
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
-    if (keyframes.length == 0) {
-      return;
-    }
-
-    // _applies++;
-
-    // final _ClosestFrame pair;
+    // if (keyframes.length == 0) {
+    //   return;
+    // }
 
     if (_pair != null && seconds >= _pair!.secondsMin && seconds <= _pair!.secondsMax) { // reuse
-      // _hits++;
-      // if (seconds != _pair!._seconds) {
-      //   _toleranceHits++;
-      // }
-      // if (_hits % 1000000 == 0) {
-      //   print('HITS > $_hits $_toleranceHits > hits=${(_hits/_applies).toStringAsFixed(2)} tolerance=${(_toleranceHits/_hits).toStringAsFixed(2)}');
-      // }
 
       if (_skipInterpolation) { // no interpolation, lookup and don't reset
         _pair = _closestFramePair(seconds);
-        // if (_skips++ % 1000 == 0) {
-        //   log('SKIP INTERPOLATION');
-        // }
       }
     } else { // lookup and reset
       _pair = _closestFramePair(seconds);
     }
-
-    // if (_pair != null &&
-    //     seconds >= _pair!.secondsMin &&
-    //     seconds <= _pair!.secondsMax) { // it's a hit
-    // } else {
-    //   _pair = _closestFramePair(seconds);
-    // }
 
     var fromFrame = _pair!.fromFrame;
 
