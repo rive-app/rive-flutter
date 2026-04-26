@@ -96,8 +96,6 @@ class LinearAnimation extends LinearAnimationBase {
     // Do not report a callback twice if it comes from the "pong" part of a
     // "ping pong" loop
     if (!isAtStartFrame || !fromPong) {
-      // for (final keyedObject in _keyedObjects.values) {
-      /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
       for (final keyedObject in _objects) {
         keyedObject.reportKeyedCallbacks(
           secondsFrom,

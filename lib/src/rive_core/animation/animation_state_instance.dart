@@ -9,6 +9,20 @@ import 'package:rive/src/rive_core/state_machine_controller.dart';
 class AnimationStateInstance extends StateInstance<AnimationState> {
   final LinearAnimationInstance animationInstance;
 
+  @override
+  String get ticker {
+    var animation = state.animation;
+    if (animation == null) {
+      return 'AnimationStateInstance[]';
+    }
+
+    return '${animation.name}['
+      '${animation.loop.name},'
+      '${animation.keyedObjects.length},'
+      '${animation.workStart}:${animation.workEnd}'
+      ']';
+  }
+
   AnimationStateInstance(AnimationState state)
       : assert(state.animation != null),
         animationInstance = LinearAnimationInstance(

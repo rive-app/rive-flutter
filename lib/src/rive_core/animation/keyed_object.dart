@@ -93,7 +93,6 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     KeyedProperty keyedProperty;
     for (var i = 0; i < t; i++) {
       keyedProperty = ps[i];
-    // for (final keyedProperty in keyedProperties) {
 
       if (!keyedProperty.isCallback) {
         continue;

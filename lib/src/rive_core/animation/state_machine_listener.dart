@@ -17,6 +17,7 @@ enum ListenerType { enter, exit, down, up, move, event, click }
 enum GestureClickPhase { out, down, clicked }
 
 class StateMachineListener extends StateMachineListenerBase {
+
   final ListenerActions actions = ListenerActions();
 
   WorldTransformComponent? _target;

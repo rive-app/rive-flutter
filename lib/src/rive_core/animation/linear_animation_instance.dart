@@ -117,15 +117,15 @@ class LinearAnimationInstance {
     }
 
     var fps = animation.fps;
-    double frames = _time * fps;
+    var frames = _time * fps;
 
     var start = animation.enableWorkArea ? animation.workStart : 0;
     var end = animation.enableWorkArea ? animation.workEnd : animation.duration;
     var range = end - start;
 
-    bool didLoop = false;
+    var didLoop = false;
 
-    int direction = deltaSeconds < 0 ? -1 : 1;
+    var direction = deltaSeconds < 0 ? -1 : 1;
     switch (animation.loop) {
       case Loop.oneShot:
         if (direction == 1 && frames > end) {

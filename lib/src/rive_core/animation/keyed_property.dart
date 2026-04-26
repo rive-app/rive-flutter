@@ -283,13 +283,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     int idx = _closestFrameIndex(secondsFrom, exactOffset: fromExactOffset);
     int idxTo = _closestFrameIndex(secondsTo, exactOffset: toExactOffset);
 
-    // validate _closestFrameIndex method
-    // int _idx = closestFrameIndex(secondsFrom, exactOffset: fromExactOffset);
-    // int _idxTo = closestFrameIndex(secondsTo, exactOffset: toExactOffset);
-    // if (_idx != idx || idxTo != _idxTo) {
-    //   throw Exception('$_idx != $idx, $idxTo != $_idxTo');
-    // }
-
     // going backwards?
     if (idxTo < idx) {
       var swap = idx;

@@ -11,6 +11,8 @@ abstract class StateInstance<T extends LayerState> {
 
   StateInstance(this.state);
 
+  String get ticker => '$runtimeType';
+
   void advance(double seconds, StateMachineController controller);
   void apply(CoreContext core, double mix);
 

@@ -25,6 +25,7 @@ import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
+import 'package:rive/src/rive_core/stats.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
@@ -217,14 +218,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   @nonVirtual
   final activeNestedArtboards = UniqueList.of<NestedArtboard>();
-  // Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   @nonVirtual
   final List<Joystick> joysticks = [];
-  // Iterable<Joystick> get joysticks => _joysticks;
 
   final List<DataBind> dataBinds = [];
-  // Iterable<DataBind> get dataBinds => _dataBinds;
 
   bool canPreApplyJoysticks() {
     if (joysticks.length == 0) {
@@ -271,19 +269,33 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool advanceInternal(double elapsedSeconds,
       {bool nested = false, bool isRoot = false}) {
     bool didUpdate = false;
+
+    var stopwatch = Stopwatcher();
+
     if (_dirtyLayout.isNotEmpty) {
       var dirtyLayout = _dirtyLayout.toList();
       _dirtyLayout.clear();
+
+      stopwatch.start();
       syncStyle();
+      stopwatch.commit((t) => AdvanceStats.instance.syncStyle += t);
+
+      stopwatch.start();
       for (final layoutComponent in dirtyLayout) {
         layoutComponent.syncStyle();
       }
+      stopwatch.commit((t) => AdvanceStats.instance.layoutComponentSyncStyle += t);
+
+      stopwatch.start();
       layoutNode.calculateLayout(width, height, LayoutDirection.ltr);
       if (dirt & ComponentDirt.layoutStyle != 0) {
         // Maybe we can genericize this to pass all styles to children if
         // the child should inherit
         cascadeAnimationStyle(interpolation, interpolator, interpolationTime);
       }
+      stopwatch.commit((t) => AdvanceStats.instance.cascadeAnimationStyle += t);
+
+      stopwatch.start();
       // Need to sync all layout positions.
       for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
         layout.updateLayoutBounds();
@@ -292,8 +304,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           didUpdate = true;
         }
       }
+      stopwatch.commit((t) => AdvanceStats.instance.dependencyOrder += t);
     }
 
+    stopwatch.start();
     advanceSane = true;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
@@ -305,38 +319,45 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
     hasChangedDrawOrderInLastUpdate = false;
+    stopwatch.commit((t) => AdvanceStats.instance.animationControllers += t);
 
-    // Joysticks can be applied before updating components if none of the
-    // joysticks have "external" control. If they are controlled/moved by some
-    // other component then they need to apply after the update cycle, which is
-    // less efficient.
-    var canApplyJoysticksEarly = canPreApplyJoysticks();
-    if (canApplyJoysticksEarly) {
-      applyJoysticks(isRoot: isRoot);
-    }
+    // stopwatch.start();
+    // // Joysticks can be applied before updating components if none of the
+    // // joysticks have "external" control. If they are controlled/moved by some
+    // // other component then they need to apply after the update cycle, which is
+    // // less efficient.
+    // var canApplyJoysticksEarly = canPreApplyJoysticks();
+    // if (canApplyJoysticksEarly) {
+    //   applyJoysticks(isRoot: isRoot);
+    // }
+    // stopwatch.commit((t) => _stats.applyJoysticks += t);
 
-    if (isRoot) {
-      updateDataBinds();
-    }
-    if (updateComponents() || didUpdate) {
-      didUpdate = true;
-    }
+    // stopwatch.start();
+    // if (isRoot) {
+    //   updateDataBinds();
+    // }
+    // stopwatch.commit((t) => _stats.updateDataBinds += t);
 
-    // If joysticks applied, run the update again for the animation changes.
-    if (!canApplyJoysticksEarly && applyJoysticks(isRoot: isRoot)) {
-      if (updateComponents()) {
-        didUpdate = true;
-      }
-    }
+    stopwatch.start();
+    didUpdate |= updateComponents();
+    stopwatch.commit((t) => AdvanceStats.instance.updateComponents += t);
 
+    // stopwatch.start();
+    // // If joysticks applied, run the update again for the animation changes.
+    // if (!canApplyJoysticksEarly && applyJoysticks(isRoot: isRoot)) {
+    //   if (updateComponents()) {
+    //     didUpdate = true;
+    //   }
+    // }
+    // stopwatch.commit((t) => _stats.applyJoysticks += t);
+
+    stopwatch.start();
     if (nested) {
-      // var active = _activeNestedArtboards.toList(growable: false);
       for (final activeNestedArtboard in activeNestedArtboards){//.toList(growable: false)) {
-        if (activeNestedArtboard.advance(elapsedSeconds)) {
-          didUpdate = true;
-        }
+        didUpdate |= activeNestedArtboard.advance(elapsedSeconds);
       }
     }
+    stopwatch.commit((t) => AdvanceStats.instance.nested += t);
 
     return didUpdate;
   }
@@ -647,6 +668,23 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   Vec2D get worldTranslation => Vec2D();
 
   Drawable? firstDrawable;
+
+  Drawable? _lastDrawable;
+
+  /// Get last drawable by iterating over the firstDrawable
+  Drawable? get lastDrawable {
+
+    if (_lastDrawable != null) {
+      return _lastDrawable;
+    }
+
+    var drawable = firstDrawable;
+    // walk to the end
+    while (drawable?.prev != null) {
+      drawable = drawable!.prev;
+    }
+    return _lastDrawable = drawable;
+  }
 
   void computeDrawOrder() {
     drawables.clear();
