@@ -190,7 +190,10 @@ class LayerController implements Tickerable {
   bool apply(CoreContext core, double elapsedSeconds) {
 
     StateStats.advance(_currentState);
-    _currentState?.advance(elapsedSeconds, controller);
+    var anyAdvance = false;
+    if (_currentState?.advance(elapsedSeconds, controller)??false) {
+      anyAdvance = true;
+    }
 
     _updateMix(elapsedSeconds);
 
@@ -200,7 +203,9 @@ class LayerController implements Tickerable {
       if (!_holdAnimationFrom) {
         // FrequencyPrinter.print(() => '_stateFrom > $_stateFrom');
         StateStats.advance(_stateFrom);
-        _stateFrom!.advance(elapsedSeconds, controller);
+        if (_stateFrom!.advance(elapsedSeconds, controller)) {
+          anyAdvance = true;
+        }
       }
     }
 
@@ -231,7 +236,7 @@ class LayerController implements Tickerable {
       }
     }
 
-    if (i == 0) _apply(core);
+    if (i == 0 && anyAdvance) _apply(core);
 
     // give the current state the opportunity to clear spilled time, so that we
     // do not carry this over into another iteration.

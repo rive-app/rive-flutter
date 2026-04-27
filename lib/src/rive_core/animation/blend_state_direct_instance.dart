@@ -9,7 +9,7 @@ class BlendStateDirectInstance
   BlendStateDirectInstance(BlendStateDirect state) : super(state);
 
   @override
-  void advance(double seconds, StateMachineController controller) {
+  bool advance(double seconds, StateMachineController controller) {
     super.advance(seconds, controller);
     for (final animation in animationInstances) {
       if (animation.blendAnimation.blendSource ==
@@ -26,5 +26,7 @@ class BlendStateDirectInstance
         animation.mix = (value / 100).clamp(0, 1);
       }
     }
+
+    return true;
   }
 }

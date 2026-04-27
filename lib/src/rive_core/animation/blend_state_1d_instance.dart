@@ -56,7 +56,7 @@ class BlendState1DInstance
   BlendStateAnimationInstance<BlendAnimation1D>? _to;
 
   @override
-  void advance(double seconds, StateMachineController controller) {
+  bool advance(double seconds, StateMachineController controller) {
     super.advance(seconds, controller);
     dynamic inputValue =
         controller.getInputValue((state as BlendState1D).inputId);
@@ -94,6 +94,8 @@ class BlendState1DInstance
         animation.mix = 0;
       }
     }
+
+    return true;
   }
 
   @override

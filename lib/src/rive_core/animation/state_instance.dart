@@ -15,7 +15,7 @@ abstract class StateInstance<T extends LayerState> implements Tickerable {
   @override
   String get ticker => '$runtimeType';
 
-  void advance(double seconds, StateMachineController controller);
+  bool advance(double seconds, StateMachineController controller);
   void apply(CoreContext core, double mix);
 
   bool get keepGoing;
@@ -29,7 +29,7 @@ abstract class StateInstance<T extends LayerState> implements Tickerable {
 class SystemStateInstance extends StateInstance {
   SystemStateInstance(LayerState state) : super(state);
   @override
-  void advance(double seconds, StateMachineController controller) {}
+  bool advance(double seconds, StateMachineController controller) { return true;}
 
   @override
   void apply(CoreContext core, double mix) {}

@@ -32,7 +32,7 @@ class AnimationStateInstance extends StateInstance<AnimationState> {
         super(state);
 
   @override
-  void advance(double seconds, StateMachineController controller) {
+  bool advance(double seconds, StateMachineController controller) {
 
     final double secs;
     if (state.speed == 1) {
@@ -41,7 +41,7 @@ class AnimationStateInstance extends StateInstance<AnimationState> {
       secs = seconds * state.speed;
     }
 
-    animationInstance.advance(
+    return animationInstance.advance(
       secs,
       callbackReporter: controller,
     );
