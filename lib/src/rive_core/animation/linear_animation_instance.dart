@@ -130,14 +130,9 @@ class LinearAnimationInstance {
     var lastTime = _time;
     _time += deltaSeconds;
 
-    if (callbackReporter != null) {
-      animation.reportKeyedCallbacks(
-        lastTime,
-        _time,
-        reporter: callbackReporter,
-        speedDirection: _speedDirection,
-      );
-    }
+    final _ReportKeyedCallbacksInvocation? callbacksInvocation =
+      callbackReporter == null ? null :
+      (_ReportKeyedCallbacksInvocation(this, callbackReporter)..fill(lastTime, _time));
 
     var fps = animation.fps_;
     var frames = _time * fps;
@@ -213,14 +208,13 @@ class LinearAnimationInstance {
           frames = start + remainder;
           lastTime = 0;
           _time = frames / fps;
-          if (callbackReporter != null) {
-            animation.reportKeyedCallbacks(
-              lastTime,
-              _time,
-              reporter: callbackReporter,
-              speedDirection: _speedDirection,
-            );
-          }
+          callbacksInvocation?.fill(lastTime, _time);
+            // animation.reportKeyedCallbacks(
+            //   lastTime,
+            //   _time,
+            //   reporter: callbackReporter,
+            //   speedDirection: _speedDirection,
+            // );
           _didLoop = true;
         } else if (direction == -1 && frames <= start) {
 
@@ -235,14 +229,16 @@ class LinearAnimationInstance {
           frames = end - remainder;
           lastTime = end / fps;
           _time = frames / fps;
-          if (callbackReporter != null) {
-            animation.reportKeyedCallbacks(
-              lastTime,
-              _time,
-              reporter: callbackReporter,
-              speedDirection: _speedDirection,
-            );
-          }
+
+          callbacksInvocation?.fill(lastTime, _time);
+          // if (callbackReporter != null) {
+          //   animation.reportKeyedCallbacks(
+          //     lastTime,
+          //     _time,
+          //     reporter: callbackReporter,
+          //     speedDirection: _speedDirection,
+          //   );
+          // }
           _didLoop = true;
         }
         break;
@@ -272,19 +268,23 @@ class LinearAnimationInstance {
           _direction *= -1;
           direction *= -1;
           _didLoop = true;
-          if (callbackReporter != null) {
-            animation.reportKeyedCallbacks(
-              lastTime,
-              _time,
-              reporter: callbackReporter,
-              speedDirection: _speedDirection,
-              fromPong: fromPong,
-            );
-          }
+
+          callbacksInvocation?.fill(lastTime, _time, fromPong: fromPong);
+          // if (callbackReporter != null) {
+          //   animation.reportKeyedCallbacks(
+          //     lastTime,
+          //     _time,
+          //     reporter: callbackReporter,
+          //     speedDirection: _speedDirection,
+          //     fromPong: fromPong,
+          //   );
+          // }
           fromPong = !fromPong;
         }
         break;
     }
+
+    callbacksInvocation?.call();
 
     // if (dontKeepGoing) {
     //   _spilledTime = 0;
@@ -297,4 +297,30 @@ class LinearAnimationInstance {
   // Used by runtime to report events from linear animations in nested artboards
   // when not played in state machine
   void reportEvent(Event event) {}
+}
+
+class _ReportKeyedCallbacksInvocation {
+  final LinearAnimationInstance instance;
+  final KeyedCallbackReporter reporter;
+  _ReportKeyedCallbacksInvocation(this.instance, this.reporter);
+
+  late double secondsFrom;
+  late double secondsTo;
+  late bool fromPong;
+
+  void fill(double secondsFrom, double secondsTo, {bool fromPong = false}) {
+    this.secondsFrom = secondsFrom;
+    this.secondsTo = secondsTo;
+    this.fromPong = fromPong;
+  }
+
+  void call() {
+    instance.animation.reportKeyedCallbacks(
+      secondsFrom,
+      secondsTo,
+      reporter: reporter,
+      speedDirection: instance._speedDirection,
+      fromPong: fromPong,
+    );
+  }
 }
