@@ -203,13 +203,15 @@ class LayerController implements Tickerable {
         _stateFrom!.advance(elapsedSeconds, controller);
       }
     }
-    _apply(core);
+
+    // _apply(core);
 
     var currentState = _currentState;
     var stateFrom = _stateFrom;
     var holdAnimation = _holdAnimation;
     layerApplySane = true; // set flag to sane
-    for (var i = 0; updateState(i != 0); i++) {
+    var i = 0;
+    for (; updateState(i != 0); i++) {
       _apply(core);
       if (i == 3) {
         // Escape hatch, let the user know their logic is causing some kind of
@@ -229,6 +231,8 @@ class LayerController implements Tickerable {
       }
     }
 
+    if (i == 0) _apply(core);
+
     // give the current state the opportunity to clear spilled time, so that we
     // do not carry this over into another iteration.
     _currentState?.clearSpilledTime();
@@ -243,12 +247,23 @@ class LayerController implements Tickerable {
   LinearAnimation? _holdAnimation;
   double _holdTime = 0;
 
+  // static var _anyChanges = 0;
+  // static var _currentChanges = 0;
+  // static const _logr = Logr.always(prefix: 'state-machine-controller');
+
   bool updateState(bool ignoreTriggers) {
     if (isTransitioning && _transition!.enableEarlyExit == false) {
       return false;
     }
 
     _waitingForExit = false;
+
+    // var any = tryChangeState(anyStateInstance, ignoreTriggers);
+    // _anyChanges += any ? 1 : 0;
+    // _currentChanges += (!any && _currentState != null && tryChangeState(_currentState!, ignoreTriggers)) ? 1 : 0;
+    // if ((_anyChanges + _currentChanges) % 100 == 100-1) {
+    //   _logr.info('anyChanges=$_anyChanges currentChanges=$_currentChanges');
+    // }
 
     return
       tryChangeState(anyStateInstance, ignoreTriggers) ||
