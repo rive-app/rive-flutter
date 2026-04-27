@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:plato/plato.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/linear_animation_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
@@ -11,7 +12,11 @@ import 'keyframe.dart';
 
 export 'package:rive/src/generated/animation/linear_animation_base.dart';
 
-class LinearAnimation extends LinearAnimationBase {
+class LinearAnimation extends LinearAnimationBase implements Tickerable {
+
+  @override
+  String get ticker => 'LinearAnimation[$name]';
+
   /// Map objectId to KeyedObject. N.B. this is the id of the object that we
   /// want to key in core, not of the KeyedObject. It's a clear way to see if an
   /// object is keyed in this animation.

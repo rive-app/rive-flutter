@@ -60,7 +60,11 @@ typedef OnEvent = void Function(RiveEvent);
 int _maxIterations = 0;
 final _tooManyIterationsCollected = <String>{};
 
-class LayerController {
+class LayerController implements Tickerable {
+
+  @override
+  String get ticker => '$runtimeType[${layer.name}]';
+
   final StateMachineLayer layer;
   final StateInstance anyStateInstance;
   final CoreContext core;
@@ -92,7 +96,9 @@ class LayerController {
   }
 
   void _fireEvents(Iterable<StateMachineFireEvent> fireEvents) {
+    // var t = fireEvents.length;
     for (final fireEvent in fireEvents) {
+    // for (var i = 0; i < t ; i++) {
       var event = core.resolve(fireEvent.eventId);
       if (event != null) {
         controller.reportEvent(event);
@@ -138,8 +144,8 @@ class LayerController {
     var transition = _transition;
     if (transition != null && _stateFrom != null && transition.duration != 0) {
       _mix = (_mix + elapsedSeconds / transition.mixTime(_stateFrom!.state))
-          .clamp(0, 1)
-          .toDouble();
+        .clamp(0, 1)
+        .toDouble();
 
       if (_mix == 1 && !_transitionCompleted) {
         _transitionCompleted = true;
@@ -182,14 +188,8 @@ class LayerController {
   bool layerApplySane = true;
 
   bool apply(CoreContext core, double elapsedSeconds) {
-    // if (_currentState != null) {
-    //   _currentState!.advance(elapsedSeconds, controller);
-    // }
 
-    // FrequencyPrinter.print(divider: 10, () => '_currentState > ${_currentState?.ticker} '
-    //   '${controller.artboard?.name} '
-    //   '${layer.name}',
-    // );
+    StateStats.advance(_currentState);
     _currentState?.advance(elapsedSeconds, controller);
 
     _updateMix(elapsedSeconds);
@@ -199,6 +199,7 @@ class LayerController {
       // realize we need to mix it in.
       if (!_holdAnimationFrom) {
         // FrequencyPrinter.print(() => '_stateFrom > $_stateFrom');
+        StateStats.advance(_stateFrom);
         _stateFrom!.advance(elapsedSeconds, controller);
       }
     }
@@ -404,6 +405,7 @@ class LayerController {
 
 class StateMachineController extends RiveAnimationController<CoreContext>
     implements KeyedCallbackReporter {
+
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
@@ -660,6 +662,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     var layerApplySane = true;
     // FrequencyPrinter.print(() => '${artboard?.name} > ${layerControllers.length}');
     for (final layerController in layerControllers) {
+      StateStats.applyLayer(layerController);
       if (layerController.apply(core, elapsedSeconds)) {
         keepGoing = true;
       }

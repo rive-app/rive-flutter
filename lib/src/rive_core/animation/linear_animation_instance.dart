@@ -6,6 +6,8 @@ import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/event.dart';
 
+import '../stats.dart';
+
 class LinearAnimationInstance {
   final LinearAnimation animation;
   final int _speedDirection;
@@ -91,6 +93,8 @@ class LinearAnimationInstance {
       {KeyedCallbackReporter? callbackReporter}) {
     _spilledTime = 0;
 
+    // assert (0 == 1, 'debug');
+
     var loop = animation.loop_??animation.loop;
 
     // NOTE:
@@ -98,7 +102,6 @@ class LinearAnimationInstance {
     // stop gap before we move spilled tracking into state machine logic.
     var dontKeepGoing = !keepGoing;
 
-    // TODO review this
     if (loop == Loop.oneShot) {
       if (dontKeepGoing) {
         _didLoop = true;
@@ -284,6 +287,7 @@ class LinearAnimationInstance {
         break;
     }
 
+    StateStats.callbackAnimation(callbacksInvocation?.instance.animation);
     callbacksInvocation?.call();
 
     // if (dontKeepGoing) {

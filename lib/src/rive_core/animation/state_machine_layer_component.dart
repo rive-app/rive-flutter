@@ -4,7 +4,6 @@
 // ignore: unused_import
 import 'dart:collection';
 
-import 'package:collection/collection.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/state_machine_layer_component_base.dart';
 import 'package:rive/src/rive_core/animation/state_machine_fire_event.dart';
@@ -21,9 +20,8 @@ abstract class StateMachineLayerComponent
     _events.add(event);
   }
 
-  Iterable<StateMachineFireEvent> eventsAt(
-          StateMachineFireOccurance occurence) =>
+  Iterable<StateMachineFireEvent> eventsAt(StateMachineFireOccurance occurence) =>
       _events
           .where((fireEvent) => fireEvent.occurs == occurence)
-          .whereNotNull();
+          .nonNulls;
 }

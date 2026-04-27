@@ -209,6 +209,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           }
 
           component.dirt &= ComponentDirt.collapsed;
+          StateStats.update(component);
           component.update(d);
           if (_dirtDepth < i) {
             break;
@@ -275,6 +276,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       {bool nested = false, bool isRoot = false}) {
     bool didUpdate = false;
 
+    StateStats.renew(name);
+
     // var stopwatch = Stopwatcher();
 
     if (_dirtyLayout.isNotEmpty) {
@@ -316,6 +319,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     advanceSane = true;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
+        StateStats.applyController(controller);
         if (!controller.apply(context, elapsedSeconds)) {
           advanceSane = false;
           _logr.info('ANIMATION-CONTROLLER FAILED TO APPLY > $name $controller');
@@ -365,6 +369,8 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
     // stopwatch.commit((t) => AdvanceStats.instance.nested += t);
+
+    StateStats.print();
 
     return didUpdate;
   }

@@ -14,7 +14,8 @@ publish_to: none
   #   - widget
 #   -
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+#  sdk: ">=2.17.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=2.5.0"
 #  sdk: ^3.11.0 # pinned to plato
 #  flutter: ^3.41.0 # pinned to plato

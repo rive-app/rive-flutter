@@ -4,13 +4,8 @@ import 'package:rive/src/rive_core/animation/transition_condition.dart';
 
 class StateTransitionConditions extends ListBase<TransitionCondition> {
 
-  // final List<TransitionCondition?> _values = [];
-  // List<TransitionCondition> get values => _values.cast<TransitionCondition>();
-
   @nonVirtual
-  // @override
   final List<TransitionCondition?> values = <TransitionCondition?>[]; // has to be nullable
-  // List<TransitionCondition> get values => _values.cast<TransitionCondition>();
 
   @override
   int get length => values.length;

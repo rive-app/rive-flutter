@@ -178,6 +178,9 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
     var length = keyframes.length;
+    if (length == 0) {
+      return 0;
+    }
     int end = length - 1;
     var totalSeconds = keyframes[end].seconds;
 
@@ -200,7 +203,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     int start = 0;
     double closestSeconds;
 
-    while (start <= end) {
+    // while (start <= end) {
+    while (true) {
       closestSeconds = keyframes[mid].seconds;
       if (closestSeconds < seconds) {
         start = mid + 1;
@@ -209,9 +213,12 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       } else {
         return mid + exactOffset;
       }
+      if (start > end) {
+        return start;
+      }
       mid = (start + end) >> 1;
     }
-    return start;
+    // return start;
   }
 
   /// Original method (DO NOT DELETE FOR REFERENCE)

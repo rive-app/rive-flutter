@@ -1,3 +1,4 @@
+import 'package:plato/plato.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/rive_core_beans.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
@@ -11,7 +12,11 @@ export 'package:rive/src/runtime_mounted_artboard.dart';
 /// An AnimationController which controls a StateMachine and provides access to
 /// the inputs of the StateMachine.
 class LinearAnimationInstance extends core.LinearAnimationInstance
-    with RuntimeEventReporter, KeyedCallbackReporter {
+    with RuntimeEventReporter, KeyedCallbackReporter implements Tickerable {
+
+  @override
+  String get ticker => 'LinearAnimationI[${animation.name}]';
+
   final _runtimeEventListeners = <OnRuntimeEvent>{};
   late CoreContext? context;
 

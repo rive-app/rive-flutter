@@ -9,7 +9,11 @@ import 'package:stokanal/core.dart';
 export 'package:rive/src/generated/component_base.dart';
 
 abstract class Component extends ComponentBase<RuntimeArtboard>
-    implements DependencyGraphNode<Component>, Parentable<Component> {
+    implements DependencyGraphNode<Component>, Parentable<Component>, Tickerable {
+
+  @override
+  String get ticker => '$runtimeType';
+
   Artboard? _artboard;
   dynamic _userData;
   final DependencyHelper<Artboard, Component> _dependencyHelper =
