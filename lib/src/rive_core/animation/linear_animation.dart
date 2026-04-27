@@ -155,10 +155,10 @@ class LinearAnimation extends LinearAnimationBase implements Tickerable {
     }
   }
 
-  Loop? loop_; // publicly exposed
-  Loop get loop => loop_ ??= Loop.values[loopValue];
+  Loop? _loop;
+  Loop get loop => _loop ??= Loop.values[loopValue];
   set loop(Loop value) {
-    loop_ = value;
+    _loop = value;
     loopValue = value.index;
   }
 
@@ -189,7 +189,7 @@ class LinearAnimation extends LinearAnimationBase implements Tickerable {
   /// Convert a global clock to local seconds (takes into consideration work
   /// area start/end, speed, looping).
   double globalToLocalTime(double seconds) {
-    switch (loop_??loop) {
+    switch (loop) {
       case Loop.oneShot:
         return seconds + startTime;
       case Loop.loop:

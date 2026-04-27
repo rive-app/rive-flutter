@@ -67,14 +67,14 @@ class LinearAnimationInstance {
   /// Whether the controller driving this animation should keep requesting
   /// frames be drawn.
   bool get keepGoing =>
-      (animation.loop_??animation.loop) != Loop.oneShot ||
+      animation.loop != Loop.oneShot ||
       (directedSpeed > 0 && _time < animation.endSeconds) ||
       (directedSpeed < 0 && _time > animation.startSeconds);
 
   // We estimate whether the animation should keep playing using the speed
   // multiplier provided by the caller
   bool shouldKeepGoing(double speedMultiplier) {
-    return (animation.loop_??animation.loop) != Loop.oneShot ||
+    return animation.loop != Loop.oneShot ||
         (speedMultiplier * directedSpeed > 0 && _time < animation.endSeconds) ||
         (speedMultiplier * directedSpeed < 0 && _time > animation.startSeconds);
   }
@@ -95,7 +95,7 @@ class LinearAnimationInstance {
 
     // assert (0 == 1, 'debug');
 
-    var loop = animation.loop_??animation.loop;
+    var loop = animation.loop;
 
     // NOTE:
     // do not track spilled time, if our one shot loop is already completed.

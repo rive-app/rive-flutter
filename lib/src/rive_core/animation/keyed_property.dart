@@ -312,9 +312,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
-    // if (keyframes.length == 0) {
-    //   return;
-    // }
 
     if (_pair != null && seconds >= _pair!.secondsMin && seconds <= _pair!.secondsMax) { // reuse
 

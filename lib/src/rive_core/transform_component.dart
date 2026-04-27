@@ -100,7 +100,7 @@ abstract class TransformComponent extends TransformComponentBase {
     for (var i = 0; i < t; i++) {
       _constraints[i].constrain(this);
     }
-    // if (_constraints.length > 0) {
+    // if (_constraints.isNotEmpty) {
     //   for (final constraint in _constraints) {
     //     constraint.constrain(this);
     //   }

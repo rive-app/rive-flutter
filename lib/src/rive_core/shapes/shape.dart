@@ -107,16 +107,26 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
   @override
   void update(int dirt) {
+
     super.update(dirt);
+
+    int? tf;
+    int? sf;
 
     // When the paint gets marked dirty, we need to sync the blend mode with the
     // paints.
     if (dirt & ComponentDirt.blendMode != 0) {
-      for (final fill in fills) {
-        fill.blendMode = blendMode;
+
+      var blendMode = this.blendMode;
+
+      tf ??= fills.length;
+      for (var i = 0; i < tf; i++) {
+        fills[i].blendMode = blendMode;
       }
-      for (final stroke in strokes) {
-        stroke.blendMode = blendMode;
+
+      sf ??= strokes.length;
+      for (var i = 0; i < sf; i++) {
+        strokes[i].blendMode = blendMode;
       }
     }
 
@@ -124,13 +134,18 @@ class Shape extends ShapeBase with ShapePaintContainer {
     // hierarchy), so if we see worldTransform is dirty, update our internal
     // render opacities.
     if (dirt & ComponentDirt.worldTransform != 0) {
-      for (final fill in fills) {
-        fill.renderOpacity = renderOpacity;
+
+      tf ??= fills.length;
+      for (var i = 0; i < tf; i++) {
+        fills[i].renderOpacity = renderOpacity;
       }
-      for (final stroke in strokes) {
-        stroke.renderOpacity = renderOpacity;
+
+      sf ??= strokes.length;
+      for (var i = 0; i < sf; i++) {
+        strokes[i].renderOpacity = renderOpacity;
       }
     }
+
     // We update before the path composer so let's get our ducks in a row, what
     // do we want? PathComposer depends on us so we're safe to update our
     // desires here.
@@ -138,8 +153,10 @@ class Shape extends ShapeBase with ShapePaintContainer {
       // Recompute which paths we want.
       _wantWorldPath = false;
       _wantLocalPath = false;
-      for (final stroke in strokes) {
-        if (stroke.transformAffectsStroke) {
+
+      sf ??= strokes.length;
+      for (var i = 0; i < sf; i++) {
+        if (strokes[i].transformAffectsStroke) {
           _wantLocalPath = true;
         } else {
           _wantWorldPath = true;
@@ -156,23 +173,23 @@ class Shape extends ShapeBase with ShapePaintContainer {
 
       // Gradients almost always fill in local space, unless they are bound to
       // bones.
-      var mustFillLocal = fills.firstWhereOrNull(
-            (fill) => fill.paintMutator is core.LinearGradient,
-          ) !=
-          null;
+      var mustFillLocal = fills
+        .firstWhereOrNull((fill) => fill.paintMutator is core.LinearGradient) != null;
       if (mustFillLocal) {
         _fillInWorld = false;
         _wantLocalPath = true;
       }
 
-      for (final fill in fills) {
-        var mutator = fill.paintMutator;
+      tf ??= fills.length;
+      for (var i = 0; i < tf; i++) {
+        var mutator = fills[i].paintMutator;
         if (mutator is core.LinearGradient) {
           mutator.paintsInWorldSpace = _fillInWorld;
         }
       }
 
-      for (final stroke in strokes) {
+      for (var i = 0; i < sf; i++) {
+        var stroke = strokes[i];
         var mutator = stroke.paintMutator;
         if (mutator is core.LinearGradient) {
           mutator.paintsInWorldSpace = !stroke.transformAffectsStroke;

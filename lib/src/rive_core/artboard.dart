@@ -239,7 +239,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   final List<DataBind> dataBinds = [];
 
   bool canPreApplyJoysticks() {
-    if (joysticks.length == 0) {
+    if (joysticks.isEmpty) {
       return false;
     }
     if (joysticks.any((joystick) => joystick.isComplex)) {

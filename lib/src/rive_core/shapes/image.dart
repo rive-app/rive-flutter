@@ -47,21 +47,16 @@ class Image extends ImageBase
   @override
   void assetIdChanged(int from, int to) {}
 
+  static const _blackOpaque = ui.Color.fromRGBO(0, 0, 0, 1.0);
+
   @override
   void draw(ui.Canvas canvas) {
     var uiImage = asset?.image;
-    if (uiImage == null) {
-      return;
-    }
-    bool clipped = clip(canvas);
-
-    // if (width == 256 && height == 256 && {'badge_outline', 'ai_badge'}.contains(name) && Randoms().hit(0.005)) {
-    //   _logr.log(() => 'DRAW > $runtimeType $name:$name_ assetId=$assetId size=$width:$height asset=${asset?.fileExtension}');
-    //   debugPrintStack();
-    // }
+    if (uiImage == null) return;
+    var clipped = clip(canvas);
 
     final paint = ui.Paint()
-      ..color = ui.Color.fromRGBO(0, 0, 0, renderOpacity)
+      ..color = renderOpacity == 1 ? _blackOpaque : ui.Color.fromRGBO(0, 0, 0, renderOpacity)
       ..filterQuality = ui.FilterQuality.high
       ..blendMode = blendMode;
 
