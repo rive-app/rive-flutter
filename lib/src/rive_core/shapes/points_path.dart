@@ -72,12 +72,14 @@ class PointsPath extends PointsPathBase with Skinnable<PathVertex> {
 
   @override
   void update(int dirt) {
+
     if (dirt & ComponentDirt.path != 0) {
       // Before calling super (which will build the path) make sure to deform
       // things if necessary. We depend on the skin which assures us that the
       // boneTransforms are up to date.
       skin?.deform(_vertices);
     }
+
     // Finally call super.update so the path commands can actually be rebuilt
     // (when ComponentDirt.path is set).
     super.update(dirt);

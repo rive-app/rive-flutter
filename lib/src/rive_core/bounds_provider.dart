@@ -7,7 +7,7 @@ abstract class BoundsProvider {
   AABB computeBounds(Mat2D toParent);
 }
 
-abstract class Sizable {
+mixin Sizable {
   Size computeIntrinsicSize(Size min, Size max);
   void controlSize(Size size);
 }

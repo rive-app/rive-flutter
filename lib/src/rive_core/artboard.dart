@@ -32,7 +32,10 @@ import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/utilities.dart';
-import 'package:stokanal/core.dart' hide Event;
+import 'package:stokanal/core.dart' hide Event, Node;
+
+import '../../components.dart';
+import 'solo.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
@@ -195,24 +198,27 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
     if ((dirt & ComponentDirt.components) != 0) {
       // const int maxSteps = 100;
-      int step = 0;
-      int count = _dependencyOrder.length;
+      var step = 0;
+      var count = _dependencyOrder.length;
       while ((dirt & ComponentDirt.components) != 0 && step < maxSteps) {
         dirt &= ~ComponentDirt.components;
         // Track dirt depth here so that if something else marks
         // dirty, we restart.
         for (int i = 0; i < count; i++) {
-          Component component = _dependencyOrder[i];
+          var component = _dependencyOrder[i];
           _dirtDepth = i;
-          int d = component.dirt;
+          var d = component.dirt;
 
           if (d == 0 || (d & ComponentDirt.collapsed) != 0) {
             continue;
           }
 
-          component.dirt &= ComponentDirt.collapsed;
+          // component.dirt &= ComponentDirt.collapsed;
+          component.dirt = 0;
+
           StateStats.update(component);
           component.update(d);
+
           if (_dirtDepth < i) {
             break;
           }

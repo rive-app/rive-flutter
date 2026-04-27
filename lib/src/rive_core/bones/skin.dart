@@ -63,8 +63,11 @@ class Skin extends SkinBase {
   }
 
   void deform(List<Vertex> vertices) {
-    for (final vertex in vertices) {
-      vertex.deform(_worldTransform, _boneTransforms);
+
+    var t = vertices.length;
+    // for (final vertex in vertices) {
+    for (var i = 0; i < t; i++) {
+      vertices[i].deform(_worldTransform, _boneTransforms);
     }
   }
 

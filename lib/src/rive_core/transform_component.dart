@@ -59,14 +59,16 @@ abstract class TransformComponent extends TransformComponentBase {
 
   void updateTransform() {
     if (rotation != 0) {
-      Mat2D.fromRotation(transform, rotation);
+      Mat2D.fromRotation4(transform, rotation);
     } else {
-      Mat2D.setIdentity(transform);
+      Mat2D.setIdentity4(transform);
     }
     transform[4] = x;
     transform[5] = y;
 
-    Mat2D.scaleByValues(transform, scaleX, scaleY);
+    // Mat2D.scaleByValues(transform, scaleX, scaleY);
+    if (scaleX != 1.0) Mat2D.scaleX(transform, scaleX);
+    if (scaleY != 1.0) Mat2D.scaleY(transform, scaleY);
   }
 
   // TODO: when we have layer effect renderers, this will need to render 1 for
@@ -82,20 +84,27 @@ abstract class TransformComponent extends TransformComponentBase {
 
   @mustCallSuper
   void updateWorldTransform() {
+
     _renderOpacity = opacity;
-    if (parent is WorldTransformComponent) {
-      var parentNode = parent as WorldTransformComponent;
-      _renderOpacity *= parentNode.childOpacity;
-      Mat2D.multiply(worldTransform, parentNode.worldTransform, transform);
+
+    var p = parent;
+    if (p is WorldTransformComponent) {
+      // var parentNode = parent as WorldTransformComponent;
+      _renderOpacity *= p.childOpacity;
+      Mat2D.multiplyVoid(worldTransform, p.worldTransform, transform);
     } else {
       Mat2D.copy(worldTransform, transform);
     }
 
-    if (_constraints.length > 0) {
-      for (final constraint in _constraints) {
-        constraint.constrain(this);
-      }
+    var t = _constraints.length;
+    for (var i = 0; i < t; i++) {
+      _constraints[i].constrain(this);
     }
+    // if (_constraints.length > 0) {
+    //   for (final constraint in _constraints) {
+    //     constraint.constrain(this);
+    //   }
+    // }
   }
 
   void calculateWorldTransform() {

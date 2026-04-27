@@ -43,7 +43,7 @@ enum VerticalTextAlign {
   middle,
 }
 
-class Text extends TextBase with TextStyleContainer implements Sizable {
+class Text extends TextBase with TextStyleContainer, Sizable {
   Path? _clipRenderPath;
 
   double? _layoutWidth;

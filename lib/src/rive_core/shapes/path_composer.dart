@@ -36,6 +36,7 @@ class PathComposer extends Component {
       var world = shape.worldTransform;
       Mat2D inverseWorld = Mat2D();
       if (Mat2D.invert(inverseWorld, world)) {
+
         for (final path in shape.paths) {
           if (path.isHidden || path.isCollapsed) {
             continue;
