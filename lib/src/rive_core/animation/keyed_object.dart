@@ -10,7 +10,7 @@ import 'linear_animation.dart';
 export 'package:rive/src/generated/animation/keyed_object_base.dart';
 
 // ignore: one_member_abstracts
-abstract class KeyedCallbackReporter {
+mixin KeyedCallbackReporter {
   void reportKeyedCallback(
       int objectId, int propertyKey, double elapsedSeconds);
 }

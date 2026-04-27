@@ -14,7 +14,7 @@ abstract class KeyFrameInterface {
   int get frame;
 }
 
-class KeyFrameList<T extends KeyFrameInterface> {
+mixin KeyFrameList<T extends KeyFrameInterface> {
 
   @nonVirtual
   List<T> keyframes = <T>[];
