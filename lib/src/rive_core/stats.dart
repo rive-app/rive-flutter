@@ -4,11 +4,11 @@ import 'package:plato/plato.dart';
 
 const _logr = Logr.always(prefix: 'stats');
 
-class AdvanceStats with Printable {
+class _AdvanceStats with Printable {
 
-  AdvanceStats._();
-  static final _singleton = AdvanceStats._();
-  static AdvanceStats get instance => _singleton;
+  _AdvanceStats._();
+  static final _singleton = _AdvanceStats._();
+  static _AdvanceStats get instance => _singleton;
 
   int syncStyle = 0;
   int layoutComponentSyncStyle = 0;
@@ -28,7 +28,7 @@ class AdvanceStats with Printable {
           layerController + applyEvents;
 
   String format(int value) =>
-      '${((1000 * value) / Stopwatcher._commits).toInt()}';
+      '${((1000 * value) / _Stopwatcher._commits).toInt()}';
 
   @override
   String toString() => printr(
@@ -48,7 +48,7 @@ class AdvanceStats with Printable {
   );
 }
 
-class Stopwatcher {
+class _Stopwatcher {
   final stopwatch = Stopwatch();
 
   void start() {
@@ -60,12 +60,12 @@ class Stopwatcher {
   void commit(Function(int) function) {
     function(stopwatch.elapsedMicroseconds);
     if (_commits++ % 50000 == 50000-1) {
-      _logr.always.log(() => '${AdvanceStats._singleton}');
+      _logr.always.log(() => '${_AdvanceStats._singleton}');
     }
   }
 }
 
-abstract class FrequencyPrinter {
+abstract class _FrequencyPrinter {
 
   static var _count = 0;
   static void print(String Function() string, {int frequency = 10000, int divider = 1}) {

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
@@ -171,13 +173,16 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   Vec2D get origin => Vec2D.fromValues(width * originX, height * originY);
 
+  static const int maxSteps = 100;
+
   /// Walk the dependency tree and update components in order. Returns true if
   /// any component updated.
   bool updateComponents() {
     bool didUpdate = false;
 
     if ((dirt & ComponentDirt.bindings) != 0) {
-      computeBindings(true);
+      assert(dataBinds.isEmpty, 'rive not expected');
+      // computeBindings(true);
       dirt &= ~ComponentDirt.bindings;
       didUpdate = true;
     }
@@ -187,7 +192,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       didUpdate = true;
     }
     if ((dirt & ComponentDirt.components) != 0) {
-      const int maxSteps = 100;
+      // const int maxSteps = 100;
       int step = 0;
       int count = _dependencyOrder.length;
       while ((dirt & ComponentDirt.components) != 0 && step < maxSteps) {
@@ -270,32 +275,32 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       {bool nested = false, bool isRoot = false}) {
     bool didUpdate = false;
 
-    var stopwatch = Stopwatcher();
+    // var stopwatch = Stopwatcher();
 
     if (_dirtyLayout.isNotEmpty) {
       var dirtyLayout = _dirtyLayout.toList();
       _dirtyLayout.clear();
 
-      stopwatch.start();
+      // stopwatch.start();
       syncStyle();
-      stopwatch.commit((t) => AdvanceStats.instance.syncStyle += t);
+      // stopwatch.commit((t) => AdvanceStats.instance.syncStyle += t);
 
-      stopwatch.start();
+      // stopwatch.start();
       for (final layoutComponent in dirtyLayout) {
         layoutComponent.syncStyle();
       }
-      stopwatch.commit((t) => AdvanceStats.instance.layoutComponentSyncStyle += t);
+      // stopwatch.commit((t) => AdvanceStats.instance.layoutComponentSyncStyle += t);
 
-      stopwatch.start();
+      // stopwatch.start();
       layoutNode.calculateLayout(width, height, LayoutDirection.ltr);
       if (dirt & ComponentDirt.layoutStyle != 0) {
         // Maybe we can genericize this to pass all styles to children if
         // the child should inherit
         cascadeAnimationStyle(interpolation, interpolator, interpolationTime);
       }
-      stopwatch.commit((t) => AdvanceStats.instance.cascadeAnimationStyle += t);
+      // stopwatch.commit((t) => AdvanceStats.instance.cascadeAnimationStyle += t);
 
-      stopwatch.start();
+      // stopwatch.start();
       // Need to sync all layout positions.
       for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
         layout.updateLayoutBounds();
@@ -304,10 +309,10 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           didUpdate = true;
         }
       }
-      stopwatch.commit((t) => AdvanceStats.instance.dependencyOrder += t);
+      // stopwatch.commit((t) => AdvanceStats.instance.dependencyOrder += t);
     }
 
-    stopwatch.start();
+    // stopwatch.start();
     advanceSane = true;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
@@ -319,7 +324,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
     hasChangedDrawOrderInLastUpdate = false;
-    stopwatch.commit((t) => AdvanceStats.instance.animationControllers += t);
+    // stopwatch.commit((t) => AdvanceStats.instance.animationControllers += t);
 
     // stopwatch.start();
     // // Joysticks can be applied before updating components if none of the
@@ -338,9 +343,9 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     // }
     // stopwatch.commit((t) => _stats.updateDataBinds += t);
 
-    stopwatch.start();
+    // stopwatch.start();
     didUpdate |= updateComponents();
-    stopwatch.commit((t) => AdvanceStats.instance.updateComponents += t);
+    // stopwatch.commit((t) => AdvanceStats.instance.updateComponents += t);
 
     // stopwatch.start();
     // // If joysticks applied, run the update again for the animation changes.
@@ -351,13 +356,15 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     // }
     // stopwatch.commit((t) => _stats.applyJoysticks += t);
 
-    stopwatch.start();
+    // stopwatch.start();
     if (nested) {
-      for (final activeNestedArtboard in activeNestedArtboards){//.toList(growable: false)) {
-        didUpdate |= activeNestedArtboard.advance(elapsedSeconds);
+      var t = activeNestedArtboards.length;
+      // for (final activeNestedArtboard in activeNestedArtboards) {
+      for (var i = 0; i < t; i++) {
+        didUpdate |= activeNestedArtboards[i].advance(elapsedSeconds);
       }
     }
-    stopwatch.commit((t) => AdvanceStats.instance.nested += t);
+    // stopwatch.commit((t) => AdvanceStats.instance.nested += t);
 
     return didUpdate;
   }
@@ -743,7 +750,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
     var length = dataBinds.length;
     for (var i = 0; i < length; i++) {
-    // for (final dataBind in dataBinds) {
       dataBinds[i].bind(dataContext);
     }
 

@@ -138,7 +138,7 @@ class LinearAnimation extends LinearAnimationBase {
   /// playing different positions).
   void apply(double time, {required CoreContext coreContext, double mix = 1}) {
 
-    assert (!quantize_, 'rive not expected');
+    // assert (!quantize_, 'rive not expected');
     // if (quantize_) {
     //   // ignore: parameter_assignments
     //   time = (time * fps).floor() / fps;

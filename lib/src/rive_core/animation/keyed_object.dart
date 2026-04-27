@@ -23,9 +23,13 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   List<KeyedProperty> get keyedProperties =>
     _props ??= _keyedProperties.values.toList();
 
-  List<KeyedProperty>? _propsNonCallback;
-  List<KeyedProperty> get propsNonCallback =>
-      _propsNonCallback ??= keyedProperties.whereNot((p) => p.isCallback).toList();
+  List<KeyedProperty>? _keyedPropertiesNonCallback;
+  List<KeyedProperty> get keyedPropertiesNonCallback =>
+      _keyedPropertiesNonCallback ??= keyedProperties.whereNot((p) => p.isCallback).toList();
+
+  List<KeyedProperty>? _keyedPropertiesCallback;
+  List<KeyedProperty> get keyedPropertiesCallback =>
+      _keyedPropertiesCallback ??= keyedProperties.where((p) => p.isCallback).toList();
 
   @override
   K? clone<K extends Core>() => this as K;
@@ -58,7 +62,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
       return false;
     }
     _keyedProperties[property.propertyKey] = property;
-    _propsNonCallback = _props = null;
+    _keyedPropertiesNonCallback = _props = null;
 
     return true;
   }
@@ -67,7 +71,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   /// be @internal when it's supported.
   bool internalRemoveKeyedProperty(KeyedProperty property) {
     var removed = _keyedProperties.remove(property.propertyKey);
-    _propsNonCallback = _props = null;
+    _keyedPropertiesNonCallback = _props = null;
 
     if (_keyedProperties.isEmpty) {
       // Remove this keyed property.
@@ -85,17 +89,17 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-    var ps = keyedProperties;
+    var ps = keyedPropertiesCallback; //keyedProperties;
     var t = ps.length;
-    KeyedProperty keyedProperty;
+    // KeyedProperty keyedProperty;
     for (var i = 0; i < t; i++) {
-      keyedProperty = ps[i];
+      // keyedProperty = ps[i];
 
-      if (!keyedProperty.isCallback) {
-        continue;
-      }
+      // if (!keyedProperty.isCallback) {
+      //   continue;
+      // }
 
-      keyedProperty.reportKeyedCallbacks(
+      ps[i].reportKeyedCallbacks(
         objectId,
         secondsFrom,
         secondsTo,
@@ -115,7 +119,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
       return;
     }
 
-    var ps = propsNonCallback;
+    var ps = keyedPropertiesNonCallback;
     var t = ps.length;
     KeyedProperty p;
     for (var i = 0; i < t; i++) { // for indexed has the best performance in Dart

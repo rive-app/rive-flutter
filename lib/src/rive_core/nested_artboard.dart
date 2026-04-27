@@ -308,7 +308,11 @@ class NestedArtboard extends NestedArtboardBase implements Sizable {
     }
 
     bool keepGoing = false;
-    for (final animation in _animations) {
+    var t = _animations.length;
+    // for (final animation in _animations) {
+    NestedAnimation animation;
+    for (var i = 0; i < t; i++) {
+      animation = _animations[i];
       if (animation.isEnabled) {
         if (animation.advance(elapsedSeconds, mountedArtboard!)) {
           keepGoing = true;

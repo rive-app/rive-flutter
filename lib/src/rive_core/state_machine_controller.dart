@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 library rive_core;
 
 import 'dart:collection';
@@ -184,10 +186,10 @@ class LayerController {
     //   _currentState!.advance(elapsedSeconds, controller);
     // }
 
-    FrequencyPrinter.print(divider: 10, () => '_currentState > ${_currentState?.ticker} '
-      '${controller.artboard?.name} '
-      '${layer.name}',
-    );
+    // FrequencyPrinter.print(divider: 10, () => '_currentState > ${_currentState?.ticker} '
+    //   '${controller.artboard?.name} '
+    //   '${layer.name}',
+    // );
     _currentState?.advance(elapsedSeconds, controller);
 
     _updateMix(elapsedSeconds);
@@ -645,18 +647,18 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   @override
   bool apply(CoreContext core, double elapsedSeconds) {
 
-    var stopwatch = Stopwatcher();
+    // var stopwatch = Stopwatcher();
 
-    stopwatch.start();
+    // stopwatch.start();
     if (artboard?.hasChangedDrawOrderInLastUpdate ?? false) {
       _sortHittableComponents();
     }
-    stopwatch.commit((t) => AdvanceStats.instance.sortHittableComponents += t);
+    // stopwatch.commit((t) => AdvanceStats.instance.sortHittableComponents += t);
 
-    stopwatch.start();
+    // stopwatch.start();
     bool keepGoing = false;
     var layerApplySane = true;
-    FrequencyPrinter.print(() => '${artboard?.name} > ${layerControllers.length}');
+    // FrequencyPrinter.print(() => '${artboard?.name} > ${layerControllers.length}');
     for (final layerController in layerControllers) {
       if (layerController.apply(core, elapsedSeconds)) {
         keepGoing = true;
@@ -665,11 +667,11 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     }
     advanceInputs();
     isActive = keepGoing;
-    stopwatch.commit((t) => AdvanceStats.instance.layerController += t);
+    // stopwatch.commit((t) => AdvanceStats.instance.layerController += t);
 
-    stopwatch.start();
+    // stopwatch.start();
     applyEvents();
-    stopwatch.commit((t) => AdvanceStats.instance.applyEvents += t);
+    // stopwatch.commit((t) => AdvanceStats.instance.applyEvents += t);
 
     return layerApplySane;
   }
