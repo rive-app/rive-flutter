@@ -180,12 +180,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool updateComponents() {
     bool didUpdate = false;
 
-    if ((dirt & ComponentDirt.bindings) != 0) {
-      assert(dataBinds.isEmpty, 'rive not expected');
-      // computeBindings(true);
-      dirt &= ~ComponentDirt.bindings;
-      didUpdate = true;
-    }
+    assert(dataBinds.isEmpty, 'rive not expected');
+
+    // if ((dirt & ComponentDirt.bindings) != 0) {
+    //   computeBindings(true);
+    //   dirt &= ~ComponentDirt.bindings;
+    //   didUpdate = true;
+    // }
+
     if ((dirt & ComponentDirt.drawOrder) != 0) {
       sortDrawOrder();
       dirt &= ~ComponentDirt.drawOrder;

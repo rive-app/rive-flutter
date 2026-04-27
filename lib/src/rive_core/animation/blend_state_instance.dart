@@ -39,12 +39,16 @@ abstract class BlendStateInstance<T extends BlendState<K>,
     // Blend states need to keep blending forever, as even if the animation
     // does not change the mix values may
     var result = false;
-    for (final animation in animationInstances) {
-      if (animation.animationInstance.keepGoing) {
+    var t = animationInstances.length;
+    LinearAnimationInstance animationInstance;
+    // for (final animation in animationInstances) {
+    for (var i = 0; i < t; i++) {
+      animationInstance = animationInstances[i].animationInstance;
+      if (animationInstance.keepGoing) {
         // Should animations with m_Mix == 0.0 advance? They will trigger events
         // and the event properties (if any) will not be updated by
         // animationInstance.apply.
-        if (animation.animationInstance.advance(
+        if (animationInstance.advance(
           seconds,
           callbackReporter: controller,
         )) {

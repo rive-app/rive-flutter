@@ -29,13 +29,19 @@ class BlendState1DInstance
 
   /// Binary find the closest animation index.
   int animationIndex(double value) {
-    int idx = 0;
-    int mid = 0;
-    double closestValue = 0;
-    int start = 0;
-    int end = animationInstances.length - 1;
 
-    while (start <= end) {
+    var end = animationInstances.length - 1;
+    if (end == -1) {
+      return 0;
+    }
+
+    var idx = 0;
+    var closestValue = 0.0;
+    var start = 0;
+
+    int mid;
+
+    do {
       mid = (start + end) >> 1;
       closestValue = animationInstances[mid].blendAnimation.value;
       if (closestValue < value) {
@@ -43,12 +49,15 @@ class BlendState1DInstance
       } else if (closestValue > value) {
         end = mid - 1;
       } else {
-        idx = start = mid;
-        break;
+        return mid;
+        // idx = start = mid;
+        // break;
       }
 
       idx = start;
     }
+    while (start <= end);
+
     return idx;
   }
 
@@ -57,14 +66,15 @@ class BlendState1DInstance
 
   @override
   bool advance(double seconds, StateMachineController controller) {
+
     super.advance(seconds, controller);
-    dynamic inputValue =
-        controller.getInputValue((state as BlendState1D).inputId);
+
+    var inputValue = controller.getInputValue((state as BlendState1D).inputId);
     var value = (inputValue is double
             ? inputValue
             : (state as BlendState1D).input?.value) ??
         0;
-    int index = animationIndex(value);
+    var index = animationIndex(value);
     _to = index >= 0 && index < animationInstances.length
         ? animationInstances[index]
         : null;
