@@ -255,9 +255,9 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-    if (secondsFrom == secondsTo) {
-      return;
-    }
+    // if (secondsFrom == secondsTo) {
+    //   return;
+    // }
     bool isForward = secondsFrom <= secondsTo;
     int fromExactOffset = 0;
     int toExactOffset = isForward ? 1 : 0;

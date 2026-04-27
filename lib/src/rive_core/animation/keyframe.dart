@@ -13,8 +13,6 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
 
   @nonVirtual
   double seconds = 0; // avoid getter
-  // double _timeInSeconds = 0;
-  // double get seconds => _timeInSeconds;
 
   @override
   void onAdded() {}

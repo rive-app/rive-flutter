@@ -72,7 +72,7 @@ class LinearAnimationInstance {
   // We estimate whether the animation should keep playing using the speed
   // multiplier provided by the caller
   bool shouldKeepGoing(double speedMultiplier) {
-    return animation.loop != Loop.oneShot ||
+    return (animation.loop_??animation.loop) != Loop.oneShot ||
         (speedMultiplier * directedSpeed > 0 && _time < animation.endSeconds) ||
         (speedMultiplier * directedSpeed < 0 && _time > animation.startSeconds);
   }

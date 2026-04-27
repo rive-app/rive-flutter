@@ -19,7 +19,6 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
 
   final Map<int, KeyedProperty> _keyedProperties = HashMap<int, KeyedProperty>();
 
-  /// STOKANAL-FORK-EDIT: Keeping a copy of values lazily
   List<KeyedProperty>? _props;
   List<KeyedProperty> get keyedProperties =>
     _props ??= _keyedProperties.values.toList();
@@ -28,7 +27,6 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   List<KeyedProperty> get propsNonCallback =>
       _propsNonCallback ??= keyedProperties.whereNot((p) => p.isCallback).toList();
 
-  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
   @override
   K? clone<K extends Core>() => this as K;
 
@@ -87,7 +85,6 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-
     var ps = keyedProperties;
     var t = ps.length;
     KeyedProperty keyedProperty;
@@ -123,7 +120,7 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
     KeyedProperty p;
     for (var i = 0; i < t; i++) { // for indexed has the best performance in Dart
       p = ps[i];
-      if (p.keyframes.length == 0) continue;
+      if (p.keyframes.isEmpty) continue;
       p.apply(time, mix, object);
     }
   }

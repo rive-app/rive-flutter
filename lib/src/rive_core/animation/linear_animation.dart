@@ -63,20 +63,19 @@ class LinearAnimation extends LinearAnimationBase {
   }
 
   /// Returns the seconds where the animiation work area starts
-  double get startSeconds => (enableWorkArea ? workStart : 0).toDouble() / fps;
+  double get startSeconds => (enableWorkArea_ ? workStart_ : 0).toDouble() / fps_;
 
   /// Returns the seconds where the animation work area ends
-  double get endSeconds =>
-      (enableWorkArea ? workEnd : duration).toDouble() / fps;
+  double get endSeconds => (enableWorkArea_ ? workEnd_ : duration_).toDouble() / fps_;
 
   /// Returns the length of the animation
   double get durationSeconds => endSeconds - startSeconds;
 
   /// Returns the end time of the animation in seconds, considering speed
-  double get endTime => (speed >= 0) ? endSeconds : startSeconds;
+  double get endTime => (speed_ >= 0) ? endSeconds : startSeconds;
 
   /// Returns the start time of the animation in seconds, considering speed
-  double get startTime => (speed >= 0) ? startSeconds : endSeconds;
+  double get startTime => (speed_ >= 0) ? startSeconds : endSeconds;
 
   /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
   late final List<KeyedObject> _objects = _keyedObjects.values.toList(growable: false);
@@ -88,16 +87,28 @@ class LinearAnimation extends LinearAnimationBase {
     int speedDirection = 1,
     bool fromPong = false,
   }) {
+
+    if (secondsFrom == secondsTo) {
+      return;
+    }
+
     // We have to account for the state machine speed multiplier and the speed
-    double startingTime =
-        ((speed * speedDirection) >= 0) ? startSeconds : endSeconds;
-    bool isAtStartFrame = startingTime == secondsFrom;
+    final double startingTime;
+    if (speedDirection == 1) {
+      startingTime = (speed_ >= 0) ? startSeconds : endSeconds;
+    } else {
+      startingTime = (speed_ * speedDirection >= 0) ? startSeconds : endSeconds;
+    }
+    var isAtStartFrame = startingTime == secondsFrom;
 
     // Do not report a callback twice if it comes from the "pong" part of a
     // "ping pong" loop
-    if (!isAtStartFrame || !fromPong) {
-      for (final keyedObject in _objects) {
-        keyedObject.reportKeyedCallbacks(
+     if (!isAtStartFrame || !fromPong) {
+      var t = _objects.length;
+      // for (final keyedObject in _objects) {
+      for (var i = 0; i < t; i++) {
+        // final keyedObject = _objects[t];
+        _objects[i].reportKeyedCallbacks(
           secondsFrom,
           secondsTo,
           reporter: reporter,
@@ -161,7 +172,7 @@ class LinearAnimation extends LinearAnimationBase {
   /// Convert a global clock to local seconds (takes into consideration work
   /// area start/end, speed, looping).
   double globalToLocalTime(double seconds) {
-    switch (loop) {
+    switch (loop_??loop) {
       case Loop.oneShot:
         return seconds + startTime;
       case Loop.loop:
