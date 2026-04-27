@@ -9,7 +9,7 @@ import 'package:stokanal/core.dart';
 
 /// An abstraction to give a common interface to any component that can contain
 /// fills and strokes.
-abstract class ShapePaintContainer {
+mixin ShapePaintContainer {
   final fills = UniqueList.of<Fill>();
   final strokes = UniqueList.of<Stroke>();
 

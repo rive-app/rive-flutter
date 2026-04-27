@@ -57,7 +57,7 @@ typedef OnLayerStateChange = void Function(LayerState);
 /// Callback signature for events firing.
 typedef OnEvent = void Function(RiveEvent);
 
-int _maxIterations = 0;
+// int _maxIterations = 0;
 final _tooManyIterationsCollected = <String>{};
 
 class LayerController implements Tickerable {
@@ -95,11 +95,11 @@ class LayerController implements Tickerable {
     _changeState(layer.entryState);
   }
 
-  void _fireEvents(Iterable<StateMachineFireEvent> fireEvents) {
-    // var t = fireEvents.length;
-    for (final fireEvent in fireEvents) {
-    // for (var i = 0; i < t ; i++) {
-      var event = core.resolve(fireEvent.eventId);
+  void _fireEvents(List<StateMachineFireEvent> fireEvents) {
+    var t = fireEvents.length;
+    // for (final fireEvent in fireEvents) {
+    for (var i = 0; i < t ; i++) {
+      var event = core.resolve(fireEvents[i].eventId);
       if (event != null) {
         controller.reportEvent(event);
       }
@@ -205,14 +205,13 @@ class LayerController implements Tickerable {
     }
     _apply(core);
 
-    int i = 0;
     var currentState = _currentState;
     var stateFrom = _stateFrom;
     var holdAnimation = _holdAnimation;
     layerApplySane = true; // set flag to sane
-    for (; updateState(i != 0); i++) {
+    for (var i = 0; updateState(i != 0); i++) {
       _apply(core);
-      if (i == 15) {
+      if (i == 3) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
         var runtime = core is RuntimeArtboard ? core : null;
@@ -223,15 +222,11 @@ class LayerController implements Tickerable {
         if (_tooManyIterationsCollected.add(transition)) {
           layerApplySane = false; // flag as not sane only when logging to telemetry
           Telemetry()
-              ..log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
+              ..log(() => 'TOO MANY ITERATIONS > $i | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
               ..error('Too many iterations', expected: true);
         }
         return false;
       }
-    }
-
-    if (i > _maxIterations) {
-      _maxIterations = i;
     }
 
     // give the current state the opportunity to clear spilled time, so that we
@@ -252,12 +247,17 @@ class LayerController implements Tickerable {
     if (isTransitioning && _transition!.enableEarlyExit == false) {
       return false;
     }
-    _waitingForExit = false;
-    if (tryChangeState(anyStateInstance, ignoreTriggers)) {
-      return true;
-    }
 
-    return tryChangeState(_currentState, ignoreTriggers);
+    _waitingForExit = false;
+
+    return
+      tryChangeState(anyStateInstance, ignoreTriggers) ||
+      (_currentState != null && tryChangeState(_currentState!, ignoreTriggers));
+    // if (tryChangeState(anyStateInstance, ignoreTriggers)) {
+    //   return true;
+    // }
+    //
+    // return tryChangeState(_currentState, ignoreTriggers);
   }
 
   StateTransition? _findRandomTransition(StateInstance stateFrom,
@@ -339,10 +339,7 @@ class LayerController implements Tickerable {
     }
   }
 
-  bool tryChangeState(StateInstance? stateFrom, bool ignoreTriggers) {
-    if (stateFrom == null) {
-      return false;
-    }
+  bool tryChangeState(StateInstance stateFrom, bool ignoreTriggers) {
 
     var outState = _currentState;
     final transition = _findAllowedTransition(

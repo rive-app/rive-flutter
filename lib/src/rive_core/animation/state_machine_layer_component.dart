@@ -18,10 +18,32 @@ abstract class StateMachineLayerComponent
   void internalAddFireEvent(StateMachineFireEvent event) {
     assert(!_events.contains(event), 'shouldn\'t already contain the event');
     _events.add(event);
+
+    _atStart = _events
+        .where((fireEvent) => fireEvent.occurs == StateMachineFireOccurance.atStart)
+        .nonNulls
+        .toList();
+
+    _atEnd = _events
+        .where((fireEvent) => fireEvent.occurs == StateMachineFireOccurance.atEnd)
+        .nonNulls
+        .toList();
   }
 
-  Iterable<StateMachineFireEvent> eventsAt(StateMachineFireOccurance occurence) =>
-      _events
-          .where((fireEvent) => fireEvent.occurs == occurence)
-          .nonNulls;
+  late List<StateMachineFireEvent> _atStart;
+  late List<StateMachineFireEvent> _atEnd;
+
+  List<StateMachineFireEvent> eventsAt(StateMachineFireOccurance occurence) {
+    switch (occurence) {
+      case StateMachineFireOccurance.atStart:
+        return _atStart;
+      case StateMachineFireOccurance.atEnd:
+        return _atEnd;
+    }
+  }
+
+  // Iterable<StateMachineFireEvent> eventsAt(StateMachineFireOccurance occurence) =>
+  //     _events
+  //         .where((fireEvent) => fireEvent.occurs == occurence)
+  //         .nonNulls;
 }
