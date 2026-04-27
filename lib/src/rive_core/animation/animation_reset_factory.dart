@@ -202,7 +202,7 @@ class _AnimationsData {
             animationReset.writePropertyKey(property.propertyKey);
             if (property.isBaseline) {
               animationReset.writeColor(
-                  (property.property.keyframes.first as KeyFrameColor).value);
+                  (property.property.keyframes[0] as KeyFrameColor).value);
             } else {
 
               animationReset.writeColor(PropertyBeans.get(property.propertyKey).getColor(core.resolve(keyedObject.data.objectId)));
@@ -212,12 +212,9 @@ class _AnimationsData {
             animationReset.writePropertyKey(property.propertyKey);
             if (property.isBaseline) {
               animationReset.writeDouble(
-                  (property.property.keyframes.first as KeyFrameDouble).value);
+                  (property.property.keyframes[0] as KeyFrameDouble).value);
             } else {
 
-              // animationReset.writeDouble(RiveCoreContext.getDouble(
-              //     core.resolve(keyedObject.data.objectId),
-              //     property.propertyKey));
               animationReset.writeDouble(
                   property.propertyBean.getDouble(
                       core.resolve(keyedObject.data.objectId)));

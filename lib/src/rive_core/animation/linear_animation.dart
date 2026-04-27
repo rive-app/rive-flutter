@@ -3,8 +3,11 @@ import 'dart:collection';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/linear_animation_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
+import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/artboard.dart';
+
+import 'keyframe.dart';
 
 export 'package:rive/src/generated/animation/linear_animation_base.dart';
 
@@ -50,8 +53,17 @@ class LinearAnimation extends LinearAnimationBase {
     }
     bool found = false;
 
-    for (final kp in value.keyedProperties) {
-      for (final kf in kp.keyframes){
+    var keyedProperties = value.keyedProperties;
+    var t1 = keyedProperties.length;
+    // for (final kp in keyedProperties) {
+    KeyedProperty kp;
+    for (var i = 0; i < t1; i++) {
+      kp = keyedProperties[i];
+      var t2 = kp.keyframes.length;
+      // for (final kf in kp.keyframes) {
+      KeyFrame kf;
+      for (var j = 0; j < t2; j++) {
+        kf = kp.keyframes[j];
         kf.remove();
         if (!found) {
           kp.onKeyframesChanged();
@@ -77,8 +89,8 @@ class LinearAnimation extends LinearAnimationBase {
   /// Returns the start time of the animation in seconds, considering speed
   double get startTime => (speed_ >= 0) ? startSeconds : endSeconds;
 
-  /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-  late final List<KeyedObject> _objects = _keyedObjects.values.toList(growable: false);
+  List<KeyedObject>? __objects;
+  List<KeyedObject> get _objects => __objects ??= _keyedObjects.values.toList(growable: false);
 
   void reportKeyedCallbacks(
     double secondsFrom,

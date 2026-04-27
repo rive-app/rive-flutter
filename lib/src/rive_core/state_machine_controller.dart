@@ -583,9 +583,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
   }
 
   /// Save trigger inputs for a reusable list
-  late final _triggerInputs = stateMachine.inputs
-      .whereType<StateMachineTrigger>()
-      .toList();
+  List<StateMachineTrigger>? _triggerInputs;
 
   @protected
   void advanceInputs() {
@@ -595,7 +593,11 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     //   }
     // }
 
-    for (final input in _triggerInputs) {
+    _triggerInputs ??= stateMachine.inputs
+        .whereType<StateMachineTrigger>()
+        .toList();
+
+    for (final input in _triggerInputs!) {
       _inputValues[input.id] = false;
     }
   }

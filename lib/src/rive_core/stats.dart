@@ -73,10 +73,4 @@ abstract class FrequencyPrinter {
       _logr.info(string(), 1);
     }
   }
-
-  // static void always(String Function() string, [int divider = 1]) {
-  //   if (_count % divider == 0) {
-  //     _logr.info(string(), 1);
-  //   }
-  // }
 }

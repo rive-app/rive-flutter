@@ -168,9 +168,6 @@ class RiveFile {
     return false;
   }
 
-  // final String? path;
-  // late final bool skipInterpolation;
-
   RiveFile._(
     BinaryReader reader,
     this.header,
