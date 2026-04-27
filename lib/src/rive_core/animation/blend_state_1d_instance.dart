@@ -65,9 +65,17 @@ class BlendState1DInstance
   BlendStateAnimationInstance<BlendAnimation1D>? _to;
 
   @override
+  String get ticker => '$runtimeType['
+      '${_from?.animationInstance.animation.name??''}:'
+      '${_to?.animationInstance.animation.name??''}'
+      ']';
+
+  @override
   bool advance(double seconds, StateMachineController controller) {
 
-    super.advance(seconds, controller);
+    if (!super.advance(seconds, controller)) { // skipping no animationInstance advanced
+      return false;
+    }
 
     var inputValue = controller.getInputValue((state as BlendState1D).inputId);
     var value = (inputValue is double

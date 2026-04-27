@@ -148,6 +148,6 @@ class StateStats with Printable {
     _print('layers', _layers),
     _print('states', _states),
     _print('animations', _animationCallbacks),
-    // _print('updates', _updates),
+    _print('updates', _updates),
   );
 }

@@ -116,7 +116,7 @@ class LinearAnimationInstance {
     final absSeconds = elapsedSeconds * animation.speed_;
     if (absSeconds == 0) {
       _didLoop = false;
-      return true;
+      return !dontKeepGoing;
     }
 
     int direction = _direction;
