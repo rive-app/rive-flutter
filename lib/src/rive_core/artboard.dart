@@ -36,6 +36,7 @@ import 'package:stokanal/core.dart' hide Event, Node;
 
 import '../../components.dart';
 import 'solo.dart';
+import 'state_machine_controller.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
@@ -124,12 +125,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @nonVirtual
   final EventList events = EventList();
 
-  /// List of animations and state machines in the artboard.
-  // AnimationList get animations => _animations;
-
-  /// List of events in the artboard.
-  // EventList get events => _events;
-
   DataContext? dataContext;
   final List<DataBind> globalDataBinds = [];
 
@@ -143,11 +138,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   int _dirtDepth = 0;
 
+  /// Remove a layer from state machines
+  void removeLayer(bool Function(LayerController) function) =>
+      _animationControllers.forEach((c) => c.removeAnimations(function));
+
   /// Iterate each component and call callback for it.
   void forEachComponent(void Function(Component) callback) {
     var t = _components.length;
     for (var i = 0; i < t; i++) {
-    // for (final c in _components) {
       callback(_components[i]);
     }
   }
@@ -216,7 +214,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           // component.dirt &= ComponentDirt.collapsed;
           component.dirt = 0;
 
-          StateStats.update(component);
+          // StateStats.update(component);
           component.update(d);
 
           if (_dirtDepth < i) {
@@ -284,8 +282,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       {bool nested = false, bool isRoot = false}) {
     bool didUpdate = false;
 
-    StateStats.renew(name);
-
+    // StateStats.renew(name);
     // var stopwatch = Stopwatcher();
 
     if (_dirtyLayout.isNotEmpty) {
@@ -327,7 +324,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     advanceSane = true;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
-        StateStats.applyController(controller);
+        // StateStats.applyController(controller);
         if (!controller.apply(context, elapsedSeconds)) {
           advanceSane = false;
           _logr.info('ANIMATION-CONTROLLER FAILED TO APPLY > $name $controller');
@@ -378,7 +375,7 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
     }
     // stopwatch.commit((t) => AdvanceStats.instance.nested += t);
 
-    StateStats.print();
+    // StateStats.print();
 
     return didUpdate;
   }

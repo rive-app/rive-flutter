@@ -1,4 +1,4 @@
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: unused_import, lines_longer_than_80_chars
 
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
@@ -287,7 +287,7 @@ class LinearAnimationInstance {
         break;
     }
 
-    StateStats.callbackAnimation(callbacksInvocation?.instance.animation);
+    // StateStats.callbackAnimation(callbacksInvocation?.instance.animation);
     callbacksInvocation?.call();
 
     // if (dontKeepGoing) {

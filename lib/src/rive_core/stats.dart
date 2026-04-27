@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_classes_with_only_static_members
+// ignore_for_file: unused_element, avoid_classes_with_only_static_members
 /// Objects to collect performance stats
 import 'package:plato/plato.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
@@ -81,16 +81,16 @@ abstract class _FrequencyPrinter {
   }
 }
 
-class StateStats with Printable {
+class _StateStats with Printable {
 
-  StateStats._(this.name);
-  static StateStats? _singleton;
+  _StateStats._(this.name);
+  static _StateStats? _singleton;
 
   static int _count = 0;
 
   static void renew(String name) {
     if (_count++ % 3000 == 3000-1) {
-      _singleton = StateStats._(name);
+      _singleton = _StateStats._(name);
     } else {
       _singleton = null;
     }
@@ -144,10 +144,10 @@ class StateStats with Printable {
   @override
   String toString() => printr(
     name,
-    _print('controllers', _controllers),
+    // _print('controllers', _controllers),
     _print('layers', _layers),
-    _print('states', _states),
+    // _print('states', _states),
     _print('animations', _animationCallbacks),
-    _print('updates', _updates),
+    // _print('updates', _updates),
   );
 }

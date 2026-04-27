@@ -189,7 +189,7 @@ class LayerController implements Tickerable {
 
   bool apply(CoreContext core, double elapsedSeconds) {
 
-    StateStats.advance(_currentState);
+    // StateStats.advance(_currentState);
     var anyAdvance = false;
     if (_currentState?.advance(elapsedSeconds, controller)??false) {
       anyAdvance = true;
@@ -202,7 +202,7 @@ class LayerController implements Tickerable {
       // realize we need to mix it in.
       if (!_holdAnimationFrom) {
         // FrequencyPrinter.print(() => '_stateFrom > $_stateFrom');
-        StateStats.advance(_stateFrom);
+        // StateStats.advance(_stateFrom);
         if (_stateFrom!.advance(elapsedSeconds, controller)) {
           anyAdvance = true;
         }
@@ -422,6 +422,11 @@ class LayerController implements Tickerable {
 
 class StateMachineController extends RiveAnimationController<CoreContext>
     implements KeyedCallbackReporter {
+
+  @override
+  void removeAnimations(bool Function(LayerController) function) {
+    layerControllers.removeWhere(function);
+  }
 
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
@@ -679,7 +684,7 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     var layerApplySane = true;
     // FrequencyPrinter.print(() => '${artboard?.name} > ${layerControllers.length}');
     for (final layerController in layerControllers) {
-      StateStats.applyLayer(layerController);
+      // StateStats.applyLayer(layerController);
       if (layerController.apply(core, elapsedSeconds)) {
         keepGoing = true;
       }
