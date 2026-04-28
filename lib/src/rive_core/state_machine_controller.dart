@@ -1,9 +1,10 @@
+// ignore_for_file: unused_import
+
 library rive_core;
 
 import 'dart:collection';
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/src/core/core.dart';
@@ -29,13 +30,13 @@ import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/audio_event.dart';
 import 'package:rive/src/rive_core/audio_player.dart';
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/drawable.dart';
 import 'package:rive/src/rive_core/event.dart';
 import 'package:rive/src/rive_core/layer_state_flags.dart';
 import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/node.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/shape.dart';
+import 'package:rive/src/rive_core/stats.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive/src/runtime_event.dart';
 import 'package:rive_common/math.dart';
@@ -56,10 +57,14 @@ typedef OnLayerStateChange = void Function(LayerState);
 /// Callback signature for events firing.
 typedef OnEvent = void Function(RiveEvent);
 
-int _maxIterations = 0;
+// int _maxIterations = 0;
 final _tooManyIterationsCollected = <String>{};
 
-class LayerController {
+class LayerController implements Tickerable {
+
+  @override
+  String get ticker => '$runtimeType[${layer.name}]';
+
   final StateMachineLayer layer;
   final StateInstance anyStateInstance;
   final CoreContext core;
@@ -90,9 +95,11 @@ class LayerController {
     _changeState(layer.entryState);
   }
 
-  void _fireEvents(Iterable<StateMachineFireEvent> fireEvents) {
-    for (final fireEvent in fireEvents) {
-      var event = core.resolve(fireEvent.eventId);
+  void _fireEvents(List<StateMachineFireEvent> fireEvents) {
+    var t = fireEvents.length;
+    // for (final fireEvent in fireEvents) {
+    for (var i = 0; i < t ; i++) {
+      var event = core.resolve(fireEvents[i].eventId);
       if (event != null) {
         controller.reportEvent(event);
       }
@@ -137,8 +144,8 @@ class LayerController {
     var transition = _transition;
     if (transition != null && _stateFrom != null && transition.duration != 0) {
       _mix = (_mix + elapsedSeconds / transition.mixTime(_stateFrom!.state))
-          .clamp(0, 1)
-          .toDouble();
+        .clamp(0, 1)
+        .toDouble();
 
       if (_mix == 1 && !_transitionCompleted) {
         _transitionCompleted = true;
@@ -181,9 +188,9 @@ class LayerController {
   bool layerApplySane = true;
 
   bool apply(CoreContext core, double elapsedSeconds) {
-    if (_currentState != null) {
-      _currentState!.advance(elapsedSeconds, controller);
-    }
+
+    // StateStats.advance(_currentState);
+    _currentState?.advance(elapsedSeconds, controller);
 
     _updateMix(elapsedSeconds);
 
@@ -191,19 +198,22 @@ class LayerController {
       // This didn't advance during our updateState, but it should now that we
       // realize we need to mix it in.
       if (!_holdAnimationFrom) {
+        // FrequencyPrinter.print(() => '_stateFrom > $_stateFrom');
+        // StateStats.advance(_stateFrom);
         _stateFrom!.advance(elapsedSeconds, controller);
       }
     }
-    _apply(core);
 
-    int i = 0;
-    var currentState = _currentState;
+    // _apply(core);
+
+    final currentState = _currentState;
     var stateFrom = _stateFrom;
     var holdAnimation = _holdAnimation;
     layerApplySane = true; // set flag to sane
+    var i = 0;
     for (; updateState(i != 0); i++) {
       _apply(core);
-      if (i == 15) {
+      if (i == 3) {
         // Escape hatch, let the user know their logic is causing some kind of
         // recursive condition.
         var runtime = core is RuntimeArtboard ? core : null;
@@ -214,16 +224,14 @@ class LayerController {
         if (_tooManyIterationsCollected.add(transition)) {
           layerApplySane = false; // flag as not sane only when logging to telemetry
           Telemetry()
-              ..log(() => 'TOO MANY ITERATIONS > $i max=$_maxIterations | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
+              ..log(() => 'TOO MANY ITERATIONS > $i | ${core.runtimeType} ${runtime?.artboard.name} | $transition')
               ..error('Too many iterations', expected: true);
         }
         return false;
       }
     }
 
-    if (i > _maxIterations) {
-      _maxIterations = i;
-    }
+    if (i == 0) _apply(core); // call _apply if it hasn't been called inside the updateState loop
 
     // give the current state the opportunity to clear spilled time, so that we
     // do not carry this over into another iteration.
@@ -239,16 +247,32 @@ class LayerController {
   LinearAnimation? _holdAnimation;
   double _holdTime = 0;
 
+  // static var _anyChanges = 0;
+  // static var _currentChanges = 0;
+  // static const _logr = Logr.always(prefix: 'state-machine-controller');
+
   bool updateState(bool ignoreTriggers) {
     if (isTransitioning && _transition!.enableEarlyExit == false) {
       return false;
     }
-    _waitingForExit = false;
-    if (tryChangeState(anyStateInstance, ignoreTriggers)) {
-      return true;
-    }
 
-    return tryChangeState(_currentState, ignoreTriggers);
+    _waitingForExit = false;
+
+    // var any = tryChangeState(anyStateInstance, ignoreTriggers);
+    // _anyChanges += any ? 1 : 0;
+    // _currentChanges += (!any && _currentState != null && tryChangeState(_currentState!, ignoreTriggers)) ? 1 : 0;
+    // if ((_anyChanges + _currentChanges) % 100 == 100-1) {
+    //   _logr.info('anyChanges=$_anyChanges currentChanges=$_currentChanges');
+    // }
+
+    return
+      tryChangeState(anyStateInstance, ignoreTriggers) ||
+      (_currentState != null && tryChangeState(_currentState!, ignoreTriggers));
+    // if (tryChangeState(anyStateInstance, ignoreTriggers)) {
+    //   return true;
+    // }
+    //
+    // return tryChangeState(_currentState, ignoreTriggers);
   }
 
   StateTransition? _findRandomTransition(StateInstance stateFrom,
@@ -330,10 +354,7 @@ class LayerController {
     }
   }
 
-  bool tryChangeState(StateInstance? stateFrom, bool ignoreTriggers) {
-    if (stateFrom == null) {
-      return false;
-    }
+  bool tryChangeState(StateInstance stateFrom, bool ignoreTriggers) {
 
     var outState = _currentState;
     final transition = _findAllowedTransition(
@@ -396,6 +417,12 @@ class LayerController {
 
 class StateMachineController extends RiveAnimationController<CoreContext>
     implements KeyedCallbackReporter {
+
+  @override
+  void removeAnimations(bool Function(LayerController) function) {
+    layerControllers.removeWhere(function);
+  }
+
   final StateMachine stateMachine;
   final _inputValues = HashMap<int, dynamic>();
   final layerControllers = <LayerController>[];
@@ -576,12 +603,23 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     _audioPlayer = null;
   }
 
+  /// Save trigger inputs for a reusable list
+  List<StateMachineTrigger>? _triggerInputs;
+
   @protected
   void advanceInputs() {
-    for (final input in stateMachine.inputs) {
-      if (input is StateMachineTrigger) {
-        _inputValues[input.id] = false;
-      }
+    // for (final input in stateMachine.inputs) {
+    //   if (input is StateMachineTrigger) {
+    //     _inputValues[input.id] = false;
+    //   }
+    // }
+
+    _triggerInputs ??= stateMachine.inputs
+        .whereType<StateMachineTrigger>()
+        .toList();
+
+    for (final input in _triggerInputs!) {
+      _inputValues[input.id] = false;
     }
   }
 
@@ -590,26 +628,28 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     _inputValues[id] = value;
     isActive = true;
 
-    if (onInputValueChange != null) {
-      onInputValueChange!(id, value);
-    }
+    onInputValueChange?.call(id, value);
   }
 
   void _sortHittableComponents() {
-    Drawable? firstDrawable = artboard?.firstDrawable;
+
+    var firstDrawable = artboard?.lastDrawable;
+
+    // Drawable? firstDrawable = artboard?.firstDrawable;
     if (firstDrawable != null) {
-      // walk to the end, so we can visit in reverse-order
-      while (firstDrawable!.prev != null) {
-        firstDrawable = firstDrawable.prev;
-      }
+      // // walk to the end, so we can visit in reverse-order
+      // while (firstDrawable!.prev != null) {
+      //   firstDrawable = firstDrawable.prev;
+      // }
 
       final hitComponentsCount = hitComponents.length;
       int currentSortedIndex = 0;
-      while (firstDrawable != null) {
+      do {
+      // while (firstDrawable != null) {
         for (var i = currentSortedIndex; i < hitComponentsCount; i++) {
           if (hitComponents[i].component == firstDrawable) {
             if (currentSortedIndex != i) {
-              hitComponents.swap(i, currentSortedIndex);
+              hitComponents.swapIndexes(i, currentSortedIndex);
             }
             currentSortedIndex++;
             break;
@@ -618,20 +658,28 @@ class StateMachineController extends RiveAnimationController<CoreContext>
         if (currentSortedIndex == hitComponentsCount) {
           break;
         }
-        firstDrawable = firstDrawable.next;
-      }
+        firstDrawable = firstDrawable!.next;
+      } while (firstDrawable != null);
     }
   }
 
   @override
   bool apply(CoreContext core, double elapsedSeconds) {
+
+    // var stopwatch = Stopwatcher();
+
+    // stopwatch.start();
     if (artboard?.hasChangedDrawOrderInLastUpdate ?? false) {
       _sortHittableComponents();
     }
+    // stopwatch.commit((t) => AdvanceStats.instance.sortHittableComponents += t);
 
+    // stopwatch.start();
     bool keepGoing = false;
     var layerApplySane = true;
+    // FrequencyPrinter.print(() => '${artboard?.name} > ${layerControllers.length}');
     for (final layerController in layerControllers) {
+      // StateStats.applyLayer(layerController);
       if (layerController.apply(core, elapsedSeconds)) {
         keepGoing = true;
       }
@@ -639,75 +687,77 @@ class StateMachineController extends RiveAnimationController<CoreContext>
     }
     advanceInputs();
     isActive = keepGoing;
+    // stopwatch.commit((t) => AdvanceStats.instance.layerController += t);
 
+    // stopwatch.start();
     applyEvents();
+    // stopwatch.commit((t) => AdvanceStats.instance.applyEvents += t);
 
     return layerApplySane;
   }
 
-  void applyEvents() {
-    // Callback for events.
-    if (_reportedEvents.isNotEmpty || _reportedNestedEvents.isNotEmpty) {
-      var events = _reportedEvents.toList(growable: false);
-      var nestedEvents = Map<int, List<Event>>.from(_reportedNestedEvents);
-      _reportedEvents.clear();
-      _reportedNestedEvents.clear();
+  void _applyNestedEvent(StateMachineListener listener, int targetId, List<Event> eventList) {
+    if (listener.targetId == targetId) {
+      final t = eventList.length;
+      for (var i = 0; i < t; i++) {
+        if (listener.eventId == eventList[i].id) {
+          listener.performChanges(this, Vec2D(), Vec2D());
+        }
+      }
+    }
+  }
 
-      // var listeners = stateMachine.listeners.whereType<StateMachineListener>();
-      // stateMachine.listeners.whereType<StateMachineListener>().forEach((listener) {
+  void applyEvents() {
+
+    List<Event>? events;
+    if (_reportedEvents.isNotEmpty) {
+      events = _reportedEvents.toList(growable: false);
+      _reportedEvents.clear();
+    }
+
+    Map<int, List<Event>>? nestedEvents;
+    if (_reportedNestedEvents.isNotEmpty) {
+      nestedEvents = Map<int, List<Event>>.from(_reportedNestedEvents);
+      _reportedNestedEvents.clear();
+    }
+
+    // Callback for events.
+    if (events != null || nestedEvents != null) {
+
       for (final listener in stateMachine.listeners.whereType<StateMachineListener>()) {
         var listenerTarget = artboard?.context.resolve(listener.targetId);
         if (listener.listenerType == ListenerType.event) {
           // Handle events from this artboard if it is the target
-          if (listenerTarget == artboard) {
-            // events.forEach((event) {
-
+          if (events != null && listenerTarget == artboard) {
             var t = events.length;
             for (var i = 0; i < t; i++) {
               if (listener.eventId == events[i].id) {
                 listener.performChanges(this, Vec2D(), Vec2D());
               }
             }
-            // for (final event in events) {
-            //   if (listener.eventId == event.id) {
-            //     listener.performChanges(this, Vec2D(), Vec2D());
-            //   }
-            // }
-
-          } else {
+          } else if (nestedEvents != null) {
             // Handle events from nested artboards
-            nestedEvents.forEach((targetId, eventList) {
-              if (listener.targetId == targetId) {
-
-                final t = eventList.length;
-                for (var i = 0; i < t; i++) {
-                  if (listener.eventId == eventList[i].id) {
-                    listener.performChanges(this, Vec2D(), Vec2D());
-                  }
-                }
-                // for (final nestedEvent in eventList) {
-                //   if (listener.eventId == nestedEvent.id) {
-                //     listener.performChanges(this, Vec2D(), Vec2D());
-                //   }
-                // }
-              }
-            });
+            nestedEvents.forEach((targetId, eventList) =>
+              _applyNestedEvent(listener, targetId, eventList));
           }
         }
-      }//);
-
-      var riveEvents = <RiveEvent>[];
-
-      for (final event in events) {
-        if (event is AudioEvent && event.asset != null) {
-          event.play(audioPlayer);
-        }
-        riveEvents.add(RiveEvent.fromCoreEvent(event));
       }
-      // _eventListeners.toList().forEach((listener) {
-      for (final listener in _eventListeners) {
-        riveEvents.forEach(listener);
-      }//);
+
+      if (events != null) {
+        var riveEvents = <RiveEvent>[];
+        for (final event in events) {
+          if (event is AudioEvent && event.asset != null) {
+            event.play(audioPlayer);
+          }
+          riveEvents.add(RiveEvent.fromCoreEvent(event));
+        }
+        for (final listener in _eventListeners) {
+          for (final riveEvent in riveEvents) {
+            listener(riveEvent);
+          }
+          // riveEvents.forEach(listener);
+        }
+      }
     }
   }
 

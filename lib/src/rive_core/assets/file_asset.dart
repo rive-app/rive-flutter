@@ -77,7 +77,7 @@ abstract class FileAsset extends FileAssetBase {
 }
 
 /// A mixin for any class that references a generic FileAsset.
-abstract class FileAssetReferencer<T extends FileAsset> {
+mixin FileAssetReferencer<T extends FileAsset> {
   T? _asset;
   T? get asset => _asset;
 

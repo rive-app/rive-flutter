@@ -34,8 +34,12 @@ abstract class Drawable extends DrawableBase {
   /// Draw the contents of this drawable component in world transform space.
   void draw(Canvas canvas);
 
-  BlendMode get blendMode => BlendMode.values[blendModeValue];
-  set blendMode(BlendMode value) => blendModeValue = value.index;
+  BlendMode? _blendMode;
+  BlendMode get blendMode => _blendMode ??= BlendMode.values[blendModeValue];
+  set blendMode(BlendMode value) {
+    _blendMode = value;
+    blendModeValue = value.index;
+  }
 
   @override
   void blendModeValueChanged(int from, int to) {}
@@ -43,16 +47,18 @@ abstract class Drawable extends DrawableBase {
   List<ClippingShape> _clippingShapes = [];
 
   bool clip(Canvas canvas) {
-    if (_clippingShapes.length == 0) {
-      return false;
-    }
+    var t = _clippingShapes.length;
+    if (t == 0) return false;
+
     canvas.save();
-    for (final clip in _clippingShapes) {
+    for (var i = 0; i < t; i++) {
+      var clip = _clippingShapes[i];
       if (!clip.isVisible) {
         continue;
       }
       canvas.clipPath(clip.clippingPath);
     }
+
     return true;
   }
 
@@ -66,10 +72,12 @@ abstract class Drawable extends DrawableBase {
 
   @override
   void update(int dirt) {
+
     super.update(dirt);
+
     if (dirt & ComponentDirt.clip != 0) {
       // Find clip in parents.
-      List<ClippingShape> clippingShapes = [];
+      final clippingShapes = <ClippingShape>[];
       for (ContainerComponent? p = this; p != null; p = p.parent) {
         if (p is TransformComponent) {
           if (p.clippingShapes.isNotEmpty) {

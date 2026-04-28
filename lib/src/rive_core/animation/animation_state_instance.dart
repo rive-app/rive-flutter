@@ -9,6 +9,20 @@ import 'package:rive/src/rive_core/state_machine_controller.dart';
 class AnimationStateInstance extends StateInstance<AnimationState> {
   final LinearAnimationInstance animationInstance;
 
+  @override
+  String get ticker {
+    var animation = state.animation;
+    if (animation == null) {
+      return 'AnimationStateInstance[]';
+    }
+
+    return '${animation.name}['
+      '${animation.loop.name},'
+      '${animation.keyedObjects.length},'
+      '${animation.enableWorkArea ? '${animation.workStart}:${animation.workEnd}' : '${animation.duration}'}'
+      ']';
+  }
+
   AnimationStateInstance(AnimationState state)
       : assert(state.animation != null),
         animationInstance = LinearAnimationInstance(
@@ -18,11 +32,20 @@ class AnimationStateInstance extends StateInstance<AnimationState> {
         super(state);
 
   @override
-  void advance(double seconds, StateMachineController controller) =>
-      animationInstance.advance(
-        seconds * state.speed,
-        callbackReporter: controller,
-      );
+  bool advance(double seconds, StateMachineController controller) {
+
+    final double secs;
+    if (state.speed == 1) {
+      secs = seconds;
+    } else {
+      secs = seconds * state.speed;
+    }
+
+    return animationInstance.advance(
+      secs,
+      callbackReporter: controller,
+    );
+  }
 
   @override
   void apply(CoreContext core, double mix) => animationInstance.animation

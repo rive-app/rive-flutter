@@ -1,3 +1,4 @@
+import 'package:plato/plato.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart';
@@ -6,12 +7,15 @@ import 'package:rive/src/rive_core/state_machine_controller.dart';
 /// [LayerController] of a [StateMachineController]. Abstract representation of
 /// an Animation (for [AnimationState]) or set of Animations in the case of a
 /// [BlendState].
-abstract class StateInstance<T extends LayerState> {
+abstract class StateInstance<T extends LayerState> implements Tickerable {
   final T state;
 
   StateInstance(this.state);
 
-  void advance(double seconds, StateMachineController controller);
+  @override
+  String get ticker => '$runtimeType';
+
+  bool advance(double seconds, StateMachineController controller);
   void apply(CoreContext core, double mix);
 
   bool get keepGoing;
@@ -25,7 +29,7 @@ abstract class StateInstance<T extends LayerState> {
 class SystemStateInstance extends StateInstance {
   SystemStateInstance(LayerState state) : super(state);
   @override
-  void advance(double seconds, StateMachineController controller) {}
+  bool advance(double seconds, StateMachineController controller) { return true;}
 
   @override
   void apply(CoreContext core, double mix) {}

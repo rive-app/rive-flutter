@@ -71,7 +71,7 @@ abstract class MountedArtboard {
   void populateDataBinds(List<DataBind> globalDataBinds);
 }
 
-class NestedArtboard extends NestedArtboardBase implements Sizable {
+class NestedArtboard extends NestedArtboardBase with Sizable {
   /// [NestedAnimation]s applied to this [NestedArtboard].
   final List<NestedAnimation> _animations = [];
   Iterable<NestedAnimation> get animations => _animations;
@@ -308,7 +308,11 @@ class NestedArtboard extends NestedArtboardBase implements Sizable {
     }
 
     bool keepGoing = false;
-    for (final animation in _animations) {
+    var t = _animations.length;
+    // for (final animation in _animations) {
+    NestedAnimation animation;
+    for (var i = 0; i < t; i++) {
+      animation = _animations[i];
       if (animation.isEnabled) {
         if (animation.advance(elapsedSeconds, mountedArtboard!)) {
           keepGoing = true;

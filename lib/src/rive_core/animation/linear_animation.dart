@@ -1,14 +1,22 @@
 import 'dart:collection';
 
+import 'package:plato/plato.dart';
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/linear_animation_base.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
+import 'package:rive/src/rive_core/animation/keyed_property.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 
+import 'keyframe.dart';
+
 export 'package:rive/src/generated/animation/linear_animation_base.dart';
 
-class LinearAnimation extends LinearAnimationBase {
+class LinearAnimation extends LinearAnimationBase implements Tickerable {
+
+  @override
+  String get ticker => 'LinearAnimation[$name]';
+
   /// Map objectId to KeyedObject. N.B. this is the id of the object that we
   /// want to key in core, not of the KeyedObject. It's a clear way to see if an
   /// object is keyed in this animation.
@@ -50,8 +58,17 @@ class LinearAnimation extends LinearAnimationBase {
     }
     bool found = false;
 
-    for (final kp in value.keyedProperties) {
-      for (final kf in kp.keyframes){
+    var keyedProperties = value.keyedProperties;
+    var t1 = keyedProperties.length;
+    // for (final kp in keyedProperties) {
+    KeyedProperty kp;
+    for (var i = 0; i < t1; i++) {
+      kp = keyedProperties[i];
+      var t2 = kp.keyframes.length;
+      // for (final kf in kp.keyframes) {
+      KeyFrame kf;
+      for (var j = 0; j < t2; j++) {
+        kf = kp.keyframes[j];
         kf.remove();
         if (!found) {
           kp.onKeyframesChanged();
@@ -63,23 +80,22 @@ class LinearAnimation extends LinearAnimationBase {
   }
 
   /// Returns the seconds where the animiation work area starts
-  double get startSeconds => (enableWorkArea ? workStart : 0).toDouble() / fps;
+  double get startSeconds => (enableWorkArea_ ? workStart_ : 0).toDouble() / fps_;
 
   /// Returns the seconds where the animation work area ends
-  double get endSeconds =>
-      (enableWorkArea ? workEnd : duration).toDouble() / fps;
+  double get endSeconds => (enableWorkArea_ ? workEnd_ : duration_).toDouble() / fps_;
 
   /// Returns the length of the animation
   double get durationSeconds => endSeconds - startSeconds;
 
   /// Returns the end time of the animation in seconds, considering speed
-  double get endTime => (speed >= 0) ? endSeconds : startSeconds;
+  double get endTime => (speed_ >= 0) ? endSeconds : startSeconds;
 
   /// Returns the start time of the animation in seconds, considering speed
-  double get startTime => (speed >= 0) ? startSeconds : endSeconds;
+  double get startTime => (speed_ >= 0) ? startSeconds : endSeconds;
 
-  /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-  late final List<KeyedObject> _objects = _keyedObjects.values.toList(growable: false);
+  List<KeyedObject>? __objects;
+  List<KeyedObject> get _objects => __objects ??= _keyedObjects.values.toList(growable: false);
 
   void reportKeyedCallbacks(
     double secondsFrom,
@@ -88,18 +104,28 @@ class LinearAnimation extends LinearAnimationBase {
     int speedDirection = 1,
     bool fromPong = false,
   }) {
+
+    if (secondsFrom == secondsTo) {
+      return;
+    }
+
     // We have to account for the state machine speed multiplier and the speed
-    double startingTime =
-        ((speed * speedDirection) >= 0) ? startSeconds : endSeconds;
-    bool isAtStartFrame = startingTime == secondsFrom;
+    final double startingTime;
+    if (speedDirection == 1) {
+      startingTime = (speed_ >= 0) ? startSeconds : endSeconds;
+    } else {
+      startingTime = (speed_ * speedDirection >= 0) ? startSeconds : endSeconds;
+    }
+    var isAtStartFrame = startingTime == secondsFrom;
 
     // Do not report a callback twice if it comes from the "pong" part of a
     // "ping pong" loop
-    if (!isAtStartFrame || !fromPong) {
-      // for (final keyedObject in _keyedObjects.values) {
-      /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-      for (final keyedObject in _objects) {
-        keyedObject.reportKeyedCallbacks(
+     if (!isAtStartFrame || !fromPong) {
+      var t = _objects.length;
+      // for (final keyedObject in _objects) {
+      for (var i = 0; i < t; i++) {
+        // final keyedObject = _objects[t];
+        _objects[i].reportKeyedCallbacks(
           secondsFrom,
           secondsTo,
           reporter: reporter,
@@ -116,23 +142,25 @@ class LinearAnimation extends LinearAnimationBase {
   /// animations exist once but entire Rive file can be instanced multiple times
   /// playing different positions).
   void apply(double time, {required CoreContext coreContext, double mix = 1}) {
-    if (quantize) {
-      // ignore: parameter_assignments
-      time = (time * fps).floor() / fps;
-    }
-    // for (final keyedObject in _keyedObjects.values) {
-    /// STOKANAL-FORK-EDIT: iterate properties with a list rather than with a map
-    var t = _objects.length;
+
+    // assert (!quantize_, 'rive not expected');
+    // if (quantize_) {
+    //   // ignore: parameter_assignments
+    //   time = (time * fps).floor() / fps;
+    // }
+
+    var t = _objects.length; // for indexed has the best performance in Dart
     for (var i = 0; i < t; i++) {
       _objects[i].apply(time, mix, coreContext);
     }
-    // for (final keyedObject in _objects) {
-    //   keyedObject.apply(time, mix, coreContext);
-    // }
   }
 
-  Loop get loop => Loop.values[loopValue];
-  set loop(Loop value) => loopValue = value.index;
+  Loop? _loop;
+  Loop get loop => _loop ??= Loop.values[loopValue];
+  set loop(Loop value) {
+    _loop = value;
+    loopValue = value.index;
+  }
 
   @override
   void durationChanged(int from, int to) {}

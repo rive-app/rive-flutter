@@ -32,23 +32,31 @@ abstract class BlendStateInstance<T extends BlendState<K>,
 
   @mustCallSuper
   @override
-  void advance(double seconds, StateMachineController controller) {
+  bool advance(double seconds, StateMachineController controller) {
     // Advance all the animations in the blend state
     // NOTE: we are intentionally ignoring the animationInstances' keepGoing
     // return value.
     // Blend states need to keep blending forever, as even if the animation
     // does not change the mix values may
-    for (final animation in animationInstances) {
-      if (animation.animationInstance.keepGoing) {
+    var result = false;
+    var t = animationInstances.length;
+    LinearAnimationInstance animationInstance;
+    // for (final animation in animationInstances) {
+    for (var i = 0; i < t; i++) {
+      animationInstance = animationInstances[i].animationInstance;
+      if (animationInstance.keepGoing) {
         // Should animations with m_Mix == 0.0 advance? They will trigger events
         // and the event properties (if any) will not be updated by
         // animationInstance.apply.
-        animation.animationInstance.advance(
+        if (animationInstance.advance(
           seconds,
           callbackReporter: controller,
-        );
+        )) {
+          result = true;
+        }
       }
     }
+    return result;
   }
 
   @override

@@ -3,10 +3,7 @@ import 'dart:collection';
 import 'package:rive/src/rive_core/animation/state_machine_fire_event.dart';
 
 class LayerComponentEvents extends ListBase<StateMachineFireEvent> {
-  // final List<StateMachineFireEvent?> _values = [];
-  final List<StateMachineFireEvent> _values = [];
-  // List<StateMachineFireEvent> get values =>
-  //     _values.cast<StateMachineFireEvent>();
+  final _values = <StateMachineFireEvent>[];
 
   @override
   Iterator<StateMachineFireEvent> get iterator => _values.iterator;

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/state_machine.dart';
 import 'package:rive/src/rive_core/animation/state_machine_bool.dart';
@@ -7,6 +9,8 @@ import 'package:rive/src/rive_core/animation/state_machine_trigger.dart';
 import 'package:rive/src/rive_core/artboard.dart';
 import 'package:rive/src/rive_core/state_machine_controller.dart' as core;
 import 'package:rive/src/runtime_mounted_artboard.dart';
+
+import '../rive_core/state_machine_controller.dart';
 
 export 'package:rive/src/runtime_mounted_artboard.dart';
 
@@ -119,9 +123,6 @@ class StateMachineController extends core.StateMachineController
   /// A list of inputs available in the StateMachine.
   @nonVirtual
   final List<SMIInput> inputs = <SMIInput>[];
-
-  // /// A list of inputs available in the StateMachine.
-  // Iterable<SMIInput> get inputs => _inputs;
 
   final _runtimeEventListeners = <OnRuntimeEvent>{};
 

@@ -11,7 +11,7 @@ import 'package:rive_common/math.dart';
 /// Callback signature for events firing.
 typedef OnRuntimeEvent = void Function(Event);
 
-abstract class RuntimeEventReporter {
+mixin RuntimeEventReporter {
   void addRuntimeEventListener(OnRuntimeEvent callback);
   void removeRuntimeEventListener(OnRuntimeEvent callback);
 }

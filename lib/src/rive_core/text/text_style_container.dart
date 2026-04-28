@@ -8,7 +8,7 @@ import 'package:rive_common/utilities.dart';
 /// An abstraction to give a common interface to any component that can contain
 /// TextStyles. Currently used by the [Text] object but we can later support
 /// file-wide styles by making them owned by an [Artboard] or [Backboard].
-abstract class TextStyleContainer {
+mixin TextStyleContainer {
   int _nextShaperId = 0;
   final Set<TextStyle> styles = <TextStyle>{}; // preserve order
   final HashMap<int, TextStyle> _styleLookup = HashMap<int, TextStyle>();

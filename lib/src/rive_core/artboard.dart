@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
@@ -25,11 +27,16 @@ import 'package:rive/src/rive_core/nested_artboard.dart';
 import 'package:rive/src/rive_core/rive_animation_controller.dart';
 import 'package:rive/src/rive_core/shapes/paint/shape_paint_mutator.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
+import 'package:rive/src/rive_core/stats.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
 import 'package:rive_common/layout_engine.dart';
 import 'package:rive_common/math.dart';
 import 'package:rive_common/utilities.dart';
-import 'package:stokanal/core.dart' hide Event;
+import 'package:stokanal/core.dart' hide Event, Node;
+
+import '../../components.dart';
+import 'solo.dart';
+import 'state_machine_controller.dart';
 
 export 'package:rive/src/generated/artboard_base.dart';
 
@@ -118,12 +125,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   @nonVirtual
   final EventList events = EventList();
 
-  /// List of animations and state machines in the artboard.
-  // AnimationList get animations => _animations;
-
-  /// List of events in the artboard.
-  // EventList get events => _events;
-
   DataContext? dataContext;
   final List<DataBind> globalDataBinds = [];
 
@@ -137,11 +138,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   int _dirtDepth = 0;
 
+  /// Remove a layer from state machines
+  void removeLayer(bool Function(LayerController) function) =>
+      _animationControllers.forEach((c) => c.removeAnimations(function));
+
   /// Iterate each component and call callback for it.
   void forEachComponent(void Function(Component) callback) {
     var t = _components.length;
     for (var i = 0; i < t; i++) {
-    // for (final c in _components) {
       callback(_components[i]);
     }
   }
@@ -170,40 +174,49 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   Vec2D get origin => Vec2D.fromValues(width * originX, height * originY);
 
+  static const int maxSteps = 100;
+
   /// Walk the dependency tree and update components in order. Returns true if
   /// any component updated.
   bool updateComponents() {
     bool didUpdate = false;
 
-    if ((dirt & ComponentDirt.bindings) != 0) {
-      computeBindings(true);
-      dirt &= ~ComponentDirt.bindings;
-      didUpdate = true;
-    }
+    assert(dataBinds.isEmpty, 'rive not expected');
+
+    // if ((dirt & ComponentDirt.bindings) != 0) {
+    //   computeBindings(true);
+    //   dirt &= ~ComponentDirt.bindings;
+    //   didUpdate = true;
+    // }
+
     if ((dirt & ComponentDirt.drawOrder) != 0) {
       sortDrawOrder();
       dirt &= ~ComponentDirt.drawOrder;
       didUpdate = true;
     }
     if ((dirt & ComponentDirt.components) != 0) {
-      const int maxSteps = 100;
-      int step = 0;
-      int count = _dependencyOrder.length;
+      // const int maxSteps = 100;
+      var step = 0;
+      var count = _dependencyOrder.length;
       while ((dirt & ComponentDirt.components) != 0 && step < maxSteps) {
         dirt &= ~ComponentDirt.components;
         // Track dirt depth here so that if something else marks
         // dirty, we restart.
         for (int i = 0; i < count; i++) {
-          Component component = _dependencyOrder[i];
+          var component = _dependencyOrder[i];
           _dirtDepth = i;
-          int d = component.dirt;
+          var d = component.dirt;
 
           if (d == 0 || (d & ComponentDirt.collapsed) != 0) {
             continue;
           }
 
-          component.dirt &= ComponentDirt.collapsed;
+          // component.dirt &= ComponentDirt.collapsed;
+          component.dirt = 0;
+
+          // StateStats.update(component);
           component.update(d);
+
           if (_dirtDepth < i) {
             break;
           }
@@ -217,17 +230,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   @nonVirtual
   final activeNestedArtboards = UniqueList.of<NestedArtboard>();
-  // Iterable<NestedArtboard> get activeNestedArtboards => _activeNestedArtboards;
 
   @nonVirtual
   final List<Joystick> joysticks = [];
-  // Iterable<Joystick> get joysticks => _joysticks;
 
   final List<DataBind> dataBinds = [];
-  // Iterable<DataBind> get dataBinds => _dataBinds;
 
   bool canPreApplyJoysticks() {
-    if (joysticks.length == 0) {
+    if (joysticks.isEmpty) {
       return false;
     }
     if (joysticks.any((joystick) => joystick.isComplex)) {
@@ -271,19 +281,34 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   bool advanceInternal(double elapsedSeconds,
       {bool nested = false, bool isRoot = false}) {
     bool didUpdate = false;
+
+    // StateStats.renew(name);
+    // var stopwatch = Stopwatcher();
+
     if (_dirtyLayout.isNotEmpty) {
       var dirtyLayout = _dirtyLayout.toList();
       _dirtyLayout.clear();
+
+      // stopwatch.start();
       syncStyle();
+      // stopwatch.commit((t) => AdvanceStats.instance.syncStyle += t);
+
+      // stopwatch.start();
       for (final layoutComponent in dirtyLayout) {
         layoutComponent.syncStyle();
       }
+      // stopwatch.commit((t) => AdvanceStats.instance.layoutComponentSyncStyle += t);
+
+      // stopwatch.start();
       layoutNode.calculateLayout(width, height, LayoutDirection.ltr);
       if (dirt & ComponentDirt.layoutStyle != 0) {
         // Maybe we can genericize this to pass all styles to children if
         // the child should inherit
         cascadeAnimationStyle(interpolation, interpolator, interpolationTime);
       }
+      // stopwatch.commit((t) => AdvanceStats.instance.cascadeAnimationStyle += t);
+
+      // stopwatch.start();
       // Need to sync all layout positions.
       for (final layout in _dependencyOrder.whereType<LayoutComponent>()) {
         layout.updateLayoutBounds();
@@ -292,11 +317,14 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
           didUpdate = true;
         }
       }
+      // stopwatch.commit((t) => AdvanceStats.instance.dependencyOrder += t);
     }
 
+    // stopwatch.start();
     advanceSane = true;
     for (final controller in _animationControllers) {
       if (controller.isActive) {
+        // StateStats.applyController(controller);
         if (!controller.apply(context, elapsedSeconds)) {
           advanceSane = false;
           _logr.info('ANIMATION-CONTROLLER FAILED TO APPLY > $name $controller');
@@ -305,38 +333,49 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
       }
     }
     hasChangedDrawOrderInLastUpdate = false;
+    // stopwatch.commit((t) => AdvanceStats.instance.animationControllers += t);
 
-    // Joysticks can be applied before updating components if none of the
-    // joysticks have "external" control. If they are controlled/moved by some
-    // other component then they need to apply after the update cycle, which is
-    // less efficient.
-    var canApplyJoysticksEarly = canPreApplyJoysticks();
-    if (canApplyJoysticksEarly) {
-      applyJoysticks(isRoot: isRoot);
-    }
+    // stopwatch.start();
+    // // Joysticks can be applied before updating components if none of the
+    // // joysticks have "external" control. If they are controlled/moved by some
+    // // other component then they need to apply after the update cycle, which is
+    // // less efficient.
+    // var canApplyJoysticksEarly = canPreApplyJoysticks();
+    // if (canApplyJoysticksEarly) {
+    //   applyJoysticks(isRoot: isRoot);
+    // }
+    // stopwatch.commit((t) => _stats.applyJoysticks += t);
 
-    if (isRoot) {
-      updateDataBinds();
-    }
-    if (updateComponents() || didUpdate) {
-      didUpdate = true;
-    }
+    // stopwatch.start();
+    // if (isRoot) {
+    //   updateDataBinds();
+    // }
+    // stopwatch.commit((t) => _stats.updateDataBinds += t);
 
-    // If joysticks applied, run the update again for the animation changes.
-    if (!canApplyJoysticksEarly && applyJoysticks(isRoot: isRoot)) {
-      if (updateComponents()) {
-        didUpdate = true;
-      }
-    }
+    // stopwatch.start();
+    didUpdate |= updateComponents();
+    // stopwatch.commit((t) => AdvanceStats.instance.updateComponents += t);
 
+    // stopwatch.start();
+    // // If joysticks applied, run the update again for the animation changes.
+    // if (!canApplyJoysticksEarly && applyJoysticks(isRoot: isRoot)) {
+    //   if (updateComponents()) {
+    //     didUpdate = true;
+    //   }
+    // }
+    // stopwatch.commit((t) => _stats.applyJoysticks += t);
+
+    // stopwatch.start();
     if (nested) {
-      // var active = _activeNestedArtboards.toList(growable: false);
-      for (final activeNestedArtboard in activeNestedArtboards){//.toList(growable: false)) {
-        if (activeNestedArtboard.advance(elapsedSeconds)) {
-          didUpdate = true;
-        }
+      var t = activeNestedArtboards.length;
+      // for (final activeNestedArtboard in activeNestedArtboards) {
+      for (var i = 0; i < t; i++) {
+        didUpdate |= activeNestedArtboards[i].advance(elapsedSeconds);
       }
     }
+    // stopwatch.commit((t) => AdvanceStats.instance.nested += t);
+
+    // StateStats.print();
 
     return didUpdate;
   }
@@ -648,6 +687,23 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
   Drawable? firstDrawable;
 
+  Drawable? _lastDrawable;
+
+  /// Get last drawable by iterating over the firstDrawable
+  Drawable? get lastDrawable {
+
+    if (_lastDrawable != null) {
+      return _lastDrawable;
+    }
+
+    var drawable = firstDrawable;
+    // walk to the end
+    while (drawable?.prev != null) {
+      drawable = drawable!.prev;
+    }
+    return _lastDrawable = drawable;
+  }
+
   void computeDrawOrder() {
     drawables.clear();
     _rules.clear();
@@ -705,7 +761,6 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
 
     var length = dataBinds.length;
     for (var i = 0; i < length; i++) {
-    // for (final dataBind in dataBinds) {
       dataBinds[i].bind(dataContext);
     }
 

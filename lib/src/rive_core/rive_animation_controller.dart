@@ -1,8 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:plato/plato.dart';
+
+import 'state_machine_controller.dart';
 
 /// Abstraction for receiving a per frame callback while isPlaying is true to
 /// apply animation based on an elapsed amount of time.
-abstract class RiveAnimationController<T> {
+abstract class RiveAnimationController<T> implements Tickerable {
+
+  @override
+  String get ticker => '$runtimeType';
+
+  void removeAnimations(bool Function(LayerController) function) {
+  }
+
   final _isActive = ValueNotifier<bool>(false);
   ValueListenable<bool> get isActiveChanged => _isActive;
 

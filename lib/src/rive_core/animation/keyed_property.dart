@@ -14,20 +14,10 @@ abstract class KeyFrameInterface {
   int get frame;
 }
 
-class KeyFrameList<T extends KeyFrameInterface> {
+mixin KeyFrameList<T extends KeyFrameInterface> {
 
   @nonVirtual
   List<T> keyframes = <T>[];
-
-  // var _keyframes = <T>[];
-  // List<T> get keyframes => _keyframes;
-  // set keyframes(Iterable<T> frames) => _keyframes = frames.toList();
-
-  // T get firstKeyframe => _keyframes.first;
-  // void remove(T keyframe) {
-  //   _keyframes.remove(keyframe);
-  //   onKeyframesChanged();
-  // }
 
   void onKeyframesChanged() {}
 
@@ -188,6 +178,9 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     // Binary find the keyframe index (use timeInSeconds here as opposed to the
     // finder above which operates in frames).
     var length = keyframes.length;
+    if (length == 0) {
+      return 0;
+    }
     int end = length - 1;
     var totalSeconds = keyframes[end].seconds;
 
@@ -210,7 +203,8 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     int start = 0;
     double closestSeconds;
 
-    while (start <= end) {
+    // while (start <= end) {
+    while (true) {
       closestSeconds = keyframes[mid].seconds;
       if (closestSeconds < seconds) {
         start = mid + 1;
@@ -219,9 +213,12 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
       } else {
         return mid + exactOffset;
       }
+      if (start > end) {
+        return start;
+      }
       mid = (start + end) >> 1;
     }
-    return start;
+    // return start;
   }
 
   /// Original method (DO NOT DELETE FOR REFERENCE)
@@ -265,9 +262,9 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     required KeyedCallbackReporter reporter,
     bool isAtStartFrame = false,
   }) {
-    if (secondsFrom == secondsTo) {
-      return;
-    }
+    // if (secondsFrom == secondsTo) {
+    //   return;
+    // }
     bool isForward = secondsFrom <= secondsTo;
     int fromExactOffset = 0;
     int toExactOffset = isForward ? 1 : 0;
@@ -282,13 +279,6 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     }
     int idx = _closestFrameIndex(secondsFrom, exactOffset: fromExactOffset);
     int idxTo = _closestFrameIndex(secondsTo, exactOffset: toExactOffset);
-
-    // validate _closestFrameIndex method
-    // int _idx = closestFrameIndex(secondsFrom, exactOffset: fromExactOffset);
-    // int _idxTo = closestFrameIndex(secondsTo, exactOffset: toExactOffset);
-    // if (_idx != idx || idxTo != _idxTo) {
-    //   throw Exception('$_idx != $idx, $idxTo != $_idxTo');
-    // }
 
     // going backwards?
     if (idxTo < idx) {
@@ -320,47 +310,17 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
     _skipInterpolation = true;
   }
 
-  // // uncomment me for stats
-  // static var _applies = 0;
-  // static var _hits = 0;
-  // static var _toleranceHits = 0;
-  // var _skips = 0;
-
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
-    if (keyframes.length == 0) {
-      return;
-    }
-
-    // _applies++;
-
-    // final _ClosestFrame pair;
 
     if (_pair != null && seconds >= _pair!.secondsMin && seconds <= _pair!.secondsMax) { // reuse
-      // _hits++;
-      // if (seconds != _pair!._seconds) {
-      //   _toleranceHits++;
-      // }
-      // if (_hits % 1000000 == 0) {
-      //   print('HITS > $_hits $_toleranceHits > hits=${(_hits/_applies).toStringAsFixed(2)} tolerance=${(_toleranceHits/_hits).toStringAsFixed(2)}');
-      // }
 
       if (_skipInterpolation) { // no interpolation, lookup and don't reset
         _pair = _closestFramePair(seconds);
-        // if (_skips++ % 1000 == 0) {
-        //   log('SKIP INTERPOLATION');
-        // }
       }
     } else { // lookup and reset
       _pair = _closestFramePair(seconds);
     }
-
-    // if (_pair != null &&
-    //     seconds >= _pair!.secondsMin &&
-    //     seconds <= _pair!.secondsMax) { // it's a hit
-    // } else {
-    //   _pair = _closestFramePair(seconds);
-    // }
 
     var fromFrame = _pair!.fromFrame;
 

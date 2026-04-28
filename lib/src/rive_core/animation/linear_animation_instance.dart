@@ -1,10 +1,12 @@
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: unused_import, lines_longer_than_80_chars
 
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/loop.dart';
 import 'package:rive/src/rive_core/event.dart';
+
+import '../stats.dart';
 
 class LinearAnimationInstance {
   final LinearAnimation animation;
@@ -13,7 +15,7 @@ class LinearAnimationInstance {
   double _time = 0;
   double _totalTime = 0;
   double _lastTotalTime = 0;
-  double _direction = 1;
+  int _direction = 1;
   bool _didLoop = false;
   bool get didLoop => _didLoop;
   double _spilledTime = 0;
@@ -47,10 +49,10 @@ class LinearAnimationInstance {
   double get time => _time;
 
   /// Direction should only be +1 or -1
-  set direction(double value) => _direction = value == -1 ? -1 : 1;
+  set direction(int value) => _direction = value == -1 ? -1 : 1;
 
   /// Returns the animation's play direction: 1 for forwards, -1 for backwards
-  double get direction => _direction;
+  int get direction => _direction;
 
   double get directedSpeed => animation.speed * _direction;
 
@@ -89,66 +91,105 @@ class LinearAnimationInstance {
 
   bool advance(double elapsedSeconds,
       {KeyedCallbackReporter? callbackReporter}) {
-    var deltaSeconds = elapsedSeconds * animation.speed * _direction;
     _spilledTime = 0;
 
-    if (deltaSeconds == 0) {
-      _didLoop = false;
-      return true;
-    }
-    _lastTotalTime = _totalTime;
-    _totalTime += deltaSeconds.abs();
+    // assert (0 == 1, 'debug');
+
+    var loop = animation.loop;
 
     // NOTE:
     // do not track spilled time, if our one shot loop is already completed.
     // stop gap before we move spilled tracking into state machine logic.
-    var killSpilledTime = !keepGoing;
+    var dontKeepGoing = !keepGoing;
+
+    if (loop == Loop.oneShot) {
+      if (dontKeepGoing) {
+        _didLoop = true;
+        return false;
+      // } else {
+      //   // TODO review animation speed and direction for oneShot
+      //   FrequencyPrinter.print(frequency: 500, () => 'oneShot > ${animation.name} '
+      //       '${animation.speed} $_direction > ${animation.duration}');
+      }
+    }
+
+    final absSeconds = elapsedSeconds * animation.speed_;
+    if (absSeconds == 0) {
+      _didLoop = false;
+      return !dontKeepGoing;
+    }
+
+    int direction = _direction;
+    final double deltaSeconds;
+    if (_direction == 1) {
+      deltaSeconds = absSeconds;
+    } else {
+      deltaSeconds = absSeconds * direction;
+    }
+
+    _lastTotalTime = _totalTime;
+    _totalTime += absSeconds;
 
     var lastTime = _time;
     _time += deltaSeconds;
 
-    if (callbackReporter != null) {
-      animation.reportKeyedCallbacks(
-        lastTime,
-        _time,
-        reporter: callbackReporter,
-        speedDirection: _speedDirection,
-      );
+    final _ReportKeyedCallbacksInvocation? callbacksInvocation =
+      callbackReporter == null ? null :
+      (_ReportKeyedCallbacksInvocation(this, callbackReporter)..fill(lastTime, _time));
+
+    var fps = animation.fps_;
+    var frames = _time * fps;
+
+    final int start;
+    final int end;
+    final int range;
+    if (animation.enableWorkArea_) {
+      start = animation.workStart_;
+      end = animation.workEnd_;
+      range = end - start;
+    } else {
+      start = 0;
+      end = animation.duration_;
+      range = end;
     }
 
-    var fps = animation.fps;
-    double frames = _time * fps;
+    // var didLoop = false;
 
-    var start = animation.enableWorkArea ? animation.workStart : 0;
-    var end = animation.enableWorkArea ? animation.workEnd : animation.duration;
-    var range = end - start;
-
-    bool didLoop = false;
-
-    int direction = deltaSeconds < 0 ? -1 : 1;
-    switch (animation.loop) {
+    // var direction = deltaSeconds < 0 ? -1 : 1;
+    switch (loop) {
       case Loop.oneShot:
+
         if (direction == 1 && frames > end) {
+
           // Account for the time dilation or contraction applied in the
           // animation local time by its speed to calculate spilled time.
           // Calculate the ratio of the time excess by the total elapsed
           // time in local time (deltaFrames) and multiply the elapsed time
           // by it.
-          final deltaFrames = deltaSeconds * fps;
-          final spilledFramesRatio = (frames - end) / deltaFrames;
-          _spilledTime = spilledFramesRatio * elapsedSeconds;
-          frames = end.toDouble();
-          _time = frames / fps;
-          didLoop = true;
+
+          if (!dontKeepGoing) {
+            final deltaFrames = deltaSeconds * fps;
+            final spilledFramesRatio = (frames - end) / deltaFrames;
+            _spilledTime = spilledFramesRatio * elapsedSeconds;
+          }
+
+          _time = end.toDouble() / fps;
+          _didLoop = true;
+
         } else if (direction == -1 && frames < start) {
-          final deltaFrames = (deltaSeconds * fps).abs();
-          final spilledFramesRatio = (start - frames) / deltaFrames;
-          _spilledTime = spilledFramesRatio * elapsedSeconds;
-          frames = start.toDouble();
-          _time = frames / fps;
-          didLoop = true;
+
+          if (!dontKeepGoing) {
+            final deltaFrames = (deltaSeconds * fps).abs();
+            final spilledFramesRatio = (start - frames) / deltaFrames;
+            _spilledTime = spilledFramesRatio * elapsedSeconds;
+          }
+
+          // frames = start.toDouble();
+          _time = start.toDouble() / fps;
+          _didLoop = true;
         }
         break;
+
       case Loop.loop:
         if (direction == 1 && frames >= end) {
           // How spilled time has to be calculated, given that local time can be scaled
@@ -158,41 +199,53 @@ class LinearAnimationInstance {
           // - use that remainder as the ratio of the original time that was not consumed
           // by the loop (spilledFramesRatio)
           // - multiply the original elapsedTime by the ratio to set the spilled time
-          final deltaFrames = deltaSeconds * fps;
+
           final remainder = (frames - start) % range;
-          final spilledFramesRatio = remainder / deltaFrames;
-          _spilledTime = spilledFramesRatio * elapsedSeconds;
+
+          if (!dontKeepGoing) {
+            final deltaFrames = deltaSeconds * fps;
+            final spilledFramesRatio = remainder / deltaFrames;
+            _spilledTime = spilledFramesRatio * elapsedSeconds;
+          }
+
           frames = start + remainder;
           lastTime = 0;
           _time = frames / fps;
-          if (callbackReporter != null) {
-            animation.reportKeyedCallbacks(
-              lastTime,
-              _time,
-              reporter: callbackReporter,
-              speedDirection: _speedDirection,
-            );
-          }
-          didLoop = true;
+          callbacksInvocation?.fill(lastTime, _time);
+            // animation.reportKeyedCallbacks(
+            //   lastTime,
+            //   _time,
+            //   reporter: callbackReporter,
+            //   speedDirection: _speedDirection,
+            // );
+          _didLoop = true;
         } else if (direction == -1 && frames <= start) {
-          final deltaFrames = deltaSeconds * fps;
+
           final remainder = (start - frames) % range;
-          final spilledFramesRatio = (remainder / deltaFrames).abs();
-          _spilledTime = spilledFramesRatio * elapsedSeconds;
+
+          if (!dontKeepGoing) {
+            final deltaFrames = deltaSeconds * fps;
+            final spilledFramesRatio = (remainder / deltaFrames).abs();
+            _spilledTime = spilledFramesRatio * elapsedSeconds;
+          }
+
           frames = end - remainder;
           lastTime = end / fps;
           _time = frames / fps;
-          if (callbackReporter != null) {
-            animation.reportKeyedCallbacks(
-              lastTime,
-              _time,
-              reporter: callbackReporter,
-              speedDirection: _speedDirection,
-            );
-          }
-          didLoop = true;
+
+          callbacksInvocation?.fill(lastTime, _time);
+          // if (callbackReporter != null) {
+          //   animation.reportKeyedCallbacks(
+          //     lastTime,
+          //     _time,
+          //     reporter: callbackReporter,
+          //     speedDirection: _speedDirection,
+          //   );
+          // }
+          _didLoop = true;
         }
         break;
+
       case Loop.pingPong:
         // ignore: literal_only_boolean_expressions
         // In ping-pong we only want to report callbacks once per side
@@ -217,30 +270,61 @@ class LinearAnimationInstance {
           _time = frames / animation.fps;
           _direction *= -1;
           direction *= -1;
-          didLoop = true;
-          if (callbackReporter != null) {
-            animation.reportKeyedCallbacks(
-              lastTime,
-              _time,
-              reporter: callbackReporter,
-              speedDirection: _speedDirection,
-              fromPong: fromPong,
-            );
-          }
+          _didLoop = true;
+
+          callbacksInvocation?.fill(lastTime, _time, fromPong: fromPong);
+          // if (callbackReporter != null) {
+          //   animation.reportKeyedCallbacks(
+          //     lastTime,
+          //     _time,
+          //     reporter: callbackReporter,
+          //     speedDirection: _speedDirection,
+          //     fromPong: fromPong,
+          //   );
+          // }
           fromPong = !fromPong;
         }
         break;
     }
 
-    if (killSpilledTime) {
-      _spilledTime = 0;
-    }
+    // StateStats.callbackAnimation(callbacksInvocation?.instance.animation);
+    callbacksInvocation?.call();
 
-    _didLoop = didLoop;
+    // if (dontKeepGoing) {
+    //   _spilledTime = 0;
+    // }
+
+    // _didLoop = didLoop;
     return keepGoing;
   }
 
   // Used by runtime to report events from linear animations in nested artboards
   // when not played in state machine
   void reportEvent(Event event) {}
+}
+
+class _ReportKeyedCallbacksInvocation {
+  final LinearAnimationInstance instance;
+  final KeyedCallbackReporter reporter;
+  _ReportKeyedCallbacksInvocation(this.instance, this.reporter);
+
+  late double secondsFrom;
+  late double secondsTo;
+  late bool fromPong;
+
+  void fill(double secondsFrom, double secondsTo, {bool fromPong = false}) {
+    this.secondsFrom = secondsFrom;
+    this.secondsTo = secondsTo;
+    this.fromPong = fromPong;
+  }
+
+  void call() {
+    instance.animation.reportKeyedCallbacks(
+      secondsFrom,
+      secondsTo,
+      reporter: reporter,
+      speedDirection: instance._speedDirection,
+      fromPong: fromPong,
+    );
+  }
 }

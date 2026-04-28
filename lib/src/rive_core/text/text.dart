@@ -43,7 +43,7 @@ enum VerticalTextAlign {
   middle,
 }
 
-class Text extends TextBase with TextStyleContainer implements Sizable {
+class Text extends TextBase with TextStyleContainer, Sizable {
   Path? _clipRenderPath;
 
   double? _layoutWidth;
@@ -381,8 +381,10 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
     if (lines == null || shape == null) {
       return;
     }
-    for (final style in _renderStyles) {
-      style.resetPath();
+
+    var t = _renderStyles.length;
+    for (var i = 0; i < t; i++) {
+      _renderStyles[i].resetPath();
     }
     _renderStyles.clear();
 
@@ -806,6 +808,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
       _modifierGroups.any((group) => group.needsShape);
 
   bool _computeShapeWhenNecessary(int dirt) {
+
     if (dirt & ComponentDirt.path != 0) {
       // TODO: (Luigi) Hardcoded font for now
       if (_defaultFont == null) {
@@ -823,14 +826,22 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
 
   @override
   void update(int dirt) {
+
     super.update(dirt);
-    bool rebuildRenderStyles =
-        _computeShapeWhenNecessary(dirt) || (dirt & ComponentDirt.paint != 0);
+
+    var rebuildRenderStyles =
+      _computeShapeWhenNecessary(dirt) ||
+      (dirt & ComponentDirt.paint != 0);
+
     // Could optimize this to do what the C++ runtime does by propagating
     // opacity to the styles instead of rebuilding render styles.
     if (dirt & ComponentDirt.worldTransform != 0) {
+
       for (final style in styles) {
-        for (final paint in style.shapePaints) {
+        var paints = style.shapePaints;
+        var t = paints.length;
+        for (var i = 0; i < t; i++) {
+          var paint = paints[i];
           if (paint.renderOpacity != renderOpacity) {
             paint.renderOpacity = renderOpacity;
             rebuildRenderStyles = true;
@@ -838,6 +849,7 @@ class Text extends TextBase with TextStyleContainer implements Sizable {
         }
       }
     }
+
     if (rebuildRenderStyles) {
       _buildRenderStyles();
     }

@@ -71,12 +71,16 @@ class ClippingShape extends ClippingShapeBase {
 
   @override
   void update(int dirt) {
+
     if (dirt & (ComponentDirt.worldTransform | ComponentDirt.path) != 0) {
       // Build the clipping path as one of our dependent shapes changes or we
       // added a shape.
       clippingPath.reset();
       clippingPath.fillType = fillType;
-      for (final shape in _shapes) {
+
+      var t = _shapes.length;
+      for (var i = 0; i < t; i++) {
+        var shape = _shapes[i];
         if (!shape.fillInWorld) {
           clippingPath.addPath(shape.fillPath, Offset.zero,
               matrix4: shape.worldTransform.mat4);

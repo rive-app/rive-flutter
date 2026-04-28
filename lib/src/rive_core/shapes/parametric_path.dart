@@ -6,7 +6,7 @@ import 'package:rive_common/math.dart';
 
 export 'package:rive/src/generated/shapes/parametric_path_base.dart';
 
-abstract class ParametricPath extends ParametricPathBase implements Sizable {
+abstract class ParametricPath extends ParametricPathBase with Sizable {
   @override
   bool get isClosed => true;
 

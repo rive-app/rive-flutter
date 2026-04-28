@@ -161,9 +161,7 @@ class RuntimeArtboard extends Artboard implements CoreContext {
 
   @override
   T? resolve<T>(int id) {
-    if (id < 0 || id >= objects.length) {
-      return null;
-    }
+    if (id < 0 || id >= objects.length) return null;
     var object = objects[id];
     if (object is T) {
       return object as T;

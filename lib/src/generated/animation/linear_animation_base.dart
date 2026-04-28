@@ -17,18 +17,18 @@ abstract class LinearAnimationBase extends Animation {
   /// Fps field with key 56.
   static const int fpsPropertyKey = 56;
   static const int fpsInitialValue = 60;
-  int _fps = fpsInitialValue;
+  int fps_ = fpsInitialValue; // publicly exposed
 
   /// Frames per second used to quantize keyframe times to discrete values that
   /// match this rate.
-  int get fps => _fps;
+  int get fps => fps_;
 
-  /// Change the [_fps] field value.
+  /// Change the [fps_] field value.
   /// [fpsChanged] will be invoked only if the field's value has changed.
   set fps(int value) {
-    if (_fps == value) return;
-    int from = _fps;
-    _fps = value;
+    if (fps_ == value) return;
+    int from = fps_;
+    fps_ = value;
     if (hasValidated) {
       fpsChanged(from, value);
     }
@@ -40,17 +40,17 @@ abstract class LinearAnimationBase extends Animation {
   /// Duration field with key 57.
   static const int durationPropertyKey = 57;
   static const int durationInitialValue = 60;
-  int _duration = durationInitialValue;
+  int duration_ = durationInitialValue; // publicly exposed
 
   /// Duration expressed in number of frames.
-  int get duration => _duration;
+  int get duration => duration_;
 
-  /// Change the [_duration] field value.
+  /// Change the [duration_] field value.
   /// [durationChanged] will be invoked only if the field's value has changed.
   set duration(int value) {
-    if (_duration == value) return;
-    int from = _duration;
-    _duration = value;
+    if (duration_ == value) return;
+    int from = duration_;
+    duration_ = value;
     if (hasValidated) {
       durationChanged(from, value);
     }
@@ -62,19 +62,19 @@ abstract class LinearAnimationBase extends Animation {
   /// Speed field with key 58.
   static const int speedPropertyKey = 58;
   static const double speedInitialValue = 1;
-  double _speed = speedInitialValue;
+  double speed_ = speedInitialValue; // publicly exposed
 
   /// Playback speed multiplier.
-  double get speed => _speed;
+  double get speed => speed_;
 
-  /// Change the [_speed] field value.
+  /// Change the [speed_] field value.
   /// [speedChanged] will be invoked only if the field's value has changed.
   set speed(double value) {
-    if (_speed == value) {
+    if (speed_ == value) {
       return;
     }
-    double from = _speed;
-    _speed = value;
+    double from = speed_;
+    speed_ = value;
     if (hasValidated) {
       speedChanged(from, value);
     }
@@ -110,17 +110,17 @@ abstract class LinearAnimationBase extends Animation {
   /// WorkStart field with key 60.
   static const int workStartPropertyKey = 60;
   static const int workStartInitialValue = -1;
-  int _workStart = workStartInitialValue;
+  int workStart_ = workStartInitialValue; // publicly exposed
 
   /// Start of the work area in frames.
-  int get workStart => _workStart;
+  int get workStart => workStart_;
 
-  /// Change the [_workStart] field value.
+  /// Change the [workStart_] field value.
   /// [workStartChanged] will be invoked only if the field's value has changed.
   set workStart(int value) {
-    if (_workStart == value) return;
-    int from = _workStart;
-    _workStart = value;
+    if (workStart_ == value) return;
+    int from = workStart_;
+    workStart_ = value;
     if (hasValidated) {
       workStartChanged(from, value);
     }
@@ -132,19 +132,19 @@ abstract class LinearAnimationBase extends Animation {
   /// WorkEnd field with key 61.
   static const int workEndPropertyKey = 61;
   static const int workEndInitialValue = -1;
-  int _workEnd = workEndInitialValue;
+  int workEnd_ = workEndInitialValue; // publicly exposed
 
   /// End of the work area in frames.
-  int get workEnd => _workEnd;
+  int get workEnd => workEnd_;
 
-  /// Change the [_workEnd] field value.
+  /// Change the [workEnd_] field value.
   /// [workEndChanged] will be invoked only if the field's value has changed.
   set workEnd(int value) {
-    if (_workEnd == value) {
+    if (workEnd_ == value) {
       return;
     }
-    int from = _workEnd;
-    _workEnd = value;
+    int from = workEnd_;
+    workEnd_ = value;
     if (hasValidated) {
       workEndChanged(from, value);
     }
@@ -156,20 +156,20 @@ abstract class LinearAnimationBase extends Animation {
   /// EnableWorkArea field with key 62.
   static const int enableWorkAreaPropertyKey = 62;
   static const bool enableWorkAreaInitialValue = false;
-  bool _enableWorkArea = enableWorkAreaInitialValue;
+  bool enableWorkArea_ = enableWorkAreaInitialValue; // publicly exposed
 
   /// Whether or not the work area is enabled.
-  bool get enableWorkArea => _enableWorkArea;
+  bool get enableWorkArea => enableWorkArea_;
 
-  /// Change the [_enableWorkArea] field value.
+  /// Change the [enableWorkArea_] field value.
   /// [enableWorkAreaChanged] will be invoked only if the field's value has
   /// changed.
   set enableWorkArea(bool value) {
-    if (_enableWorkArea == value) {
+    if (enableWorkArea_ == value) {
       return;
     }
-    bool from = _enableWorkArea;
-    _enableWorkArea = value;
+    bool from = enableWorkArea_;
+    enableWorkArea_ = value;
     if (hasValidated) {
       enableWorkAreaChanged(from, value);
     }
@@ -181,20 +181,20 @@ abstract class LinearAnimationBase extends Animation {
   /// Quantize field with key 376.
   static const int quantizePropertyKey = 376;
   static const bool quantizeInitialValue = false;
-  bool _quantize = quantizeInitialValue;
+  bool quantize_ = quantizeInitialValue; // publicly exposed
 
   /// Whether frames are quantized to desired frame rate or floating based on
   /// runtime speed.
-  bool get quantize => _quantize;
+  bool get quantize => quantize_;
 
-  /// Change the [_quantize] field value.
+  /// Change the [quantize_] field value.
   /// [quantizeChanged] will be invoked only if the field's value has changed.
   set quantize(bool value) {
-    if (_quantize == value) {
+    if (quantize_ == value) {
       return;
     }
-    bool from = _quantize;
-    _quantize = value;
+    bool from = quantize_;
+    quantize_ = value;
     if (hasValidated) {
       quantizeChanged(from, value);
     }
@@ -206,14 +206,14 @@ abstract class LinearAnimationBase extends Animation {
   void copy(Core source) {
     super.copy(source);
     if (source is LinearAnimationBase) {
-      _fps = source._fps;
-      _duration = source._duration;
-      _speed = source._speed;
+      fps_ = source.fps_;
+      duration_ = source.duration_;
+      speed_ = source.speed_;
       _loopValue = source._loopValue;
-      _workStart = source._workStart;
-      _workEnd = source._workEnd;
-      _enableWorkArea = source._enableWorkArea;
-      _quantize = source._quantize;
+      workStart_ = source.workStart_;
+      workEnd_ = source.workEnd_;
+      enableWorkArea_ = source.enableWorkArea_;
+      quantize_ = source.quantize_;
     }
   }
 }
