@@ -9,7 +9,9 @@ export 'package:rive/src/core/core.dart';
 typedef bool DescentCallback(Component component);
 
 abstract class ContainerComponent extends ContainerComponentBase {
-  final ContainerChildren children = ContainerChildren();
+
+  final children = <Component>[]; // ContainerChildren();
+  // ListBase<Component>
 
   /// Adds the child to the children list and re-wires the parent reference of
   /// the child to the parent. Effectively detach and append.

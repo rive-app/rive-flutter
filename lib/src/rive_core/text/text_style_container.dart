@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:rive/src/rive_core/component.dart';
-import 'package:rive/src/rive_core/container_component.dart';
 import 'package:rive/src/rive_core/text/text_style.dart';
 import 'package:rive_common/utilities.dart';
 
@@ -36,7 +35,8 @@ mixin TextStyleContainer {
     }
   }
 
-  ContainerChildren get children;
+  List<Component> get children;
+
   void updateStyles() {
     var nextStyles = children.whereType<TextStyle>();
     if (!iterableEquals(nextStyles, styles)) {
