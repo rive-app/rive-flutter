@@ -121,9 +121,11 @@ class Artboard extends ArtboardBase with ShapePaintContainer {
   // List<Drawable> get drawables => _drawables;
 
   @nonVirtual
-  final AnimationList animations = AnimationList();
+  final List<Animation> animations = <Animation>[]; // AnimationList();
+
   @nonVirtual
-  final EventList events = EventList();
+  // final EventList events = EventList();
+  final List<Event> events = <Event>[];
 
   DataContext? dataContext;
   final List<DataBind> globalDataBinds = [];

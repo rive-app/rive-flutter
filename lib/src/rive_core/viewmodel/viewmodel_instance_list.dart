@@ -1,10 +1,12 @@
-import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/viewmodel/viewmodel_instance_list_base.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance_list_item.dart';
+
 export 'package:rive/src/generated/viewmodel/viewmodel_instance_list_base.dart';
 
 class ViewModelInstanceList extends ViewModelInstanceListBase {
-  ViewModelListItems children = ViewModelListItems();
+
+  // ViewModelListItems children = ViewModelListItems();
+  final children = <ViewModelInstanceListItem>[];
 
   void addItem(ViewModelInstanceListItem item) {
     if (!children.contains(item)) {

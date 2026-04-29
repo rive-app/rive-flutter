@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/animation/state_machine_listener_base.dart';
 import 'package:rive/src/rive_core/animation/listener_action.dart';
@@ -18,7 +16,8 @@ enum GestureClickPhase { out, down, clicked }
 
 class StateMachineListener extends StateMachineListenerBase {
 
-  final ListenerActions actions = ListenerActions();
+  // final ListenerActions actions = ListenerActions();
+  final List<ListenerAction> actions = <ListenerAction>[];
 
   WorldTransformComponent? _target;
   WorldTransformComponent? get target => _target;
@@ -54,8 +53,7 @@ class StateMachineListener extends StateMachineListenerBase {
   set listenerType(ListenerType value) => listenerTypeValue = value.index;
 
   @override
-  ListBase<StateMachineComponent> machineComponentList(StateMachine machine) =>
-      machine.listeners;
+  List<StateMachineComponent> machineComponentList(StateMachine machine) => machine.listeners;
 
   @override
   void targetIdChanged(int from, int to) {
