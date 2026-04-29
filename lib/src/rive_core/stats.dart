@@ -34,7 +34,7 @@ class _AdvanceStats with Printable {
           layerController + applyEvents;
 
   String format(int value) =>
-      '${((1000 * value) / _Stopwatcher._commits).toInt()}';
+      '${((1000 * value) / Stopwatcher.commits).toInt()}';
 
   @override
   String toString() => printr(
@@ -52,23 +52,6 @@ class _AdvanceStats with Printable {
     'layerController=${format(layerController)}',
     'applyEvents=${format(applyEvents)}',
   );
-}
-
-class _Stopwatcher {
-  final stopwatch = Stopwatch();
-
-  void start() {
-    stopwatch..reset()..start();
-  }
-
-  static int _commits = 0;
-
-  void commit(Function(int) function) {
-    function(stopwatch.elapsedMicroseconds);
-    if (_commits++ % 50000 == 50000-1) {
-      _logr.always.log(() => '${_AdvanceStats._singleton}');
-    }
-  }
 }
 
 abstract class _FrequencyPrinter {

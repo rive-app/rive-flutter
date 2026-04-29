@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:rive/src/generated/animation/any_state_base.dart';
 import 'package:rive/src/generated/animation/state_machine_layer_base.dart';
 import 'package:rive/src/rive_core/animation/any_state.dart';
@@ -21,8 +19,7 @@ class StateMachineLayer extends StateMachineLayerBase {
   LayerState? get exitState => _exitState;
 
   @override
-  ListBase<StateMachineComponent> machineComponentList(StateMachine machine) =>
-      machine.layers;
+  List<StateMachineComponent> machineComponentList(StateMachine machine) => machine.layers;
 
   /// Called by rive_core to add a LayerState to the StateMachineLayer. This
   /// should be @internal when it's supported.

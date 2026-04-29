@@ -7,12 +7,14 @@ import 'package:rive/src/rive_core/artboard.dart';
 export 'package:rive/src/generated/animation/state_machine_base.dart';
 
 class StateMachine extends StateMachineBase {
-  final StateMachineComponents<StateMachineComponent> inputs =
-      StateMachineComponents<StateMachineComponent>();
-  final StateMachineComponents<StateMachineLayer> layers =
-      StateMachineComponents<StateMachineLayer>();
-  final StateMachineComponents<StateMachineComponent> listeners =
-      StateMachineComponents<StateMachineComponent>();
+
+  // final StateMachineComponents<StateMachineComponent> inputs = StateMachineComponents<StateMachineComponent>();
+  // final StateMachineComponents<StateMachineLayer> layers = StateMachineComponents<StateMachineLayer>();
+  // final StateMachineComponents<StateMachineComponent> listeners = StateMachineComponents<StateMachineComponent>();
+
+  final List<StateMachineComponent> inputs = <StateMachineComponent>[];
+  final List<StateMachineLayer> layers = <StateMachineLayer>[];
+  final List<StateMachineComponent> listeners = <StateMachineComponent>[];
 
   @override
   bool import(ImportStack stack) {

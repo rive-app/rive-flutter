@@ -12,12 +12,13 @@ export 'package:rive/src/generated/animation/state_machine_layer_component_base.
 
 abstract class StateMachineLayerComponent
     extends StateMachineLayerComponentBase<RuntimeArtboard> {
-  final LayerComponentEvents _events = LayerComponentEvents();
-  LayerComponentEvents get events => _events;
+
+  // final LayerComponentEvents events = LayerComponentEvents();
+  final List<StateMachineFireEvent> events = <StateMachineFireEvent>[];
 
   void internalAddFireEvent(StateMachineFireEvent event) {
-    assert(!_events.contains(event), 'shouldn\'t already contain the event');
-    _events.add(event);
+    assert(!events.contains(event), 'shouldn\'t already contain the event');
+    events.add(event);
     _atStart = null;
     _atEnd = null;
   }
@@ -25,7 +26,7 @@ abstract class StateMachineLayerComponent
   List<StateMachineFireEvent>? _atStart;
   List<StateMachineFireEvent>? _atEnd;
 
-  List<StateMachineFireEvent> _build(StateMachineFireOccurance occurence) => _events
+  List<StateMachineFireEvent> _build(StateMachineFireOccurance occurence) => events
     .where((fireEvent) => fireEvent.occurs == occurence)
     .nonNulls
     .toList();
@@ -38,9 +39,4 @@ abstract class StateMachineLayerComponent
         return _atEnd ?? (_atEnd = _build(occurence));
     }
   }
-
-  // Iterable<StateMachineFireEvent> eventsAt(StateMachineFireOccurance occurence) =>
-  //     _events
-  //         .where((fireEvent) => fireEvent.occurs == occurence)
-  //         .nonNulls;
 }

@@ -9,8 +9,8 @@ export 'package:rive/src/generated/animation/layer_state_base.dart';
 abstract class LayerState extends LayerStateBase {
 
   @nonVirtual
-  final StateTransitions transitions = StateTransitions();
-  // StateTransitions get transitions => _transitions;
+  // final StateTransitions transitions = StateTransitions();
+  final List<StateTransition> transitions = <StateTransition>[];
 
   @override
   void onAdded() {}

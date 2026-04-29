@@ -26,7 +26,10 @@ export 'package:rive/src/generated/animation/state_transition_base.dart';
 enum AllowTransition { no, waitingForExit, yes }
 
 class StateTransition extends StateTransitionBase {
-  final StateTransitionConditions conditions = StateTransitionConditions();
+
+  // final StateTransitionConditions conditions = StateTransitionConditions();
+  final conditions = <TransitionCondition>[];
+
   LayerState? stateTo;
 
   static final StateTransition unknown = StateTransition();
@@ -184,7 +187,7 @@ class StateTransition extends StateTransitionBase {
       return AllowTransition.no;
     }
 
-    var conditions = this.conditions.values;
+    var conditions = this.conditions;
     final t = conditions.length;
     for (var i = 0; i < t; i++) {
     // for (final condition in conditions) {
