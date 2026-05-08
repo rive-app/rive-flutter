@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:plato/plato.dart';
 import 'package:rive/rive.dart';
+
+const _logr = Logr(true, prefix: 'rive-animation');
 
 /// Specifies whether a source is from an asset bundle or http
 enum _Source {
@@ -329,6 +332,8 @@ class RiveAnimationState extends State<RiveAnimation> {
         ?.instance();
 
     if (artboard == null) {
+      _logr.always.log(() => 'file=$file artboards=${file.artboards.map((a) => a.artboard.name)} '
+          'main=${file.mainArtboard.name} widget=${widget.artboard}');
       throw const FormatException('Unable to load artboard');
     }
     if (artboard.animations.isEmpty) {
