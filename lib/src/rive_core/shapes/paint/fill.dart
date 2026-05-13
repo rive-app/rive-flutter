@@ -9,6 +9,8 @@ export 'package:rive/src/generated/shapes/paint/fill_base.dart';
 
 const _logr = Logr.always(prefix: 'fill');
 
+var _incompatibleEverLogged = false;
+
 /// A fill Shape painter.
 class Fill extends FillBase {
   @override
@@ -16,7 +18,10 @@ class Fill extends FillBase {
 
   PathFillType get fillType {
     if (fillRule >= PathFillType.values.length) {
-      _logr.log(() => 'fillRule not compatible > $fillRule');
+      if (!_incompatibleEverLogged) {
+        _incompatibleEverLogged = true;
+        _logr.warn(() => 'fillRule not compatible > $fillRule');
+      }
       fillRule = 0;
     }
     return PathFillType.values[fillRule];
