@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:plato/plato.dart';
 import 'package:rive/rive.dart';
+
+const _logr = Logr.always(prefix: 'rive-animation');
 
 /// Specifies whether a source is from an asset bundle or http
 enum _Source {
@@ -238,21 +241,6 @@ class RiveAnimationState extends State<RiveAnimation> {
     // _init(await _loadRiveFile());
   }
 
-  /// STOKANAL-FORK-EDIT: start
-  /// This is a workaround to allow for embedded Rive animations. It hacks the Flutter State flow.
-  // @override
-  // RiveAnimation get widget => _widget??super.widget;
-  // RiveAnimation? _widget;
-  // @override
-  // bool get mounted => (_widget != null) ? true : super.mounted;
-  // @override
-  // void setState(VoidCallback fn) => (_widget != null) ? fn() : super.setState(fn);
-  // Future<void> init(RiveAnimation widget) async {
-  //   _widget = widget;
-  //   initState();
-  // }
-  /// STOKANAL-FORK-EDIT: end
-
   /// Loads the correct Rive file depending on [widget.src]
   Future<RiveFile> _loadRiveFile() {
     switch (widget.src) {
@@ -327,6 +315,9 @@ class RiveAnimationState extends State<RiveAnimation> {
             ? file.artboardByName(widget.artboard!)
             : file.mainArtboard)
         ?.instance();
+
+    // _logr.log(() => 'file=$file artboards=${file.artboards.map((a) => a.artboard.name)} '
+    //     'main=${file.mainArtboard.name} widget=${widget.artboard}');
 
     if (artboard == null) {
       throw const FormatException('Unable to load artboard');

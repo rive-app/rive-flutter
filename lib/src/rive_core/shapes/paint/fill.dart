@@ -1,17 +1,32 @@
 import 'dart:ui';
 
+import 'package:plato/plato.dart';
 import 'package:rive/src/generated/shapes/paint/fill_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive/src/rive_core/shapes/shape_paint_container.dart';
 
 export 'package:rive/src/generated/shapes/paint/fill_base.dart';
 
+const _logr = Logr.always(prefix: 'fill');
+
+var _incompatibleEverLogged = false;
+
 /// A fill Shape painter.
 class Fill extends FillBase {
   @override
   Paint makePaint() => Paint()..style = PaintingStyle.fill;
 
-  PathFillType get fillType => PathFillType.values[fillRule];
+  PathFillType get fillType {
+    if (fillRule >= PathFillType.values.length) {
+      if (!_incompatibleEverLogged) {
+        _incompatibleEverLogged = true;
+        _logr.warn(() => 'fillRule not compatible > $fillRule');
+      }
+      fillRule = 0;
+    }
+    return PathFillType.values[fillRule];
+  }
+
   set fillType(PathFillType type) => fillRule = type.index;
 
   @override
