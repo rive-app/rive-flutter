@@ -5,6 +5,10 @@
 - Expose audio events through the Dart API. `Event` is a sealed class and `EventType` gains an `audio` value, so exhaustive `switch` statements over either now require a new `AudioRuntimeEvent` / `EventType.audio` arm.
 - State machine event listeners now receive `AudioRuntimeEvent`s alongside `GeneralEvent` and `OpenUrlEvent`. Listeners that branch on event type with non-exhaustive `if`/`is` checks will see the new type pass through unhandled.
 
+### Fixes
+
+- Fixed a Windows crash in the `rive_native` `removeTexture` method channel handler when the texture id arrived as `int32_t` rather than `int64_t`. Most commonly seen when dragging the app window between displays with different DPI settings, or when rapidly creating/disposing render textures.
+
 ## 0.14.6
 
 - Bumps to `rive_native: 0.1.6`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
