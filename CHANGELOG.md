@@ -1,4 +1,6 @@
-## Upcoming
+## 0.14.7
+
+- Bumps to `rive_native: 0.1.7`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Breaking Changes
 
