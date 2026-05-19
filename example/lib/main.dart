@@ -76,6 +76,12 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
         ExampleRivePanel(),
         'Example usage of the Shared Texture View widget.',
       ),
+      _Page(
+        'Manual Shared Texture Management',
+        ExampleRivePanelOverlay(),
+        'Use SharedRenderTexture.create + RiveSurface to share a texture '
+            'with an OverlayEntry',
+      ),
     ]),
     const _Section('Rive Features', [
       _Page(

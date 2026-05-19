@@ -117,18 +117,21 @@ class RivePanel extends StatefulWidget {
 }
 
 class _RivePanelState extends State<RivePanel> {
-  RenderTexture? _renderTexture;
-  final GlobalKey _panelKey = GlobalKey();
+  late final SharedRenderTexture _shared = SharedRenderTexture.create(
+    backgroundColor: widget.backgroundColor,
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _renderTexture = RiveNative.instance.makeRenderTexture();
+  void didUpdateWidget(covariant RivePanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.backgroundColor != widget.backgroundColor) {
+      _shared.backgroundColor = widget.backgroundColor;
+    }
   }
 
   @override
   void dispose() {
-    _renderTexture?.dispose();
+    _shared.dispose();
     super.dispose();
   }
 
@@ -136,21 +139,48 @@ class _RivePanelState extends State<RivePanel> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(
-          // IgnorePointer is used to prevent the RivePanel from intercepting pointer events.
-          // Pointer events are handled by the individual RiveWidgets.
-          child: IgnorePointer(
-            child: _renderTexture!.widget(key: _panelKey),
-          ),
-        ),
+        Positioned.fill(child: RiveSurface(sharedTexture: _shared)),
         RiveSharedTexture(
-          panelKey: _panelKey,
-          backgroundColor: widget.backgroundColor,
-          devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
-          texture: _renderTexture,
+          texture: _shared,
           child: widget.child,
         ),
       ],
     );
+  }
+}
+
+/// Renders the native surface of a [SharedRenderTexture] into the widget tree.
+///
+/// Use this together with [SharedRenderTexture.create] to place a shared
+/// texture anywhere in the tree — including as a sibling of the [RiveWidget]s
+/// painting into it, in a separate route, or in any layout position. The
+/// surface is wired to the shared texture's internal key so painters can
+/// position themselves relative to it regardless of where they live in the
+/// tree.
+///
+/// The surface is wrapped in [IgnorePointer] by default since hit testing is
+/// performed by the individual [RiveWidget]s. Set [ignorePointer] to `false`
+/// if you need pointer events to reach the native texture widget directly.
+///
+/// **EXPERIMENTAL**: This API may change or be removed in a future release.
+@experimental
+class RiveSurface extends StatelessWidget {
+  const RiveSurface({
+    super.key,
+    required this.sharedTexture,
+    this.ignorePointer = true,
+  });
+
+  final SharedRenderTexture sharedTexture;
+  final bool ignorePointer;
+
+  @override
+  Widget build(BuildContext context) {
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    if (sharedTexture.devicePixelRatio != dpr) {
+      sharedTexture.devicePixelRatio = dpr;
+    }
+    final surface = sharedTexture.texture.widget(key: sharedTexture.panelKey);
+    return ignorePointer ? IgnorePointer(child: surface) : surface;
   }
 }

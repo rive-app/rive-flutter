@@ -5,8 +5,18 @@
 - Expose audio events through the Dart API. `Event` is a sealed class and `EventType` gains an `audio` value, so exhaustive `switch` statements over either now require a new `AudioRuntimeEvent` / `EventType.audio` arm.
 - State machine event listeners now receive `AudioRuntimeEvent`s alongside `GeneralEvent` and `OpenUrlEvent`. Listeners that branch on event type with non-exhaustive `if`/`is` checks will see the new type pass through unhandled.
 
+### Shared Texture API (Experimental)
+
+- Add `SharedRenderTexture.create()` to construct a user-owned shared texture independent of the `RivePanel` lookup. Place it in the tree with the new `RiveSurface` widget and attach painters by passing the same instance to `RiveWidget.sharedTexture`. This lets a single native texture be shared across `RiveWidget`s that aren't ancestor/descendant of each other — siblings, separate subtrees, or across routes (e.g. via a Provider/Riverpod).
+- Add `RiveSurface` widget that renders the native surface of a `SharedRenderTexture` anywhere in the tree. Wrapped in `IgnorePointer` by default; set `ignorePointer: false` to route pointer events to the texture widget.
+- Add `RiveWidget.sharedTexture` parameter to draw into an explicit `SharedRenderTexture`, bypassing the ancestor-based `RivePanel` lookup. Takes precedence over `useSharedTexture` when both are set.
+- `SharedRenderTexture` gained `dispose()` and `isDisposed`. Instances created via `SharedRenderTexture.create()` own their underlying native texture and must be disposed by the caller; instances constructed with an external `texture` are not affected.
+
 ### Fixes
 
+- Fixed an issue where `setState` on an ancestor of a `RivePanel` (or `RiveSharedTexture`) would allocate a new `SharedRenderTexture` wrapper on every rebuild, dirtying every descendant `RiveWidget` and detaching their painters from the previous wrapper. The wrapper instance is now stable across ancestor rebuilds, and `RiveSharedTexture.updateShouldNotify` compares by identity.
+- Fixed an iOS "carousel flash" where a stale post-frame paint callback queued before the last painter detached could fire afterwards with an empty painter list and momentarily blank the shared texture. The paint pass now no-ops when there are no painters.
+- Fixed an issue where a `RiveWidget` drawing into a `RivePanel` shared texture could render at the wrong size when an ancestor `Transform.scale` animated. The shared-texture path now reads the live local-to-panel transform on every paint instead of relying on a cached scale that composited ancestors (`RepaintBoundary`, `Opacity` layers, `PageView`'s internal slots) could leave stale.
 - Fixed a Windows crash in the `rive_native` `removeTexture` method channel handler when the texture id arrived as `int32_t` rather than `int64_t`. Most commonly seen when dragging the app window between displays with different DPI settings, or when rapidly creating/disposing render textures.
 
 ## 0.14.6

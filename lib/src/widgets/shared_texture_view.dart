@@ -173,27 +173,37 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
 
   @override
   void paintIntoSharedTexture(RenderTexture texture) {
-    // TODO (Gordon): could move out this logic to calculate the position only under certain conditions.
     final panelKeyContext = shared.panelKey.currentContext;
     if (panelKeyContext == null) {
       return;
     }
-    RenderBox renderBox = panelKeyContext.findRenderObject() as RenderBox;
-    Offset panelPosition = renderBox.localToGlobal(Offset.zero);
-    Offset globalPosition = localToGlobal(Offset.zero) - panelPosition;
+    final panelRenderBox = panelKeyContext.findRenderObject() as RenderBox;
+
+    // Read the transform fresh every paint. The cached scale on
+    // [RiveNativeRenderBox] (`desiredTransformWidth/HeightScale`) only
+    // refreshes when this RenderObject's own paint() runs, which composited
+    // ancestors (RepaintBoundary inside PageView, Opacity layers, etc.) can
+    // skip while still animating a Transform.scale — leaving the cached
+    // scale stale while localToGlobal still tracks the live transform.
+    //
+    // getTransformTo handles non-ancestor targets (panel is typically a
+    // sibling, not an ancestor) by walking both sides to the common
+    // ancestor and inverting. Any ancestor transform shared with the panel
+    // cancels out — the texture widget re-applies it at composite time.
+    final m = getTransformTo(panelRenderBox).storage;
+    final dpr = devicePixelRatio;
 
     final renderer = texture.renderer;
-
     renderer.save();
-
-    // Create a single matrix that does: scale(devicePixelRatio) -> translate(position) -> scale(transform)
-    final scaledTranslateX = globalPosition.dx * devicePixelRatio;
-    final scaledTranslateY = globalPosition.dy * devicePixelRatio;
     renderer.transform(Mat2D.fromScaleAndTranslation(
-        scaleWidth, scaleHeight, scaledTranslateX, scaledTranslateY));
+      m[0].abs() * dpr,
+      m[5].abs() * dpr,
+      m[12] * dpr,
+      m[13] * dpr,
+    ));
     _shouldAdvance = rivePainter?.paint(
           texture,
-          devicePixelRatio,
+          dpr,
           size,
           elapsedSeconds,
         ) ??
@@ -203,7 +213,6 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     } else {
       stopTicker();
     }
-
     renderer.restore();
   }
 

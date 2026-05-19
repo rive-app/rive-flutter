@@ -14,6 +14,14 @@ import 'package:meta/meta.dart';
 /// - The [cursor] parameter is the platform/Flutter cursor when interacting with an area that has a `hitTest` of `true`.
 /// - The [layoutScaleFactor] parameter is the layout scale factor of the artboard when using `Fit.layout`.
 /// - The [useSharedTexture] parameter is whether to use a shared texture ([RivePanel]) to draw the artboard to.
+/// - The [sharedTexture] parameter is an explicit [SharedRenderTexture] to draw into, bypassing the
+/// ancestor-based [RivePanel] lookup. Use this together with
+/// [SharedRenderTexture.create] and [RiveSurface] to share a texture across
+/// arbitrary parts of the widget tree (siblings, separate subtrees, across
+/// routes, etc.).
+/// - The [drawOrder] parameter is the draw order of the artboard. This is only used when drawing to a
+/// shared texture (either via [useSharedTexture] + [RivePanel] or an
+/// explicit [sharedTexture]), and using [Factory.rive].
 class RiveWidget extends StatefulWidget {
   const RiveWidget({
     super.key,
@@ -24,6 +32,7 @@ class RiveWidget extends StatefulWidget {
     this.cursor = RiveDefaults.mouseCursor,
     this.layoutScaleFactor = RiveDefaults.layoutScaleFactor,
     this.useSharedTexture = false,
+    this.sharedTexture,
     this.drawOrder = 1,
   });
 
@@ -57,15 +66,29 @@ class RiveWidget extends StatefulWidget {
 
   /// Whether to use a shared texture [(RivePanel]) to draw the artboard to.
   ///
-  /// Defaults to false. When set to true, it draws to nearest inherited widget
-  /// of type [RivePanel].
+  /// Defaults to false. When set to true, it draws to the nearest ancestor
+  /// [RivePanel] via inherited widget lookup. Ignored when [sharedTexture] is
+  /// provided.
   ///
   /// **EXPERIMENTAL**: This API may change or be removed in a future release.
   @experimental
   final bool useSharedTexture;
 
-  /// The draw order of the artboard. This is only used when [useSharedTexture]
-  /// is true when drawing to a [RivePanel], and using [Factory.rive].
+  /// Explicit [SharedRenderTexture] to draw into, bypassing the
+  /// ancestor-based [RivePanel] lookup. Use this together with
+  /// [SharedRenderTexture.create] and [RiveSurface] to share a texture across
+  /// arbitrary parts of the widget tree (siblings, separate subtrees, across
+  /// routes, etc.).
+  ///
+  /// When non-null, this takes precedence over [useSharedTexture].
+  ///
+  /// **EXPERIMENTAL**: This API may change or be removed in a future release.
+  @experimental
+  final SharedRenderTexture? sharedTexture;
+
+  /// The draw order of the artboard. This is only used when drawing to a
+  /// shared texture (either via [useSharedTexture] + [RivePanel] or an
+  /// explicit [sharedTexture]), and using [Factory.rive].
   ///
   /// Defaults to 1.
   final int drawOrder;
@@ -133,26 +156,27 @@ class _RiveWidgetState extends State<RiveWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.useSharedTexture) {
+    final explicitTexture = widget.sharedTexture;
+    if (explicitTexture != null || widget.useSharedTexture) {
       if (widget.controller.artboard.riveFactory == Factory.flutter) {
         return errorWidget(
-          'useSharedTexture is only supported when using Factory.rive',
+          'Shared textures are only supported when using Factory.rive',
         );
       }
-      final sharedTexture = RiveSharedTexture.of(context);
+      final sharedTexture = explicitTexture ?? RiveSharedTexture.of(context);
       if (sharedTexture == null) {
         return errorWidget(
           'RiveWidget requires a shared texture when useSharedTexture is true.\n'
-          'Make sure to wrap this widget with a RivePanel widget in the widget tree.',
-        );
-      } else {
-        return SharedTextureView(
-          artboard: widget.controller.artboard,
-          painter: _painter,
-          sharedTexture: sharedTexture,
-          drawOrder: widget.drawOrder,
+          'Either wrap this widget with a RivePanel, or pass an explicit\n'
+          'SharedRenderTexture via the sharedTexture parameter.',
         );
       }
+      return SharedTextureView(
+        artboard: widget.controller.artboard,
+        painter: _painter,
+        sharedTexture: sharedTexture,
+        drawOrder: widget.drawOrder,
+      );
     }
 
     return RiveArtboardWidget(
