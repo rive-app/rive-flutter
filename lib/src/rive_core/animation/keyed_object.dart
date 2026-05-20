@@ -54,17 +54,23 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
   /// Called by rive_core to add a KeyedProperty to the animation. This should
   /// be @internal when it's supported.
   bool internalAddKeyedProperty(KeyedProperty property) {
-    var value = _keyedProperties[property.propertyKey];
+    var propertyKey = property.propertyKey;
+    var value = _keyedProperties[propertyKey];
 
     // If the property is already keyed, that's ok just make sure the
     // KeyedObject matches.
     if (value != null && value != property) {
       return false;
     }
-    _keyedProperties[property.propertyKey] = property;
+    _keyedProperties[propertyKey] = property;
     _keyedPropertiesNonCallback = _props = null;
 
     return true;
+  }
+
+  void internalAddKeyedPropertySet(KeyedProperty property) {
+    _keyedProperties[property.propertyKey] = property;
+    _keyedPropertiesNonCallback = _props = null;
   }
 
   /// Called by rive_core to remove a KeyedObject to the animation. This should
@@ -131,13 +137,27 @@ class KeyedObject extends KeyedObjectBase<RuntimeArtboard> {
 
   @override
   bool import(ImportStack stack) {
-    var animationHelper =
-        stack.latest<LinearAnimationImporter>(LinearAnimationBase.typeKey);
-    if (animationHelper == null) {
-      return false;
-    }
-    animationHelper.addKeyedObject(this);
 
-    return super.import(stack);
+    // var animationHelper = stack.latest<LinearAnimationImporter>(LinearAnimationBase.typeKey);
+    // if (animationHelper == null) {
+    //   return false;
+    // }
+    var animationHelper = stack.latests[LinearAnimationBase.typeKey] as LinearAnimationImporter;
+
+    // animationHelper.addKeyedObject(this);
+
+    var linearAnimation = animationHelper.linearAnimation;
+
+    // linearAnimation.context.addObject(this);
+    context = linearAnimation.context;
+    id = context.objects.length;
+    context.objects.add(this);
+
+    // linearAnimation.internalAddKeyedObject(this);
+    linearAnimation.internalAddKeyedObjectSet(this);
+
+
+    return true;
+    // return super.import(stack);
   }
 }

@@ -686,7 +686,8 @@ class KeyedPropertyBasePropertyKeyBean extends _UintPropertyBean<KeyedPropertyBa
   @override
   void setUint(KeyedPropertyBase o, int v) => o.propertyKey = v;
   @override
-  void setObjectProperty(Core o, Object v) => o is KeyedPropertyBase && v is int ? o.propertyKey = v : {};
+  // void setObjectProperty(Core o, Object v) => o is KeyedPropertyBase && v is int ? o.propertyKey = v : {};
+  void setObjectProperty(Core o, Object v) => (o as KeyedPropertyBase).propertyKey = v as int;
 }
 
 // UintPropertyBean<KeyFrameBase>._(KeyFrameBase.framePropertyKey, (o) => o.frame, (o, v) => o.frame = v),
@@ -697,7 +698,8 @@ class KeyFrameBaseFrameBean extends _UintPropertyBean<KeyFrameBase> {
   @override
   void setUint(KeyFrameBase o, int v) => o.high = v;
   @override
-  void setObjectProperty(Core o, Object v) => o is KeyFrameBase && v is int ? o.high = v : {};
+  // void setObjectProperty(Core o, Object v) => o is KeyFrameBase && v is int ? o.high = v : {};
+  void setObjectProperty(Core o, Object v) => (o as KeyFrameBase).high = v as int;
 }
 
 // UintPropertyBean<InterpolatingKeyFrameBase>._(InterpolatingKeyFrameBase.interpolationTypePropertyKey, (o) => o.interpolationType, (o, v) => o.interpolationType = v),
@@ -730,7 +732,8 @@ class KeyedObjectBaseObjectIdBean extends _UintPropertyBean<KeyedObjectBase> {
   @override
   void setUint(KeyedObjectBase o, int v) => o.high = v;
   @override
-  void setObjectProperty(Core o, Object v) => o is KeyedObjectBase && v is int ? o.high = v : {};
+  // void setObjectProperty(Core o, Object v) => o is KeyedObjectBase && v is int ? o.high = v : {};
+  void setObjectProperty(Core o, Object v) => (o as KeyedObjectBase).high = v as int;
 }
 
 // UintPropertyBean<DrawRulesBase>._(DrawRulesBase.drawTargetIdPropertyKey, (o) => o.drawTargetId, (o, v) => o.drawTargetId = v),

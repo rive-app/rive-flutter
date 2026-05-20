@@ -35,6 +35,10 @@ class LinearAnimation extends LinearAnimationBase implements Tickerable {
     return false;
   }
 
+  void internalAddKeyedObjectSet(KeyedObject object) {
+    _keyedObjects[object.objectId] = object;
+  }
+
   bool internalCheckAddKeyedObject(KeyedObject object) {
     var value = _keyedObjects[object.objectId];
 

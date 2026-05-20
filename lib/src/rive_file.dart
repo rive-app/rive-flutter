@@ -1,5 +1,6 @@
+// dart format off
+
 import 'dart:collection';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -21,8 +22,10 @@ import 'package:rive/src/local_file_io.dart'
     if (dart.library.js_interop) 'package:rive/src/local_file_web.dart';
 import 'package:rive/src/rive_core/animation/blend_state_1d.dart';
 import 'package:rive/src/rive_core/animation/blend_state_direct.dart';
+import 'package:rive/src/rive_core/animation/cubic_value_interpolator.dart';
 import 'package:rive/src/rive_core/animation/keyed_object.dart';
 import 'package:rive/src/rive_core/animation/keyed_property.dart';
+import 'package:rive/src/rive_core/animation/keyframe_double.dart';
 import 'package:rive/src/rive_core/animation/layer_state.dart';
 import 'package:rive/src/rive_core/animation/linear_animation.dart';
 import 'package:rive/src/rive_core/animation/nested_state_machine.dart';
@@ -36,7 +39,6 @@ import 'package:rive/src/rive_core/assets/audio_asset.dart';
 import 'package:rive/src/rive_core/assets/file_asset.dart';
 import 'package:rive/src/rive_core/assets/image_asset.dart';
 import 'package:rive/src/rive_core/backboard.dart';
-import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:rive/src/rive_core/runtime/runtime_header.dart';
 import 'package:rive/src/rive_core/viewmodel/viewmodel_instance.dart';
@@ -44,6 +46,13 @@ import 'package:rive/src/runtime_nested_artboard.dart';
 import 'package:rive_common/rive_text.dart';
 import 'package:rive_common/utilities.dart';
 import 'package:stokanal/core.dart' hide log;
+
+import 'generated/animation/cubic_ease_interpolator_base.dart';
+import 'generated/animation/transition_bool_condition_base.dart';
+import 'rive_core/animation/transition_number_condition.dart';
+
+const _logr = Logr.always(prefix: 'runtime-file');
+const dumpLoadAndInstancePhases = Directive.debugAnd(true, name: 'dump-rive-load-and-instances');
 
 typedef Core<CoreContext>? ObjectGenerator(int coreTypeKey);
 
@@ -71,14 +80,13 @@ Core<CoreContext>? _readRuntimeObject(BinaryReader reader,
     }
 
     // var fieldType = RiveCoreContext.coreType(propertyKey);
-    var fieldType = PropertyBeans.get(propertyKey).coreType;
+    var propertyBean = PropertyBeans.get(propertyKey);
+    var fieldType = propertyBean.coreType;
 
     if (fieldType == null || object == null) {
       _skipProperty(reader, propertyKey, propertyToField);
     } else {
-      PropertyBeans.get(propertyKey).setObjectProperty(object, fieldType.deserialize(reader));
-      // RiveCoreContext.setObjectProperty(
-      //     object, propertyKey, fieldType.deserialize(reader));
+      propertyBean.setObjectProperty(object, fieldType.deserialize(reader));
     }
   }
   return object;
@@ -102,8 +110,7 @@ int _peekRuntimeObjectType(
 
 void _skipProperty(BinaryReader reader, int propertyKey,
     HashMap<int, CoreFieldType> propertyToField) {
-  var field =
-      PropertyBeans.get(propertyKey).coreType ?? propertyToField[propertyKey];
+  var field = PropertyBeans.get(propertyKey).coreType ?? propertyToField[propertyKey];
   if (field == null) {
     throw UnsupportedError('Unsupported property key $propertyKey. '
         'A new runtime is likely necessary to play this file.');
@@ -131,16 +138,15 @@ class RiveFile {
 
   static HashMap<int, CoreFieldType> _propertyToFieldLookup(
       RuntimeHeader header) {
+
     /// Property fields table of contents
     final propertyToField = HashMap<int, CoreFieldType>();
 
     header.propertyToFieldIndex.forEach((key, fieldIndex) {
-      if (fieldIndex < 0 || fieldIndex >= indexToField.length) {
-        throw RiveFormatErrorException('unexpected field index $fieldIndex');
-      }
-
+      assert (fieldIndex >= 0 && fieldIndex < indexToField.length, 'unexpected field index $fieldIndex');
       propertyToField[key] = indexToField[fieldIndex];
     });
+
     return propertyToField;
   }
 
@@ -176,11 +182,12 @@ class RiveFile {
       String? path,
    }) {
 
-    var skipInterpolation = path != null && RiveSettings().skipInterpolation(path);
+    final clock = dumpLoadAndInstancePhases.active ? Stopwatches().create() : null;
+
+    final skipInterpolation = path != null && RiveSettings().skipInterpolation(path);
     if (skipInterpolation) {
-      log('RIVE-FILE >> $path${skipInterpolation ? ' > SKIP_INTERPOLATION' : ''}');
+      _logr.info('RIVE-FILE >> $path${skipInterpolation ? ' > SKIP_INTERPOLATION' : ''}');
     }
-    // debugPrintStack();
 
     /// Property fields table of contents
     final propertyToField = _propertyToFieldLookup(header);
@@ -188,60 +195,60 @@ class RiveFile {
     int artboardId = 0;
     var artboardLookup = HashMap<int, Artboard>();
     var importStack = ImportStack();
+    // var objects = clock == null ? null : <Core<CoreContext>>[]; // TODO comment objects
+    // var imports = clock == null ? null : <Core<CoreContext>>[]; // TODO comment objects
     while (!reader.isEOF) {
       final object = _readRuntimeObject(reader, propertyToField, generator);
       if (object == null) {
-        // See if there's an artboard on the stack, need to track the null
-        // object as it'll still hold an id.
-        var artboardImporter =
-            importStack.latest<ArtboardImporter>(ArtboardBase.typeKey);
-        if (artboardImporter != null) {
-          artboardImporter.addComponent(null);
-        }
+        // See if there's an artboard on the stack, need to track the null object as it'll still hold an id.
+        // var artboardImporter = importStack.latest<ArtboardImporter>(ArtboardBase.typeKey);
+        var artboardImporter = importStack.latests[ArtboardBase.typeKey] as ArtboardImporter?;
+        artboardImporter?.addComponent(null);
         continue;
       }
 
+      // objects?.add(object);
+      // var p1 = 0, p2 = 0;
+
       ImportStackObject? stackObject;
       var stackType = object.coreType;
-      switch (object.coreType) {
-        case BackboardBase.typeKey:
-          stackObject = BackboardImporter(artboardLookup, object as Backboard);
+      switch (stackType) {
+
+        case KeyFrameDoubleBase.typeKey:
           break;
-        case ArtboardBase.typeKey:
-          stackObject = ArtboardImporter(object as RuntimeArtboard);
-          break;
-        case LinearAnimationBase.typeKey:
-          stackObject = LinearAnimationImporter(object as LinearAnimation);
-          // helper = _AnimationImportHelper();
-          break;
+
+        case KeyedPropertyBase.typeKey:
+          // KeyedProperty importer requires a linear animation importer, so
+          // make sure there's one on the stack.
+          // var linearAnimationImporter = importStack.requireLatest<LinearAnimationImporter>(LinearAnimationBase.typeKey);
+          var linearAnimationImporter = importStack.latests[LinearAnimationBase.typeKey] as LinearAnimationImporter;
+          var keyedProperty = object as KeyedProperty;
+          stackObject = KeyedPropertyImporter(keyedProperty, linearAnimationImporter.linearAnimation);
+          keyedProperty.skipInterpolation = skipInterpolation;
+
         case KeyedObjectBase.typeKey:
           stackObject = KeyedObjectImporter(object as KeyedObject);
+
+        case CubicEaseInterpolatorBase.typeKey:
+        case TransitionBoolConditionBase.typeKey:
+        case TransitionNumberConditionBase.typeKey:
+        case CubicValueInterpolatorBase.typeKey:
           break;
-        case KeyedPropertyBase.typeKey:
-          {
-            // KeyedProperty importer requires a linear animation importer, so
-            // make sure there's one on the stack.
-            var linearAnimationImporter =
-                importStack.requireLatest<LinearAnimationImporter>(
-                    LinearAnimationBase.typeKey);
-            stackObject = KeyedPropertyImporter(object as KeyedProperty,
-                linearAnimationImporter.linearAnimation);
-            break;
-          }
+
+        case BackboardBase.typeKey:
+          stackObject = BackboardImporter(artboardLookup, object as Backboard);
+        case ArtboardBase.typeKey:
+          stackObject = ArtboardImporter(object as RuntimeArtboard);
+        case LinearAnimationBase.typeKey:
+          stackObject = LinearAnimationImporter(object as LinearAnimation);
         case StateMachineBase.typeKey:
           stackObject = StateMachineImporter(object as StateMachine);
-          break;
         case StateMachineLayerBase.typeKey:
           stackObject = StateMachineLayerImporter(object as StateMachineLayer);
-          break;
         case StateMachineListenerBase.typeKey:
-          stackObject =
-              StateMachineListenerImporter(object as StateMachineListener);
-          break;
+          stackObject = StateMachineListenerImporter(object as StateMachineListener);
         case NestedStateMachineBase.typeKey:
-          stackObject =
-              NestedStateMachineImporter(object as NestedStateMachine);
-          break;
+          stackObject = NestedStateMachineImporter(object as NestedStateMachine);
         case EntryStateBase.typeKey:
         case AnyStateBase.typeKey:
         case ExitStateBase.typeKey:
@@ -250,117 +257,101 @@ class RiveFile {
         case BlendState1DBase.typeKey:
           stackObject = LayerStateImporter(object as LayerState);
           stackType = LayerStateBase.typeKey;
-          break;
         case StateTransitionBase.typeKey:
         case BlendStateTransitionBase.typeKey:
-          {
-            var stateMachineImporter = importStack
-                .requireLatest<StateMachineImporter>(StateMachineBase.typeKey);
-            stackObject = StateTransitionImporter(
-                object as StateTransition, stateMachineImporter);
-            stackType = StateTransitionBase.typeKey;
-            break;
-          }
+          var stateMachineImporter = importStack.requireLatest<StateMachineImporter>(StateMachineBase.typeKey);
+          stackObject = StateTransitionImporter(object as StateTransition, stateMachineImporter);
+          stackType = StateTransitionBase.typeKey;
         case AudioAssetBase.typeKey:
         case ImageAssetBase.typeKey:
         case FontAssetBase.typeKey:
-          // all these stack objects are resolvers. they get resolved.
-          stackObject = FileAssetImporter(
-            object as FileAsset,
-            _assetLoader,
-          );
+          stackObject = FileAssetImporter(object as FileAsset, _assetLoader);
           stackType = FileAssetBase.typeKey;
-          break;
         case ViewModelInstanceBase.typeKey:
           // all these stack objects are resolvers. they get resolved.
-          stackObject = ViewModelInstanceImporter(
-            object as ViewModelInstance,
-          );
-          stackType = ViewModelInstanceBase.typeKey;
-          break;
-        default:
-          if (object is Component) {
-            // helper = _ArtboardObjectImportHelper();
-          }
-          break;
+          stackObject = ViewModelInstanceImporter(object as ViewModelInstance);
+          // stackType = ViewModelInstanceBase.typeKey;
       }
 
       if (!importStack.makeLatest(stackType, stackObject)) {
         throw const RiveFormatErrorException('Rive file is corrupt.');
       }
-      // Special case for StateMachineLayerComponents as the concrete types also
-      // add importers.
+      // Special case for StateMachineLayerComponents as the concrete types also add importers.
       if (object is StateMachineLayerComponent) {
-        if (!importStack.makeLatest(StateMachineLayerComponentBase.typeKey,
-            StateMachineLayerComponentImporter(object))) {
+        if (!importStack.makeLatest(StateMachineLayerComponentBase.typeKey, StateMachineLayerComponentImporter(object))) {
           throw const RiveFormatErrorException('Rive file is corrupt.');
         }
       }
 
-      // Store all as some may fail to import (will be set to null, but we still
-      // want them to occupy an id).
+      // Store all as some may fail to import (will be set to null, but we still want them to occupy an id).
       if (object.import(importStack)) {
+        // imports?.add(object);
         switch (object.coreType) {
           case ArtboardBase.typeKey:
             artboardLookup[artboardId++] = object as Artboard;
             _artboards.add(object);
-            break;
           case BackboardBase.typeKey:
             if (_backboard != Backboard.unknown) {
               throw const RiveFormatErrorException(
                   'Rive file expects only one backboard.');
             }
             _backboard = object as Backboard;
-            break;
         }
       } else {
-        switch (object.coreType) {
+        switch (stackType) {
           case ArtboardBase.typeKey:
             artboardId++;
-            break;
         }
       }
     }
-    if (!importStack.resolve()) {
-      throw const RiveFormatErrorException('Rive file is corrupt.');
-    }
-    if (_backboard == Backboard.unknown) {
-      throw const RiveFormatErrorException('Rive file is missing a backboard.');
-    }
 
-    // var objects = 0;
-    // var keyedProperties = 0;
+    // var t2 = clock?.elapsedMilliseconds;
+
+    var resolve = importStack.resolve();
+    assert (resolve, 'Rive file is corrupt.');
+    assert (_backboard != Backboard.unknown, 'Rive file is missing a backboard.');
+
+    // var t3 = clock?.elapsedMilliseconds;
+
+    var objectsCount = 0;
+    var keyedProperties = 0;
 
     for (final artboard in _artboards) {
-      var runtimeArtboard = artboard as RuntimeArtboard;
-      final t = runtimeArtboard.objects.length;
-      // for (final object in runtimeArtboard.objects.whereNotNull()) {
+      var objects = (artboard as RuntimeArtboard).objects;
+      final t = objects.length;
       for (var i = 0; i < t; i++) {
-        var object = runtimeArtboard.objects[i];
-        if (object == null) {
-          continue;
-        }
-        // objects++;
-        // if (object is KeyedProperty) {
-        //   keyedProperties++;
-        // }
-        if (skipInterpolation && object is KeyedProperty) {
-          object.skipInterpolationTolerance();
-        }
+        var object = objects[i];
+        if (object == null) continue;
+        // assert (object.validate(), 'Rive file is corrupt. Invalid $object.'); // TODO uncomment me
+        object.hasValidated = true;
 
-        if (kDebugMode && true) {
-          if (object.validate()) {
-            InternalCoreHelper.markValid(object);
-          } else {
-            throw RiveFormatErrorException('Rive file is corrupt. Invalid $object.');
-          }
-        } else {
-          InternalCoreHelper.markValid(object);
-        }
+        // if (clock != null) {
+        //   objectsCount++;
+        //   if (object is KeyedProperty) {
+        //     keyedProperties++;
+        //   }
+        // }
       }
     }
 
-    // log('RIVE-FILE >> $path >> objects=$objects keyedProperties=$keyedProperties');
+    if (clock != null) {
+      _logr.info('RIVE-FILE >> $path >> artboards=${_artboards.length} objects=$objectsCount keyedProperties=$keyedProperties '
+          'latests=${importStack.latests.length} > '
+          // '$t2 $t3 >> '
+          '${clock.elapsedMilliseconds}');
+      // if (objectsCount > 100000) dump('objects', objects!);
+      // if (objectsCount > 100000) dump('imports', imports!);
+    }
+  }
+
+  void dump(String header, List<Core<CoreContext>> objects) {
+    _logr.info('$header>\n${objects
+        .map((o) => '${o.runtimeType}:${o.coreType}')
+        .groupListsBy((o) => o)
+        .entries
+        .sorted((e1, e2) => e2.value.length - e1.value.length)
+        .map((e) => '${e.key}: ${e.value.length}')
+        .join('\n')}');
   }
 
   /// Imports a Rive file from an array of bytes.

@@ -1,12 +1,17 @@
-import 'dart:developer';
+// dart format off
 
 import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:rive/rive.dart';
 import 'package:rive/src/core/core.dart';
+import 'package:rive/src/rive_core/animation/keyed_object.dart';
+import 'package:rive/src/rive_core/animation/keyed_property.dart';
+import 'package:rive/src/rive_core/animation/keyframe_double.dart';
 import 'package:rive/src/rive_core/component.dart';
 import 'package:rive/src/rive_core/notifier.dart';
-// import 'package:stokanal/core.dart';
+import 'package:stokanal/core.dart' hide Event;
+
+const _logr = Logr.always(prefix: 'runtime-artboard');
 
 /// Adds getters for linear animations and state machines
 extension RuntimeArtboardGetters on RuntimeArtboard {
@@ -94,16 +99,14 @@ extension ArtboardRuntimeExtensions on Artboard {
 /// This artboard type is purely for use by the runtime system and should not be
 /// directly referenced. Use the Artboard type for any direct interactions with
 /// an artboard, and use extension methods to add functionality to Artboard.
-class RuntimeArtboard extends Artboard implements CoreContext {
+final class RuntimeArtboard extends Artboard with Printable implements CoreContext {
   @nonVirtual
   final redraw = Notifier();
-  // ChangeNotifier get redraw => _redraw;
 
   /// Note that objects must be nullable as some may not resolve during load due
   /// to format differences.
   @nonVirtual
   final objects = <Core?>[];
-  // Iterable<Core?> get objects => _objects;
 
   final _needDependenciesBuilt = <Component>{};
 
@@ -195,61 +198,112 @@ class RuntimeArtboard extends Artboard implements CoreContext {
     redraw.notify();
   }
 
+  var _firstInstance = true;
+
   @override
   Artboard instance() {
-    var artboard = RuntimeArtboard();
+
+    final clock = dumpLoadAndInstancePhases.active ? Stopwatches().create() : null;
+    final firstInstance = _firstInstance;
+    _firstInstance = false;
+
+    final artboard = RuntimeArtboard();
     artboard.context = artboard;
     artboard.frameOrigin = frameOrigin;
     artboard.copy(this);
     artboard.objects.add(artboard);
-    // First copy the objects ensuring onAddedDirty can later find them in the
-    // _objects list.
 
+    // 2026-05-20 changelog:
+    // no-ops > KeyFrameDouble/KeyedProperty/KeyedObject
+    // a) not cloning no-ops
+    // b) not setting object.context for no-ops
+    // c) setting id a single pass for no-ops
+    // d) processing only ops for onAddedDirty and onAdded
+    // e) internalized addObject
+
+    Core? object;
+
+    // First copy the objects ensuring onAddedDirty can later find them in the _objects list.
     var t = objects.length;
-    // for (final object in _objects.skip(1)) {
     for (var i = 1; i < t; i++) {
-    //   Core? clone = object?.clone();
-    //   artboard.addObject(clone);
-      artboard.addObject(objects[i]?.clone());
+      object = objects[i];
+
+      if (object != null) {
+
+        if (object is KeyFrameDouble || object is KeyedProperty || object is KeyedObject) { // list of no-op clone()
+          if (firstInstance) {
+            object.id = artboard.objects.length;
+            // object.onAddedDirty();
+            // object.onAdded();
+            // object.hasValidated = true;
+          }
+        } else {
+          object = object.clone()!;
+          object.context = artboard;
+          object.id = artboard.objects.length;
+        }
+      }
+
+      artboard.objects.add(object);
+      // artboard.addObject(object?.clone());
     }
+
+    var ops = <Core>[];
 
     // Then run the onAddedDirty loop.
     t = artboard.objects.length;
-    // for (final object in artboard.objects.skip(1)) {
     for (var i = 1; i < t; i++) {
-      var object = artboard.objects[i];
-      if (object is Component &&
-          object.parentId == ComponentBase.parentIdInitialValue) {
-        object.parent = artboard;
+      object = artboard.objects[i];
+      if (object == null) continue;
+
+      if (object is KeyFrameDouble || object is KeyedProperty || object is KeyedObject) { // list of no-op clone()
+        // if (firstInstance) {
+        //   object.onAddedDirty(); // no need to call
+        //   object.hasValidated = true; // no need to call
+        // }
+      } else {
+        if (object is Component &&
+            object.parentId == ComponentBase.parentIdInitialValue) {
+          object.parent = artboard;
+        }
+        object.onAddedDirty();
+        ops.add(object);
       }
-      object?.onAddedDirty();
     }
 
     t = animations.length;
-    // for (final a in animations) {
     for (var i = 0; i < t; i++) {
       artboard.animations.add(animations[i]);
     }
 
-    t = artboard.objects.length;
-    // for (final object in artboard.objects) {
+    // t = artboard.objects.length;
+    // for (var i = 0; i < t; i++) {
+    //   object = artboard.objects[i];
+    //   if (object == null) continue;
+    t = ops.length;
     for (var i = 0; i < t; i++) {
-      var object = artboard.objects[i];
-      if (object == null) {
-        continue;
-      }
+      object = ops[i];
       object.onAdded();
-      InternalCoreHelper.markValid(object);
+      object.hasValidated = true;
+      // InternalCoreHelper.markValid(object);
     }
     artboard.clean();
 
+    if (clock != null) {
+      _logr.info('INSTANCE > $this > ops=${ops.length} ${clock.elapsedMilliseconds}');
+      if (!_everDumped && objects.length > 100000) {
+        _everDumped = true;
+        dump();
+      }
+    }
     return artboard;
   }
 
-  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
+  static var _everDumped = false;
+
   void dump() {
-    log(toString());
-    log(objects
+    _logr.info(toString());
+    _logr.info(objects
       .map((o) => o.runtimeType)
       .groupListsBy((o) => o)
       .entries
@@ -258,12 +312,8 @@ class RuntimeArtboard extends Artboard implements CoreContext {
       .join('\n'));
   }
 
-  /// STOKANAL-FORK-EDIT: Reuse this object for every animation
   @override
-  String toString() {
-    // LinearAnimation.dump(); // uncomment to dump animations
-    return 'RuntimeArtboard[$name ${objects.length}]';
-  }
+  String toString() => printr(name, artboard.name, objects.length);
 
   void addNestedEventListener(StateMachineController controller) {
 
