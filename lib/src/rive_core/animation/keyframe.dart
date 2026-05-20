@@ -38,14 +38,34 @@ abstract class KeyFrame extends KeyFrameBase<RuntimeArtboard>
 
   @override
   bool import(ImportStack importStack) {
-    var keyedPropertyHelper =
-        importStack.latest<KeyedPropertyImporter>(KeyedPropertyBase.typeKey);
-    if (keyedPropertyHelper == null) {
-      return false;
-    }
-    keyedPropertyHelper.addKeyFrame(this);
+    // var keyedPropertyHelper = importStack.latest<KeyedPropertyImporter>(KeyedPropertyBase.typeKey);
+    var keyedPropertyHelper = importStack.latests[KeyedPropertyBase.typeKey] as KeyedPropertyImporter;
+    // var keyedPropertyHelper = importStack.latests[KeyedPropertyBase.typeKey] as KeyedPropertyImporter?;
+    // if (keyedPropertyHelper == null) {
+    //   return false;
+    // }
 
-    return super.import(importStack);
+    // keyedPropertyHelper.addKeyFrame(this);
+
+    // keyedPropertyHelper.keyedProperty.context.addObject(this);
+    var property = keyedPropertyHelper.keyedProperty;
+    context = property.context;
+    id = context.objects.length;
+    context.objects.add(this);
+
+    // property.internalAddKeyFrame(this);
+    property.keyframes.add(this);
+    // property.markKeyFrameOrderDirty();
+    // context.dirty(property.sort);
+    // property.onKeyframesChanged();
+    property.pair = null;
+
+    // computeSeconds(keyedPropertyHelper.animation);
+    seconds = frame / keyedPropertyHelper.animation.fps;
+
+
+    // return super.import(importStack);
+    return true;
   }
 
   @override

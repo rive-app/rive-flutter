@@ -1,4 +1,4 @@
-import 'package:rive/src/core/core.dart';
+// import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/shapes/straight_vertex_base.dart';
 import 'package:rive/src/rive_core/bones/weight.dart';
 import 'package:rive/src/rive_core/component.dart';
@@ -15,7 +15,8 @@ class StraightVertex extends StraightVertexBase {
 
   /// Makes a vertex that is disconnected from core.
   StraightVertex.procedural() {
-    InternalCoreHelper.markValid(this);
+    // InternalCoreHelper.markValid(this);
+    this.hasValidated = true;
   }
 
   @override

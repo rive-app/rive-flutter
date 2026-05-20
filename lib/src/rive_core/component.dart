@@ -144,9 +144,7 @@ abstract class Component extends ComponentBase<RuntimeArtboard>
   ContainerComponent? get parent => _parent;
 
   set parent(ContainerComponent? value) {
-    if (_parent == value) {
-      return;
-    }
+    if (_parent == value) return;
     propagateCollapse(false);
     var old = _parent;
     _parent = value;

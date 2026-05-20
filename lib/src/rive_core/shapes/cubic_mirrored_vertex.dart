@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:rive/src/core/core.dart';
 import 'package:rive/src/generated/shapes/cubic_mirrored_vertex_base.dart';
 import 'package:rive/src/rive_core/component_dirt.dart';
 import 'package:rive_common/math.dart';
@@ -12,7 +11,8 @@ class CubicMirroredVertex extends CubicMirroredVertexBase {
 
   /// Makes a vertex that is disconnected from core.
   CubicMirroredVertex.procedural() {
-    InternalCoreHelper.markValid(this);
+    // InternalCoreHelper.markValid(this);
+    this.hasValidated = true;
   }
 
   Vec2D? _inPoint;

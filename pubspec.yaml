@@ -41,21 +41,18 @@ dependencies:
 
 dependency_overrides:
 
-  plato: # swappable
-    # path: ../plato/
-      git:
+  plato:
+    git:
       url: git@github.com:kaypora-games/plato.git
       ref: main
 
-  rive_common: # swappable
-    # path: ../rive-common
-      git:
+  rive_common:
+    git:
       url: git@github.com:kaypora-games/rive-common.git
       ref: main
 
-  stokanal: # swappable
-    # path: ../stokanal-flutter/
-      git:
+  stokanal:
+    git:
       url: git@github.com:kaypora-games/stokanal-flutter.git
       ref: master
 

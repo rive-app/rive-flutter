@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:rive/src/rive_core/runtime/exceptions/rive_format_error_exception.dart';
 import 'package:stokanal/core.dart';
@@ -59,17 +61,6 @@ int _to(int s) {
 int _from(int s) => (s & _negative > 0 ? -1 : 1) * (s & _module);
 int _setLow(final int v, final int s) => (v & _highInt) + _to(s);
 
-// int _getLow(int v) => _from(v & _lowInt);
-// int _setHigh(final int v, final int s) {
-//   var r = (_to(s) << 32) + (v & _lowInt);
-//   // // TODO comment me
-//   // if (_getHigh(r) != s) {
-//   //   throw Exception('v=${v.toRadixString(2)} s=${s.toRadixString(2)} r=${r.toRadixString(2)} high=${_getHigh(r).toRadixString(2)}');
-//   // }
-//   return r;
-// }
-// int _getHigh(int v) => _from((v & _highInt) >> 32);
-
 abstract class Core<T extends CoreContext> {
   static const int missingId = -1;
   covariant late T context;
@@ -78,17 +69,7 @@ abstract class Core<T extends CoreContext> {
   @mustCallSuper
   void onRemoved() {}
 
-  // int id = missingId;
-
   int _value = _setLow(0, missingId);
-  // @nonVirtual
-  // int get id => _getLow(_value);
-  // @nonVirtual
-  // set id(int id) => _value = _setLow(_value, id);
-  // @nonVirtual
-  // int get high => _getHigh(_value);
-  // @nonVirtual
-  // set high(int high) => _value = _setHigh(_value, high);
   @nonVirtual
   int get id => _from(_value & _lowInt);
   @nonVirtual
@@ -97,7 +78,6 @@ abstract class Core<T extends CoreContext> {
   int get high => _from((_value & _highInt) >> 32);
   @nonVirtual
   set high(int high) => _value = (_to(high) << 32) + (_value & _lowInt);
-
 
   // TODO override this method with a static field, see KeyFrameDoubleBase as example
   Set<int> get coreTypes => _coreTypes;//{};
@@ -128,11 +108,11 @@ abstract class Core<T extends CoreContext> {
   void copy(covariant Core source) {}
 }
 
-// ignore: avoid_classes_with_only_static_members
-class InternalCoreHelper {
-  static void markValid(Core object) =>
-    object.hasValidated = true;
-}
+// // ignore: avoid_classes_with_only_static_members
+// class InternalCoreHelper {
+//   static void markValid(Core object) =>
+//     object.hasValidated = true;
+// }
 
 abstract class CoreContext {
   static const int invalidPropertyKey = 0;
@@ -169,15 +149,18 @@ abstract class ImportStackObject {
   int get resolvesBefore => -1;
 
   bool _internalResolve() {
-    if (_resolved) {
-      return true;
-    }
+
+    if (_resolved) return true;
     _resolved = true;
-    for (final before in _resolveBefore) {
-      if (!before._internalResolve()) {
+
+    var t = _resolveBefore.length;
+    // for (final before in _resolveBefore) {
+    for (var i = 0; i < t; i++) {
+      if (!_resolveBefore[i]._internalResolve()) {
         return false;
       }
     }
+
     return resolve();
   }
 
@@ -187,12 +170,10 @@ abstract class ImportStackObject {
 /// Stack to help the RiveFile locate latest ImportStackObject created of a
 /// certain type.
 class ImportStack {
-  final _latests = <int, ImportStackObject>{};
+  final latests = HashMap<int, ImportStackObject>();
   T? latest<T extends ImportStackObject>(int coreType) {
-    var latest = _latests[coreType];
-    if (latest is T) {
-      return latest;
-    }
+    var latest = latests[coreType];
+    if (latest is T) return latest;
     return null;
   }
 
@@ -207,22 +188,23 @@ class ImportStack {
   }
 
   bool makeLatest(int coreType, ImportStackObject? importObject) {
-    var latest = _latests[coreType];
+    var latest = latests[coreType];
     if (latest != null) {
       if (!latest._internalResolve()) {
         return false;
       }
     }
     if (importObject != null && importObject.initStack(this)) {
-      _latests[coreType] = importObject;
+      latests[coreType] = importObject;
     } else {
-      _latests.remove(coreType);
+      latests.remove(coreType);
     }
     return true;
   }
 
   bool resolve() {
-    for (final object in _latests.values) {
+
+    for (final object in latests.values) {
       if (!object._internalResolve()) {
         return false;
       }

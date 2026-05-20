@@ -115,12 +115,12 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   /// shouldn't make it into the runtimes unless we want to allow users moving
   /// keyframes around at runtime via code for some reason.
   void markKeyFrameOrderDirty() {
-    context.dirty(_sortAndValidateKeyFrames);
+    context.dirty(sort);
   }
 
-  void _sortAndValidateKeyFrames() {
-    sort();
-  }
+  // void _sortAndValidateKeyFrames() {
+  //   sort();
+  // }
 
   /// Number of keyframes for this keyed property.
   int get numFrames => keyframes.length;
@@ -139,7 +139,7 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
 
     final double secondsMin;
     final double secondsMax;
-    if (_skipInterpolation) { // no interpolation
+    if (skipInterpolation) { // no interpolation
       secondsMin = seconds;
       secondsMax = seconds;
     } else {
@@ -298,52 +298,64 @@ class KeyedProperty extends KeyedPropertyBase<RuntimeArtboard>
   @override
   void onKeyframesChanged() {
     // if (_pair is! _SkipInterpolation) {
-      _pair = null;
+      pair = null;
     // }
   }
 
-  _ClosestFrame? _pair;
+  _ClosestFrame? pair;
 
-  var _skipInterpolation = false;
+  bool skipInterpolation = false;
   void skipInterpolationTolerance() {
     // _pair = _skipInterpolation;
-    _skipInterpolation = true;
+    skipInterpolation = true;
   }
 
   /// Apply keyframe values at a given time expressed in [seconds].
   void apply(double seconds, double mix, Core object) {
 
-    if (_pair != null && seconds >= _pair!.secondsMin && seconds <= _pair!.secondsMax) { // reuse
+    if (pair != null && seconds >= pair!.secondsMin && seconds <= pair!.secondsMax) { // reuse
 
-      if (_skipInterpolation) { // no interpolation, lookup and don't reset
-        _pair = _closestFramePair(seconds);
+      if (skipInterpolation) { // no interpolation, lookup and don't reset
+        pair = _closestFramePair(seconds);
       }
     } else { // lookup and reset
-      _pair = _closestFramePair(seconds);
+      pair = _closestFramePair(seconds);
     }
 
-    var fromFrame = _pair!.fromFrame;
+    var fromFrame = pair!.fromFrame;
 
     if (fromFrame != null) { // interpolation
       if (fromFrame.interpolationType == 0) {
         fromFrame.apply(object, propertyBean, mix);
       } else {
-        fromFrame.applyInterpolation(object, propertyBean, seconds, _pair!.toFrame, mix);
+        fromFrame.applyInterpolation(object, propertyBean, seconds, pair!.toFrame, mix);
       }
     } else {
-      _pair!.toFrame.apply(object, propertyBean, mix);
+      pair!.toFrame.apply(object, propertyBean, mix);
     }
   }
 
   @override
   bool import(ImportStack stack) {
-    var importer = stack.latest<KeyedObjectImporter>(KeyedObjectBase.typeKey);
-    if (importer == null) {
-      return false;
-    }
-    importer.addKeyedProperty(this);
+    // var importer = stack.latest<KeyedObjectImporter>(KeyedObjectBase.typeKey);
+    // if (importer == null) {
+    //   return false;
+    // }
+    var importer = stack.latests[KeyedObjectBase.typeKey] as KeyedObjectImporter;
 
-    return super.import(stack);
+    // importer.addKeyedProperty(this);
+
+    // importer.keyedObject.context.addObject(this);
+    var object = importer.keyedObject;
+    context = object.context;
+    id = context.objects.length;
+    context.objects.add(this);
+
+    // importer.keyedObject.internalAddKeyedProperty(this);
+    object.internalAddKeyedPropertySet(this);
+
+    return true;
+    // return super.import(stack);
   }
 }
 
@@ -360,3 +372,4 @@ class _ClosestFrame {
 // }
 //
 // final _skipInterpolation = _SkipInterpolation();
+
