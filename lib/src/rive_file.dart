@@ -52,7 +52,7 @@ import 'generated/animation/transition_bool_condition_base.dart';
 import 'rive_core/animation/transition_number_condition.dart';
 
 const _logr = Logr.always(prefix: 'runtime-file');
-const dumpLoadAndInstancePhases = Directive.debugAnd(true, name: 'dump-rive-load-and-instances');
+const dumpLoadAndInstancePhases = Directive.debugAnd(false, name: 'dump-rive-load-and-instances');
 
 typedef Core<CoreContext>? ObjectGenerator(int coreTypeKey);
 
