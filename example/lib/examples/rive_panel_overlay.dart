@@ -58,10 +58,7 @@ class _ExampleRivePanelOverlayState extends State<ExampleRivePanelOverlay>
   // tapped — the state machine carries straight through the flight.
   List<RiveWidgetController> _controllers = const [];
 
-  late final AnimationController _flight = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 320),
-  );
+  late final AnimationController _flight;
 
   OverlayEntry? _previewEntry;
   int? _previewIndex;
@@ -73,6 +70,10 @@ class _ExampleRivePanelOverlayState extends State<ExampleRivePanelOverlay>
   @override
   void initState() {
     super.initState();
+    _flight = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+    );
     _loadControllers();
   }
 
@@ -326,7 +327,7 @@ class _PreviewCard extends StatelessWidget {
       // Transparent so the texture (which lives in the page's body, *behind*
       // this Overlay layer) shows through and reveals the Rive content
       // painted at this widget's screen position.
-      color: Colors.black.withOpacity(0.1),
+      color: Colors.black.withValues(alpha: 0.1),
       child: GestureDetector(
         onTap: onDismiss,
         child: Padding(

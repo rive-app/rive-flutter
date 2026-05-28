@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
@@ -190,7 +191,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out);
+        ro.paintIntoSharedTexture(out, 0.0);
 
         expect(out.recording.transforms, hasLength(1));
         // scale=(2,2), translation=(50*2, 100*2)=(100,200).
@@ -224,7 +225,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out);
+        ro.paintIntoSharedTexture(out, 0.0);
 
         _expectMatrix(out.recording.transforms.single,
             [1.0, 0.0, 0.0, 1.0, 300.0, 250.0]);
@@ -256,7 +257,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out);
+        ro.paintIntoSharedTexture(out, 0.0);
 
         _expectMatrix(out.recording.transforms.single,
             [1.0, 0.0, 0.0, 1.0, 50.0, 50.0]);
@@ -293,7 +294,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out);
+        ro.paintIntoSharedTexture(out, 0.0);
 
         // scale=(0.5, 0.5), translation=(50, 50).
         _expectMatrix(out.recording.transforms.single,
@@ -330,7 +331,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out);
+        ro.paintIntoSharedTexture(out, 0.0);
 
         // scale=(1,1), translation=(50, 100) — same as the no-transform case.
         _expectMatrix(out.recording.transforms.single,
@@ -362,13 +363,91 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out);
+        ro.paintIntoSharedTexture(out, 0.0);
 
         // scale=(0.5, 0.5) * dpr=3 = (1.5, 1.5).
         // visual top-left of scaled box at panel-local: (40 + 50, 60 + 50) =
         // (90, 110). × dpr = (270, 330).
         _expectMatrix(out.recording.transforms.single,
             [1.5, 0.0, 0.0, 1.5, 270.0, 330.0]);
+
+        painter.dispose();
+      },
+    );
+
+    // Regression: an earlier implementation read only the scale diagonal
+    // (m[0], m[5]) and the translation (m[12], m[13]) of the widget→panel
+    // Matrix4, dropping the off-diagonal rotation/skew terms. A rotated
+    // widget would composite correctly into Flutter (the Texture widget
+    // honours the real transform) while the Rive content drawn into the
+    // shared texture appeared un-rotated.
+    testWidgets(
+      'Transform.rotate on the widget — rotation reaches the texture transform',
+      (tester) async {
+        final shared = SharedRenderTexture(
+          texture: _FakeRenderTexture(),
+          devicePixelRatio: 1.0,
+          backgroundColor: const Color(0x00000000),
+          panelKey: GlobalKey(),
+        );
+        final painter = _NoopPainter();
+
+        // 90° CCW rotation around the widget's centre (100, 100). Mapping
+        // widget-local (x, y) → panel-local: (200 - y, x). In Mat2D order
+        // [xx, xy, yx, yy, tx, ty] that's [0, 1, -1, 0, 200, 0].
+        final ro = await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: painter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(0, 0, 200, 200),
+          dpr: 1.0,
+          riveWrapper: (child) =>
+              Transform.rotate(angle: math.pi / 2, child: child),
+        );
+
+        final out = _FakeRenderTexture();
+        ro.paintIntoSharedTexture(out, 0.0);
+
+        _expectMatrix(out.recording.transforms.single,
+            [0.0, 1.0, -1.0, 0.0, 200.0, 0.0]);
+
+        painter.dispose();
+      },
+    );
+
+    // Same regression: `.abs()` on the scale diagonal silently swallowed
+    // negative scale, so a flipped widget composited mirrored but its Rive
+    // content drew un-mirrored.
+    testWidgets(
+      'Transform.flip on the widget — mirror reaches the texture transform',
+      (tester) async {
+        final shared = SharedRenderTexture(
+          texture: _FakeRenderTexture(),
+          devicePixelRatio: 1.0,
+          backgroundColor: const Color(0x00000000),
+          panelKey: GlobalKey(),
+        );
+        final painter = _NoopPainter();
+
+        // Horizontal flip around the widget's centre (100, 100). Mapping
+        // widget-local (x, y) → panel-local: (200 - x, y). In Mat2D order
+        // [xx, xy, yx, yy, tx, ty] that's [-1, 0, 0, 1, 200, 0].
+        final ro = await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: painter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(0, 0, 200, 200),
+          dpr: 1.0,
+          riveWrapper: (child) => Transform.flip(flipX: true, child: child),
+        );
+
+        final out = _FakeRenderTexture();
+        ro.paintIntoSharedTexture(out, 0.0);
+
+        _expectMatrix(out.recording.transforms.single,
+            [-1.0, 0.0, 0.0, 1.0, 200.0, 0.0]);
 
         painter.dispose();
       },
@@ -435,7 +514,7 @@ void main() {
 
         // First read: scale 0.5, visual top-left (50, 50).
         final firstOut = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(firstOut);
+        ro.paintIntoSharedTexture(firstOut, 0.0);
         _expectMatrix(firstOut.recording.transforms.single,
             [0.5, 0.0, 0.0, 0.5, 50.0, 50.0]);
 
@@ -448,7 +527,7 @@ void main() {
 
         // Second read: scale 0.75, visual top-left (25, 25).
         final secondOut = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(secondOut);
+        ro.paintIntoSharedTexture(secondOut, 0.0);
         _expectMatrix(secondOut.recording.transforms.single,
             [0.75, 0.0, 0.0, 0.75, 25.0, 25.0]);
 

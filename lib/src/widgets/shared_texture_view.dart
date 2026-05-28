@@ -125,6 +125,13 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   @override
   bool get shouldAdvance => _shouldAdvance;
 
+  // The per-widget ticker inherited from [RiveNativeRenderBox] is never
+  // started — the shared texture owns a single ticker that drives every
+  // painter. Mirror the shared ticker's state here so painter listeners
+  // (e.g. state-machine advance requests) check the right flag.
+  @override
+  bool get isTickerActive => _shared.isTickerActive;
+
   // Repaint when the texture is created/changed. This reduces the flicker when
   // resizing the widget. This flicker is caused by recreating the underlying
   // texture Rive draws to.
@@ -133,6 +140,21 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   @override
   void paintTexture(double elapsedSeconds, {bool forceShouldAdvance = false}) {
     // do nothing. we draw to the shared texture.
+  }
+
+  // Forward ticker control to the shared texture. The inherited `_ticker`
+  // field stays unused; painter listeners attached by [RiveRenderBox.painter]
+  // call through `restartTickerIfStopped → startTicker`, which now wakes the
+  // shared ticker instead of an isolated per-widget one.
+  @override
+  void startTicker() {
+    _shared.startTicker();
+  }
+
+  @override
+  void stopTicker() {
+    // Individual widgets never stop the shared ticker — the shared paint
+    // pass decides when to stop based on every painter's settled state.
   }
 
   @override
@@ -172,10 +194,14 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   }
 
   @override
-  void paintIntoSharedTexture(RenderTexture texture) {
+  bool paintIntoSharedTexture(RenderTexture texture, double elapsedSeconds) {
     final panelKeyContext = shared.panelKey.currentContext;
     if (panelKeyContext == null) {
-      return;
+      // Can't compute a transform without the panel laid out yet — bail and
+      // report settled. A subsequent layout will [markNeedsPaint] which kicks
+      // the shared ticker via the painter's listener.
+      _shouldAdvance = false;
+      return false;
     }
     final panelRenderBox = panelKeyContext.findRenderObject() as RenderBox;
 
@@ -190,17 +216,17 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     // sibling, not an ancestor) by walking both sides to the common
     // ancestor and inverting. Any ancestor transform shared with the panel
     // cancels out — the texture widget re-applies it at composite time.
-    final m = getTransformTo(panelRenderBox).storage;
+    //
+    // Build the full 2D affine from the Matrix4 (preserving rotation, skew,
+    // and mirror) rather than reading only the scale diagonal — otherwise
+    // the texture content drawn here desyncs from how the Texture widget
+    // composites at the widget tree's real transform.
+    final widgetToPanel = Mat2D.fromMat4(getTransformTo(panelRenderBox).storage);
     final dpr = devicePixelRatio;
 
     final renderer = texture.renderer;
     renderer.save();
-    renderer.transform(Mat2D.fromScaleAndTranslation(
-      m[0].abs() * dpr,
-      m[5].abs() * dpr,
-      m[12] * dpr,
-      m[13] * dpr,
-    ));
+    renderer.transform(Mat2D.fromScale(dpr, dpr).mul(widgetToPanel));
     _shouldAdvance = rivePainter?.paint(
           texture,
           dpr,
@@ -208,12 +234,8 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
           elapsedSeconds,
         ) ??
         false;
-    if (_shouldAdvance) {
-      restartTickerIfStopped();
-    } else {
-      stopTicker();
-    }
     renderer.restore();
+    return _shouldAdvance;
   }
 
   @override
@@ -224,12 +246,6 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     super.attach(owner);
     markNeedsLayout();
     _shared.addPainter(this);
-  }
-
-  @override
-  void frameCallback(Duration duration) {
-    super.frameCallback(duration);
-    _shared.schedulePaint();
   }
 
   @override

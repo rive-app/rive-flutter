@@ -104,6 +104,12 @@ class _RiveWidgetState extends State<RiveWidget> {
     _setupView();
   }
 
+  @override
+  void dispose() {
+    _sharedTexturePainter?.dispose();
+    super.dispose();
+  }
+
   void _setupView() {
     final controller = widget.controller;
     controller.alignment = widget.alignment;
@@ -121,6 +127,9 @@ class _RiveWidgetState extends State<RiveWidget> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.controller != oldWidget.controller) {
+      // Tear down the painter that was wrapping the old controller
+      _sharedTexturePainter?.dispose();
+      _sharedTexturePainter = null;
       // If the controller changes, we need to re-setup all the properties
       _setupView();
       return;
@@ -151,8 +160,10 @@ class _RiveWidgetState extends State<RiveWidget> {
     controller.scheduleRepaint();
   }
 
-  late final SharedTextureArtboardWidgetPainter _painter =
-      SharedTextureArtboardWidgetPainter(widget.controller);
+  SharedTextureArtboardWidgetPainter? _sharedTexturePainter;
+  SharedTextureArtboardWidgetPainter _ensurePainter() =>
+      _sharedTexturePainter ??=
+          SharedTextureArtboardWidgetPainter(widget.controller);
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +184,7 @@ class _RiveWidgetState extends State<RiveWidget> {
       }
       return SharedTextureView(
         artboard: widget.controller.artboard,
-        painter: _painter,
+        painter: _ensurePainter(),
         sharedTexture: sharedTexture,
         drawOrder: widget.drawOrder,
       );

@@ -7,7 +7,13 @@ import 'package:meta/meta.dart';
 @experimental
 abstract class SharedTexturePainter {
   int get sharedDrawOrder;
-  void paintIntoSharedTexture(rive.RenderTexture texture);
+
+  /// Paint into the shared [texture] using [elapsedSeconds] since the last
+  /// shared-texture frame. Return `true` if the painter wants the shared
+  /// ticker to keep advancing (animation still running), `false` if the
+  /// painter is settled. The shared ticker stops when every painter reports
+  /// `false`.
+  bool paintIntoSharedTexture(rive.RenderTexture texture, double elapsedSeconds);
 }
 
 /// A shared render texture that multiple Rive painters can draw into.
@@ -60,6 +66,9 @@ class SharedRenderTexture {
 
   bool get isDisposed => _disposed;
 
+  /// Whether the shared ticker is currently running.
+  bool get isTickerActive => _ticker?.isActive ?? false;
+
   /// Release the underlying native texture. Only valid for instances created
   /// via [SharedRenderTexture.create]; instances constructed with an external
   /// [texture] should be disposed by whoever owns that texture.
@@ -68,37 +77,90 @@ class SharedRenderTexture {
       return;
     }
     _disposed = true;
+    _ticker?.dispose();
+    _ticker = null;
     painters.clear();
     if (_ownsTexture) {
       texture.dispose();
     }
   }
 
+  // A single ticker drives every painter sharing this texture. Per-widget
+  // tickers used to share the same paint pass, which meant one active painter
+  // would re-call `advance` on settled siblings and accidentally revive their
+  // tickers. Centralizing the ticker here means the loop stops as soon as no
+  // painter still wants to advance.
+  Ticker? _ticker;
+  double _elapsedSeconds = 0;
+  double _prevTickerElapsedInSeconds = 0;
+  bool _scheduled = false;
+
+  void _onTick(Duration duration) {
+    final double tickerElapsedInSeconds =
+        duration.inMicroseconds.toDouble() / Duration.microsecondsPerSecond;
+    _elapsedSeconds = tickerElapsedInSeconds - _prevTickerElapsedInSeconds;
+    _prevTickerElapsedInSeconds = tickerElapsedInSeconds;
+    _paintShared(_elapsedSeconds);
+  }
+
+  /// Start the shared ticker if it isn't already running. Painters call this
+  /// when they need a redraw (state machine input change, pointer event, new
+  /// painter joining, etc.).
+  void startTicker() {
+    if (_disposed) return;
+    _ticker ??= Ticker(_onTick);
+    if (_ticker!.isActive) return;
+    _elapsedSeconds = 0;
+    _prevTickerElapsedInSeconds = 0;
+    _ticker!.start();
+  }
+
+  /// Stop the shared ticker. Called automatically by [_paintShared] when no
+  /// painter reports `shouldAdvance == true`.
+  void stopTicker() {
+    _elapsedSeconds = 0;
+    _prevTickerElapsedInSeconds = 0;
+    _ticker?.stop();
+  }
+
   /// Paint the shared render texture.
-  void _paintShared(_) {
-    _scheduled = false;
-    if (_disposed || painters.isEmpty) {
+  void _paintShared(double elapsedSeconds) {
+    if (_disposed) return;
+    if (painters.isEmpty) {
       // Nothing to draw — skip the clear/flush so a stale post-frame callback
       // (e.g. one queued before the last painter detached) cannot momentarily
       // blank the shared texture.
+      stopTicker();
       return;
     }
     texture.clear(backgroundColor);
+    bool anyShouldAdvance = false;
     for (final painter in painters) {
-      painter.paintIntoSharedTexture(texture);
+      if (painter.paintIntoSharedTexture(texture, elapsedSeconds)) {
+        anyShouldAdvance = true;
+      }
     }
     texture.flush(devicePixelRatio);
+    if (anyShouldAdvance) {
+      startTicker();
+    } else {
+      stopTicker();
+    }
   }
 
-  bool _scheduled = false;
-
-  /// Schedule a paint of the shared render texture.
+  /// Schedule a one-shot paint of the shared render texture. Used when the
+  /// scene visually needs to update but the ticker is idle — e.g. a painter
+  /// scrolled or was just attached. Skipped if the ticker is already running
+  /// since the next tick will redraw anyway.
   void schedulePaint() {
-    if (_scheduled || _disposed) {
+    if (_disposed || _scheduled || isTickerActive) {
       return;
     }
     _scheduled = true;
-    SchedulerBinding.instance.addPostFrameCallback(_paintShared);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _scheduled = false;
+      _paintShared(0);
+    });
   }
 
   /// Add a painter to the shared render texture.
@@ -108,11 +170,23 @@ class SharedRenderTexture {
     }
     painters.add(painter);
     painters.sort((a, b) => a.sharedDrawOrder.compareTo(b.sharedDrawOrder));
+    // Kick the ticker so the newly added painter shows up. _paintShared will
+    // stop it again on the next pass if every painter is already settled.
+    startTicker();
   }
 
   /// Remove a painter from the shared render texture.
   void removePainter(SharedTexturePainter painter) {
-    painters.remove(painter);
+    if (!painters.remove(painter)) return;
+    if (painters.isEmpty) {
+      // Leave the last paint visible — clearing here would blank the texture
+      // before whatever replaces this panel can render.
+      stopTicker();
+      return;
+    }
+    // The texture still holds the removed painter's last draw; kick a pass to
+    // redraw without it.
+    startTicker();
   }
 }
 

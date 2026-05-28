@@ -1,3 +1,9 @@
+## Upcoming
+
+- Fixed `RivePanel` painters never settling when multiple painters shared the same texture. Each painter previously owned its own ticker and the shared paint pass would re-call `advance` on settled siblings, accidentally reviving them. `SharedRenderTexture` now owns a single ticker that stops when every painter reports settled and restarts on new painters or wake notifications.
+- Fixed shared-texture rendering for rotated, skewed, or mirrored `RiveWidget`s. The widget→panel transform now reaches the texture as a full 2D affine instead of being flattened to its scale diagonal, so the texture content matches how the `Texture` widget composites.
+- Fixed `RiveWidget` swallowing controller swaps on a stable element (no `Key`) when drawing into a shared texture. The wrapping painter was bound to the original controller on first build and never rebuilt, so the new controller's state machine wasn't driving the on-screen artboard and disposing the old controller crashed at the native boundary.
+
 ## 0.14.7
 
 - Bumps to `rive_native: 0.1.7`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.

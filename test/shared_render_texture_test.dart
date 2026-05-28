@@ -69,19 +69,29 @@ base class _FakeRenderTexture extends rive.RenderTexture {
 }
 
 class _FakePainter implements SharedTexturePainter {
-  _FakePainter({this.drawOrder = 1});
+  _FakePainter({this.drawOrder = 1, this.framesToAdvance = 0});
 
   int paintCount = 0;
   rive.RenderTexture? lastPaintedInto;
   final int drawOrder;
+  // Number of remaining paint passes the painter still wants to advance for.
+  // After this counter reaches 0, paintIntoSharedTexture returns false and the
+  // painter is "settled".
+  int framesToAdvance;
 
   @override
   int get sharedDrawOrder => drawOrder;
 
   @override
-  void paintIntoSharedTexture(rive.RenderTexture texture) {
+  bool paintIntoSharedTexture(
+      rive.RenderTexture texture, double elapsedSeconds) {
     paintCount++;
     lastPaintedInto = texture;
+    if (framesToAdvance > 0) {
+      framesToAdvance--;
+      return true;
+    }
+    return false;
   }
 }
 
@@ -167,6 +177,72 @@ void main() {
       shared.addPainter(painter);
       expect(shared.painters, [painter]);
     });
+
+    // Regression: with per-widget tickers, one active widget would drive the
+    // shared paint pass which re-called advance() on settled siblings and
+    // accidentally revived their tickers. With a single shared ticker, every
+    // painter returning false from paintIntoSharedTexture must stop the
+    // ticker.
+    testWidgets(
+      'ticker stops once every painter reports settled',
+      (tester) async {
+        final texture = _FakeRenderTexture();
+        final shared = _makeShared(texture);
+        final settled = _FakePainter();
+        final stillAdvancing = _FakePainter(framesToAdvance: 2);
+        shared.addPainter(settled);
+        shared.addPainter(stillAdvancing);
+
+        // First frame: stillAdvancing returns true → ticker stays running.
+        await tester.pump();
+        expect(shared.isTickerActive, isTrue);
+        expect(settled.paintCount, 1);
+        expect(stillAdvancing.paintCount, 1);
+
+        // Second frame: stillAdvancing returns true once more.
+        await tester.pump();
+        expect(shared.isTickerActive, isTrue);
+
+        // Third frame: stillAdvancing finally settles → ticker stops.
+        await tester.pump();
+        expect(shared.isTickerActive, isFalse);
+
+        final paintsBeforeIdle = texture.clearCount;
+        // Additional pumps must not re-tick a settled scene.
+        await tester.pump();
+        await tester.pump();
+        expect(shared.isTickerActive, isFalse);
+        expect(texture.clearCount, paintsBeforeIdle,
+            reason: 'settled scene must not paint on subsequent frames');
+      },
+    );
+
+    testWidgets(
+      'addPainter wakes the ticker so a newly attached painter shows up',
+      (tester) async {
+        final texture = _FakeRenderTexture();
+        final shared = _makeShared(texture);
+        final settled = _FakePainter();
+        shared.addPainter(settled);
+
+        // Let the initial paint settle the ticker.
+        await tester.pump();
+        expect(shared.isTickerActive, isFalse);
+        expect(settled.paintCount, 1);
+
+        // Add a second painter mid-flight. The ticker must restart so the
+        // new painter actually gets painted into the shared texture.
+        final joiner = _FakePainter();
+        shared.addPainter(joiner);
+        expect(shared.isTickerActive, isTrue,
+            reason: 'addPainter must wake the shared ticker');
+
+        await tester.pump();
+        expect(joiner.paintCount, 1);
+        expect(shared.isTickerActive, isFalse,
+            reason: 'ticker should settle again after one paint pass');
+      },
+    );
 
     test('painters are kept sorted by sharedDrawOrder', () {
       final shared = _makeShared(_FakeRenderTexture());
