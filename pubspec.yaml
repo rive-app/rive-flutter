@@ -22,44 +22,35 @@ environment:
 
 dependencies:
   charcode: ^1.4.0 # added to solve sdk conflict
-#  collection: ^1.15.0 # original
   collection: ^1.19.1
-#  ffi: ^2.1.4 # original
   flutter:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
   http: ">=0.13.3 <2.0.0"
-#  meta: ^1.3.0 # original
   meta: ^1.17.0
-  plato:
-#  plugin_platform_interface: ^2.0.2 # original
   plugin_platform_interface: ^2.1.8
-  rive_common:
-  stokanal:
   typed_data: ^1.4.0 # added to solve sdk conflict
 
-dependency_overrides:
-
+  #######################################################################
+  ## Kaypora libraries
+  ######################################################################
   plato:
     git:
       url: git@github.com:kaypora-games/plato.git
       ref: main
-
+  stokanal:
+    git:
+      url: git@github.com:kaypora-games/stokanal-flutter.git
+      ref: master
   rive_common:
     git:
       url: git@github.com:kaypora-games/rive-common.git
       ref: main
 
-  stokanal:
-    git:
-      url: git@github.com:kaypora-games/stokanal-flutter.git
-      ref: master
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-#  mocktail: # original
   mocktail: ^1.0.5
-#  path: ^1.8.3 # original
   path: ^1.9.1
