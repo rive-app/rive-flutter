@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -40,6 +42,13 @@ class _MyRiveWidgetState extends State<_MyRiveWidget>
 
   double scale = 1.5;
 
+  // Drives a continuous Z rotation on top of the user-controlled scale so
+  // the Rive content has to track a transform that changes every frame.
+  late final _rotation = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 6),
+  )..repeat();
+
   @override
   void initState() {
     super.initState();
@@ -58,14 +67,16 @@ class _MyRiveWidgetState extends State<_MyRiveWidget>
     vmi = controller.dataBind(DataBind.auto());
 
     final renderName = vmi.string('rendererName')!;
-    renderName.value =
-        widget.riveFactory == Factory.flutter ? 'Flutter' : 'Rive';
+    renderName.value = widget.riveFactory == Factory.flutter
+        ? 'Flutter'
+        : 'Rive';
 
     setState(() => isInitialized = true);
   }
 
   @override
   void dispose() {
+    _rotation.dispose();
     controller.dispose();
     file.dispose();
     super.dispose();
@@ -88,15 +99,24 @@ class _MyRiveWidgetState extends State<_MyRiveWidget>
           });
         }
       },
-      child: Transform(
-        // ignore: deprecated_member_use
-        transform: Matrix4.identity()..scale(scale, scale, scale),
-        alignment: Alignment.center,
-        // filterQuality: FilterQuality.high,
-        child: RiveWidget(
-          controller: controller,
-          fit: Fit.contain,
-        ),
+      child: AnimatedBuilder(
+        animation: _rotation,
+        // [child] is built once and reused across every tick so only the
+        // outer Transform rebuilds — the RiveWidget keeps the same
+        // controller/painter.
+        child: RiveWidget(controller: controller, fit: Fit.contain),
+        builder: (context, child) {
+          final angle = _rotation.value * 2 * math.pi;
+          return Transform(
+            transform: Matrix4.identity()
+              // ignore: deprecated_member_use
+              ..scale(scale, scale, scale)
+              ..rotateZ(angle),
+            alignment: Alignment.center,
+            // filterQuality: FilterQuality.high,
+            child: child,
+          );
+        },
       ),
     );
   }
