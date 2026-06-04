@@ -102,7 +102,7 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
 
   SharedTextureViewRenderObject(this._shared)
       : super(UnimplementedRenderTexture()) {
-    _shared.texture.onTextureChanged = _onRiveTextureChanged;
+    _shared.texture.addTextureChangedListener(_onRiveTextureChanged);
   }
 
   int drawOrder = 1;
@@ -112,10 +112,10 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     if (_shared == value) {
       return;
     }
-    _shared.texture.onTextureChanged = null;
+    _shared.texture.removeTextureChangedListener(_onRiveTextureChanged);
     _shared.removePainter(this);
     _shared = value;
-    _shared.texture.onTextureChanged = _onRiveTextureChanged;
+    _shared.texture.addTextureChangedListener(_onRiveTextureChanged);
     _shared.addPainter(this);
     markNeedsPaint();
   }
@@ -132,10 +132,9 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   @override
   bool get isTickerActive => _shared.isTickerActive;
 
-  // Repaint when the texture is created/changed. This reduces the flicker when
-  // resizing the widget. This flicker is caused by recreating the underlying
-  // texture Rive draws to.
-  void _onRiveTextureChanged() => markNeedsLayout();
+  // Repaint on texture change. (markNeedsLayout would assert: the panel
+  // notifies us from its performLayout, and our size is layout-independent.)
+  void _onRiveTextureChanged() => markNeedsPaint();
 
   @override
   void paintTexture(double elapsedSeconds, {bool forceShouldAdvance = false}) {
@@ -189,7 +188,7 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   @override
   void dispose() {
     _shared.removePainter(this);
-    _shared.texture.onTextureChanged = null;
+    _shared.texture.removeTextureChangedListener(_onRiveTextureChanged);
     super.dispose();
   }
 
@@ -224,9 +223,14 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     final widgetToPanel = Mat2D.fromMat4(getTransformTo(panelRenderBox).storage);
     final dpr = devicePixelRatio;
 
+    // Scale into the texture's actual pixels relative to the panel size, so
+    // content keeps filling the texture while it lags the panel mid-resize.
+    final (sx, sy) =
+        texture.actualScale(panelRenderBox.size, fallbackX: dpr, fallbackY: dpr);
+
     final renderer = texture.renderer;
     renderer.save();
-    renderer.transform(Mat2D.fromScale(dpr, dpr).mul(widgetToPanel));
+    renderer.transform(Mat2D.fromScale(sx, sy).mul(widgetToPanel));
     _shouldAdvance = rivePainter?.paint(
           texture,
           dpr,

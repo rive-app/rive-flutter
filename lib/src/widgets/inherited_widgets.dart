@@ -13,7 +13,8 @@ abstract class SharedTexturePainter {
   /// ticker to keep advancing (animation still running), `false` if the
   /// painter is settled. The shared ticker stops when every painter reports
   /// `false`.
-  bool paintIntoSharedTexture(rive.RenderTexture texture, double elapsedSeconds);
+  bool paintIntoSharedTexture(
+      rive.RenderTexture texture, double elapsedSeconds);
 }
 
 /// A shared render texture that multiple Rive painters can draw into.
@@ -44,7 +45,22 @@ class SharedRenderTexture {
     required this.devicePixelRatio,
     required this.backgroundColor,
     required this.panelKey,
-  });
+  }) {
+    texture.addTextureChangedListener(_onTextureChanged);
+  }
+
+  // Redraw the painters when the texture is recreated, so the new texture has
+  // content before it's shown. Draw straight away when we're called outside a
+  // frame.
+  void _onTextureChanged() {
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle ||
+        phase == SchedulerPhase.postFrameCallbacks) {
+      _paintShared(0);
+    } else {
+      schedulePaint();
+    }
+  }
 
   /// Create a user-owned [SharedRenderTexture] with its own underlying native
   /// texture. Use [RiveSurface] to place it in the widget tree, and pass this
@@ -80,6 +96,7 @@ class SharedRenderTexture {
     _ticker?.dispose();
     _ticker = null;
     painters.clear();
+    texture.removeTextureChangedListener(_onTextureChanged);
     if (_ownsTexture) {
       texture.dispose();
     }
@@ -91,16 +108,18 @@ class SharedRenderTexture {
   // tickers. Centralizing the ticker here means the loop stops as soon as no
   // painter still wants to advance.
   Ticker? _ticker;
-  double _elapsedSeconds = 0;
   double _prevTickerElapsedInSeconds = 0;
   bool _scheduled = false;
 
   void _onTick(Duration duration) {
     final double tickerElapsedInSeconds =
         duration.inMicroseconds.toDouble() / Duration.microsecondsPerSecond;
-    _elapsedSeconds = tickerElapsedInSeconds - _prevTickerElapsedInSeconds;
+    final double elapsedSeconds =
+        tickerElapsedInSeconds - _prevTickerElapsedInSeconds;
     _prevTickerElapsedInSeconds = tickerElapsedInSeconds;
-    _paintShared(_elapsedSeconds);
+    // Draw post-frame, not here: the ticker runs before layout, so painting now
+    // would use last frame's transforms and the content lags the panel.
+    _schedulePaintPass(elapsedSeconds);
   }
 
   /// Start the shared ticker if it isn't already running. Painters call this
@@ -110,7 +129,6 @@ class SharedRenderTexture {
     if (_disposed) return;
     _ticker ??= Ticker(_onTick);
     if (_ticker!.isActive) return;
-    _elapsedSeconds = 0;
     _prevTickerElapsedInSeconds = 0;
     _ticker!.start();
   }
@@ -118,7 +136,6 @@ class SharedRenderTexture {
   /// Stop the shared ticker. Called automatically by [_paintShared] when no
   /// painter reports `shouldAdvance == true`.
   void stopTicker() {
-    _elapsedSeconds = 0;
     _prevTickerElapsedInSeconds = 0;
     _ticker?.stop();
   }
@@ -148,20 +165,34 @@ class SharedRenderTexture {
     }
   }
 
-  /// Schedule a one-shot paint of the shared render texture. Used when the
-  /// scene visually needs to update but the ticker is idle — e.g. a painter
-  /// scrolled or was just attached. Skipped if the ticker is already running
-  /// since the next tick will redraw anyway.
-  void schedulePaint() {
-    if (_disposed || _scheduled || isTickerActive) {
+  // Elapsed accumulated for the next coalesced pass, so no tick's delta is lost
+  // when requests coalesce.
+  double _pendingElapsed = 0;
+
+  /// Schedules a paint for after this frame's layout (so painters read the same
+  /// transforms the panel composites against). Ticker and one-shot requests
+  /// both funnel through here, coalesced into a single post-frame pass.
+  void _schedulePaintPass(double elapsedSeconds) {
+    if (_disposed) {
+      return;
+    }
+    _pendingElapsed += elapsedSeconds;
+    if (_scheduled) {
       return;
     }
     _scheduled = true;
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _scheduled = false;
-      _paintShared(0);
+      final elapsed = _pendingElapsed;
+      _pendingElapsed = 0;
+      _paintShared(elapsed);
     });
   }
+
+  /// Schedule a one-shot paint of the shared render texture. Used when the
+  /// scene visually needs to update — e.g. a painter scrolled, resized, or was
+  /// just attached.
+  void schedulePaint() => _schedulePaintPass(0);
 
   /// Add a painter to the shared render texture.
   void addPainter(SharedTexturePainter painter) {

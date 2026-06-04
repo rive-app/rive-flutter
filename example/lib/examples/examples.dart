@@ -25,4 +25,5 @@ export 'ticker_mode.dart';
 export 'time_dilation.dart';
 export 'todo.dart';
 export 'transform.dart';
+export 'test_graphic_resizing.dart';
 export 'test_memory_cleanup.dart';

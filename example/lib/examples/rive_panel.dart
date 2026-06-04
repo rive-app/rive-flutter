@@ -9,8 +9,8 @@ class ExampleRivePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const RivePanel(
-      // child: RowExample(),
-      child: ListViewExample(),
+      child: RowExample(),
+      // child: ListViewExample(),
     );
   }
 }

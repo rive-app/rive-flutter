@@ -192,6 +192,11 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
     ]),
     const _Section('Performance/Memory testing', [
       _Page(
+        'Graphic resizing test',
+        TestGraphicResizing(),
+        'Test graphic resizing texture creation (flicker on resize).',
+      ),
+      _Page(
         'Memory cleanup test',
         TestMemoryCleanup(),
         'Test memory cleanup by toggling the visibility of a Rive file widget.',
