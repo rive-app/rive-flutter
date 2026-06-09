@@ -19,7 +19,6 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  meta: ^1.9.0
   rive_native: 0.1.8
 
 dev_dependencies:

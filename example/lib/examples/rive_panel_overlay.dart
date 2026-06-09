@@ -1,5 +1,3 @@
-// ignore_for_file: experimental_member_use
-
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 

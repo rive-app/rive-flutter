@@ -2,14 +2,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/src/widgets/inherited_widgets.dart';
 import 'package:rive_native/rive_native.dart';
-import 'package:meta/meta.dart';
 
-/// Renderers the [artboard] to a [sharedTexture].
+/// Renders the [artboard] to a [sharedTexture].
 ///
 /// See [RivePanel]. Only useful when using `Factory.rive`.
-///
-/// **EXPERIMENTAL**: This API may change or be removed in a future release.
-@experimental
 class SharedTextureView extends StatefulWidget {
   final Artboard artboard;
   final SharedTextureArtboardWidgetPainter painter;
@@ -220,13 +216,17 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     // and mirror) rather than reading only the scale diagonal — otherwise
     // the texture content drawn here desyncs from how the Texture widget
     // composites at the widget tree's real transform.
-    final widgetToPanel = Mat2D.fromMat4(getTransformTo(panelRenderBox).storage);
+    final widgetToPanel =
+        Mat2D.fromMat4(getTransformTo(panelRenderBox).storage);
     final dpr = devicePixelRatio;
 
     // Scale into the texture's actual pixels relative to the panel size, so
     // content keeps filling the texture while it lags the panel mid-resize.
-    final (sx, sy) =
-        texture.actualScale(panelRenderBox.size, fallbackX: dpr, fallbackY: dpr);
+    final (sx, sy) = texture.actualScale(
+      panelRenderBox.size,
+      fallbackX: dpr,
+      fallbackY: dpr,
+    );
 
     final renderer = texture.renderer;
     renderer.save();

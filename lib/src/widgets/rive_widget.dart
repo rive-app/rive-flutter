@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-import 'package:meta/meta.dart';
 
 /// A widget that displays a Rive artboard.
 ///
@@ -69,9 +68,6 @@ class RiveWidget extends StatefulWidget {
   /// Defaults to false. When set to true, it draws to the nearest ancestor
   /// [RivePanel] via inherited widget lookup. Ignored when [sharedTexture] is
   /// provided.
-  ///
-  /// **EXPERIMENTAL**: This API may change or be removed in a future release.
-  @experimental
   final bool useSharedTexture;
 
   /// Explicit [SharedRenderTexture] to draw into, bypassing the
@@ -81,9 +77,6 @@ class RiveWidget extends StatefulWidget {
   /// routes, etc.).
   ///
   /// When non-null, this takes precedence over [useSharedTexture].
-  ///
-  /// **EXPERIMENTAL**: This API may change or be removed in a future release.
-  @experimental
   final SharedRenderTexture? sharedTexture;
 
   /// The draw order of the artboard. This is only used when drawing to a

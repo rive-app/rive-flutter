@@ -1,10 +1,7 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive_native/rive_native.dart' as rive;
-import 'package:meta/meta.dart';
 
-/// **EXPERIMENTAL**: This API may change or be removed in a future release.
-@experimental
 abstract class SharedTexturePainter {
   int get sharedDrawOrder;
 
@@ -28,9 +25,6 @@ abstract class SharedTexturePainter {
 ///
 /// The caller is responsible for [dispose]ing instances created via
 /// [SharedRenderTexture.create].
-///
-/// **EXPERIMENTAL**: This API may change or be removed in a future release.
-@experimental
 class SharedRenderTexture {
   final rive.RenderTexture texture;
   double devicePixelRatio;
@@ -222,9 +216,6 @@ class SharedRenderTexture {
 }
 
 /// Inherited widget that will pass the background render texture down the tree
-///
-/// **EXPERIMENTAL**: This API may change or be removed in a future release.
-@experimental
 class RiveSharedTexture extends InheritedWidget {
   final SharedRenderTexture? texture;
 

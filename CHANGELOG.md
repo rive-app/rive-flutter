@@ -3,6 +3,7 @@
 ### Changes
 
 - `RiveWidgetController` now advances and applies the state machine with zero elapsed time after pointer down/up events. This ensures intermediate state, such as a view model property set on pointer down, is processed immediately, even when a pointer down and up occur within the same frame. Set it to `false` to opt out.
+- Dropped the experimental tag from shared texture usage.
 
 ## 0.14.8
 

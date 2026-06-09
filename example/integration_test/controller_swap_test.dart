@@ -15,8 +15,6 @@
 // After the fix: [didUpdateWidget] disposes and nulls `_painter` whenever
 // the controller swaps, so the next build rebinds to the new controller.
 
-// ignore_for_file: experimental_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';

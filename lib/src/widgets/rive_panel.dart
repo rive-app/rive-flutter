@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-import 'package:meta/meta.dart';
 
 /// A widget that creates a shared texture to paint multiple [RiveWidget]s to.
 ///
@@ -99,9 +98,6 @@ import 'package:meta/meta.dart';
 ///  }
 ///}
 /// ```
-///
-/// **EXPERIMENTAL**: This API may change or be removed in a future release.
-@experimental
 class RivePanel extends StatefulWidget {
   const RivePanel({
     super.key,
@@ -161,9 +157,6 @@ class _RivePanelState extends State<RivePanel> {
 /// The surface is wrapped in [IgnorePointer] by default since hit testing is
 /// performed by the individual [RiveWidget]s. Set [ignorePointer] to `false`
 /// if you need pointer events to reach the native texture widget directly.
-///
-/// **EXPERIMENTAL**: This API may change or be removed in a future release.
-@experimental
 class RiveSurface extends StatelessWidget {
   const RiveSurface({
     super.key,
