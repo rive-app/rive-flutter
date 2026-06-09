@@ -12,8 +12,8 @@ base class RiveWidgetController extends BasicArtboardPainter
   /// The Rive file to this controller is built from.
   final File file;
 
-  @override
   /// The artboard that the [RiveWidgetController] is painting.
+  @override
   late final Artboard artboard;
 
   /// The state machine that the [RiveWidgetController] is using.
@@ -183,7 +183,16 @@ base class RiveWidgetController extends BasicArtboardPainter
     // events that may not have been processed.
     if (hitResult != HitResult.none || _previousHitResult != HitResult.none) {
       scheduleRepaint();
+
+      // For pointer down/up events, advance and apply immediately so that
+      // intermediate state, such as a view model property set on pointer down,
+      // is processed immediately, even when the down and up occur within the
+      // same frame.
+      if (event is PointerDownEvent || event is PointerUpEvent) {
+        stateMachine.advanceAndApply(0);
+      }
     }
+
     _previousHitResult = hitResult;
   }
 

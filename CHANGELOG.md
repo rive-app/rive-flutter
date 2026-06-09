@@ -1,3 +1,9 @@
+## 0.14.9
+
+### Changes
+
+- `RiveWidgetController` now advances and applies the state machine with zero elapsed time after pointer down/up events. This ensures intermediate state, such as a view model property set on pointer down, is processed immediately, even when a pointer down and up occur within the same frame. Set it to `false` to opt out.
+
 ## 0.14.8
 
 - Bumps to `rive_native: 0.1.8`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
