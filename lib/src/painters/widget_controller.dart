@@ -164,31 +164,20 @@ base class RiveWidgetController extends BasicArtboardPainter
       size: size,
       scaleFactor: layoutScaleFactor,
     );
-    final HitResult hitResult;
-    if (event is PointerDownEvent) {
-      hitResult = stateMachine.pointerDown(position, pointerId: event.pointer);
-    } else if (event is PointerUpEvent) {
-      hitResult = stateMachine.pointerUp(position, pointerId: event.pointer);
-    } else if (event is PointerMoveEvent) {
-      hitResult = stateMachine.pointerMove(position, pointerId: event.pointer);
-    } else if (event is PointerHoverEvent) {
-      hitResult = stateMachine.pointerMove(position, pointerId: event.pointer);
-    } else if (event is PointerExitEvent) {
-      hitResult = stateMachine.pointerExit(position, pointerId: event.pointer);
-    } else {
-      hitResult = HitResult.none;
-    }
+    final hitResult = dispatchPointerEvent(stateMachine, event, position);
 
     // We handle the _previousHitResult as well to account for potential exit
     // events that may not have been processed.
     if (hitResult != HitResult.none || _previousHitResult != HitResult.none) {
       scheduleRepaint();
 
-      // For pointer down/up events, advance and apply immediately so that
-      // intermediate state, such as a view model property set on pointer down,
-      // is processed immediately, even when the down and up occur within the
-      // same frame.
-      if (event is PointerDownEvent || event is PointerUpEvent) {
+      // For pointer down/up/cancel events, advance and apply immediately so
+      // that intermediate state, such as a view model property set on pointer
+      // down, is processed immediately, even when the down and up occur within
+      // the same frame.
+      if (event is PointerDownEvent ||
+          event is PointerUpEvent ||
+          event is PointerCancelEvent) {
         stateMachine.advanceAndApply(0);
       }
     }

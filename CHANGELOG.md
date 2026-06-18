@@ -1,5 +1,9 @@
 ## 0.14.9
 
+### Fixes
+
+- Touch and stylus pointer up (and cancel) now also dispatch a pointer exit, so listeners receive a Pointer Exit when a finger or pen lifts. This keeps enter/exit symmetric on mobile and matches other Rive runtimes. Mouse and trackpad pointers are unaffected, their exit still comes from the pointer leaving the artboard/widget.
+
 ### Changes
 
 - `RiveWidgetController` now advances and applies the state machine with zero elapsed time after pointer down/up events. This ensures intermediate state, such as a view model property set on pointer down, is processed immediately, even when a pointer down and up occur within the same frame. Set it to `false` to opt out.
