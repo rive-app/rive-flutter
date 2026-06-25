@@ -1,8 +1,11 @@
 ## 0.14.9
 
+- Bumps to `rive_native: 0.1.9`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+
 ### Fixes
 
 - Touch and stylus pointer up (and cancel) now also dispatch a pointer exit, so listeners receive a Pointer Exit when a finger or pen lifts. This keeps enter/exit symmetric on mobile and matches other Rive runtimes. Mouse and trackpad pointers are unaffected, their exit still comes from the pointer leaving the artboard/widget.
+- Fixed a crash when using `desktop_multi_window` on Windows with MicroProfile GPU init
 
 ### Changes
 
