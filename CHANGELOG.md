@@ -1,4 +1,8 @@
-## 0.14.9
+## Upcoming
+
+### Fixes
+
+- Fixed a "RenderBox was not laid out" crash that could occur when a `RiveWidget` (`Factory.rive`) was painted during certain transitions. See https://github.com/rive-app/rive-flutter/issues/642.
 
 - Bumps to `rive_native: 0.1.9`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
