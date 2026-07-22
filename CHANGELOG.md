@@ -1,8 +1,16 @@
-## Upcoming
+## 0.14.10
+
+- Bumps to `rive_native: 0.1.10`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Fixes
 
 - Fixed a "RenderBox was not laid out" crash that could occur when a `RiveWidget` (`Factory.rive`) was painted during certain transitions. See https://github.com/rive-app/rive-flutter/issues/642.
+- Rive Renderer (`Factory.rive`) rendering issues on Linux with later versions of Flutter (3.38+, see Flutter issue [182998](https://github.com/flutter/flutter/issues/182998))
+- Various Rive scripting fixes and updates, notably:
+  - Updated Luau to 0.728
+  - Fixed the Lua `Data` global not being initialized, which left view model constructors such as `Data.MyViewModel.new()` unavailable to scripts
+
+## 0.14.9
 
 - Bumps to `rive_native: 0.1.9`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
