@@ -13,8 +13,8 @@ void main() async {
   runApp(
     MaterialApp(
       title: 'Rive Example',
-      home: const RiveExampleApp(),
       // showPerformanceOverlay: true,
+      home: const RiveExampleApp(),
       darkTheme: ThemeData(
         fontFamily: 'JetBrainsMono',
         brightness: Brightness.dark,
@@ -175,6 +175,12 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
         'Flutter Transform',
         ExampleTransform(),
         'Rive graphics respect Flutter transform.',
+      ),
+      _Page(
+        'Render Resolution',
+        ExampleRenderResolution(),
+        'Test bed for RenderResolution policies under an ancestor scale — '
+            'own texture vs shared surface.',
       ),
       _Page(
         'Flutter Multi Touch',

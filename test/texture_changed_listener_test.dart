@@ -32,7 +32,11 @@ base class _ListenerTexture extends rive.RenderTexture {
   @override
   Future<ui.Image> toImage() => throw UnimplementedError();
   @override
-  Widget widget({rive.RenderTexturePainter? painter, Key? key}) =>
+  Widget widget({
+    rive.RenderTexturePainter? painter,
+    rive.RenderResolution resolution = const rive.RenderResolution.display(),
+    Key? key,
+  }) =>
       throw UnimplementedError();
   @override
   void dispose() {}

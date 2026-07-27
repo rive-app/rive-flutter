@@ -33,7 +33,14 @@ class RiveWidget extends StatefulWidget {
     this.useSharedTexture = false,
     this.sharedTexture,
     this.drawOrder = 1,
-  });
+    this.renderResolution,
+  }) : assert(
+          renderResolution == null ||
+              (!useSharedTexture && sharedTexture == null),
+          'renderResolution has no effect when painting into a shared '
+          'texture — the surface owns the allocation. Set it on RivePanel / '
+          'RiveSurface instead.',
+        );
 
   /// The controller of the graphic. Manages the artboard, state machine and data binding.
   final RiveWidgetController controller;
@@ -85,6 +92,16 @@ class RiveWidget extends StatefulWidget {
   ///
   /// Defaults to 1.
   final int drawOrder;
+
+  /// How this widget's backing texture is sized when rendering with
+  /// [Factory.rive]. Defaults to [RenderResolution.display].
+  ///
+  /// Only applies when the widget owns its texture: it must not be set
+  /// together with [useSharedTexture] or [sharedTexture] (the surface owns
+  /// that allocation — set it on [RivePanel] / [RiveSurface] instead), and it
+  /// is ignored when rendering with [Factory.flutter], where content paints
+  /// directly into Flutter's canvas at composite resolution.
+  final RenderResolution? renderResolution;
 
   @override
   State<RiveWidget> createState() => _RiveWidgetState();
@@ -186,6 +203,8 @@ class _RiveWidgetState extends State<RiveWidget> {
     return RiveArtboardWidget(
       artboard: widget.controller.artboard,
       painter: widget.controller,
+      renderResolution:
+          widget.renderResolution ?? RenderResolution.defaultValue,
     );
   }
 

@@ -59,7 +59,11 @@ base class _FakeRenderTexture extends rive.RenderTexture {
   Future<ui.Image> toImage() => throw UnimplementedError();
 
   @override
-  Widget widget({rive.RenderTexturePainter? painter, Key? key}) =>
+  Widget widget({
+    rive.RenderTexturePainter? painter,
+    rive.RenderResolution resolution = const rive.RenderResolution.display(),
+    Key? key,
+  }) =>
       throw UnimplementedError();
 
   @override
@@ -485,4 +489,3 @@ class _DependencyCounterState extends State<_DependencyCounter> {
   @override
   Widget build(BuildContext context) => const SizedBox.shrink();
 }
-

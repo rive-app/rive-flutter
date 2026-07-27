@@ -102,10 +102,16 @@ class RivePanel extends StatefulWidget {
   const RivePanel({
     super.key,
     this.backgroundColor = Colors.transparent,
+    this.renderResolution = RenderResolution.defaultValue,
     required this.child,
   });
 
   final Color backgroundColor;
+
+  /// How the panel's shared texture is sized. See [RenderResolution].
+  /// Forwarded to the panel's internal [RiveSurface].
+  final RenderResolution renderResolution;
+
   final Widget child;
 
   @override
@@ -135,7 +141,12 @@ class _RivePanelState extends State<RivePanel> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(child: RiveSurface(sharedTexture: _shared)),
+        Positioned.fill(
+          child: RiveSurface(
+            sharedTexture: _shared,
+            renderResolution: widget.renderResolution,
+          ),
+        ),
         RiveSharedTexture(
           texture: _shared,
           child: widget.child,
@@ -162,10 +173,15 @@ class RiveSurface extends StatelessWidget {
     super.key,
     required this.sharedTexture,
     this.ignorePointer = true,
+    this.renderResolution = RenderResolution.defaultValue,
   });
 
   final SharedRenderTexture sharedTexture;
   final bool ignorePointer;
+
+  /// How the surface's texture is sized. See [RenderResolution]. The painters
+  /// drawing into the surface adapt to whatever backing this allocates.
+  final RenderResolution renderResolution;
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +189,10 @@ class RiveSurface extends StatelessWidget {
     if (sharedTexture.devicePixelRatio != dpr) {
       sharedTexture.devicePixelRatio = dpr;
     }
-    final surface = sharedTexture.texture.widget(key: sharedTexture.panelKey);
+    final surface = sharedTexture.texture.widget(
+      key: sharedTexture.panelKey,
+      resolution: renderResolution,
+    );
     return ignorePointer ? IgnorePointer(child: surface) : surface;
   }
 }

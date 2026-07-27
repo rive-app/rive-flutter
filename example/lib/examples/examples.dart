@@ -13,6 +13,7 @@ export 'network_asset.dart';
 export 'out_of_band_assets.dart';
 export 'out_of_band_assets_audio.dart';
 export 'out_of_band_assets_cached.dart';
+export 'render_resolution.dart';
 export 'responsive_layouts.dart';
 export 'rive_audio.dart';
 export 'rive_widget.dart';

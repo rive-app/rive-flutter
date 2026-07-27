@@ -1,3 +1,20 @@
+## Upcoming
+
+- Adds `renderResolution` to `RiveWidget`, `RivePanel`, and `RiveSurface` to
+  control how the backing texture is sized when using `Factory.rive`. The
+  default, `RenderResolution.display()`, keeps the current behavior (allocation
+  follows the on-screen footprint so upscaled widgets stay sharp).
+  `RenderResolution.layout({scale})` allocates from layout size × device pixel
+  ratio only — ancestor transforms (e.g. `FittedBox`) apply at composite time,
+  so render resolution can be decoupled from the display footprint for GPU
+  budgeting. `RenderResolution.fixed(width, height)` sets an explicit backing
+  size in physical pixels. For widgets painting into a shared texture, set the
+  policy on the owning `RivePanel`/`RiveSurface`.
+- **Web behavior change**: with the default `RenderResolution.display()`,
+  ancestor transforms now affect texture resolution on the web exactly as on
+  native (sharp under upscale). Pass `RenderResolution.layout()` to restore
+  the previous web behavior of allocating from layout size only.
+
 ## 0.14.10
 
 - Bumps to `rive_native: 0.1.10`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.

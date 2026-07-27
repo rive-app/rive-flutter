@@ -56,6 +56,15 @@ class _RecordingRenderer extends rive.Renderer {
 }
 
 base class _FakeRenderTexture extends rive.RenderTexture {
+  /// [actualWidth]/[actualHeight] default to 0 so [rive.RenderTexture
+  /// .actualScale] falls back to the dpr; pass a real backing size to
+  /// exercise the texture-tracking path.
+  _FakeRenderTexture({int actualWidth = 0, int actualHeight = 0})
+      : _actualWidth = actualWidth,
+        _actualHeight = actualHeight;
+
+  final int _actualWidth;
+  final int _actualHeight;
   final _RecordingRenderer recording = _RecordingRenderer();
 
   @override
@@ -66,9 +75,9 @@ base class _FakeRenderTexture extends rive.RenderTexture {
   @override
   dynamic get nativeTexture => null;
   @override
-  int get actualWidth => 0;
+  int get actualWidth => _actualWidth;
   @override
-  int get actualHeight => 0;
+  int get actualHeight => _actualHeight;
   @override
   bool get isReady => true;
   @override
@@ -83,9 +92,20 @@ base class _FakeRenderTexture extends rive.RenderTexture {
   Future<void> makeRenderTexture(int width, int height) async {}
   @override
   Future<ui.Image> toImage() => throw UnimplementedError();
+
+  /// Records the resolution the widget host handed to this texture.
+  rive.RenderResolution? lastWidgetResolution;
+
   @override
-  Widget widget({rive.RenderTexturePainter? painter, Key? key}) =>
-      SizedBox.shrink(key: key);
+  Widget widget({
+    rive.RenderTexturePainter? painter,
+    rive.RenderResolution resolution = const rive.RenderResolution.display(),
+    Key? key,
+  }) {
+    lastWidgetResolution = resolution;
+    return SizedBox.shrink(key: key);
+  }
+
   @override
   void dispose() {}
 }
@@ -98,8 +118,8 @@ final class _NoopPainter extends rive.RenderTexturePainter {
   Color get background => const Color(0x00000000);
 
   @override
-  bool paint(rive.RenderTexture texture, double devicePixelRatio,
-          Size size, double elapsedSeconds) =>
+  bool paint(rive.RenderTexture texture, double devicePixelRatio, Size size,
+          double elapsedSeconds) =>
       false;
 }
 
@@ -155,6 +175,13 @@ Future<SharedTextureViewRenderObject> _pumpHarness(
     find.byType(SharedTextureViewRenderer),
   );
 }
+
+SharedRenderTexture _makeShared({double dpr = 1.0}) => SharedRenderTexture(
+      texture: _FakeRenderTexture(),
+      devicePixelRatio: dpr,
+      backgroundColor: const Color(0x00000000),
+      panelKey: GlobalKey(),
+    );
 
 /// Asserts the captured matrix equals [a, b, c, d, tx, ty] (Mat2D order)
 /// within a small floating-point tolerance.
@@ -259,8 +286,8 @@ void main() {
         final out = _FakeRenderTexture();
         ro.paintIntoSharedTexture(out, 0.0);
 
-        _expectMatrix(out.recording.transforms.single,
-            [1.0, 0.0, 0.0, 1.0, 50.0, 50.0]);
+        _expectMatrix(
+            out.recording.transforms.single, [1.0, 0.0, 0.0, 1.0, 50.0, 50.0]);
 
         painter.dispose();
       },
@@ -297,8 +324,8 @@ void main() {
         ro.paintIntoSharedTexture(out, 0.0);
 
         // scale=(0.5, 0.5), translation=(50, 50).
-        _expectMatrix(out.recording.transforms.single,
-            [0.5, 0.0, 0.0, 0.5, 50.0, 50.0]);
+        _expectMatrix(
+            out.recording.transforms.single, [0.5, 0.0, 0.0, 0.5, 50.0, 50.0]);
 
         painter.dispose();
       },
@@ -334,8 +361,8 @@ void main() {
         ro.paintIntoSharedTexture(out, 0.0);
 
         // scale=(1,1), translation=(50, 100) — same as the no-transform case.
-        _expectMatrix(out.recording.transforms.single,
-            [1.0, 0.0, 0.0, 1.0, 50.0, 100.0]);
+        _expectMatrix(
+            out.recording.transforms.single, [1.0, 0.0, 0.0, 1.0, 50.0, 100.0]);
 
         painter.dispose();
       },
@@ -409,8 +436,8 @@ void main() {
         final out = _FakeRenderTexture();
         ro.paintIntoSharedTexture(out, 0.0);
 
-        _expectMatrix(out.recording.transforms.single,
-            [0.0, 1.0, -1.0, 0.0, 200.0, 0.0]);
+        _expectMatrix(
+            out.recording.transforms.single, [0.0, 1.0, -1.0, 0.0, 200.0, 0.0]);
 
         painter.dispose();
       },
@@ -446,8 +473,100 @@ void main() {
         final out = _FakeRenderTexture();
         ro.paintIntoSharedTexture(out, 0.0);
 
+        _expectMatrix(
+            out.recording.transforms.single, [-1.0, 0.0, 0.0, 1.0, 200.0, 0.0]);
+
+        painter.dispose();
+      },
+    );
+
+    // The next three tests pin the actualScale invariant: painters scale to
+    // the texture's *real* backing size relative to the panel's logical size,
+    // not to an assumed panel × dpr. This is what keeps content correct when
+    // the backing lags the panel mid-resize — and it is the seam that lets an
+    // allocation policy (display/layout/fixed resolution) change the backing
+    // size without touching the painter path.
+    testWidgets(
+      'texture backing larger than panel × dpr — content scales up to fill '
+      '(how a native ancestor-upscale allocation is filled today)',
+      (tester) async {
+        final shared = _makeShared();
+        final painter = _NoopPainter();
+
+        final ro = await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: painter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(50, 100, 200, 200),
+          dpr: 1.0,
+        );
+
+        // Backing is 2× the panel's logical size (as native allocates under
+        // an ancestor scale of 2 at dpr 1).
+        final out = _FakeRenderTexture(actualWidth: 1600, actualHeight: 1200);
+        ro.paintIntoSharedTexture(out, 0.0);
+
+        // scale = actual/panel = (2, 2); translation = (50, 100) × 2.
         _expectMatrix(out.recording.transforms.single,
-            [-1.0, 0.0, 0.0, 1.0, 200.0, 0.0]);
+            [2.0, 0.0, 0.0, 2.0, 100.0, 200.0]);
+
+        painter.dispose();
+      },
+    );
+
+    testWidgets(
+      'texture backing smaller than panel × dpr — content scales down to fit '
+      '(the layout/fixed-resolution allocation shape)',
+      (tester) async {
+        final shared = _makeShared(dpr: 2.0);
+        final painter = _NoopPainter();
+
+        final ro = await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: painter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(50, 100, 200, 200),
+          dpr: 2.0,
+        );
+
+        // Backing equals the panel's logical size even though dpr is 2 — the
+        // real texture wins over the dpr fallback.
+        final out = _FakeRenderTexture(actualWidth: 800, actualHeight: 600);
+        ro.paintIntoSharedTexture(out, 0.0);
+
+        // scale = actual/panel = (1, 1), NOT dpr = 2.
+        _expectMatrix(
+            out.recording.transforms.single, [1.0, 0.0, 0.0, 1.0, 50.0, 100.0]);
+
+        painter.dispose();
+      },
+    );
+
+    testWidgets(
+      'texture backing with mismatched aspect — per-axis scales are '
+      'independent (mid-resize lag shape)',
+      (tester) async {
+        final shared = _makeShared();
+        final painter = _NoopPainter();
+
+        final ro = await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: painter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(100, 60, 200, 200),
+          dpr: 1.0,
+        );
+
+        // Width halved, height unchanged relative to the panel.
+        final out = _FakeRenderTexture(actualWidth: 400, actualHeight: 600);
+        ro.paintIntoSharedTexture(out, 0.0);
+
+        // scale = (0.5, 1.0); translation = (100 × 0.5, 60 × 1.0).
+        _expectMatrix(
+            out.recording.transforms.single, [0.5, 0.0, 0.0, 1.0, 50.0, 60.0]);
 
         painter.dispose();
       },
