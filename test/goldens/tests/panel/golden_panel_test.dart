@@ -1,14 +1,13 @@
 @TestOn('!browser')
 library;
 
-import 'dart:io' as io;
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
 import 'package:rive_native/rive_native.dart' as rive;
 
 import '../../src/golden_comparator.dart';
+import '../../src/panel_support.dart';
 import '../../../src/headless_support.dart';
 
 /// Golden coverage for the panel/surface compositing flow with the real Rive
@@ -28,21 +27,11 @@ void main() {
     expect(await rive.RiveNative.init(), isTrue);
   });
 
-  Future<File> decode(WidgetTester tester, String assetPath) async {
-    final bytes = io.File(assetPath).readAsBytesSync();
-    final file = await tester.runAsync(
-      () => File.decode(bytes, riveFactory: Factory.rive),
-    );
-    expect(file, isNotNull, reason: 'failed to decode $assetPath');
-    addTearDown(file!.dispose);
-    return file;
-  }
-
   testWidgets('RivePanel composites multiple .riv files into one texture',
       (tester) async {
-    final rewards = await decode(tester, 'test/assets/rewards.riv');
-    final button =
-        await decode(tester, 'test/assets/electrified_button_simple.riv');
+    final rewards = await decodeRiveFile(tester, 'test/assets/rewards.riv');
+    final button = await decodeRiveFile(
+        tester, 'test/assets/electrified_button_simple.riv');
 
     final rewardsController = RiveWidgetController(rewards);
     addTearDown(rewardsController.dispose);
@@ -86,15 +75,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 16));
     await tester.pump(const Duration(milliseconds: 16));
 
-    // The panel's texture, via its internal RiveSurface's public handle.
-    final texture = tester
-        .widget<RiveSurface>(find.byType(RiveSurface))
-        .sharedTexture
-        .texture;
-    expect(texture.isReady, isTrue);
-
-    final image = await tester.runAsync(() => texture.toImage());
-    await expectGoldenMatches(image!, 'rive_panel_multi_file.png');
+    final image = await captureSharedTexture(tester);
+    await expectGoldenMatches(image, 'rive_panel_multi_file.png');
 
     // Unmount before the test ends so the panel's shared ticker is disposed.
     await tester.pumpWidget(const SizedBox());

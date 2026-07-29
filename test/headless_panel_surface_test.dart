@@ -94,29 +94,43 @@ void main() {
   Future<void> unmount(WidgetTester tester) =>
       tester.pumpWidget(const SizedBox());
 
+  /// Two full-panel artboards stacked in one shared texture; Artboard2 gets
+  /// the complementary order, so `artboard1Order: 2` puts Artboard1 on top
+  /// and `artboard1Order: 1` puts Artboard2 on top.
+  Widget orderedPanel(
+    RiveWidgetController artboard1,
+    RiveWidgetController artboard2, {
+    required int artboard1Order,
+  }) =>
+      RivePanel(
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: RiveWidget(
+                controller: artboard1,
+                fit: Fit.fill,
+                useSharedTexture: true,
+                drawOrder: artboard1Order,
+              ),
+            ),
+            Positioned.fill(
+              child: RiveWidget(
+                controller: artboard2,
+                fit: Fit.fill,
+                useSharedTexture: true,
+                drawOrder: 3 - artboard1Order,
+              ),
+            ),
+          ],
+        ),
+      );
+
   group('headless RivePanel with .riv content', () {
     testWidgets('later drawOrder renders on top', (tester) async {
-      Widget panel({required int artboard1Order}) => RivePanel(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: RiveWidget(
-                    controller: controllerFor('Artboard1'),
-                    fit: Fit.fill,
-                    useSharedTexture: true,
-                    drawOrder: artboard1Order,
-                  ),
-                ),
-                Positioned.fill(
-                  child: RiveWidget(
-                    controller: controllerFor('Artboard2'),
-                    fit: Fit.fill,
-                    useSharedTexture: true,
-                    drawOrder: 3 - artboard1Order,
-                  ),
-                ),
-              ],
-            ),
+      Widget panel({required int artboard1Order}) => orderedPanel(
+            controllerFor('Artboard1'),
+            controllerFor('Artboard2'),
+            artboard1Order: artboard1Order,
           );
 
       // Artboard1 (grey corners) above the solid-red Artboard2: the corner
@@ -127,15 +141,62 @@ void main() {
       expect(rgbaAt(pixels, texture.actualWidth, 24, 24), grey);
 
       // Swapped orders in a fresh panel: solid-red Artboard2 covers
-      // Artboard1. (Each phase remounts deliberately — drawOrder is applied
-      // when a painter attaches; SharedRenderTexture.painters is only sorted
-      // in addPainter, so mutating drawOrder on a mounted widget does not
-      // restack.)
+      // Artboard1. (Each phase remounts deliberately so this test pins
+      // attach-time ordering on its own; the next test covers mutating
+      // drawOrder on mounted widgets.)
       await unmount(tester);
       await pumpSettled(tester, panel(artboard1Order: 1));
       texture = textureOf(tester);
       pixels = await readPixels(tester, texture);
       expect(rgbaAt(pixels, texture.actualWidth, 24, 24), red);
+
+      await unmount(tester);
+    });
+
+    // Regression: drawOrder used to be applied only when a painter attached
+    // (SharedRenderTexture sorted painters in addPainter alone), so changing
+    // RiveWidget.drawOrder on a mounted widget silently kept the old
+    // stacking.
+    testWidgets('changing drawOrder on mounted widgets restacks the painters',
+        (tester) async {
+      final controller1 = controllerFor('Artboard1');
+      final controller2 = controllerFor('Artboard2');
+
+      // Same controller instances across rebuilds — only drawOrder changes.
+      Widget panel({required int artboard1Order}) => orderedPanel(
+            controller1,
+            controller2,
+            artboard1Order: artboard1Order,
+          );
+
+      // Artboard1 (grey corners) starts on top of the solid-red Artboard2.
+      await pumpSettled(tester, panel(artboard1Order: 2));
+      final texture = textureOf(tester);
+      final mountedRenderObject = tester
+          .renderObjectList<SharedTextureViewRenderObject>(
+              find.byType(SharedTextureViewRenderer))
+          .first;
+      var pixels = await readPixels(tester, texture);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), grey);
+
+      // Swap the orders via rebuild only: Artboard2 must now cover Artboard1.
+      await pumpSettled(tester, panel(artboard1Order: 1));
+      expect(
+        tester
+            .renderObjectList<SharedTextureViewRenderObject>(
+                find.byType(SharedTextureViewRenderer))
+            .first,
+        same(mountedRenderObject),
+        reason: 'the swap must reuse the mounted render objects — a remount '
+            'would exercise the attach path instead of the runtime one',
+      );
+      pixels = await readPixels(tester, texture);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), red);
+
+      // And back again.
+      await pumpSettled(tester, panel(artboard1Order: 2));
+      pixels = await readPixels(tester, texture);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), grey);
 
       await unmount(tester);
     });

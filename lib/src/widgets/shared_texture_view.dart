@@ -101,7 +101,23 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     _shared.texture.addTextureChangedListener(_onRiveTextureChanged);
   }
 
-  int drawOrder = 1;
+  int _drawOrder = 1;
+  int get drawOrder => _drawOrder;
+  set drawOrder(int value) {
+    if (_drawOrder == value) {
+      return;
+    }
+    _drawOrder = value;
+    if (!attached) {
+      // createRenderObject's cascade runs before attach() adds this painter;
+      // addPainter sorts on attach, so there's nothing to restack yet.
+      return;
+    }
+    // Stacking lives in the shared texture's painter list, which is only
+    // sorted when a painter attaches — an order change on a mounted widget
+    // must re-sort (and repaint) explicitly.
+    _shared.painterOrderChanged();
+  }
 
   SharedRenderTexture get shared => _shared;
   set shared(SharedRenderTexture value) {

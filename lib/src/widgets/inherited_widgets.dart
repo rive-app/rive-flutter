@@ -30,6 +30,13 @@ class SharedRenderTexture {
   double devicePixelRatio;
   Color backgroundColor;
   final List<SharedTexturePainter> painters = [];
+  // Attach sequence per painter: the tie-break for equal [sharedDrawOrder]s.
+  // List.sort makes no stability guarantee, so without an explicit tie-break
+  // a re-sort could shuffle painters sharing a draw order (every painter
+  // defaults to 1). Attach order follows widget-tree order, matching how
+  // Flutter stacks siblings by default.
+  final Map<SharedTexturePainter, int> _attachSequence = {};
+  int _nextAttachSequence = 0;
   final GlobalKey panelKey;
   bool _ownsTexture = false;
   bool _disposed = false;
@@ -90,6 +97,7 @@ class SharedRenderTexture {
     _ticker?.dispose();
     _ticker = null;
     painters.clear();
+    _attachSequence.clear();
     texture.removeTextureChangedListener(_onTextureChanged);
     if (_ownsTexture) {
       texture.dispose();
@@ -188,13 +196,35 @@ class SharedRenderTexture {
   /// just attached.
   void schedulePaint() => _schedulePaintPass(0);
 
+  void _sortPainters() {
+    painters.sort((a, b) {
+      final byDrawOrder = a.sharedDrawOrder.compareTo(b.sharedDrawOrder);
+      if (byDrawOrder != 0) {
+        return byDrawOrder;
+      }
+      return _attachSequence[a]!.compareTo(_attachSequence[b]!);
+    });
+  }
+
+  /// Re-sort [painters] and repaint. Painters must call this when their
+  /// [SharedTexturePainter.sharedDrawOrder] changes while attached — the list
+  /// is otherwise only sorted when a painter is added.
+  void painterOrderChanged() {
+    if (_disposed) {
+      return;
+    }
+    _sortPainters();
+    schedulePaint();
+  }
+
   /// Add a painter to the shared render texture.
   void addPainter(SharedTexturePainter painter) {
     if (painters.contains(painter)) {
       return;
     }
+    _attachSequence[painter] = _nextAttachSequence++;
     painters.add(painter);
-    painters.sort((a, b) => a.sharedDrawOrder.compareTo(b.sharedDrawOrder));
+    _sortPainters();
     // Kick the ticker so the newly added painter shows up. _paintShared will
     // stop it again on the next pass if every painter is already settled.
     startTicker();
@@ -203,6 +233,7 @@ class SharedRenderTexture {
   /// Remove a painter from the shared render texture.
   void removePainter(SharedTexturePainter painter) {
     if (!painters.remove(painter)) return;
+    _attachSequence.remove(painter);
     if (painters.isEmpty) {
       // Leave the last paint visible — clearing here would blank the texture
       // before whatever replaces this panel can render.

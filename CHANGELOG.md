@@ -15,6 +15,12 @@
   native (sharp under upscale). Pass `RenderResolution.layout()` to restore
   the previous web behavior of allocating from layout size only.
 
+### Fixes
+
+- Changing `RiveWidget.drawOrder` / `SharedTextureView.drawOrder` on a mounted
+  widget now restacks the shared-texture painters. Equal `drawOrder`s stack in
+  widget-tree order.
+
 ## 0.14.10
 
 - Bumps to `rive_native: 0.1.10`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.

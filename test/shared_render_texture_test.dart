@@ -77,7 +77,7 @@ class _FakePainter implements SharedTexturePainter {
 
   int paintCount = 0;
   rive.RenderTexture? lastPaintedInto;
-  final int drawOrder;
+  int drawOrder;
   // Number of remaining paint passes the painter still wants to advance for.
   // After this counter reaches 0, paintIntoSharedTexture returns false and the
   // painter is "settled".
@@ -260,6 +260,82 @@ void main() {
 
       expect(shared.painters, [back, mid, front]);
     });
+
+    // Regression: sharedDrawOrder used to be read only in addPainter, so a
+    // drawOrder change on an already-attached painter never restacked.
+    test('painterOrderChanged re-sorts painters after a drawOrder mutation',
+        () {
+      final shared = _makeShared(_FakeRenderTexture());
+      final a = _FakePainter(drawOrder: 1);
+      final b = _FakePainter(drawOrder: 5);
+      final c = _FakePainter(drawOrder: 10);
+      shared.addPainter(a);
+      shared.addPainter(b);
+      shared.addPainter(c);
+      expect(shared.painters, [a, b, c]);
+
+      a.drawOrder = 20;
+      shared.painterOrderChanged();
+      expect(shared.painters, [b, c, a]);
+
+      c.drawOrder = 5;
+      shared.painterOrderChanged();
+      expect(shared.painters, [b, c, a],
+          reason: 'a tie (b and c both at 5) keeps attach order');
+    });
+
+    test('equal drawOrders stack in attach order, also across re-sorts', () {
+      final shared = _makeShared(_FakeRenderTexture());
+      final painters = List.generate(4, (_) => _FakePainter(drawOrder: 1));
+      painters.forEach(shared.addPainter);
+      expect(shared.painters, painters);
+
+      shared.painterOrderChanged();
+      expect(shared.painters, painters,
+          reason: 'ties must keep attach (widget-tree) order — List.sort '
+              'alone makes no stability guarantee');
+    });
+
+    testWidgets(
+      'painterOrderChanged schedules a repaint so the restack is visible',
+      (tester) async {
+        final texture = _FakeRenderTexture();
+        final shared = _makeShared(texture);
+        final back = _FakePainter(drawOrder: 1);
+        final front = _FakePainter(drawOrder: 2);
+        shared.addPainter(back);
+        shared.addPainter(front);
+
+        // Settle the attach paint so the ticker is idle again.
+        await tester.pump();
+        expect(shared.isTickerActive, isFalse);
+        final paintsBefore = texture.clearCount;
+
+        back.drawOrder = 3;
+        shared.painterOrderChanged();
+        await _flushPostFrame(tester);
+
+        expect(texture.clearCount, paintsBefore + 1,
+            reason: 'restacking must repaint the shared texture');
+        expect(texture.flushCount, paintsBefore + 1);
+      },
+    );
+
+    testWidgets(
+      'painterOrderChanged after dispose is a no-op',
+      (tester) async {
+        final texture = _FakeRenderTexture();
+        final shared = _makeShared(texture);
+        shared.addPainter(_FakePainter());
+
+        shared.dispose();
+        shared.painterOrderChanged();
+        await _flushPostFrame(tester);
+
+        expect(texture.clearCount, 0);
+        expect(texture.flushCount, 0);
+      },
+    );
 
     testWidgets(
       'mutating backgroundColor takes effect on the next paint',

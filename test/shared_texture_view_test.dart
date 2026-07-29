@@ -654,6 +654,73 @@ void main() {
       },
     );
   });
+
+  group('SharedTextureViewRenderObject.drawOrder', () {
+    // Regression: drawOrder was a bare field — updateRenderObject wrote it on
+    // rebuild, but SharedRenderTexture.painters was only sorted in addPainter,
+    // so changing drawOrder on a mounted widget never restacked.
+    testWidgets(
+      'changing drawOrder on a mounted widget restacks the shared painters',
+      (tester) async {
+        final shared = _makeShared();
+        final painterA = _NoopPainter();
+        final painterB = _NoopPainter();
+
+        Widget tree({required int aOrder, required int bOrder}) =>
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: Stack(
+                children: [
+                  SizedBox.expand(key: shared.panelKey),
+                  SharedTextureViewRenderer(
+                    key: const ValueKey('a'),
+                    renderTexturePainter: painterA,
+                    sharedTexture: shared,
+                    devicePixelRatio: 1.0,
+                    drawOrder: aOrder,
+                  ),
+                  SharedTextureViewRenderer(
+                    key: const ValueKey('b'),
+                    renderTexturePainter: painterB,
+                    sharedTexture: shared,
+                    devicePixelRatio: 1.0,
+                    drawOrder: bOrder,
+                  ),
+                ],
+              ),
+            );
+
+        await tester.pumpWidget(tree(aOrder: 1, bOrder: 2));
+        final renderObjects = tester
+            .renderObjectList<SharedTextureViewRenderObject>(
+                find.byType(SharedTextureViewRenderer))
+            .toList();
+        final a = renderObjects[0];
+        final b = renderObjects[1];
+        expect(shared.painters, [a, b]);
+
+        // Swap the orders via rebuild only — the keyed elements are reused,
+        // so this exercises updateRenderObject, not a detach/attach.
+        await tester.pumpWidget(tree(aOrder: 2, bOrder: 1));
+        final afterSwap = tester
+            .renderObjectList<SharedTextureViewRenderObject>(
+                find.byType(SharedTextureViewRenderer))
+            .toList();
+        expect(afterSwap[0], same(a),
+            reason: 'rebuild must update the mounted render object, '
+                'not remount it');
+        expect(shared.painters, [b, a],
+            reason: 'a drawOrder change on a mounted widget must restack');
+
+        // Rebuilding with unchanged values must not disturb the order.
+        await tester.pumpWidget(tree(aOrder: 2, bOrder: 1));
+        expect(shared.painters, [b, a]);
+
+        painterA.dispose();
+        painterB.dispose();
+      },
+    );
+  });
 }
 
 /// Stateful holder so a test can mutate a Transform.scale between pumps.

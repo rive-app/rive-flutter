@@ -20,7 +20,9 @@ import 'package:rive/rive.dart';
 /// routes, etc.).
 /// - The [drawOrder] parameter is the draw order of the artboard. This is only used when drawing to a
 /// shared texture (either via [useSharedTexture] + [RivePanel] or an
-/// explicit [sharedTexture]), and using [Factory.rive].
+/// explicit [sharedTexture]), and using [Factory.rive]. Higher values draw
+/// on top; painters sharing a value stack in widget-tree order. Changing it
+/// on a mounted widget restacks on the next frame.
 class RiveWidget extends StatefulWidget {
   const RiveWidget({
     super.key,
