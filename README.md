@@ -133,14 +133,15 @@ This will clean the `rive_native` setup and download the platform-specific libra
 
 ## Building `rive_native`
 
-By default, prebuilt native libraries are downloaded and used. If you prefer to build the libraries yourself, use the `--build` flag with the setup script:
+By default, prebuilt native libraries are downloaded and used. If you prefer to build the libraries yourself, use the `--build` flag with the setup script. In the root of your Flutter app:
 
 ```bash
 flutter clean # Important
+flutter pub get
 dart run rive_native:setup --verbose --clean --build --platform macos
 ```
 
-> **Note**: Building the libraries requires specific tooling on your machine. Additional documentation will be provided soon.
+See [Building rive_native](https://rive.app/docs/runtimes/flutter/rive-native#building-rive_native) in the official docs for the required tooling per platform, supported `--platform` values, web specifics, and how to return to the prebuilt libraries.
 
 ## Testing
 
