@@ -14,6 +14,14 @@
   ancestor transforms now affect texture resolution on the web exactly as on
   native (sharp under upscale). Pass `RenderResolution.layout()` to restore
   the previous web behavior of allocating from layout size only.
+- Web: render textures now release their WebGL contexts on dispose (bounded
+  reuse pool) and browser-evicted contexts are purged instead of reused —
+  fixes context-limit exhaustion and permanently blank widgets.
+- Adds `RiveNative.instance.releaseRenderResources()`: releases cached render
+  resources (web: pooled textures and the offscreen probe context), recreated
+  on demand. No-op on other platforms.
+- Adds `RiveNative.debugRenderTextureLogging` (web): logs render-texture
+  create/reuse/release to the console with live WebGL context counts.
 
 ### Fixes
 

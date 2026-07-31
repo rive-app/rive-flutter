@@ -207,6 +207,18 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
         TestMemoryCleanup(),
         'Test memory cleanup by toggling the visibility of a Rive file widget.',
       ),
+      _Page(
+        'WebGL context lifecycle test',
+        TestWebGLContextLifecycle(),
+        'Web only: reproduce WebGL context exhaustion from disposed '
+            'render textures.',
+      ),
+      _Page(
+        'WebGL scroll recycling test',
+        TestWebGLScrollRecycling(),
+        'Web only: scroll-recycling churn vs the render texture pool '
+            '(steady scroll reuses; jumps overflow the cap).',
+      ),
     ]),
     const _Section('Legacy Features [Use data binding instead]', [
       _Page(
