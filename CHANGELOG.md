@@ -1,30 +1,17 @@
-## Upcoming
+## 0.14.11
 
-- Adds `renderResolution` to `RiveWidget`, `RivePanel`, and `RiveSurface` to
-  control how the backing texture is sized when using `Factory.rive`. The
-  default, `RenderResolution.display()`, keeps the current behavior (allocation
-  follows the on-screen footprint so upscaled widgets stay sharp).
-  `RenderResolution.layout({scale})` allocates from layout size × device pixel
-  ratio only — ancestor transforms (e.g. `FittedBox`) apply at composite time,
-  so render resolution can be decoupled from the display footprint for GPU
-  budgeting. `RenderResolution.fixed(width, height)` sets an explicit backing
-  size in physical pixels. For widgets painting into a shared texture, set the
-  policy on the owning `RivePanel`/`RiveSurface`.
-- **Web behavior change**: with the default `RenderResolution.display()`,
-  ancestor transforms now affect texture resolution on the web exactly as on
-  native (sharp under upscale). Pass `RenderResolution.layout()` to restore
-  the previous web behavior of allocating from layout size only.
-- Web: render textures now release their WebGL contexts on dispose (bounded
-  reuse pool) and browser-evicted contexts are purged instead of reused —
-  fixes context-limit exhaustion and permanently blank widgets.
-- Adds `RiveNative.instance.releaseRenderResources()`: releases cached render
-  resources (web: pooled textures and the offscreen probe context), recreated
-  on demand. No-op on other platforms.
-- Adds `RiveNative.debugRenderTextureLogging` (web): logs render-texture
-  create/reuse/release to the console with live WebGL context counts.
+- Bumps to `rive_native: 0.1.11`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+- Adds `RenderResolution` to control how a `Factory.rive` texture sizes its backing store: `display()` (default — layout × device pixel ratio × ancestor paint scale), `layout({scale})` (layout × device pixel ratio, ignores ancestor transforms), and `fixed(width, height)` (explicit physical pixels). Available on `RenderTexture.widget`, `RiveArtboardWidget`, and `RiveProceduralRenderingWidget`.
+- **Web behavior change**: `RenderResolution.display()` now accounts for ancestor transforms on web, matching native — an upscaled widget renders sharp instead of stretched. Pass `RenderResolution.layout()` for the previous behavior.
+- Adds `RiveNative.instance.releaseRenderResources()` to release cached render resources (web: pooled textures and the probe context), recreated on demand. No-op on other platforms.
+- Adds `RiveNative.debugRenderTextureLogging` (web): logs render-texture create/reuse/release with live WebGL context counts.
 
 ### Fixes
 
+- Windows: fixed a crash or hang when disposing a render texture with a frame in flight, such as closing the app under load or the desktop going to sleep. The fence wait thread could outlive teardown and either touch a destroyed texture registrar or block shutdown indefinitely (see core runtime issue [#86](https://github.com/rive-app/rive-runtime/issues/86)).
+- Texture allocations under `display` and `layout` are capped at 4096 logical pixels per axis (aspect preserved), preventing runaway allocations under large ancestor scales.
+- Web: canvas backing stores are clamped to the GPU's maximum render-target size.
+- Web: render textures release their WebGL contexts on dispose (bounded reuse pool), browser-evicted contexts are purged instead of reused, and the MSAA probe context is released at startup — fixes context-limit exhaustion and permanently blank widgets.
 - Changing `RiveWidget.drawOrder` / `SharedTextureView.drawOrder` on a mounted
   widget now restacks the shared-texture painters. Equal `drawOrder`s stack in
   widget-tree order.
