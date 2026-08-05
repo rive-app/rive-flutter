@@ -32,6 +32,9 @@
 /build/
 
 # Web related
+# Copied out of rive_native by hand: flutter build web snapshots this into
+# build/web/wasm, so a rebuilt wasm has to be re-copied here to be served.
+web/wasm/
 
 # Symbolication related
 app.*.symbols

@@ -16,18 +16,304 @@
 
   <title>rive_example</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Page level console tap, installed before anything else on the page so
+       that emscripten's `defaultPrintErr = console.error.bind(console)` binds
+       THIS wrapper. Every wasm stderr line written on the main thread then
+       lands in `window.__riveConsole`, which browser automation reads back.
+       Worker threads are a separate realm: this build's emscripten glue has
+       `knownHandlers=[]`, so a pthread's `err` is `threadPrintErr` calling the
+       WORKER's own console.error, which never reaches here. -->
+  <script>
+    (function () {
+      var lines = [];
+      window.__riveConsole = lines;
+      ['error', 'warn', 'log'].forEach(function (name) {
+        if (typeof console[name] !== 'function') return;
+        var original = console[name].bind(console);
+        console[name] = function () {
+          try {
+            var parts = [];
+            for (var i = 0; i < arguments.length; i++) {
+              parts.push(String(arguments[i]));
+            }
+            lines.push('[' + name + '] ' + parts.join(' '));
+          } catch (e) { /* never let the tap break the page */ }
+          return original.apply(console, arguments);
+        };
+      });
+      // Counts every occurrence, not every line: one line may carry a marker
+      // more than once.
+      window.__riveConsoleCount = function (marker) {
+        var n = 0;
+        for (var i = 0; i < lines.length; i++) {
+          var s = lines[i], from = 0;
+          while (true) {
+            var at = s.indexOf(marker, from);
+            if (at < 0) break;
+            n++;
+            from = at + marker.length;
+          }
+        }
+        return n;
+      };
+      // Reports, for each <canvas> on the page, whether its control has been
+      // handed to an OffscreenCanvas.
+      //
+      // NOT toDataURL(). Measured in this Chrome: after
+      // transferControlToOffscreen() a placeholder canvas STILL answers
+      // toDataURL() with its last committed frame. An earlier investigation on
+      // this effort read that success as proof no canvas had transferred and
+      // called the result impossible; the premise was simply wrong.
+      // getContext(), assigning width, and a second transfer all throw
+      // InvalidStateError, and getContext('2d') on an untransferred WebGL
+      // canvas merely returns null, so a THROW there is an unambiguous,
+      // non-destructive transfer signal.
+      //
+      // Flutter web mounts its view — and therefore every platform-view
+      // canvas — inside a shadow root, so document.querySelectorAll('canvas')
+      // alone reports zero for a page full of canvases. Walk open shadow
+      // roots too.
+      function allCanvases(root, out) {
+        var nodes = root.querySelectorAll('*');
+        for (var i = 0; i < nodes.length; i++) {
+          var n = nodes[i];
+          if (n.tagName === 'CANVAS') out.push(n);
+          if (n.shadowRoot) allCanvases(n.shadowRoot, out);
+        }
+        return out;
+      }
+      window.__riveCanvasTransferState = function () {
+        var out = [];
+        var all = allCanvases(document, []);
+        for (var i = 0; i < all.length; i++) {
+          var c = all[i], entry = {
+            index: i,
+            id: c.id || null,
+            width: c.width,
+            height: c.height,
+            clientWidth: c.clientWidth,
+            clientHeight: c.clientHeight
+          };
+          try {
+            var ctx2d = c.getContext('2d');
+            entry.transferred = false;
+            entry.getContext2d = ctx2d === null ? 'null' : 'object';
+          } catch (e) {
+            var name = String(e && e.name ? e.name : e);
+            entry.transferred = name === 'InvalidStateError';
+            entry.getContext2d = 'threw:' + name;
+          }
+          try {
+            entry.dataUrlLength = c.toDataURL().length;
+          } catch (e) {
+            entry.dataUrlLength = 'threw:' + String(e && e.name ? e.name : e);
+          }
+          out.push(entry);
+        }
+        return out;
+      };
+      // A backgrounded tab paints nothing, so every counter reads a clean,
+      // truthful-looking zero. This counts real presentation callbacks, which
+      // is the only way to tell "nothing was drawn" from "nothing ran".
+      var rafTicks = 0;
+      (function tick() {
+        rafTicks++;
+        requestAnimationFrame(tick);
+      })();
+      window.__riveRafTicks = function () {
+        return rafTicks;
+      };
+
+      // Every GL object destruction the MAIN thread performs, and whether it
+      // destroyed something this realm created. A worker thread is a separate
+      // realm with its own prototypes and its own object tables, so a name the
+      // replay worker generated resolves here to an unrelated object of this
+      // realm's — which is what makes deleting it silent. A worker created name
+      // deleted here therefore shows up as `deletedOwnRealm` climbing during a
+      // window where the main thread destroyed nothing of its own.
+      var glDeletes = {
+        deletedOwnRealm: 0,
+        deletedUnknown: 0,
+        deletedMissing: 0,
+        created: 0,
+        byKind: {},
+        samples: []
+      };
+      window.__riveGLDeleteLog = function () {
+        return JSON.parse(JSON.stringify(glDeletes));
+      };
+      ['WebGL2RenderingContext', 'WebGLRenderingContext'].forEach(function (n) {
+        var proto = window[n] && window[n].prototype;
+        if (!proto) return;
+        ['Texture', 'Framebuffer', 'Renderbuffer', 'Buffer'].forEach(
+          function (kind) {
+            var create = proto['create' + kind];
+            if (typeof create === 'function') {
+              proto['create' + kind] = function () {
+                var obj = create.apply(this, arguments);
+                try {
+                  if (obj) {
+                    obj.__riveRealm = 'page';
+                    glDeletes.created++;
+                  }
+                } catch (e) { /* frozen host object, ignore */ }
+                return obj;
+              };
+            }
+            var del = proto['delete' + kind];
+            if (typeof del !== 'function') return;
+            proto['delete' + kind] = function (obj) {
+              try {
+                var realm = obj && obj.__riveRealm;
+                var bucket = !obj
+                  ? 'deletedMissing'
+                  : realm === 'page' ? 'deletedOwnRealm' : 'deletedUnknown';
+                glDeletes[bucket]++;
+                glDeletes.byKind[kind + '.' + bucket] =
+                  (glDeletes.byKind[kind + '.' + bucket] || 0) + 1;
+                if (glDeletes.samples.length < 64) {
+                  glDeletes.samples.push(kind + ':' + bucket);
+                }
+              } catch (e) { /* never let the tap break the page */ }
+              return del.apply(this, arguments);
+            };
+          });
+      });
+
+      // Mean RGB of the Rive canvases that still live on the main thread.
+      // Only meaningful for an untransferred canvas — a transferred one is a
+      // placeholder and reads back blank — which makes it exactly the oracle
+      // for the immediate (non-deferred) path. Mean RGB rather than a
+      // coverage fraction: coverage has read identical to four decimals
+      // across a mean-RGB swing of 36.
+      window.__riveCanvasMeanRGB = function () {
+        var all = allCanvases(document, []);
+        var out = [];
+        for (var i = 0; i < all.length; i++) {
+          var c = all[i];
+          if (!c.id || c.id.indexOf('_rr_') !== 0) continue;
+          if (!c.width || !c.height) continue;
+          var scratch = document.createElement('canvas');
+          scratch.width = Math.min(c.width, 128);
+          scratch.height = Math.min(c.height, 128);
+          var g = scratch.getContext('2d', { willReadFrequently: true });
+          try {
+            g.drawImage(c, 0, 0, scratch.width, scratch.height);
+          } catch (e) {
+            out.push({ id: c.id, error: String(e && e.name ? e.name : e) });
+            continue;
+          }
+          var d = g.getImageData(0, 0, scratch.width, scratch.height).data;
+          var r = 0, gg = 0, b = 0, a = 0, n = d.length / 4;
+          for (var p = 0; p < d.length; p += 4) {
+            r += d[p]; gg += d[p + 1]; b += d[p + 2]; a += d[p + 3];
+          }
+          out.push({
+            id: c.id,
+            w: c.width,
+            h: c.height,
+            r: r / n, g: gg / n, b: b / n, a: a / n
+          });
+        }
+        return out;
+      };
+    })();
+  </script>
+
+  <!-- WebGL2 context accounting on the MAIN thread. Wrapped before Flutter
+       loads so every getContext('webgl2') the runtime makes is counted,
+       including the ones that come back null once the browser's live-context
+       budget is gone — that null is what `makeRenderer` turns into a throw.
+       transferControlToOffscreen is wrapped alongside it because one
+       successful transfer is exactly one GL context created on the replay
+       worker, a realm this page cannot otherwise see into. -->
+  <script>
+    (function () {
+      var proto = window.HTMLCanvasElement && HTMLCanvasElement.prototype;
+      if (!proto || !proto.getContext) return;
+      var stats = {
+        webgl2Created: 0,
+        webgl2Refused: 0,
+        contextLost: 0,
+        transferAttempts: 0,
+        transferOk: 0,
+        transferFailed: 0
+      };
+      window.__riveGLStats = function () {
+        var copy = {};
+        for (var k in stats) copy[k] = stats[k];
+        return copy;
+      };
+
+      // Positive control for the refusal path. Chrome 150 evicts the oldest
+      // live context rather than refusing a new one, so an exhausted budget
+      // cannot be provoked here; answering null on demand is the only way to
+      // see what the app does when a context really is refused.
+      var refuseWebGL2 = false;
+      window.__riveRefuseWebGL2 = function (on) { refuseWebGL2 = !!on; };
+
+      var getContext = proto.getContext;
+      proto.getContext = function (type) {
+        if (refuseWebGL2 && type === 'webgl2') {
+          stats.webgl2Refused++;
+          return null;
+        }
+        var ctx = getContext.apply(this, arguments);
+        if (type === 'webgl2') {
+          if (ctx) { stats.webgl2Created++; } else { stats.webgl2Refused++; }
+        }
+        return ctx;
+      };
+
+      var transfer = proto.transferControlToOffscreen;
+      if (transfer) {
+        proto.transferControlToOffscreen = function () {
+          stats.transferAttempts++;
+          try {
+            var oc = transfer.apply(this, arguments);
+            stats.transferOk++;
+            return oc;
+          } catch (e) {
+            stats.transferFailed++;
+            throw e;
+          }
+        };
+      }
+
+      window.addEventListener('webglcontextlost', function () {
+        stats.contextLost++;
+      }, true);
+
+      // How many more live WebGL2 contexts this browser will still hand out.
+      // Call it ONCE, at the end of a run: it holds every context it gets
+      // until it is refused, which is the only way to read the remaining
+      // budget, and it releases them again through WEBGL_lose_context. Uses
+      // the unwrapped getContext so the probe cannot inflate the counters
+      // above.
+      window.__riveGLHeadroom = function (limit) {
+        var made = [], n = 0;
+        for (var i = 0; i < (limit || 24); i++) {
+          var c = document.createElement('canvas');
+          c.width = c.height = 1;
+          var gl = getContext.call(c, 'webgl2');
+          if (!gl) break;
+          made.push(gl);
+          n++;
+        }
+        for (var j = 0; j < made.length; j++) {
+          var lose = made[j].getExtension('WEBGL_lose_context');
+          if (lose) lose.loseContext();
+        }
+        return n;
+      };
+    })();
+  </script>
 </head>
 <body>
-  <!-- This script installs service_worker.js to provide PWA functionality to
-       application. For more information, see:
-       https://developers.google.com/web/fundamentals/primers/service-workers -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js');
-      });
-    }
-  </script>
+  <!-- The service worker is deliberately NOT registered: it caches
+       main.dart.js and would happily serve a previous build's bundle, which
+       silently invalidates a run. -->
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>
