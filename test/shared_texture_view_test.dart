@@ -37,8 +37,8 @@ class _RecordingRenderer extends rive.Renderer {
   @override
   void drawPath(rive.RenderPath path, rive.RenderPaint paint) {}
   @override
-  void drawImage(
-      rive.RenderImage image, ui.BlendMode blendMode, double opacity) {}
+  void drawImage(rive.RenderImage image, ui.BlendMode blendMode, double opacity,
+      {rive.ImageSampler sampler = rive.ImageSampler.linearClamp}) {}
   @override
   void drawImageMesh(
       rive.RenderImage image,
@@ -46,7 +46,8 @@ class _RecordingRenderer extends rive.Renderer {
       rive.VertexRenderBuffer uvs,
       rive.IndexRenderBuffer indices,
       ui.BlendMode blendMode,
-      double opacity) {}
+      double opacity,
+      {rive.ImageSampler sampler = rive.ImageSampler.linearClamp}) {}
   @override
   void drawText(rive.RenderText text, [rive.RenderPaint? paint]) {}
   @override

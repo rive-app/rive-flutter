@@ -1,3 +1,11 @@
+## Upcoming
+
+### Fixes
+
+- Corrected the minimum Flutter version to 3.32.0 (Dart 3.8.0). It was declared
+  as 3.28.0, so older Flutter versions resolved this package and then failed to
+  compile. See [#643](https://github.com/rive-app/rive-flutter/issues/643).
+
 ## 0.14.11
 
 - Bumps to `rive_native: 0.1.11`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
