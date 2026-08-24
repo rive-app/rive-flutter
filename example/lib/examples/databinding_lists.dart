@@ -45,7 +45,7 @@ class _ExampleDataBindingListsState extends State<ExampleDataBindingLists> {
   }
 
   void _onLoaded(RiveLoaded state) {
-    viewModelInstance = state.viewModelInstance!;
+    viewModelInstance = state.controller.viewModelInstance!;
 
     // Get the menu list
     menuList = viewModelInstance.list('menu')!;
@@ -123,7 +123,6 @@ class _ExampleDataBindingListsState extends State<ExampleDataBindingLists> {
           Expanded(
             child: RiveWidgetBuilder(
               fileLoader: fileLoader,
-              dataBind: DataBind.auto(),
               onLoaded: _onLoaded,
               builder: (context, state) => switch (state) {
                 RiveLoading() =>

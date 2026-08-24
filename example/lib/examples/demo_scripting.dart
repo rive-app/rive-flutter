@@ -80,7 +80,6 @@ class __BlinkoExampleState extends State<_BlinkoExample> {
   Widget build(BuildContext context) {
     return RiveWidgetBuilder(
       fileLoader: fileLoader,
-      dataBind: DataBind.auto(),
       builder: (context, state) => switch (state) {
         RiveLoading() => const Center(
             child: Center(child: CircularProgressIndicator()),
@@ -135,7 +134,6 @@ class __CentaurGameState extends State<_CentaurGame> {
 
     return RiveWidgetBuilder(
       fileLoader: fileLoader,
-      dataBind: DataBind.auto(),
       builder: (context, state) => switch (state) {
         RiveLoading() => const Center(
             child: Center(child: CircularProgressIndicator()),

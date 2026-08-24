@@ -4,20 +4,41 @@ import 'package:rive/rive.dart';
 sealed class DataBind {
   const DataBind();
 
-  /// Auto-bind
+  /// Whether the caller retains ownership of the resolved instance: true for
+  /// [DataBind.byInstance] (the caller created it, the runtime never disposes
+  /// it), false for variants the runtime resolves on the caller's behalf.
+  bool get callerOwnsInstance => this is BindByInstance;
+
+  /// Bind a fresh default instance. For a slot that is already bound, this
+  /// replaces it with a new default (reset).
   static DataBind auto() => const AutoBind();
 
-  /// Bind by view model instance
-  static DataBind byInstance(ViewModelInstance viewModelInstance) =>
+  /// Bind [viewModelInstance] - an instance you created
+  /// ([BindableViewModelInstance], returned by `ViewModel.createInstance`
+  /// and its siblings). The caller keeps ownership; the runtime never
+  /// disposes instances passed this way. Read-backs are plain
+  /// [ViewModelInstance] views and cannot be passed here (nor bound via a
+  /// cast - that throws). Create your own instance to share state across
+  /// slots or controllers.
+  static DataBind byInstance(BindableViewModelInstance viewModelInstance) =>
       BindByInstance(viewModelInstance);
 
-  /// Bind by index
+  /// Create and bind a fresh copy of the view model's instance at [value].
+  /// Each call creates a new instance with that definition's authored
+  /// values; runtime changes to a previously bound copy do not carry over.
   static DataBind byIndex(int value) => BindByIndex(value);
 
-  /// Bind by name
+  /// Create and bind a fresh copy of the view model's instance named
+  /// [value]. Each call creates a new instance with that definition's
+  /// authored values; runtime changes to a previously bound copy do not
+  /// carry over.
   static DataBind byName(String value) => BindByName(value);
 
-  /// Empty binding
+  /// Bind a fresh blank instance of the slot's view model: the properties
+  /// exist, but none of the editor-authored default values are applied.
+  /// Despite the name this binds - it does not clear or unbind the slot
+  /// (there is deliberately no unbind). To reset a slot instead, use [auto]
+  /// for the editor-authored defaults or [empty] for a blank slate.
   static DataBind empty() => const BindEmpty();
 }
 
@@ -39,7 +60,7 @@ class AutoBind extends DataBind {
 
 /// Bind by view model instance
 class BindByInstance extends DataBind {
-  final ViewModelInstance viewModelInstance;
+  final BindableViewModelInstance viewModelInstance;
 
   const BindByInstance(this.viewModelInstance);
 

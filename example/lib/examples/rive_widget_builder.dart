@@ -28,13 +28,12 @@ class _ExampleRiveWidgetBuilderState extends State<ExampleRiveWidgetBuilder> {
   Widget build(BuildContext context) {
     return RiveWidgetBuilder(
       fileLoader: fileLoader,
-      dataBind: DataBind.auto(),
       // Optional `onFailed` callback to handle loading errors
       onFailed: (error, stackTrace) {
         debugPrint(error.toString());
         debugPrint(stackTrace.toString());
       },
-      // Optional `onLoaded` callback to access the loaded state
+      // Optional `onLoaded` callback to access the loaded state.
       onLoaded: (state) {
         debugPrint('Rive loaded');
       },
@@ -42,17 +41,17 @@ class _ExampleRiveWidgetBuilderState extends State<ExampleRiveWidgetBuilder> {
       // controller: (file) => RiveWidgetController(file),
       builder: (context, state) => switch (state) {
         RiveLoading() => const Center(
-            child: Center(child: CircularProgressIndicator()),
-          ),
+          child: Center(child: CircularProgressIndicator()),
+        ),
         RiveFailed() => ErrorWidget.withDetails(
-            message: state.error.toString(),
-            error: FlutterError(state.error.toString()),
-          ),
+          message: state.error.toString(),
+          error: FlutterError(state.error.toString()),
+        ),
         RiveLoaded() => RiveWidget(
-            controller: state.controller,
-            fit: Fit.layout,
-            layoutScaleFactor: 1 / 3,
-          )
+          controller: state.controller,
+          fit: Fit.layout,
+          layoutScaleFactor: 1 / 3,
+        ),
       },
     );
   }

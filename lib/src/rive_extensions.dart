@@ -12,7 +12,14 @@ extension RiveFileExtension on rive.File {
   /// ```dart
   /// final viewModelInstance = riveFile.createDefaultViewModelInstance(artboard);
   /// ```
-  rive.ViewModelInstance? createDefaultViewModelInstance(
-          rive.Artboard artboard) =>
-      defaultArtboardViewModel(artboard)?.createDefaultInstance();
+  rive.BindableViewModelInstance? createDefaultViewModelInstance(
+    rive.Artboard artboard,
+  ) {
+    final viewModel = defaultArtboardViewModel(artboard);
+    try {
+      return viewModel?.createDefaultInstance();
+    } finally {
+      viewModel?.dispose();
+    }
+  }
 }

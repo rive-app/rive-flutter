@@ -162,9 +162,8 @@ class _ExampleDataBindingImagesState extends State<ExampleDataBindingImages> {
         Expanded(
           child: RiveWidgetBuilder(
             fileLoader: fileLoader,
-            dataBind: DataBind.auto(),
             onLoaded: (state) {
-              viewModelInstance = state.viewModelInstance!;
+              viewModelInstance = state.controller.viewModelInstance!;
               imageProperty = viewModelInstance.image('ball_image')!;
             },
             builder: (context, state) => switch (state) {

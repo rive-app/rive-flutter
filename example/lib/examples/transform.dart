@@ -64,7 +64,7 @@ class _MyRiveWidgetState extends State<_MyRiveWidget>
       file,
       artboardSelector: ArtboardSelector.byName('Rive Rendering'),
     );
-    vmi = controller.dataBind(DataBind.auto());
+    vmi = controller.viewModelInstance!;
 
     final renderName = vmi.string('rendererName')!;
     renderName.value = widget.riveFactory == Factory.flutter

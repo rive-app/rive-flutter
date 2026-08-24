@@ -6,6 +6,11 @@ import 'package:rive_example/main.dart' show RiveExampleApp;
 
 /// Example using Rive data binding at runtime.
 ///
+/// Shows that constructing the controller binds default view model
+/// instances (main + any globals) automatically, then works with the bound instance's
+/// properties. The instances it creates are owned by the controller and
+/// disposed with it.
+///
 /// See: https://rive.app/docs/runtimes/data-binding
 /// Rive Editor file: https://rive.app/marketplace/25475-47540-data-binding-demo/
 class ExampleDataBinding extends StatefulWidget {
@@ -51,8 +56,22 @@ class _ExampleDataBindingState extends State<ExampleDataBinding> {
   }
 
   void _setupDataBinding() {
-    // Bind the default view model instance of the artboard to the controller
-    viewModelInstance = controller!.dataBind(DataBind.auto());
+    // The controller bound everything at construction: default instances
+    // for the main view model and for every global view model slot. Pin
+    // specific instances instead via the constructor, e.g.
+    // RiveWidgetController(file, globals: {'Theme': .byInstance(theme)}),
+    // or rebind later with controller.bind(...).
+    viewModelInstance = controller!.viewModelInstance!;
+
+    // Any global view models in the file were bound to default instances too.
+    // (rewards.riv declares none, so this prints an empty list.)
+    debugPrint('Global view models: ${file!.globalViewModelNames}');
+    for (final name in file!.globalViewModelNames) {
+      debugPrint(
+        'Global "$name" bound to instance: '
+        '${controller!.globalViewModelInstance(name)?.name}',
+      );
+    }
 
     // Set a random token to reward
     _selectRandomToken();
@@ -104,9 +123,10 @@ class _ExampleDataBindingState extends State<ExampleDataBinding> {
   void _selectRandomToken() {
     final random = Random.secure().nextBool() ? 'Coin' : 'Gem';
     viewModelInstance
-        .viewModel('Item_Selection')!
-        .enumerator('Item_Selection')!
-        .value = random;
+            .viewModel('Item_Selection')!
+            .enumerator('Item_Selection')!
+            .value =
+        random;
   }
 
   // Listener for the changes on the Item_Value for the coin
@@ -190,48 +210,50 @@ class _ExampleDataBindingState extends State<ExampleDataBinding> {
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: [
-                    const Color(0xFF4CAF50), // Green
-                    const Color(0xFF2196F3), // Blue
-                    const Color(0xFFF44336), // Red
-                    const Color(0xFFFF9800), // Orange
-                    const Color(0xFF9C27B0), // Purple
-                    const Color(0xFFFFEB3B), // Yellow
-                    const Color(0xFF00BCD4), // Cyan
-                    const Color(0xFFE91E63), // Pink
-                  ].map((color) {
-                    // ignore: deprecated_member_use
-                    final isSelected = _selectedColor.value == color.value;
-                    return GestureDetector(
-                      onTap: () {
-                        setSheetState(() => _selectedColor = color);
-                        energyBarColorProperty.value = color;
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color:
-                                isSelected ? Colors.white : Colors.transparent,
-                            width: 3,
+                  children:
+                      [
+                        const Color(0xFF4CAF50), // Green
+                        const Color(0xFF2196F3), // Blue
+                        const Color(0xFFF44336), // Red
+                        const Color(0xFFFF9800), // Orange
+                        const Color(0xFF9C27B0), // Purple
+                        const Color(0xFFFFEB3B), // Yellow
+                        const Color(0xFF00BCD4), // Cyan
+                        const Color(0xFFE91E63), // Pink
+                      ].map((color) {
+                        // ignore: deprecated_member_use
+                        final isSelected = _selectedColor.value == color.value;
+                        return GestureDetector(
+                          onTap: () {
+                            setSheetState(() => _selectedColor = color);
+                            energyBarColorProperty.value = color;
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                width: 3,
+                              ),
+                              boxShadow: isSelected
+                                  ? [
+                                      BoxShadow(
+                                        // ignore: deprecated_member_use
+                                        color: color.withOpacity(0.6),
+                                        blurRadius: 8,
+                                        spreadRadius: 2,
+                                      ),
+                                    ]
+                                  : null,
+                            ),
                           ),
-                          boxShadow: isSelected
-                              ? [
-                                  BoxShadow(
-                                    // ignore: deprecated_member_use
-                                    color: color.withOpacity(0.6),
-                                    blurRadius: 8,
-                                    spreadRadius: 2,
-                                  ),
-                                ]
-                              : null,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
                 ),
                 const SizedBox(height: 16),
                 Text(

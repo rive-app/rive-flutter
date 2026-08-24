@@ -1,3 +1,22 @@
+## Upcoming
+
+- Adds global view model support with automatic binding: `RiveWidgetController` now binds at construction - default instances for the main and every global view model - or pass the new `main` / `globals` constructor parameters to choose instances (e.g. `RiveWidgetController(file, globals: {'Theme': DataBind.byInstance(theme)})`). Rebind later with `controller.bind({main, globals})`: one rebind per call, applied as a delta on the current bindings. Debug builds warn once when `bind` runs before the controller's first advance - pass the configuration to the constructor instead. Read bound instances back via `controller.viewModelInstance` and `controller.globalViewModelInstance(name)` - live reads, same object every time. Read-backs are views: `DataBind.byInstance` and the state machine's staging calls accept only `BindableViewModelInstance` (what `ViewModel.createInstance` and its siblings return), so re-binding a read-back is a compile error - create your own instance to share state across slots or controllers (yours are never disposed by the runtime).
+- **Behavior change**: content with view models that was previously rendered unbound now renders its authored defaults, since construction binds automatically.
+- **Removed**: `controller.dataBind`, `RiveWidgetBuilder.dataBind`, and `RiveLoaded.viewModelInstance`. See Migration below; for a bridge with no call-site changes, `import 'package:rive/legacy.dart'` restores `controller.dataBind` and `RiveLoaded.viewModelInstance` as deprecated extensions (frozen, removed in a future release).
+
+### Migration
+
+- `controller.dataBind(x)` -> pass it at construction: `RiveWidgetController(file, main: x)`; read it back via `controller.viewModelInstance`. The controller owns what it resolves - drop any manual dispose (`byInstance` instances remain yours).
+- `RiveWidgetBuilder(dataBind: DataBind.auto())` -> delete the argument; construction now binds defaults automatically.
+- `RiveWidgetBuilder(dataBind: DataBind.byInstance(x))` -> `controller: (file) => RiveWidgetController(file, main: DataBind.byInstance(x))`.
+- `state.viewModelInstance` (on `RiveLoaded`) -> `state.controller.viewModelInstance`.
+- Kept an instance in use past its controller? Create it yourself (`ViewModel.create*`, e.g. `createDefaultInstance`) and pass it via `byInstance` - caller-created instances are never disposed by the runtime.
+
+### Fixes
+
+- `RiveWidgetBuilder` no longer disposes a view model instance supplied via `DataBind.byInstance`; caller-owned instances survive the widget.
+- `RiveWidgetBuilder` now disposes the previous controller and any view model instance it created when reconfigured (changed selectors), and when setup fails, instead of leaking them.
+
 ## 0.15.0-dev.1
 
 - Bumps to `rive_native: 0.2.0-dev.1`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.

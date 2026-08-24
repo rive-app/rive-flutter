@@ -62,7 +62,7 @@ class _ExampleDataBindingArtboardsState
     ))!;
     controller =
         RiveWidgetController(travelPackFile); // uses default artboard: "Demo"
-    viewModelInstance = controller.dataBind(DataBind.auto());
+    viewModelInstance = controller.viewModelInstance!;
     iconProperty = viewModelInstance.artboard('icon')!;
     bindableArtboard =
         travelPackFile.artboardToBind(selectedTravelPackArtboard)!;
@@ -96,7 +96,6 @@ class _ExampleDataBindingArtboardsState
     webPackFile.dispose();
     bindableArtboard.dispose();
     controller.dispose();
-    viewModelInstance.dispose();
     iconProperty.dispose();
     super.dispose();
   }

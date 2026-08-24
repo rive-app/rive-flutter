@@ -28,17 +28,18 @@ class _ExampleRiveWidgetState extends State<ExampleRiveWidget> {
       riveFactory: RiveExampleApp.getCurrentFactory,
     ))!;
     controller = RiveWidgetController(file);
-    viewModelInstance = controller.dataBind(DataBind.auto());
+    // The controller binds automatically at construction (defaults for the
+    // main and every global view model slot).
+    viewModelInstance = controller.viewModelInstance!;
     setState(() => isInitialized = true);
   }
 
   @override
   void dispose() {
-    // This widget state created the file, controller, and view model instance.
-    // Dispose them once they are no longer needed.
+    // This widget state created the file and controller. The bound view
+    // model instance belongs to the controller and is disposed with it.
     file.dispose();
     controller.dispose();
-    viewModelInstance.dispose();
     super.dispose();
   }
 

@@ -20,7 +20,7 @@ class _ExampleStateMachinePainterState
     extends State<ExampleStateMachinePainter> {
   late rive.File file;
   rive.Artboard? artboard;
-  rive.ViewModelInstance? viewModelInstance;
+  rive.BindableViewModelInstance? viewModelInstance;
   late rive.StateMachinePainter painter;
 
   @override

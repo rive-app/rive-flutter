@@ -28,7 +28,6 @@ class _ExampleResponsiveLayoutsState extends State<ExampleResponsiveLayouts> {
   Widget build(BuildContext context) {
     return RiveWidgetBuilder(
       fileLoader: fileLoader,
-      dataBind: DataBind.auto(),
       builder: (context, state) => switch (state) {
         RiveLoading() => const Center(
           child: Center(child: CircularProgressIndicator()),

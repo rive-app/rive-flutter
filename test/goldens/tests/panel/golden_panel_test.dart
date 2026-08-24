@@ -35,9 +35,8 @@ void main() {
 
     final rewardsController = RiveWidgetController(rewards);
     addTearDown(rewardsController.dispose);
-    // The rewards scene is data-bound: bind its default view model like a
-    // consumer would.
-    rewardsController.dataBind(DataBind.auto());
+    // The rewards scene is data-bound; construction bound its default view
+    // model automatically.
     final buttonController = RiveWidgetController(button);
     addTearDown(buttonController.dispose);
 

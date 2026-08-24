@@ -59,7 +59,7 @@ void main() {
       'advances on pointer up/down so intermediate state is processed when '
       'down and up occur within the same frame', () async {
     final controller = buildController();
-    final vmi = controller.dataBind(rive.DataBind.auto());
+    final vmi = controller.viewModelInstance!;
     final hasReached = vmi.boolean('hasReached');
     expect(hasReached, isNotNull,
         reason: 'The view model should expose a "hasReached" boolean.');

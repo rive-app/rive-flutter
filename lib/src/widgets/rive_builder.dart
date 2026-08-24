@@ -7,10 +7,7 @@ import 'package:rive/rive.dart';
 ///
 /// - The [context] parameter is the context of the widget.
 /// - The [state] parameter is the current state of the Rive file.
-typedef RiveBuilder = Widget Function(
-  BuildContext context,
-  RiveState state,
-);
+typedef RiveBuilder = Widget Function(BuildContext context, RiveState state);
 
 /// A function that builds a controller based on the Rive file.
 ///
@@ -28,7 +25,6 @@ typedef RiveOnFailed = void Function(Object error, StackTrace stackTrace);
 /// - The [fileLoader] parameter is the file loader.
 /// - The [artboardSelector] parameter specifies which artboard to use
 /// - The [stateMachineSelector] parameter specifies which state machine to use
-/// - The [dataBind] parameter specifies which view model instance to bind to
 /// - The [builder] parameter is the builder that builds the widget based on
 /// the state of the Rive file and controller.
 /// - The [controller] parameter is an optional function that builds a
@@ -40,7 +36,6 @@ class RiveWidgetBuilder extends StatefulWidget {
     required this.fileLoader,
     this.artboardSelector = const ArtboardDefault(),
     this.stateMachineSelector = const StateMachineDefault(),
-    this.dataBind,
     required this.builder,
     this.controller,
     this.onLoaded,
@@ -55,9 +50,6 @@ class RiveWidgetBuilder extends StatefulWidget {
 
   /// The selector to specify which state machine to use.
   final StateMachineSelector stateMachineSelector;
-
-  /// The data bind to specify which view model instance to bind to.
-  final DataBind? dataBind;
 
   /// The builder to build the widget based on the state of the Rive file and
   /// controller.
@@ -94,8 +86,7 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
     if (widget.fileLoader != oldWidget.fileLoader) {
       _setup(withFileLoad: true);
     } else if (widget.artboardSelector != oldWidget.artboardSelector ||
-        widget.stateMachineSelector != oldWidget.stateMachineSelector ||
-        widget.dataBind != oldWidget.dataBind) {
+        widget.stateMachineSelector != oldWidget.stateMachineSelector) {
       _setup(withFileLoad: false);
     }
   }
@@ -125,6 +116,7 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
     Future<void> thisSetup, {
     required bool withFileLoad,
   }) async {
+    RiveWidgetController? controller;
     try {
       if (withFileLoad) {
         _file = await widget.fileLoader.file();
@@ -135,36 +127,44 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
       }
 
       final controllerBuilder = widget.controller;
-      final controller = controllerBuilder != null
+      final created = controllerBuilder != null
           ? controllerBuilder(_file)
           : RiveWidgetController(
               _file,
               artboardSelector: widget.artboardSelector,
               stateMachineSelector: widget.stateMachineSelector,
             );
-
-      final dataBind = widget.dataBind;
-      ViewModelInstance? vmi;
-      if (dataBind != null) {
-        vmi = controller.dataBind(dataBind);
-      }
+      controller = created;
 
       // Check if this operation was cancelled or the widget was disposed
       if (!mounted || !identical(_currentSetup, thisSetup)) {
-        controller.dispose();
-        vmi?.dispose();
+        created.dispose();
         return;
       }
 
+      final previousState = _state;
       setState(() {
-        _state = RiveLoaded(
-          file: _file,
-          controller: controller,
-          viewModelInstance: vmi,
-        );
+        _state = RiveLoaded(file: _file, controller: created);
       });
+      // A reconfigure replaced a previously loaded state: release what the
+      // widget created for it (the file is owned by the parent; the
+      // controller owns the instances it resolved).
+      if (previousState is RiveLoaded) {
+        previousState.controller.dispose();
+      }
       widget.onLoaded?.call(_state as RiveLoaded);
     } on Exception catch (e, stackTrace) {
+      // Release this setup's controller, unless the state already took it
+      // (onLoaded threw after the swap) - then it is released below with the
+      // hidden state. When the setup was cancelled, a loaded state stays
+      // current and its replacement disposes it instead.
+      final hidden = _state;
+      final stateOwnsController = hidden is RiveLoaded &&
+          controller != null &&
+          identical(hidden.controller, controller);
+      if (controller != null && !stateOwnsController) {
+        controller.dispose();
+      }
       // Check if this operation was cancelled or the widget was disposed
       if (!mounted || !identical(_currentSetup, thisSetup)) {
         return;
@@ -172,6 +172,11 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
       setState(() {
         _state = RiveFailed(e, stackTrace);
       });
+      // The failure hides a loaded state (a previous configuration's, or this
+      // setup's own when onLoaded threw): release its controller.
+      if (hidden is RiveLoaded) {
+        hidden.controller.dispose();
+      }
       widget.onFailed?.call(e, stackTrace);
     }
   }
@@ -180,9 +185,9 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
   void dispose() {
     switch (_state) {
       case RiveLoaded state:
-        // Don't dispose the file because it's owned by the parent widget
+        // Don't dispose the file because it's owned by the parent widget;
+        // the controller owns the instances it resolved.
         state.controller.dispose();
-        state.viewModelInstance?.dispose();
       case RiveLoading():
       case RiveFailed():
         // Nothing to dispose
@@ -202,8 +207,8 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
 /// [RiveLoaded] is the state when the Rive file is loaded and the
 /// controller is created.
 ///
-/// [RiveFailed] is the state when the Rive file, controller, or
-/// view model instance fails to load.
+/// [RiveFailed] is the state when the Rive file or controller fails to
+/// load.
 sealed class RiveState {}
 
 /// The state when the Rive file is still loading.
@@ -213,23 +218,14 @@ class RiveLoading extends RiveState {}
 class RiveLoaded extends RiveState {
   final File file;
   final RiveWidgetController controller;
-  final ViewModelInstance? viewModelInstance;
 
-  RiveLoaded({
-    required this.file,
-    required this.controller,
-    required this.viewModelInstance,
-  });
+  RiveLoaded({required this.file, required this.controller});
 }
 
-/// The state when the Rive file, controller, or view model instance fails to
-/// load.
+/// The state when the Rive file or controller fails to load.
 class RiveFailed extends RiveState {
   final Object error;
   final StackTrace stackTrace;
 
-  RiveFailed(
-    this.error, [
-    this.stackTrace = StackTrace.empty,
-  ]);
+  RiveFailed(this.error, [this.stackTrace = StackTrace.empty]);
 }

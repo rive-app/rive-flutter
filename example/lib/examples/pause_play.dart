@@ -43,7 +43,6 @@ class _ExamplePausePlayState extends State<ExamplePausePlay> {
         Expanded(
           child: RiveWidgetBuilder(
             fileLoader: fileLoader,
-            dataBind: DataBind.auto(),
             onLoaded: (state) {
               controller = state.controller;
               controller.active = isPlaying;
