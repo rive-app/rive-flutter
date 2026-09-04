@@ -1,5 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+// ignore: invalid_use_of_internal_member
+import 'package:rive_native/rive_native.dart' show RiveSemanticsWidget;
+
+/// Controls whether a [RiveWidget] projects the artboard's semantic tree
+/// into Flutter's accessibility tree so screen readers can discover and
+/// interact with elements inside the animation.
+enum RiveSemantics {
+  /// The widget produces no accessibility information and never queries
+  /// or builds the semantic tree. This is the default; it costs nothing.
+  disabled,
+
+  /// The widget exposes semantic data authored in the Rive file as
+  /// Flutter semantics nodes, aligned with the visual positions of
+  /// elements. Once enabled, the controller keeps tracking semantics
+  /// until it is disposed.
+  enabled,
+
+  /// Semantics activate the first time the platform requests
+  /// accessibility (e.g. a screen reader connects) and then behave like
+  /// [enabled] for the controller's lifetime. Until that request nothing
+  /// is queried or built. On web the request arrives when the user's
+  /// screen reader activates the page, not at startup.
+  auto,
+}
 
 /// A widget that displays a Rive artboard.
 ///
@@ -36,6 +60,7 @@ class RiveWidget extends StatefulWidget {
     this.sharedTexture,
     this.drawOrder = 1,
     this.renderResolution,
+    this.semantics = RiveSemantics.disabled,
   }) : assert(
           renderResolution == null ||
               (!useSharedTexture && sharedTexture == null),
@@ -104,6 +129,11 @@ class RiveWidget extends StatefulWidget {
   /// is ignored when rendering with [Factory.flutter], where content paints
   /// directly into Flutter's canvas at composite resolution.
   final RenderResolution? renderResolution;
+
+  /// Whether to expose the artboard's semantic tree to screen readers.
+  ///
+  /// Defaults to [RiveSemantics.disabled]. See [RiveSemantics].
+  final RiveSemantics semantics;
 
   @override
   State<RiveWidget> createState() => _RiveWidgetState();
@@ -194,19 +224,29 @@ class _RiveWidgetState extends State<RiveWidget> {
           'SharedRenderTexture via the sharedTexture parameter.',
         );
       }
-      return SharedTextureView(
+      return _withSemantics(SharedTextureView(
         artboard: widget.controller.artboard,
         painter: _ensurePainter(),
         sharedTexture: sharedTexture,
         drawOrder: widget.drawOrder,
-      );
+      ));
     }
 
-    return RiveArtboardWidget(
+    return _withSemantics(RiveArtboardWidget(
       artboard: widget.controller.artboard,
       painter: widget.controller,
       renderResolution:
           widget.renderResolution ?? RenderResolution.defaultValue,
+    ));
+  }
+
+  Widget _withSemantics(Widget child) {
+    if (widget.semantics == RiveSemantics.disabled) return child;
+    return RiveSemanticsWidget(
+      artboard: widget.controller.artboard,
+      painter: widget.controller,
+      activateOnPlatformRequest: widget.semantics == RiveSemantics.auto,
+      child: child,
     );
   }
 

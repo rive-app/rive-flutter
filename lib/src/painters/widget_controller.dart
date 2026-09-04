@@ -1,6 +1,10 @@
+// This controller mixes in and drives rive_native-internal semantics
+// types (RiveSemanticsMixin) intentionally.
+// ignore_for_file: invalid_use_of_internal_member
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/gestures.dart';
 import 'package:rive/rive.dart';
+import 'package:rive_native/rive_native.dart' show RiveSemanticsMixin;
 
 /// {@template rive_controller}
 /// This controller builds on top of the concept of a Rive painter, but
@@ -9,7 +13,7 @@ import 'package:rive/rive.dart';
 /// To be used with [RiveWidget] and [RiveWidgetBuilder] widgets.
 /// {@endtemplate}
 base class RiveWidgetController extends BasicArtboardPainter
-    with RivePointerEventMixin {
+    with RivePointerEventMixin, RiveSemanticsMixin {
   /// The Rive file to this controller is built from.
   final File file;
 
@@ -19,6 +23,9 @@ base class RiveWidgetController extends BasicArtboardPainter
 
   /// The state machine that the [RiveWidgetController] is using.
   late final StateMachine stateMachine;
+
+  @override
+  StateMachine? get semanticsStateMachine => stateMachine;
 
   /// {@macro rive_controller}
   /// - The [file] parameter is the Rive file to paint.
@@ -284,7 +291,6 @@ base class RiveWidgetController extends BasicArtboardPainter
         stateMachine.setViewModelInstance(resolvedMain);
       } else {
         // Resolved for the caller: the state machine owns it from here.
-        // ignore: invalid_use_of_internal_member
         stateMachine.adoptViewModelInstance(resolvedMain);
       }
     }
@@ -294,7 +300,6 @@ base class RiveWidgetController extends BasicArtboardPainter
       final stagedOk = dataBind.callerOwnsInstance
           ? stateMachine.setGlobalViewModelInstance(name, resolved)
           // Resolved for the caller: the state machine owns it from here.
-          // ignore: invalid_use_of_internal_member
           : stateMachine.adoptGlobalViewModelInstance(name, resolved);
       if (!stagedOk) {
         // A pre-validated name can still fail to stage when a non-global view
@@ -404,6 +409,7 @@ base class RiveWidgetController extends BasicArtboardPainter
     _suppressEarlyRebindWarning = true;
     _repaintScheduled = false;
     final didAdvance = stateMachine.advanceAndApply(elapsedSeconds);
+    updateSemantics();
     return didAdvance && active;
   }
 
@@ -412,6 +418,7 @@ base class RiveWidgetController extends BasicArtboardPainter
     stateMachine.removeAdvanceRequestListener(scheduleRepaint);
     artboard.dispose();
     stateMachine.dispose();
+    disposeSemantics();
     super.dispose();
   }
 }

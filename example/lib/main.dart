@@ -46,9 +46,9 @@ class RiveExampleApp extends StatefulWidget {
   static RiveFactoryToUse factoryToUse = RiveFactoryToUse.rive;
 
   static rive.Factory get getCurrentFactory => switch (factoryToUse) {
-        RiveFactoryToUse.rive => rive.Factory.rive,
-        RiveFactoryToUse.flutter => rive.Factory.flutter,
-      };
+    RiveFactoryToUse.rive => rive.Factory.rive,
+    RiveFactoryToUse.flutter => rive.Factory.flutter,
+  };
 
   @override
   State<RiveExampleApp> createState() => _RiveExampleAppState();
@@ -113,6 +113,20 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
         'Responsive Layouts',
         ExampleResponsiveLayouts(),
         'Create responsive Rive graphics that adapt to screen size.',
+      ),
+      _Page(
+        'Semantics [Omni]',
+        ExampleSemanticsOmni(),
+        'All-purpose semantics testing: pick an artboard from semantics.riv '
+            'and inspect its semantic tree.',
+        selfManaged: true,
+      ),
+      _Page(
+        'Semantics [Examples]',
+        ExampleSemantics(),
+        'Expose authored semantic data to screen readers with '
+            'RiveWidget.semantics.',
+        selfManaged: true,
       ),
       _Page('Events', ExampleEvents(), 'Handle Rive events.'),
       _Page('Audio', ExampleRiveAudio(), 'Example Rive file with audio.'),
@@ -377,7 +391,19 @@ class _Page {
   final Widget page;
   final String description;
 
-  const _Page(this.name, this.page, this.description);
+  /// When true, [_WrappedPage] shows [page] directly instead of wrapping it
+  /// in a Scaffold + AppBar. The page provides its own Scaffold. Needed by
+  /// the semantics pages so a SemanticsDebugger can sit at the route root
+  /// (above the AppBar); otherwise the debug overlay is offset by the
+  /// AppBar height.
+  final bool selfManaged;
+
+  const _Page(
+    this.name,
+    this.page,
+    this.description, {
+    this.selfManaged = false,
+  });
 }
 
 /// Section header widget with divider.
@@ -527,6 +553,7 @@ class _WrappedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (page.selfManaged) return page.page;
     return Scaffold(
       appBar: AppBar(title: Text(page.name)),
       body: page.page,

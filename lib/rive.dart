@@ -16,7 +16,11 @@ export 'package:rive_native/rive_native.dart'
         InternalViewModelInstanceAsset,
         InternalDataBind,
         ViewModelInstanceCreateCallback,
-        Key;
+        Key,
+        // Semantics machinery: rive_flutter consumes it internally; the
+        // public way to enable semantics is RiveWidget.semantics.
+        RiveSemanticsMixin,
+        RiveSemanticsWidget;
 
 export 'src/errors.dart';
 export 'src/file_loader.dart';
