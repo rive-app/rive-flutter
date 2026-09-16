@@ -21,6 +21,7 @@ class FileLoader {
   final String? _url;
   Completer<rive.File>? _loadCompleter;
   rive.File? _loadedFile;
+  bool _disposed = false;
 
   /// {@macro FileLoader}
   /// - The [asset] parameter is the asset to load the Rive file from.
@@ -49,11 +50,13 @@ class FileLoader {
       return _providedFile;
     }
 
-    if (_loadCompleter != null) {
-      return _loadCompleter!.future;
+    final existing = _loadCompleter;
+    if (existing != null) {
+      return existing.future;
     }
 
-    _loadCompleter = Completer<rive.File>();
+    final completer = Completer<rive.File>();
+    _loadCompleter = completer;
 
     try {
       rive.File? file;
@@ -87,16 +90,20 @@ class FileLoader {
             'No asset, URL, or file provided to RiveFileLoader');
       }
 
-      _loadedFile = file;
-      _loadCompleter!.complete(file);
+      if (_disposed) {
+        file.dispose();
+      } else {
+        _loadedFile = file;
+      }
+      completer.complete(file);
       return file;
     } on RiveFileLoaderException catch (e) {
-      _loadCompleter!.completeError(e);
+      completer.completeError(e);
       rethrow;
     } on Exception catch (e) {
       final riveException =
           RiveFileLoaderException('Unexpected error loading Rive file: $e');
-      _loadCompleter!.completeError(riveException);
+      completer.completeError(riveException);
       throw riveException;
     }
   }
@@ -114,6 +121,7 @@ class FileLoader {
   bool get isFileAvailable => fileSync != null;
 
   void dispose() {
+    _disposed = true;
     _providedFile?.dispose();
     _loadedFile?.dispose();
     _loadCompleter = null;
