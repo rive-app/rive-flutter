@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:rive_example/main.dart' show RiveExampleApp;
 
 /// A widget that tests the memory cleanup of Rive resources.
 /// This widget will create and destroy a Rive graphic's resources with
@@ -72,7 +73,7 @@ class _RiveFileWidgetState extends State<_RiveFileWidget> {
   Future<void> _init() async {
     _riveFile = await File.asset(
       'assets/rating.riv',
-      riveFactory: Factory.rive,
+      riveFactory: RiveExampleApp.getCurrentFactory,
     );
     _controller = RiveWidgetController(_riveFile!);
     setState(() {});

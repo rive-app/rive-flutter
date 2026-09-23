@@ -165,23 +165,36 @@ class SharedRenderTexture {
     }
   }
 
-  /// Paint the shared render texture.
+  /// Paint the shared render texture. [elapsedSeconds] is the time this pass
+  /// ticked; time banked by earlier gated passes is added here, so a pause
+  /// drops only its own tick.
   void _paintShared(double elapsedSeconds) {
     if (_disposed) return;
     if (painters.isEmpty) {
       // Nothing to draw — skip the clear/flush so a stale post-frame callback
       // (e.g. one queued before the last painter detached) cannot momentarily
       // blank the shared texture.
-      _pendingElapsed = 0;
+      _bankedElapsed = 0;
       stopTicker();
       return;
     }
     // Attach first: canAcceptDeferredFrame reads the attached session.
     _ensureDeferredSession();
-    if (texture.deferredPaused || !texture.canAcceptDeferredFrame) {
-      // Nothing may record while paused or while the replay worker is behind
-      // (a recorded frame can never be dropped). Bank the time and retry.
-      _pendingElapsed += elapsedSeconds;
+    if (texture.deferredPaused) {
+      // Nothing may record while paused, and paused time is dropped, not
+      // banked: a pause can span seconds (iOS backgrounding), and banking it
+      // would fast-forward the animation by the whole span on resume
+      // instead of freezing it. Keep ticking to notice the resume. Time
+      // banked before the pause is kept: that frame was gated, not paused,
+      // and still owes its advance.
+      startTicker();
+      return;
+    }
+    if (!texture.canAcceptDeferredFrame) {
+      // The replay worker is behind (a recorded frame can never be
+      // dropped). Bank the time and retry so pacing changes cadence, never
+      // animation speed.
+      _bankedElapsed += elapsedSeconds;
       startTicker();
       return;
     }
@@ -189,10 +202,12 @@ class SharedRenderTexture {
       // A failed clear can be permanent (refused context, no session): stop
       // rather than spin. Recreation repaints via the texture-changed
       // listener.
-      _pendingElapsed += elapsedSeconds;
+      _bankedElapsed += elapsedSeconds;
       stopTicker();
       return;
     }
+    elapsedSeconds += _bankedElapsed;
+    _bankedElapsed = 0;
     bool anyShouldAdvance = false;
     for (final painter in painters) {
       if (painter.paintIntoSharedTexture(texture, elapsedSeconds)) {
@@ -209,7 +224,13 @@ class SharedRenderTexture {
 
   // Elapsed accumulated for the next coalesced pass, so no tick's delta is lost
   // when requests coalesce.
-  double _pendingElapsed = 0;
+  /// Time from passes the gates skipped, replayed by the next pass that
+  /// paints. Separate from the ticker's own accumulator so a paused pass can
+  /// drop its tick without dropping this.
+  double _bankedElapsed = 0;
+
+  /// Time ticked since the last pass ran, coalesced across ticks.
+  double _tickElapsed = 0;
 
   /// Schedules a paint for after this frame's layout (so painters read the same
   /// transforms the panel composites against). Ticker and one-shot requests
@@ -218,15 +239,15 @@ class SharedRenderTexture {
     if (_disposed) {
       return;
     }
-    _pendingElapsed += elapsedSeconds;
+    _tickElapsed += elapsedSeconds;
     if (_scheduled) {
       return;
     }
     _scheduled = true;
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _scheduled = false;
-      final elapsed = _pendingElapsed;
-      _pendingElapsed = 0;
+      final elapsed = _tickElapsed;
+      _tickElapsed = 0;
       _paintShared(elapsed);
     });
   }

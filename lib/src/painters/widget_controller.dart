@@ -4,7 +4,8 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/gestures.dart';
 import 'package:rive/rive.dart';
-import 'package:rive_native/rive_native.dart' show RiveSemanticsMixin;
+import 'package:rive_native/rive_native.dart'
+    show RiveKeyboardFocusMixin, RiveSemanticsMixin;
 
 /// {@template rive_controller}
 /// This controller builds on top of the concept of a Rive painter, but
@@ -13,7 +14,7 @@ import 'package:rive_native/rive_native.dart' show RiveSemanticsMixin;
 /// To be used with [RiveWidget] and [RiveWidgetBuilder] widgets.
 /// {@endtemplate}
 base class RiveWidgetController extends BasicArtboardPainter
-    with RivePointerEventMixin, RiveSemanticsMixin {
+    with RivePointerEventMixin, RiveSemanticsMixin, RiveKeyboardFocusMixin {
   /// The Rive file to this controller is built from.
   final File file;
 
@@ -22,6 +23,7 @@ base class RiveWidgetController extends BasicArtboardPainter
   late final Artboard artboard;
 
   /// The state machine that the [RiveWidgetController] is using.
+  @override
   late final StateMachine stateMachine;
 
   @override

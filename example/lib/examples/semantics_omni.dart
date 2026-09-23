@@ -42,15 +42,7 @@ class _ExampleSemanticsOmniState extends State<ExampleSemanticsOmni> {
     }
     this.file = file;
 
-    // No artboardCount API; enumerate by index until one is missing.
-    final names = <String>[];
-    for (var i = 0; ; i++) {
-      final artboard = file!.artboardAt(i);
-      if (artboard == null) break;
-      names.add(artboard.name);
-      artboard.dispose();
-    }
-    artboardNames = names;
+    artboardNames = file!.artboardNames;
 
     _buildController();
     setState(() {});

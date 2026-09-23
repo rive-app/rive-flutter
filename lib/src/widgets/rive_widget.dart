@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-// ignore: invalid_use_of_internal_member
-import 'package:rive_native/rive_native.dart' show RiveSemanticsWidget;
+import 'package:rive_native/rive_native.dart'
+    // ignore: invalid_use_of_internal_member
+    show RiveFocusWidget, RiveSemanticsWidget;
 
 /// Controls whether a [RiveWidget] projects the artboard's semantic tree
 /// into Flutter's accessibility tree so screen readers can discover and
@@ -47,6 +48,8 @@ enum RiveSemantics {
 /// explicit [sharedTexture]), and using [Factory.rive]. Higher values draw
 /// on top; painters sharing a value stack in widget-tree order. Changing it
 /// on a mounted widget restacks on the next frame.
+/// - The [keyboardFocus] parameter is whether the widget takes keyboard focus
+/// and routes Tab, arrows and typed keys to the graphic's focus tree.
 class RiveWidget extends StatefulWidget {
   const RiveWidget({
     super.key,
@@ -61,6 +64,7 @@ class RiveWidget extends StatefulWidget {
     this.drawOrder = 1,
     this.renderResolution,
     this.semantics = RiveSemantics.disabled,
+    this.keyboardFocus = true,
   }) : assert(
           renderResolution == null ||
               (!useSharedTexture && sharedTexture == null),
@@ -134,6 +138,17 @@ class RiveWidget extends StatefulWidget {
   ///
   /// Defaults to [RiveSemantics.disabled]. See [RiveSemantics].
   final RiveSemantics semantics;
+
+  /// Whether the widget is a keyboard focus target for the graphic's focus
+  /// tree. When true (the default) and the content has focusable nodes,
+  /// tabbing into the widget focuses the first node; Tab and Shift+Tab move
+  /// focus inside the graphic and leave it at either end; arrow keys move
+  /// focus by position, and an arrow with no target in its direction is
+  /// handed to Flutter, which decides what happens (on the web it scrolls
+  /// and focus stays put); other keys go to the focused node. Content
+  /// without focus nodes is never a tab stop. Set false to keep the graphic
+  /// out of keyboard focus.
+  final bool keyboardFocus;
 
   @override
   State<RiveWidget> createState() => _RiveWidgetState();
@@ -224,7 +239,7 @@ class _RiveWidgetState extends State<RiveWidget> {
           'SharedRenderTexture via the sharedTexture parameter.',
         );
       }
-      return _withSemantics(SharedTextureView(
+      return _wrap(SharedTextureView(
         artboard: widget.controller.artboard,
         painter: _ensurePainter(),
         sharedTexture: sharedTexture,
@@ -232,12 +247,19 @@ class _RiveWidgetState extends State<RiveWidget> {
       ));
     }
 
-    return _withSemantics(RiveArtboardWidget(
+    return _wrap(RiveArtboardWidget(
       artboard: widget.controller.artboard,
       painter: widget.controller,
       renderResolution:
           widget.renderResolution ?? RenderResolution.defaultValue,
     ));
+  }
+
+  Widget _wrap(Widget child) => _withFocus(_withSemantics(child));
+
+  Widget _withFocus(Widget child) {
+    if (!widget.keyboardFocus) return child;
+    return RiveFocusWidget(painter: widget.controller, child: child);
   }
 
   Widget _withSemantics(Widget child) {

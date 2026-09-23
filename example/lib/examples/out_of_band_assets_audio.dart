@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
+import 'package:rive_example/main.dart' show RiveExampleApp;
 
 /// An example showing how to load audio assets.
 ///
@@ -41,7 +42,7 @@ class _ExampleOutOfBandAssetAudioLoadingState
   Future<void> _loadFiles() async {
     final file = await File.asset(
       'assets/ping_pong_audio_demo.riv',
-      riveFactory: Factory.rive,
+      riveFactory: RiveExampleApp.getCurrentFactory,
       assetLoader: (asset, bytes) {
         if (asset is AudioAsset && bytes == null) {
           _loadAudio(asset);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:rive_example/main.dart' show RiveExampleApp;
 
 /// We strongly recommend using Data Binding instead of Rive Inputs for better
 /// runtime control. See: https://rive.app/docs/runtimes/data-binding
@@ -23,7 +24,7 @@ class _ExampleInputsState extends State<ExampleInputs> {
   Future<void> _loadRiveFile() async {
     _riveFile = await File.asset(
       'assets/skills.riv',
-      riveFactory: Factory.rive,
+      riveFactory: RiveExampleApp.getCurrentFactory,
     );
     // You can access nested inputs by providing an optional path to the input
     _controller = RiveWidgetController(_riveFile!);

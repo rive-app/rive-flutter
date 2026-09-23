@@ -16,21 +16,22 @@ import 'package:integration_test/integration_test.dart';
 import 'package:rive/rive.dart';
 import 'package:rive_example/advanced/centaur_example/game_widget.dart';
 
+
 /// A texture "holds content" when more than 1/[_contentDivisor] of its
 /// pixels differ from the clear color - the same predicate polls and
 /// asserts, so they can never diverge.
 const _contentDivisor = 100;
 
-/// Decodes the rating asset under [Factory.rive], the way every deferred
-/// on-device test needs it.
-Future<File> _decodeRatingFile() async {
+/// Decodes an asset under [Factory.rive], the way every on-device test
+/// needs it.
+Future<File> _decodeAsset(String name) async {
   await RiveNative.init();
-  final bytes = await rootBundle.load('assets/rating.riv');
+  final bytes = await rootBundle.load('assets/$name');
   final file = await File.decode(
     bytes.buffer.asUint8List(),
     riveFactory: Factory.rive,
   );
-  expect(file, isNotNull, reason: 'rating.riv failed to decode');
+  expect(file, isNotNull, reason: '$name failed to decode');
   return file!;
 }
 
@@ -101,7 +102,7 @@ void main() {
     'swapping the controller on a stable shared-texture RiveWidget does not '
     'leak the wrapping painter or crash when the old controller is disposed',
     (tester) async {
-      final file = await _decodeRatingFile();
+      final file = await _decodeAsset('rating.riv');
 
       var controller = RiveWidgetController(file);
       late void Function(VoidCallback) hostSetState;
@@ -158,7 +159,7 @@ void main() {
   testWidgets(
     'a RivePanel draws its shared-texture content on the native deferred path',
     (tester) async {
-      final file = await _decodeRatingFile();
+      final file = await _decodeAsset('rating.riv');
       final controller = RiveWidgetController(file);
 
       const bgR = 0x10, bgG = 0x20, bgB = 0x30;
@@ -247,6 +248,79 @@ void main() {
             'is not surfacing riveFactory, so the render box never attaches '
             'the deferred recording session and the texture draws nothing',
       );
+    },
+  );
+
+  testWidgets(
+    'keyboard focus: Tab enters the graphic, walks it, Enter reaches the node, '
+    'Tab leaves at the end',
+    (tester) async {
+      // focus.riv (trays/testing/focus), Buttons artboard: four focusable
+      // buttons, each recording an Enter press in the host's lastPressed.
+      final file = await _decodeAsset('focus.riv');
+      final controller = RiveWidgetController(
+        file,
+        artboardSelector: const ArtboardNamed('Buttons'),
+      );
+      addTearDown(() {
+        controller.dispose();
+        file.dispose();
+      });
+      final before = FocusNode(debugLabel: 'before');
+      final after = FocusNode(debugLabel: 'after');
+      addTearDown(() {
+        before.dispose();
+        after.dispose();
+      });
+
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Column(
+            children: [
+              TextButton(
+                focusNode: before,
+                onPressed: () {},
+                child: const Text('before'),
+              ),
+              SizedBox(
+                width: 640,
+                height: 360,
+                child: RiveWidget(controller: controller),
+              ),
+              TextButton(
+                focusNode: after,
+                onPressed: () {},
+                child: const Text('after'),
+              ),
+            ],
+          ),
+        ),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(controller.stateMachine.hasFocusNodes, isTrue);
+
+      before.requestFocus();
+      await tester.pump();
+      Future<void> tab() async {
+        await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+
+      await tab();
+      expect(controller.stateMachine.focusState.hasFocus, isTrue);
+      expect(after.hasFocus, isFalse);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(controller.viewModelInstance!.string('lastPressed')!.value, '1');
+
+      for (var i = 0; i < 3; i++) {
+        await tab();
+        expect(controller.stateMachine.focusState.hasFocus, isTrue);
+      }
+      await tab();
+      expect(after.hasFocus, isTrue);
+      expect(controller.stateMachine.focusState.hasFocus, isFalse);
     },
   );
 }

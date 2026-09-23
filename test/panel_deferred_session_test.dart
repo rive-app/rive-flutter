@@ -112,7 +112,9 @@ base class _SpyRenderTexture extends rive.RenderTexture {
 final class _DeferredContentPainter extends rive.RenderTexturePainter {
   _DeferredContentPainter(this.factory);
   final rive.Factory? factory;
-  int paintCount = 0;
+  bool advance = false;
+  final List<double> elapsedLog = [];
+  int get paintCount => elapsedLog.length;
 
   @override
   rive.Factory? get riveFactory => factory;
@@ -123,8 +125,8 @@ final class _DeferredContentPainter extends rive.RenderTexturePainter {
   @override
   bool paint(rive.RenderTexture texture, double devicePixelRatio, Size size,
       double elapsedSeconds) {
-    paintCount++;
-    return false;
+    elapsedLog.add(elapsedSeconds);
+    return advance;
   }
 }
 
@@ -197,6 +199,71 @@ void main() {
   setUpAll(() async {
     expect(await rive.RiveNative.init(), isTrue);
   });
+
+  // Spy-only (no recording session), so it runs under any native lib and is
+  // deliberately outside the deferred-ABI skip gate below.
+  testWidgets(
+    'paused passes drop their elapsed instead of banking it',
+    (tester) async {
+      final spy = _SpyRenderTexture();
+      final shared = _makeShared(spy);
+      final painter = _DeferredContentPainter(null)..advance = true;
+
+      await _pumpPanel(tester, shared: shared, painters: [painter]);
+      await _settle(tester);
+      expect(painter.elapsedLog, isNotEmpty);
+      final paintsBefore = painter.elapsedLog.length;
+
+      spy.paused = true;
+      await tester.pump(const Duration(milliseconds: 16));
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(painter.elapsedLog.length, paintsBefore,
+          reason: 'paused passes must not paint');
+
+      spy.paused = false;
+      await tester.pump(const Duration(milliseconds: 16));
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(painter.elapsedLog.length, greaterThan(paintsBefore));
+      expect(painter.elapsedLog.skip(paintsBefore),
+          everyElement(lessThan(0.020)),
+          reason: 'a pause freezes the animation; resuming must not '
+              'fast-forward it by the paused span');
+    },
+  );
+
+  testWidgets(
+    'a pause keeps time banked by a gated pass',
+    (tester) async {
+      final spy = _SpyRenderTexture();
+      final shared = _makeShared(spy);
+      final painter = _DeferredContentPainter(null)..advance = true;
+
+      await _pumpPanel(tester, shared: shared, painters: [painter]);
+      await _settle(tester);
+      final paintsBefore = painter.elapsedLog.length;
+
+      // Gated: the pass banks its elapsed instead of painting.
+      spy.acceptDeferredFrames = false;
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(painter.elapsedLog.length, paintsBefore,
+          reason: 'a gated pass must not paint');
+
+      // Paused immediately after, then resumed. The paused tick's own time is
+      // dropped, but the gated frame still owes its advance.
+      spy.paused = true;
+      await tester.pump(const Duration(milliseconds: 16));
+      spy.paused = false;
+      spy.acceptDeferredFrames = true;
+      await tester.pump(const Duration(milliseconds: 16));
+      await _settle(tester);
+
+      expect(painter.elapsedLog.length, greaterThan(paintsBefore));
+      expect(painter.elapsedLog.skip(paintsBefore).first, greaterThan(0.020),
+          reason: 'the gated pass banked ~16ms and the pass after the resume '
+              'ticked ~16ms more; dropping the bank with the paused tick '
+              'would make the animation permanently lag');
+    },
+  );
 
   group('shared paint pass deferred session', () {
     testWidgets(

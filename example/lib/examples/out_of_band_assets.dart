@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:rive_example/main.dart' show RiveExampleApp;
 import 'package:http/http.dart' as http;
 
 /// An example showing how to load image or font assets dynamically.
@@ -80,7 +81,7 @@ class _RiveRandomImageState extends State<_RiveRandomImage> {
   Future<void> _loadFiles() async {
     final imageFile = await File.asset(
       'assets/image_out_of_band.riv',
-      riveFactory: Factory.rive,
+      riveFactory: RiveExampleApp.getCurrentFactory,
       assetLoader: (asset, bytes) {
         if (asset is ImageAsset && bytes == null) {
           http.get(Uri.parse('https://picsum.photos/500/500')).then((res) {
@@ -158,7 +159,7 @@ class _RiveRandomFontState extends State<_RiveRandomFont> {
   Future<void> _loadFiles() async {
     final fontFile = await File.asset(
       'assets/acqua_text_out_of_band.riv',
-      riveFactory: Factory.rive,
+      riveFactory: RiveExampleApp.getCurrentFactory,
       assetLoader: (asset, bytes) {
         // Replace font assets that are not embedded in the rive file
         if (asset is FontAsset && bytes == null) {

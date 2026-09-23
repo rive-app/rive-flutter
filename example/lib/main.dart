@@ -4,17 +4,40 @@ import 'package:flutter/material.dart';
 import 'package:rive_example/advanced/advanced.dart';
 import 'package:rive_example/colors.dart';
 import 'package:rive_example/examples/examples.dart';
+import 'package:rive_example/pacing_overlay.dart';
 import 'package:rive/rive.dart' as rive;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await rive.RiveNative.init();
 
+  // Scripted benchmark runs open the page straight from a deep link, e.g.
+  // `riveexample://bench?asset=rewards.riv&count=4&stats=1`. Everything else
+  // starts on the example list.
+  final launch = Uri.tryParse(
+    WidgetsBinding.instance.platformDispatcher.defaultRouteName,
+  );
+  final benchmark = launch != null && launch.host == 'bench'
+      ? ExampleRendererBenchmark(
+          config: BenchConfig.fromQuery(launch.queryParameters),
+        )
+      : null;
+  if (benchmark != null) {
+    RiveExampleApp.factoryToUse =
+        launch!.queryParameters['renderer'] == 'flutter'
+            ? RiveFactoryToUse.flutter
+            : RiveFactoryToUse.rive;
+  }
+
   runApp(
     MaterialApp(
       title: 'Rive Example',
       // showPerformanceOverlay: true,
-      home: const RiveExampleApp(),
+      builder: (context, child) => RivePacingOverlayHost(
+        riveFactory: () => RiveExampleApp.getCurrentFactory,
+        child: child ?? const SizedBox.shrink(),
+      ),
+      home: benchmark ?? const RiveExampleApp(),
       darkTheme: ThemeData(
         fontFamily: 'JetBrainsMono',
         brightness: Brightness.dark,
@@ -128,6 +151,12 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
             'RiveWidget.semantics.',
         selfManaged: true,
       ),
+      _Page(
+        'Keyboard focus',
+        ExampleFocus(),
+        'Tab, arrows and typed keys drive the focus tree in focus.riv; pick '
+            'an artboard per scenario.',
+      ),
       _Page('Events', ExampleEvents(), 'Handle Rive events.'),
       _Page('Audio', ExampleRiveAudio(), 'Example Rive file with audio.'),
     ]),
@@ -211,6 +240,13 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
       //     'Internationalize Rive graphics with Flutter i18n.'),
     ]),
     const _Section('Performance/Memory testing', [
+      _Page(
+        'Renderer benchmark',
+        ExampleRendererBenchmark(),
+        'Compare the Rive and Flutter renderers on the same content: pick a '
+            'file, how many copies, one texture each or a shared one, and '
+            'watch the perf overlay.',
+      ),
       _Page(
         'Graphic resizing test',
         TestGraphicResizing(),
