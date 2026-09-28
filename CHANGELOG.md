@@ -1,17 +1,21 @@
-## Upcoming
+## 0.15.0-dev.3
 
-- Adds keyboard focus to `RiveWidget`. When the graphic has focusable nodes,
-  Tab and Shift+Tab move focus into and through it and out at either end,
-  arrow keys move focus by position, and keys and typed characters reach the
-  focused node, so a `TextInput` can be edited from the keyboard. Rive focus
-  clears when Flutter focus leaves the widget. On by default; pass
-  `keyboardFocus: false` to keep a graphic out of keyboard focus.
+- Bumps to `rive_native: 0.2.0-dev.3`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
+- Adds keyboard focus to `RiveWidget`. When the graphic has focusable nodes, Tab and Shift+Tab move focus into and through it and out at either end, arrow keys move focus by position, and keys and typed characters reach the focused node, so a `TextInput` can be edited from the keyboard. Rive focus clears when Flutter focus leaves the widget. On by default; pass `keyboardFocus: false` to keep a graphic out of keyboard focus.
+- Adds `StateMachine.hasFocusNodes` and `StateMachine.focusState` (`FocusState`: `hasFocus`, `expectsKeyboardInput`).
 - Adds `File.artboardNames`, the artboard names in file order.
+
+### Android performance
+
+- Multiple `RiveWidget`s on screen no longer throttle each other or stay blank under load.
+- Heavy Rive content no longer drags down the app's frame rate.
 
 ### Fixes
 
-- Android: multiple `RiveWidget`s no longer throttle each other or stay blank under load, and heavy Rive content no longer drags down the app's frame rate.
 - Animations keep their speed when frames are skipped under load, and no longer jump ahead when rendering pauses briefly, such as the iOS app switcher.
+- Windows: the Rive Renderer runs on GPUs limited to Direct3D feature level 11_0. Apps on that hardware used to crash on the first file load.
+- Windows: when the Rive Renderer cannot start (no GPU adapter or D3D11 device), loading a file with `Factory.rive` fails with a `RiveFileLoaderException` instead of crashing. Fall back to `Factory.flutter`.
+- Fixes a possible crash when a render texture and its deferred recording session are disposed in either order.
 
 ## 0.15.0-dev.2
 
