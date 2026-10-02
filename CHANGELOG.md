@@ -1,3 +1,10 @@
+## Upcoming
+
+### Fixes
+
+- Android: the Rive Renderer releases the memory it allocated for drawing once the last Rive widget is gone.
+- Disposing a Rive widget no longer leaves its render target registered in the renderer. Over many widget lifetimes that let frames run further ahead of rendering.
+
 ## 0.15.0-dev.3
 
 - Bumps to `rive_native: 0.2.0-dev.3`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
