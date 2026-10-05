@@ -1,5 +1,9 @@
 ## Upcoming
 
+### Performance
+
+- Android: opt in with `RiveNative.init(androidHardwareBuffers: true)` and, on API 29 and up, Rive draws straight into hardware buffers that Flutter samples as-is, with no surface swap or blit per frame. On a Pixel 8a showing 8 to 16 widgets this frees about one CPU core and 20 to 40 MB of graphics memory; a widget whose scale animates, which recreates its texture every frame, drops fewer frames. Off by default; devices that cannot take the path, and everything below API 29, keep the surface path.
+
 ### Fixes
 
 - Android: the Rive Renderer releases the memory it allocated for drawing once the last Rive widget is gone.

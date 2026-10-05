@@ -9,7 +9,9 @@ import 'package:rive/rive.dart' as rive;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await rive.RiveNative.init();
+  // The example opts Android in to the hardware buffer present; it is off by
+  // default for apps.
+  await rive.RiveNative.init(androidHardwareBuffers: true);
 
   // Scripted benchmark runs open the page straight from a deep link, e.g.
   // `riveexample://bench?asset=rewards.riv&count=4&stats=1`. Everything else
@@ -32,7 +34,8 @@ void main() async {
   runApp(
     MaterialApp(
       title: 'Rive Example',
-      // showPerformanceOverlay: true,
+      // Build with --dart-define=PERF_OVERLAY=true to show it.
+      showPerformanceOverlay: const bool.fromEnvironment('PERF_OVERLAY'),
       builder: (context, child) => RivePacingOverlayHost(
         riveFactory: () => RiveExampleApp.getCurrentFactory,
         child: child ?? const SizedBox.shrink(),
