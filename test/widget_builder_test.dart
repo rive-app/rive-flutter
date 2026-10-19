@@ -136,6 +136,88 @@ void main() {
 
     delayedFileLoader.dispose();
   });
+
+  // rive-flutter #653
+  testWidgets(
+      'RiveWidgetBuilder loads when a selector changes during the initial load',
+      (WidgetTester tester) async {
+    final delayedFileLoader = _DelayedFileLoader(
+      riveFile,
+      delay: const Duration(milliseconds: 100),
+    );
+    RiveState? lastState;
+    Widget build(ArtboardSelector artboardSelector) => MaterialApp(
+          home: RiveWidgetBuilder(
+            fileLoader: delayedFileLoader,
+            artboardSelector: artboardSelector,
+            builder: (context, state) {
+              lastState = state;
+              return const SizedBox.shrink();
+            },
+          ),
+        );
+
+    await tester.pumpWidget(build(ArtboardSelector.byDefault()));
+    await tester.pump(const Duration(milliseconds: 20));
+
+    // The initial load is still in flight.
+    await tester.pumpWidget(build(ArtboardSelector.byIndex(0)));
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(tester.takeException(), isNull);
+    expect(lastState, isA<RiveLoaded>());
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    delayedFileLoader.dispose();
+  });
+
+  testWidgets(
+      'RiveWidgetBuilder uses the new loader when a selector changes during '
+      'its load', (WidgetTester tester) async {
+    final secondFile = await tester.runAsync(() async => await File.decode(
+          await io.File('test/assets/rive_file_controller_test.riv')
+              .readAsBytes(),
+          riveFactory: Factory.flutter,
+        ) as File);
+    final firstLoader = _DelayedFileLoader(
+      riveFile,
+      delay: const Duration(milliseconds: 10),
+    );
+    final secondLoader = _DelayedFileLoader(
+      secondFile!,
+      delay: const Duration(milliseconds: 100),
+    );
+    RiveState? lastState;
+    Widget build(FileLoader loader, ArtboardSelector artboardSelector) =>
+        MaterialApp(
+          home: RiveWidgetBuilder(
+            fileLoader: loader,
+            artboardSelector: artboardSelector,
+            builder: (context, state) {
+              lastState = state;
+              return const SizedBox.shrink();
+            },
+          ),
+        );
+
+    await tester.pumpWidget(build(firstLoader, ArtboardSelector.byDefault()));
+    await tester.pump(const Duration(milliseconds: 50));
+    expect((lastState as RiveLoaded).file, same(riveFile));
+
+    await tester.pumpWidget(build(secondLoader, ArtboardSelector.byDefault()));
+    await tester.pump(const Duration(milliseconds: 20));
+
+    // The second loader's load is still in flight.
+    await tester.pumpWidget(build(secondLoader, ArtboardSelector.byIndex(0)));
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(tester.takeException(), isNull);
+    expect((lastState as RiveLoaded).file, same(secondFile));
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    firstLoader.dispose();
+    secondLoader.dispose();
+  });
 }
 
 /// A file loader that introduces a delay before loading the file.

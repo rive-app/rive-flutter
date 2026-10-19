@@ -71,7 +71,7 @@ class RiveWidgetBuilder extends StatefulWidget {
 
 class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
   RiveState _state = RiveLoading();
-  late File _file;
+  File? _file;
   Future<void>? _currentSetup;
 
   @override
@@ -84,6 +84,9 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
   void didUpdateWidget(RiveWidgetBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.fileLoader != oldWidget.fileLoader) {
+      // Drop the old loader's file so a reconfigure before this load lands
+      // waits for the new file instead of building on the old one.
+      _file = null;
       _setup(withFileLoad: true);
     } else if (widget.artboardSelector != oldWidget.artboardSelector ||
         widget.stateMachineSelector != oldWidget.stateMachineSelector) {
@@ -118,19 +121,25 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
   }) async {
     RiveWidgetController? controller;
     try {
-      if (withFileLoad) {
-        _file = await widget.fileLoader.file();
+      final File file;
+      final loadedFile = _file;
+      // A reconfigure can start before the initial load has finished.
+      if (withFileLoad || loadedFile == null) {
+        file = await widget.fileLoader.file();
         // Check if this operation was cancelled or the widget was disposed
         if (!mounted || !identical(_currentSetup, thisSetup)) {
           return;
         }
+        _file = file;
+      } else {
+        file = loadedFile;
       }
 
       final controllerBuilder = widget.controller;
       final created = controllerBuilder != null
-          ? controllerBuilder(_file)
+          ? controllerBuilder(file)
           : RiveWidgetController(
-              _file,
+              file,
               artboardSelector: widget.artboardSelector,
               stateMachineSelector: widget.stateMachineSelector,
             );
@@ -144,7 +153,7 @@ class _RiveWidgetBuilderState extends State<RiveWidgetBuilder> {
 
       final previousState = _state;
       setState(() {
-        _state = RiveLoaded(file: _file, controller: created);
+        _state = RiveLoaded(file: file, controller: created);
       });
       // A reconfigure replaced a previously loaded state: release what the
       // widget created for it (the file is owned by the parent; the
