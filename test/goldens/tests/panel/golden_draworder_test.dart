@@ -13,8 +13,9 @@ import '../../../src/headless_support.dart';
 /// Golden coverage for shared-texture painter stacking: three overlapping
 /// panes stepping diagonally through one `RivePanel`, rendered by the real
 /// Rive Renderer (headless Metal). Uses `rive_file_controller_test.riv`
-/// (static artboards — `Artboard1` dark grey with a centered red square,
-/// `Artboard2` solid red) so captures are deterministic regardless of how
+/// (static artboards — `Artboard1` orange with a centered teal square,
+/// `Artboard2` solid teal, colored by their bound default view model
+/// instances) so captures are deterministic regardless of how
 /// many frames have been pumped, which lets the runtime-restack test assert
 /// against the same goldens as the static-orderings tests.
 ///

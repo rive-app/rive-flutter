@@ -19,15 +19,17 @@ import 'src/headless_support.dart';
 /// FittedBox).
 ///
 /// Uses `rive_file_controller_test.riv`, whose artboards render
-/// deterministically under [Fit.fill] (verified by pixel probe):
-/// - `Artboard1`: dark grey `[49,49,49]` with a centered red square;
-/// - `Artboard2`: solid red `[255,0,0]`.
+/// deterministically under [Fit.fill]. Their fills are data bound, and
+/// [RiveWidgetController] binds each artboard's default view model instance,
+/// so the colors come from those instances (verified by pixel probe):
+/// - `Artboard1`: orange `[255,168,0]` with a centered teal square;
+/// - `Artboard2`: solid teal `[0,255,152]`.
 ///
 /// Skipped when the native lib lacks the headless symbols (only
 /// `./build.sh shared` without `flutter_runtime` exports them, macOS only).
 void main() {
-  const grey = [49, 49, 49, 255];
-  const red = [255, 0, 0, 255];
+  const orange = [255, 168, 0, 255];
+  const teal = [0, 255, 152, 255];
   const green = [0, 255, 0, 255];
 
   late File file;
@@ -133,14 +135,14 @@ void main() {
             artboard1Order: artboard1Order,
           );
 
-      // Artboard1 (grey corners) above the solid-red Artboard2: the corner
-      // shows Artboard1's grey.
+      // Artboard1 (orange corners) above the solid-teal Artboard2: the corner
+      // shows Artboard1's orange.
       await pumpSettled(tester, panel(artboard1Order: 2));
       var texture = textureOf(tester);
       var pixels = await readPixels(tester, texture);
-      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), grey);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), orange);
 
-      // Swapped orders in a fresh panel: solid-red Artboard2 covers
+      // Swapped orders in a fresh panel: solid-teal Artboard2 covers
       // Artboard1. (Each phase remounts deliberately so this test pins
       // attach-time ordering on its own; the next test covers mutating
       // drawOrder on mounted widgets.)
@@ -148,7 +150,7 @@ void main() {
       await pumpSettled(tester, panel(artboard1Order: 1));
       texture = textureOf(tester);
       pixels = await readPixels(tester, texture);
-      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), red);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), teal);
 
       await unmount(tester);
     });
@@ -169,7 +171,7 @@ void main() {
             artboard1Order: artboard1Order,
           );
 
-      // Artboard1 (grey corners) starts on top of the solid-red Artboard2.
+      // Artboard1 (orange corners) starts on top of the solid-teal Artboard2.
       await pumpSettled(tester, panel(artboard1Order: 2));
       final texture = textureOf(tester);
       final mountedRenderObject = tester
@@ -177,7 +179,7 @@ void main() {
               find.byType(SharedTextureViewRenderer))
           .first;
       var pixels = await readPixels(tester, texture);
-      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), grey);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), orange);
 
       // Swap the orders via rebuild only: Artboard2 must now cover Artboard1.
       await pumpSettled(tester, panel(artboard1Order: 1));
@@ -191,12 +193,12 @@ void main() {
             'would exercise the attach path instead of the runtime one',
       );
       pixels = await readPixels(tester, texture);
-      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), red);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), teal);
 
       // And back again.
       await pumpSettled(tester, panel(artboard1Order: 2));
       pixels = await readPixels(tester, texture);
-      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), grey);
+      expect(rgbaAt(pixels, texture.actualWidth, 24, 24), orange);
 
       await unmount(tester);
     });
@@ -239,9 +241,9 @@ void main() {
       expect(texture.actualHeight, 320);
       // …but content is composed in panel-logical space: the artboard still
       // covers exactly the left half. If the ancestor transform reached the
-      // widget→panel draw, the red region would span the full width.
+      // widget→panel draw, the teal region would span the full width.
       final pixels = await readPixels(tester, texture);
-      expect(rgbaAt(pixels, 400, 100, 160), red);
+      expect(rgbaAt(pixels, 400, 100, 160), teal);
       expect(rgbaAt(pixels, 400, 300, 160)[3], 0);
 
       await unmount(tester);
@@ -271,8 +273,8 @@ void main() {
       final texture = textureOf(tester);
       final (w, h) = (texture.actualWidth, texture.actualHeight);
       final pixels = await readPixels(tester, texture);
-      // Left half: the solid-red artboard; right half: the clear color.
-      expect(rgbaAt(pixels, w, w ~/ 4, h ~/ 2), red);
+      // Left half: the solid-teal artboard; right half: the clear color.
+      expect(rgbaAt(pixels, w, w ~/ 4, h ~/ 2), teal);
       expect(rgbaAt(pixels, w, (w * 3) ~/ 4, h ~/ 2), green);
 
       await unmount(tester);
@@ -351,13 +353,13 @@ void main() {
         expect(shared.texture.actualHeight, expectedHeight);
 
         // The same logical content fills the backing whatever policy
-        // allocated it: left half is the solid-red artboard, right half the
+        // allocated it: left half is the solid-teal artboard, right half the
         // transparent clear color.
         final pixels = await readPixels(tester, shared.texture);
         expect(
           rgbaAt(
               pixels, expectedWidth, expectedWidth ~/ 4, expectedHeight ~/ 2),
-          red,
+          teal,
           reason: 'left half under $resolution',
         );
         expect(
