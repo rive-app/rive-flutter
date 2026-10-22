@@ -12,6 +12,7 @@
 - Disposing a Rive widget no longer leaves its render target registered in the renderer. Over many widget lifetimes that let frames run further ahead of rendering.
 - Web: with Chrome's draft WebGL extensions enabled, content no longer stops rendering after the first frame with `GL_INVALID_OPERATION: glBlitFramebuffer: Blit feedback loop`. See [#635](https://github.com/rive-app/rive-flutter/issues/635).
 - Passing a new controller to `RiveWidget` no longer leaves the internal `ArtboardWidgetPainter` that wrapped the previous controller undisposed. Disposing the controller is still up to you. See [#636](https://github.com/rive-app/rive-flutter/issues/636).
+- `Factory.flutter`: `File.decode()` no longer waits for images from unrelated `Factory.decodeImage()` calls. If one of those never completed, for example an image decode started in a widget test that has since ended, every later file decode hung. See [#658](https://github.com/rive-app/rive-flutter/issues/658).
 
 ## 0.15.0-dev.3
 
