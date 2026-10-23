@@ -13,6 +13,7 @@
 
 - `RiveWidgetBuilder` loads when `artboardSelector` or `stateMachineSelector` changes before the file finishes loading. It used to throw `LateInitializationError` and stay in `RiveLoading`. See [#653](https://github.com/rive-app/rive-flutter/issues/653).
 - `RiveWidgetBuilder` shows the new file when a selector changes while a new `fileLoader` is still loading. It used to keep showing the previous loader's file, which may already be disposed.
+- Android, OpenGL: Rive content that a script draws into a GPU canvas now renders. It came out empty, so a blur of it drew nothing, or a black band on Mali GPUs.
 - Android: the Rive Renderer releases the memory it allocated for drawing once the last Rive widget is gone.
 - Disposing a Rive widget no longer leaves its render target registered in the renderer. Over many widget lifetimes that let frames run further ahead of rendering.
 - Web: with Chrome's draft WebGL extensions enabled, content no longer stops rendering after the first frame with `GL_INVALID_OPERATION: glBlitFramebuffer: Blit feedback loop`. See [#635](https://github.com/rive-app/rive-flutter/issues/635).
