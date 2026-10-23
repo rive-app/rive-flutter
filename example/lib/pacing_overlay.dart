@@ -139,7 +139,8 @@ class _RivePacingOverlayHostState extends State<RivePacingOverlayHost> {
     // so the line reads per texture regardless of instance count.
     final textures = p.textures > 0 ? p.textures : 1;
     String rate(int n) => (n / perSecond / textures).toStringAsFixed(1);
-    // Painted vs ticked animation time as a ratio: 100% = no time banking.
+    // Painted vs ticked animation time as a ratio: 100% = no time banking
+    // (under drawWhenChanged, unchanged ticks also count as unpainted).
     final timePct = p.tickedElapsed <= 0
         ? 100
         : (p.paintedElapsed / p.tickedElapsed * 100).round();

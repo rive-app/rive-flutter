@@ -236,27 +236,16 @@ base class CentaurGame extends rive.RenderTexturePainter {
     );
   }
 
+  // The view transform the last paint drew with, to map the cursor into the
+  // world.
+  rive.Mat2D _viewTransform = rive.Mat2D();
+
   @override
-  bool paint(
-    rive.RenderTexture texture,
-    double devicePixelRatio,
-    Size size,
-    double elapsedSeconds,
-  ) {
-    var renderer = texture.renderer;
-
-    var viewTransform = rive.Renderer.computeAlignment(
-      rive.Fit.contain,
-      Alignment.bottomCenter,
-      rive.AABB.fromValues(0, 0, size.width, size.height),
-      sceneBounds,
-      devicePixelRatio,
-    );
-
+  bool advance(double elapsedSeconds) {
     // Compute cursor in world space.
     final inverseViewTransform = rive.Mat2D();
     var worldCursor = rive.Vec2D();
-    if (rive.Mat2D.invert(inverseViewTransform, viewTransform)) {
+    if (rive.Mat2D.invert(inverseViewTransform, _viewTransform)) {
       worldCursor = inverseViewTransform * localCursor;
       // Check if we should invert the character's direction by comparing
       // the world location of the cursor to the world location of the
@@ -278,8 +267,48 @@ base class CentaurGame extends rive.RenderTexturePainter {
     _characterX += elapsedSeconds * _currentMoveSpeed;
 
     characterMachine.advanceAndApply(elapsedSeconds);
+
+    var deadArrows = <Arrow>{};
+    for (final arrow in _arrows) {
+      if (arrow.isDead) {
+        deadArrows.add(arrow);
+        arrow.dispose();
+        continue;
+      }
+      arrow.advance(elapsedSeconds, _apples);
+    }
+    _arrows.removeAll(deadArrows);
+
+    // Advance on the calling thread: the recording stream is single-writer.
+    var deadApples = <Apple>{};
+    for (final apple in _apples) {
+      if (apple.isDead) {
+        deadApples.add(apple);
+        apple.dispose();
+        continue;
+      }
+      apple.advance(elapsedSeconds);
+    }
+    _apples.removeAll(deadApples);
+    spawnApples(5);
+
+    return true;
+  }
+
+  @override
+  void paint(rive.RenderTexture texture, double devicePixelRatio, Size size) {
+    var renderer = texture.renderer;
+
+    _viewTransform = rive.Renderer.computeAlignment(
+      rive.Fit.contain,
+      Alignment.bottomCenter,
+      rive.AABB.fromValues(0, 0, size.width, size.height),
+      sceneBounds,
+      devicePixelRatio,
+    );
+
     renderer.save();
-    renderer.transform(viewTransform);
+    renderer.transform(_viewTransform);
 
     double backgroundScale = 3;
     for (int b = -2; b <= 2; b++) {
@@ -296,36 +325,18 @@ base class CentaurGame extends rive.RenderTexturePainter {
     character.draw(renderer);
     renderer.restore();
 
-    var deadArrows = <Arrow>{};
     for (final arrow in _arrows) {
-      if (arrow.isDead) {
-        deadArrows.add(arrow);
-        arrow.dispose();
-        continue;
+      if (!arrow.isDead) {
+        arrow.draw(renderer);
       }
-      arrow.draw(renderer);
-      arrow.advance(elapsedSeconds, _apples);
     }
-    _arrows.removeAll(deadArrows);
-
-    // Advance and draw on the calling thread: the recording stream is
-    // single-writer.
-    var deadApples = <Apple>{};
     for (final apple in _apples) {
-      if (apple.isDead) {
-        deadApples.add(apple);
-        apple.dispose();
-        continue;
+      if (!apple.isDead) {
+        apple.draw(renderer);
       }
-      apple.advance(elapsedSeconds);
-      apple.draw(renderer);
     }
-    _apples.removeAll(deadApples);
-    spawnApples(5);
 
     renderer.restore();
-
-    return true;
   }
 
   @override

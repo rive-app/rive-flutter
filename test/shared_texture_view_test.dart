@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
 import 'package:rive_native/rive_native.dart' as rive;
 
+import 'src/utils.dart';
+
 /// Records [transform] / [save] / [restore] calls so tests can assert on the
 /// affine that [SharedTextureViewRenderObject] writes to the shared texture.
 class _RecordingRenderer extends rive.Renderer {
@@ -121,9 +123,10 @@ final class _NoopPainter extends rive.RenderTexturePainter {
   Color get background => const Color(0x00000000);
 
   @override
-  bool paint(rive.RenderTexture texture, double devicePixelRatio, Size size,
-          double elapsedSeconds) =>
-      false;
+  bool advance(double elapsedSeconds) => false;
+
+  @override
+  void paint(rive.RenderTexture texture, double devicePixelRatio, Size size) {}
 }
 
 /// Builds a controlled tree where the panel marker and a single
@@ -131,10 +134,73 @@ final class _NoopPainter extends rive.RenderTexturePainter {
 /// [RivePanel] arranges them. The caller decorates the rive widget via
 /// [riveWrapper] (e.g. wraps it in a Transform.scale) to exercise different
 /// ancestor configurations.
+/// Keeps advancing and reports no change, like a settled artboard that keeps
+/// ticking.
+final class _UnchangedPainter extends rive.RenderTexturePainter {
+  int advances = 0;
+
+  @override
+  Color get background => const Color(0x00000000);
+
+  @override
+  rive.Factory? get riveFactory => null;
+
+  @override
+  bool advance(double elapsedSeconds) {
+    advances++;
+    return true;
+  }
+
+  @override
+  bool get needsPaint => false;
+
+  @override
+  void paint(rive.RenderTexture texture, double devicePixelRatio, Size size) {}
+}
+
+/// Paints a real artboard and never stops advancing, without advancing the
+/// artboard itself. Each paint draws it into a throwaway Flutter canvas,
+/// which consumes its change the way a real draw does.
+base class _ArtboardPainter extends rive.ArtboardPainter
+    with rive.RiveArtboardLayoutMixin {
+  _ArtboardPainter(this._artboard);
+
+  final rive.Artboard _artboard;
+  int paints = 0;
+  Size? lastPaintSize;
+  bool keepAdvancing = true;
+  // Cleared to paint without drawing the artboard, which leaves its change
+  // flag set.
+  bool drawArtboard = true;
+
+  @override
+  rive.Artboard get artboard => _artboard;
+
+  @override
+  void artboardChanged(rive.Artboard artboard) {}
+
+  @override
+  bool advance(double elapsedSeconds) => keepAdvancing;
+
+  @override
+  void paint(rive.Renderer renderer, Size size, double paintPixelRatio) {
+    paints++;
+    lastPaintSize = size;
+    if (!drawArtboard) {
+      return;
+    }
+    final recorder = ui.PictureRecorder();
+    final flutterRenderer = rive.Renderer.make(ui.Canvas(recorder));
+    _artboard.draw(flutterRenderer);
+    flutterRenderer.dispose();
+    recorder.endRecording().dispose();
+  }
+}
+
 Future<SharedTextureViewRenderObject> _pumpHarness(
   WidgetTester tester, {
   required SharedRenderTexture shared,
-  required _NoopPainter painter,
+  required rive.RenderTexturePainter painter,
   required Rect panelRect,
   required Rect widgetRect,
   required double dpr,
@@ -197,6 +263,333 @@ void _expectMatrix(List<double> actual, List<double> expected) {
 }
 
 void main() {
+  group('SharedTextureViewRenderObject.needsSharedPaint', () {
+    testWidgets(
+      'an ancestor transform change redraws an unchanged view behind a '
+      'repaint boundary',
+      (tester) async {
+        final texture = _FakeRenderTexture();
+        final shared = SharedRenderTexture(
+          texture: texture,
+          devicePixelRatio: 1.0,
+          backgroundColor: const Color(0x00000000),
+          panelKey: GlobalKey(),
+        );
+        final host = _ScaleHost(initialScale: 0.5);
+        await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: _UnchangedPainter(),
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(0, 0, 200, 200),
+          dpr: 1.0,
+          // The boundary keeps the view's own paint from running when the
+          // scale above it changes.
+          riveWrapper: (child) => host.wrap(RepaintBoundary(child: child)),
+        );
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        final draws = texture.recording.saveCount;
+
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(texture.recording.saveCount, draws, reason: 'unchanged');
+
+        host.setScale(1.0);
+        await tester.pump(const Duration(milliseconds: 16));
+
+        expect(texture.recording.saveCount, draws + 1);
+        shared.dispose();
+      },
+    );
+
+    group('with a real artboard', () {
+      late File riveFile;
+      late rive.Artboard artboard;
+
+      setUp(() async {
+        riveFile = await decodeRiveFixture('test/assets/rewards.riv');
+        artboard = riveFile.defaultArtboard()!;
+      });
+
+      tearDown(() {
+        artboard.dispose();
+        riveFile.dispose();
+      });
+
+      testWidgets('a resize redraws a view whose artboard did not change',
+          (tester) async {
+        final shared = _makeShared();
+        final painter = _ArtboardPainter(artboard);
+        final texturePainter = rive.ArtboardWidgetPainter(painter);
+        Future<void> pumpView(Rect widgetRect) => _pumpHarness(
+              tester,
+              shared: shared,
+              painter: texturePainter,
+              panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+              widgetRect: widgetRect,
+              dpr: 1.0,
+            );
+        // The top-left stays put, so the view's transform to the panel does
+        // not change with its size.
+        await pumpView(const Rect.fromLTWH(0, 0, 200, 200));
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        final paints = painter.paints;
+        expect(painter.lastPaintSize, const Size(200, 200));
+        expect(artboard.didChange, isFalse);
+
+        await pumpView(const Rect.fromLTWH(0, 0, 120, 120));
+        await tester.pump(const Duration(milliseconds: 16));
+
+        expect(painter.paints, paints + 1);
+        expect(painter.lastPaintSize, const Size(120, 120));
+        shared.dispose();
+        texturePainter.dispose();
+        painter.dispose();
+      });
+
+      testWidgets('a change on the settling pass gets one trailing pass',
+          (tester) async {
+        final stateMachine = artboard.defaultStateMachine()!;
+        addTearDown(stateMachine.dispose);
+        stateMachine.advanceAndApply(0);
+        final shared = _makeShared();
+        final painter = _ArtboardPainter(artboard);
+        final texturePainter = rive.ArtboardWidgetPainter(painter);
+        await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: texturePainter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(0, 0, 200, 200),
+          dpr: 1.0,
+        );
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        final paints = painter.paints;
+
+        stateMachine.advanceAndApply(0.1);
+        painter.keepAdvancing = false;
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(painter.paints, paints + 1);
+
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(painter.paints, paints + 2);
+
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        expect(painter.paints, paints + 2);
+        expect(shared.isTickerActive, isFalse);
+        shared.dispose();
+        texturePainter.dispose();
+        painter.dispose();
+      });
+
+      testWidgets('content that settles while changing gets one trailing pass',
+          (tester) async {
+        final stateMachine = artboard.defaultStateMachine()!;
+        addTearDown(stateMachine.dispose);
+        stateMachine.advanceAndApply(0);
+        final shared = _makeShared();
+        final painter = _ArtboardPainter(artboard);
+        final texturePainter = rive.ArtboardWidgetPainter(painter);
+        await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: texturePainter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(0, 0, 200, 200),
+          dpr: 1.0,
+        );
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        final paints = painter.paints;
+
+        stateMachine.advanceAndApply(0.1);
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(painter.paints, paints + 1);
+
+        // The next pass changes too, and settles.
+        stateMachine.advanceAndApply(0.1);
+        painter.keepAdvancing = false;
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(painter.paints, paints + 2);
+
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(painter.paints, paints + 3, reason: 'the trailing pass');
+
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        expect(painter.paints, paints + 3);
+        expect(shared.isTickerActive, isFalse);
+        shared.dispose();
+        texturePainter.dispose();
+        painter.dispose();
+      });
+
+      testWidgets('a change the paint does not consume gets one trailing pass',
+          (tester) async {
+        final stateMachine = artboard.defaultStateMachine()!;
+        addTearDown(stateMachine.dispose);
+        stateMachine.advanceAndApply(0);
+        final shared = _makeShared();
+        final painter = _ArtboardPainter(artboard);
+        final texturePainter = rive.ArtboardWidgetPainter(painter);
+        await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: texturePainter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(0, 0, 200, 200),
+          dpr: 1.0,
+        );
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        final paints = painter.paints;
+
+        painter.drawArtboard = false;
+        stateMachine.advanceAndApply(0.1);
+        painter.keepAdvancing = false;
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+
+        expect(artboard.didChange, isTrue, reason: 'never drawn');
+        expect(painter.paints, paints + 2);
+        expect(shared.isTickerActive, isFalse);
+        expect(tester.binding.hasScheduledFrame, isFalse);
+        shared.dispose();
+        texturePainter.dispose();
+        painter.dispose();
+      });
+
+      testWidgets('a change draws, then once more on the next pass',
+          (tester) async {
+        final stateMachine = artboard.defaultStateMachine()!;
+        addTearDown(stateMachine.dispose);
+        stateMachine.advanceAndApply(0);
+        final shared = _makeShared();
+        final painter = _ArtboardPainter(artboard);
+        final texturePainter = rive.ArtboardWidgetPainter(painter);
+        await _pumpHarness(
+          tester,
+          shared: shared,
+          painter: texturePainter,
+          panelRect: const Rect.fromLTWH(0, 0, 800, 600),
+          widgetRect: const Rect.fromLTWH(0, 0, 200, 200),
+          dpr: 1.0,
+        );
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        final paints = painter.paints;
+
+        stateMachine.advanceAndApply(0.1);
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(painter.paints, paints + 1);
+        expect(artboard.didChange, isFalse, reason: 'the draw consumed it');
+
+        await tester.pump(const Duration(milliseconds: 16));
+        expect(painter.paints, paints + 2);
+
+        for (var i = 0; i < 3; i++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        expect(painter.paints, paints + 2);
+        shared.dispose();
+        texturePainter.dispose();
+        painter.dispose();
+      });
+    });
+
+    testWidgets(
+        'a view neither advances nor paints while its panel is not laid out',
+        (tester) async {
+      final shared = _makeShared();
+      final painter = _UnchangedPainter();
+      await tester.pumpWidget(SharedTextureViewRenderer(
+        renderTexturePainter: painter,
+        sharedTexture: shared,
+        devicePixelRatio: 1.0,
+        drawOrder: 1,
+      ));
+      final ro = tester.renderObject<SharedTextureViewRenderObject>(
+        find.byType(SharedTextureViewRenderer),
+      );
+
+      // Advancing would keep the shared ticker running with nothing shown.
+      expect(ro.advanceSharedTexture(0.016), isFalse);
+      expect(painter.advances, 0);
+      expect(ro.needsSharedPaint, isFalse);
+      shared.dispose();
+    });
+
+    testWidgets(
+        'a panel resize redraws an unchanged view behind a repaint boundary',
+        (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = SharedRenderTexture(
+        texture: texture,
+        devicePixelRatio: 1.0,
+        backgroundColor: const Color(0x00000000),
+        panelKey: GlobalKey(),
+      );
+      final panelWidth = ValueNotifier<double>(800);
+      addTearDown(panelWidth.dispose);
+      // Only the panel rebuilds: the view keeps its rect, and its boundary
+      // keeps it from repainting, so the panel size is all that changes
+      // what the draw scales to.
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Stack(
+          children: [
+            ValueListenableBuilder<double>(
+              valueListenable: panelWidth,
+              builder: (context, width, _) => Positioned(
+                left: 0,
+                top: 0,
+                width: width,
+                height: 600,
+                child: SizedBox.expand(key: shared.panelKey),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              width: 200,
+              height: 200,
+              child: RepaintBoundary(
+                child: SharedTextureViewRenderer(
+                  renderTexturePainter: _UnchangedPainter(),
+                  sharedTexture: shared,
+                  devicePixelRatio: 1.0,
+                  drawOrder: 1,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ));
+      for (var i = 0; i < 3; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      final draws = texture.recording.saveCount;
+
+      panelWidth.value = 400;
+      await tester.pump(const Duration(milliseconds: 16));
+
+      expect(texture.recording.saveCount, draws + 1);
+      shared.dispose();
+    });
+  });
+
   group('SharedTextureViewRenderObject.paintIntoSharedTexture', () {
     testWidgets(
       'no ancestor transform — translation is widget-relative-to-panel × dpr, '
@@ -221,7 +614,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         expect(out.recording.transforms, hasLength(1));
         // scale=(2,2), translation=(50*2, 100*2)=(100,200).
@@ -255,7 +648,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         _expectMatrix(out.recording.transforms.single,
             [1.0, 0.0, 0.0, 1.0, 300.0, 250.0]);
@@ -287,7 +680,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         _expectMatrix(
             out.recording.transforms.single, [1.0, 0.0, 0.0, 1.0, 50.0, 50.0]);
@@ -324,7 +717,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         // scale=(0.5, 0.5), translation=(50, 50).
         _expectMatrix(
@@ -361,7 +754,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         // scale=(1,1), translation=(50, 100) — same as the no-transform case.
         _expectMatrix(
@@ -393,7 +786,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         // scale=(0.5, 0.5) * dpr=3 = (1.5, 1.5).
         // visual top-left of scaled box at panel-local: (40 + 50, 60 + 50) =
@@ -437,7 +830,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         _expectMatrix(
             out.recording.transforms.single, [0.0, 1.0, -1.0, 0.0, 200.0, 0.0]);
@@ -474,7 +867,7 @@ void main() {
         );
 
         final out = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         _expectMatrix(
             out.recording.transforms.single, [-1.0, 0.0, 0.0, 1.0, 200.0, 0.0]);
@@ -508,7 +901,7 @@ void main() {
         // Backing is 2× the panel's logical size (as native allocates under
         // an ancestor scale of 2 at dpr 1).
         final out = _FakeRenderTexture(actualWidth: 1600, actualHeight: 1200);
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         // scale = actual/panel = (2, 2); translation = (50, 100) × 2.
         _expectMatrix(out.recording.transforms.single,
@@ -537,7 +930,7 @@ void main() {
         // Backing equals the panel's logical size even though dpr is 2 — the
         // real texture wins over the dpr fallback.
         final out = _FakeRenderTexture(actualWidth: 800, actualHeight: 600);
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         // scale = actual/panel = (1, 1), NOT dpr = 2.
         _expectMatrix(
@@ -565,7 +958,7 @@ void main() {
 
         // Width halved, height unchanged relative to the panel.
         final out = _FakeRenderTexture(actualWidth: 400, actualHeight: 600);
-        ro.paintIntoSharedTexture(out, 0.0);
+        ro.paintIntoSharedTexture(out);
 
         // scale = (0.5, 1.0); translation = (100 × 0.5, 60 × 1.0).
         _expectMatrix(
@@ -636,7 +1029,7 @@ void main() {
 
         // First read: scale 0.5, visual top-left (50, 50).
         final firstOut = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(firstOut, 0.0);
+        ro.paintIntoSharedTexture(firstOut);
         _expectMatrix(firstOut.recording.transforms.single,
             [0.5, 0.0, 0.0, 0.5, 50.0, 50.0]);
 
@@ -649,7 +1042,7 @@ void main() {
 
         // Second read: scale 0.75, visual top-left (25, 25).
         final secondOut = _FakeRenderTexture();
-        ro.paintIntoSharedTexture(secondOut, 0.0);
+        ro.paintIntoSharedTexture(secondOut);
         _expectMatrix(secondOut.recording.transforms.single,
             [0.75, 0.0, 0.0, 0.75, 25.0, 25.0]);
 

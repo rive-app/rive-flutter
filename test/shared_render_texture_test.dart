@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rive/rive.dart';
@@ -76,10 +77,11 @@ class _FakePainter implements SharedTexturePainter {
   _FakePainter({this.drawOrder = 1, this.framesToAdvance = 0});
 
   int paintCount = 0;
+  final List<double> elapsedLog = [];
   rive.RenderTexture? lastPaintedInto;
   int drawOrder;
-  // Number of remaining paint passes the painter still wants to advance for.
-  // After this counter reaches 0, paintIntoSharedTexture returns false and the
+  // Number of remaining passes the painter still wants to advance for.
+  // After this counter reaches 0, advanceSharedTexture returns false and the
   // painter is "settled".
   int framesToAdvance;
 
@@ -90,24 +92,67 @@ class _FakePainter implements SharedTexturePainter {
   int get sharedDrawOrder => drawOrder;
 
   @override
-  bool paintIntoSharedTexture(
-      rive.RenderTexture texture, double elapsedSeconds) {
-    paintCount++;
-    lastPaintedInto = texture;
+  bool advanceSharedTexture(double elapsedSeconds) {
+    elapsedLog.add(elapsedSeconds);
     if (framesToAdvance > 0) {
       framesToAdvance--;
       return true;
     }
     return false;
   }
+
+  @override
+  bool get needsSharedPaint => true;
+
+  @override
+  void paintIntoSharedTexture(rive.RenderTexture texture) {
+    paintCount++;
+    lastPaintedInto = texture;
+  }
 }
 
-SharedRenderTexture _makeShared(_FakeRenderTexture texture) {
+/// Advances ahead of the shared pass; [changed] is what it reports as
+/// needing a redraw, cleared by its paint like an artboard draw would.
+class _GatedPainter implements SharedTexturePainter {
+  bool advancing = true;
+  bool changed = false;
+  int advanceCount = 0;
+  int paintCount = 0;
+  void Function()? onAdvance;
+
+  @override
+  rive.Factory? get riveFactory => null;
+
+  @override
+  int get sharedDrawOrder => 1;
+
+  @override
+  bool advanceSharedTexture(double elapsedSeconds) {
+    advanceCount++;
+    onAdvance?.call();
+    return advancing;
+  }
+
+  @override
+  bool get needsSharedPaint => changed;
+
+  @override
+  void paintIntoSharedTexture(rive.RenderTexture texture) {
+    paintCount++;
+    changed = false;
+  }
+}
+
+SharedRenderTexture _makeShared(
+  _FakeRenderTexture texture, {
+  DrawOptimization drawOptimization = DrawOptimization.drawWhenChanged,
+}) {
   return SharedRenderTexture(
     texture: texture,
     devicePixelRatio: 2.0,
     backgroundColor: const Color(0xFF112233),
     panelKey: GlobalKey(),
+    drawOptimization: drawOptimization,
   );
 }
 
@@ -417,6 +462,174 @@ void main() {
         expect(shared.isDisposed, isTrue);
       },
     );
+  });
+
+  // A painter that keeps advancing keeps the shared ticker running, so these
+  // tests dispose the texture before they end.
+  group('SharedRenderTexture drawOptimization', () {
+    Future<void> pumpPasses(WidgetTester tester, int count) async {
+      for (var i = 0; i < count; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+    }
+
+    testWidgets('drawWhenChanged advances every pass but draws on change',
+        (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = _makeShared(texture);
+      final painter = _GatedPainter();
+      shared.addPainter(painter);
+
+      await pumpPasses(tester, 1);
+      expect(texture.clearCount, 1, reason: 'a new painter draws');
+      expect(painter.paintCount, 1);
+
+      await pumpPasses(tester, 3);
+      expect(painter.advanceCount, 4);
+      expect(texture.clearCount, 1);
+      expect(texture.flushCount, 1);
+      expect(shared.isTickerActive, isTrue, reason: 'still advancing');
+
+      painter.changed = true;
+      await pumpPasses(tester, 1);
+      expect(texture.clearCount, 2);
+      expect(painter.paintCount, 2);
+      shared.dispose();
+    });
+
+    testWidgets('a change in one painter redraws every painter',
+        (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = _makeShared(texture);
+      final changing = _GatedPainter();
+      final unchanged = _GatedPainter();
+      shared
+        ..addPainter(changing)
+        ..addPainter(unchanged);
+      await pumpPasses(tester, 2);
+
+      changing.changed = true;
+      await pumpPasses(tester, 1);
+
+      expect(unchanged.paintCount, 2);
+      shared.dispose();
+    });
+
+    testWidgets('a later advance that changes an earlier painter draws',
+        (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = _makeShared(texture);
+      final earlier = _GatedPainter();
+      final later = _GatedPainter();
+      shared
+        ..addPainter(earlier)
+        ..addPainter(later);
+      await pumpPasses(tester, 2);
+      final paints = earlier.paintCount;
+
+      // Both settle, and the later advance dirties the earlier painter after
+      // the earlier one already advanced.
+      earlier.advancing = false;
+      later
+        ..advancing = false
+        ..onAdvance = () => earlier.changed = true;
+      await pumpPasses(tester, 1);
+
+      expect(earlier.paintCount, paints + 1);
+      shared.dispose();
+    });
+
+    testWidgets('alwaysDraw draws every pass', (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared =
+          _makeShared(texture, drawOptimization: DrawOptimization.alwaysDraw);
+      shared.addPainter(_GatedPainter());
+
+      await pumpPasses(tester, 4);
+
+      expect(texture.clearCount, 4);
+      shared.dispose();
+    });
+
+    testWidgets(
+        'a painter that advances in its paint draws every pass with its '
+        'elapsed time', (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = _makeShared(texture);
+      final ungated = _FakePainter(framesToAdvance: 10);
+      shared
+        ..addPainter(_GatedPainter())
+        ..addPainter(ungated);
+
+      await pumpPasses(tester, 4);
+
+      expect(texture.clearCount, 4);
+      expect(ungated.paintCount, 4);
+      expect(ungated.elapsedLog.skip(1), everyElement(greaterThan(0)));
+      shared.dispose();
+    });
+
+    testWidgets('removing a painter redraws the others', (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = _makeShared(texture);
+      final staying = _GatedPainter();
+      final leaving = _GatedPainter();
+      shared
+        ..addPainter(staying)
+        ..addPainter(leaving);
+      await pumpPasses(tester, 2);
+      final clears = texture.clearCount;
+
+      shared.removePainter(leaving);
+      await pumpPasses(tester, 1);
+
+      expect(texture.clearCount, clears + 1);
+      expect(staying.paintCount, 2);
+      shared.dispose();
+    });
+
+    testWidgets('a background color change redraws', (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = _makeShared(texture);
+      shared.addPainter(_GatedPainter());
+      await pumpPasses(tester, 2);
+      final clears = texture.clearCount;
+
+      shared.backgroundColor = const Color(0xFF00FF00);
+      await pumpPasses(tester, 1);
+
+      expect(texture.clearCount, clears + 1);
+      expect(texture.lastClearColor, const Color(0xFF00FF00));
+      shared.dispose();
+    });
+
+    testWidgets('a background color change on a settled texture requests a frame',
+        (tester) async {
+      final shared = _makeShared(_FakeRenderTexture());
+      shared.addPainter(_GatedPainter()..advancing = false);
+      await pumpPasses(tester, 2);
+      expect(SchedulerBinding.instance.hasScheduledFrame, isFalse);
+
+      shared.backgroundColor = const Color(0xFF00FF00);
+
+      expect(SchedulerBinding.instance.hasScheduledFrame, isTrue);
+      await pumpPasses(tester, 1);
+    });
+
+    testWidgets('schedulePaint draws although nothing changed',
+        (tester) async {
+      final texture = _FakeRenderTexture();
+      final shared = _makeShared(texture);
+      shared.addPainter(_GatedPainter()..advancing = false);
+      await pumpPasses(tester, 2);
+      expect(shared.isTickerActive, isFalse, reason: 'settled');
+      final clears = texture.clearCount;
+
+      shared.schedulePaint();
+      await _flushPostFrame(tester);
+
+      expect(texture.clearCount, clears + 1);
+    });
   });
 
   group('RiveSharedTexture inherited widget', () {

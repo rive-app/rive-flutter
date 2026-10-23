@@ -10,13 +10,18 @@ abstract class SharedTexturePainter {
   /// pass can attach its recording session. Null when there is none.
   rive.Factory? get riveFactory => null;
 
-  /// Paint into the shared [texture] using [elapsedSeconds] since the last
-  /// shared-texture frame. Return `true` if the painter wants the shared
-  /// ticker to keep advancing (animation still running), `false` if the
-  /// painter is settled. The shared ticker stops when every painter reports
-  /// `false`.
-  bool paintIntoSharedTexture(
-      rive.RenderTexture texture, double elapsedSeconds);
+  /// Advance by [elapsedSeconds] since the last shared-texture frame. Return
+  /// `true` if the painter wants the shared ticker to keep advancing
+  /// (animation still running), `false` if the painter is settled. The shared
+  /// ticker stops when every painter reports `false`.
+  bool advanceSharedTexture(double elapsedSeconds);
+
+  /// Whether the last [advanceSharedTexture] changed what this painter draws.
+  /// A pass draws only when this is true for at least one painter.
+  bool get needsSharedPaint => true;
+
+  /// Paint the current state into the shared [texture]. Does not advance.
+  void paintIntoSharedTexture(rive.RenderTexture texture);
 }
 
 /// A shared render texture that multiple Rive painters can draw into.
@@ -33,7 +38,30 @@ abstract class SharedTexturePainter {
 class SharedRenderTexture {
   final rive.RenderTexture texture;
   double devicePixelRatio;
-  Color backgroundColor;
+
+  Color get backgroundColor => _backgroundColor;
+  Color _backgroundColor;
+  set backgroundColor(Color value) {
+    if (_backgroundColor == value) {
+      return;
+    }
+    _backgroundColor = value;
+    schedulePaint();
+  }
+
+  /// When the shared texture is redrawn. With
+  /// [rive.DrawOptimization.drawWhenChanged] a pass draws only when one of
+  /// its painters changed, and then redraws every painter.
+  rive.DrawOptimization get drawOptimization => _drawOptimization;
+  rive.DrawOptimization _drawOptimization;
+  set drawOptimization(rive.DrawOptimization value) {
+    if (_drawOptimization == value) {
+      return;
+    }
+    _drawOptimization = value;
+    schedulePaint();
+  }
+
   final List<SharedTexturePainter> painters = [];
   // Attach sequence per painter: the tie-break for equal [sharedDrawOrder]s.
   // List.sort makes no stability guarantee, so without an explicit tie-break
@@ -49,9 +77,12 @@ class SharedRenderTexture {
   SharedRenderTexture({
     required this.texture,
     required this.devicePixelRatio,
-    required this.backgroundColor,
+    required Color backgroundColor,
     required this.panelKey,
-  }) {
+    rive.DrawOptimization drawOptimization =
+        rive.DrawOptimization.drawWhenChanged,
+  })  : _backgroundColor = backgroundColor,
+        _drawOptimization = drawOptimization {
     texture.addTextureChangedListener(_onTextureChanged);
   }
 
@@ -59,6 +90,7 @@ class SharedRenderTexture {
   // content before it's shown. Draw straight away when we're called outside a
   // frame.
   void _onTextureChanged() {
+    _forceDraw = true;
     final phase = SchedulerBinding.instance.schedulerPhase;
     if (phase == SchedulerPhase.idle ||
         phase == SchedulerPhase.postFrameCallbacks) {
@@ -77,12 +109,15 @@ class SharedRenderTexture {
   factory SharedRenderTexture.create({
     Color backgroundColor = const Color(0x00000000),
     double devicePixelRatio = 1.0,
+    rive.DrawOptimization drawOptimization =
+        rive.DrawOptimization.drawWhenChanged,
   }) {
     return SharedRenderTexture(
       texture: rive.RiveNative.instance.makeRenderTexture(),
       devicePixelRatio: devicePixelRatio,
       backgroundColor: backgroundColor,
       panelKey: GlobalKey(),
+      drawOptimization: drawOptimization,
     ).._ownsTexture = true;
   }
 
@@ -117,6 +152,10 @@ class SharedRenderTexture {
   Ticker? _ticker;
   double _prevTickerElapsedInSeconds = 0;
   bool _scheduled = false;
+
+  /// Whether the next pass draws even when no painter changed: the painter
+  /// set, their order or the texture changed, or a paint was requested.
+  bool _forceDraw = true;
 
   void _onTick(Duration duration) {
     final double tickerElapsedInSeconds =
@@ -198,21 +237,41 @@ class SharedRenderTexture {
       startTicker();
       return;
     }
+    elapsedSeconds += _bankedElapsed;
+    _bankedElapsed = 0;
+    // Advance before clearing so the draw decision sees this frame's
+    // changes.
+    var anyShouldAdvance = false;
+    for (final painter in painters) {
+      if (painter.advanceSharedTexture(elapsedSeconds)) {
+        anyShouldAdvance = true;
+      }
+    }
+    // Checked once every painter advanced: a later advance can change an
+    // earlier painter's artboard (a shared view model instance).
+    final draw = _forceDraw ||
+        _drawOptimization == rive.DrawOptimization.alwaysDraw ||
+        painters.any((painter) => painter.needsSharedPaint);
+    if (!draw) {
+      // The texture keeps showing the last pass.
+      if (anyShouldAdvance) {
+        startTicker();
+      } else {
+        stopTicker();
+      }
+      return;
+    }
     if (!texture.clear(backgroundColor)) {
       // A failed clear can be permanent (refused context, no session): stop
       // rather than spin. Recreation repaints via the texture-changed
-      // listener.
-      _bankedElapsed += elapsedSeconds;
+      // listener. The painters already advanced, so nothing is banked.
       stopTicker();
       return;
     }
-    elapsedSeconds += _bankedElapsed;
-    _bankedElapsed = 0;
-    bool anyShouldAdvance = false;
+    // Cleared first so a request raised while painting survives.
+    _forceDraw = false;
     for (final painter in painters) {
-      if (painter.paintIntoSharedTexture(texture, elapsedSeconds)) {
-        anyShouldAdvance = true;
-      }
+      painter.paintIntoSharedTexture(texture);
     }
     texture.flush(devicePixelRatio);
     if (anyShouldAdvance) {
@@ -225,7 +284,7 @@ class SharedRenderTexture {
   // Elapsed accumulated for the next coalesced pass, so no tick's delta is lost
   // when requests coalesce.
   /// Time from passes the gates skipped, replayed by the next pass that
-  /// paints. Separate from the ticker's own accumulator so a paused pass can
+  /// advances. Separate from the ticker's own accumulator so a paused pass can
   /// drop its tick without dropping this.
   double _bankedElapsed = 0;
 
@@ -255,7 +314,12 @@ class SharedRenderTexture {
   /// Schedule a one-shot paint of the shared render texture. Used when the
   /// scene visually needs to update — e.g. a painter scrolled, resized, or was
   /// just attached.
-  void schedulePaint() => _schedulePaintPass(0);
+  void schedulePaint() {
+    _forceDraw = true;
+    _schedulePaintPass(0);
+    // The pass runs post-frame, so a request while idle needs a frame.
+    SchedulerBinding.instance.ensureVisualUpdate();
+  }
 
   void _sortPainters() {
     painters.sort((a, b) {
@@ -286,6 +350,7 @@ class SharedRenderTexture {
     _attachSequence[painter] = _nextAttachSequence++;
     painters.add(painter);
     _sortPainters();
+    _forceDraw = true;
     // Kick the ticker so the newly added painter shows up. _paintShared will
     // stop it again on the next pass if every painter is already settled.
     startTicker();
@@ -303,6 +368,7 @@ class SharedRenderTexture {
     }
     // The texture still holds the removed painter's last draw; kick a pass to
     // redraw without it.
+    _forceDraw = true;
     startTicker();
   }
 }

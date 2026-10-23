@@ -112,9 +112,9 @@ base class _SpyRenderTexture extends rive.RenderTexture {
 final class _DeferredContentPainter extends rive.RenderTexturePainter {
   _DeferredContentPainter(this.factory);
   final rive.Factory? factory;
-  bool advance = false;
+  bool keepAdvancing = false;
   final List<double> elapsedLog = [];
-  int get paintCount => elapsedLog.length;
+  int paintCount = 0;
 
   @override
   rive.Factory? get riveFactory => factory;
@@ -123,11 +123,14 @@ final class _DeferredContentPainter extends rive.RenderTexturePainter {
   Color get background => const Color(0x00000000);
 
   @override
-  bool paint(rive.RenderTexture texture, double devicePixelRatio, Size size,
-      double elapsedSeconds) {
+  bool advance(double elapsedSeconds) {
     elapsedLog.add(elapsedSeconds);
-    return advance;
+    return keepAdvancing;
   }
+
+  @override
+  void paint(rive.RenderTexture texture, double devicePixelRatio, Size size) =>
+      paintCount++;
 }
 
 SharedRenderTexture _makeShared(_SpyRenderTexture texture) =>
@@ -207,7 +210,7 @@ void main() {
     (tester) async {
       final spy = _SpyRenderTexture();
       final shared = _makeShared(spy);
-      final painter = _DeferredContentPainter(null)..advance = true;
+      final painter = _DeferredContentPainter(null)..keepAdvancing = true;
 
       await _pumpPanel(tester, shared: shared, painters: [painter]);
       await _settle(tester);
@@ -236,7 +239,7 @@ void main() {
     (tester) async {
       final spy = _SpyRenderTexture();
       final shared = _makeShared(spy);
-      final painter = _DeferredContentPainter(null)..advance = true;
+      final painter = _DeferredContentPainter(null)..keepAdvancing = true;
 
       await _pumpPanel(tester, shared: shared, painters: [painter]);
       await _settle(tester);

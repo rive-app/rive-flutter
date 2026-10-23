@@ -63,14 +63,22 @@ class RiveWidget extends StatefulWidget {
     this.sharedTexture,
     this.drawOrder = 1,
     this.renderResolution,
+    this.drawOptimization,
     this.semantics = RiveSemantics.disabled,
     this.keyboardFocus = true,
-  }) : assert(
+  })  : assert(
           renderResolution == null ||
               (!useSharedTexture && sharedTexture == null),
           'renderResolution has no effect when painting into a shared '
           'texture — the surface owns the allocation. Set it on RivePanel / '
           'RiveSurface instead.',
+        ),
+        assert(
+          drawOptimization == null ||
+              (!useSharedTexture && sharedTexture == null),
+          'drawOptimization has no effect when painting into a shared '
+          'texture - the texture decides when it redraws. Set it on '
+          'RivePanel / SharedRenderTexture instead.',
         );
 
   /// The controller of the graphic. Manages the artboard, state machine and data binding.
@@ -133,6 +141,14 @@ class RiveWidget extends StatefulWidget {
   /// is ignored when rendering with [Factory.flutter], where content paints
   /// directly into Flutter's canvas at composite resolution.
   final RenderResolution? renderResolution;
+
+  /// When the artboard is redrawn. Defaults to
+  /// [DrawOptimization.drawWhenChanged]. See [DrawOptimization].
+  ///
+  /// Only applies when the widget owns its texture: it must not be set
+  /// together with [useSharedTexture] or [sharedTexture] (set it on
+  /// [RivePanel] / [SharedRenderTexture] instead).
+  final DrawOptimization? drawOptimization;
 
   /// Whether to expose the artboard's semantic tree to screen readers.
   ///
@@ -252,6 +268,8 @@ class _RiveWidgetState extends State<RiveWidget> {
       painter: widget.controller,
       renderResolution:
           widget.renderResolution ?? RenderResolution.defaultValue,
+      drawOptimization:
+          widget.drawOptimization ?? DrawOptimization.drawWhenChanged,
     ));
   }
 

@@ -103,10 +103,16 @@ class RivePanel extends StatefulWidget {
     super.key,
     this.backgroundColor = Colors.transparent,
     this.renderResolution = RenderResolution.defaultValue,
+    this.drawOptimization = DrawOptimization.drawWhenChanged,
     required this.child,
   });
 
   final Color backgroundColor;
+
+  /// When the panel's shared texture is redrawn. With
+  /// [DrawOptimization.drawWhenChanged] it redraws when any [RiveWidget]
+  /// painting into it changed. See [DrawOptimization].
+  final DrawOptimization drawOptimization;
 
   /// How the panel's shared texture is sized. See [RenderResolution].
   /// Forwarded to the panel's internal [RiveSurface].
@@ -121,6 +127,7 @@ class RivePanel extends StatefulWidget {
 class _RivePanelState extends State<RivePanel> {
   late final SharedRenderTexture _shared = SharedRenderTexture.create(
     backgroundColor: widget.backgroundColor,
+    drawOptimization: widget.drawOptimization,
   );
 
   @override
@@ -128,6 +135,9 @@ class _RivePanelState extends State<RivePanel> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.backgroundColor != widget.backgroundColor) {
       _shared.backgroundColor = widget.backgroundColor;
+    }
+    if (oldWidget.drawOptimization != widget.drawOptimization) {
+      _shared.drawOptimization = widget.drawOptimization;
     }
   }
 

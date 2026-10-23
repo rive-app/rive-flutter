@@ -205,14 +205,45 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
   }
 
   @override
-  bool paintIntoSharedTexture(RenderTexture texture, double elapsedSeconds) {
+  bool advanceSharedTexture(double elapsedSeconds) {
+    if (shared.panelKey.currentContext == null) {
+      // Nothing is drawn without the panel, so let the shared ticker settle.
+      return _shouldAdvance = false;
+    }
+    return _shouldAdvance = rivePainter?.advance(elapsedSeconds) ?? false;
+  }
+
+  // The transform to the panel and the panel size the last paint drew with.
+  // Ancestor transforms above a repaint boundary can move this view, and a
+  // fixed-resolution panel can resize, without repainting it.
+  Matrix4? _drawnTransform;
+  Size? _drawnPanelSize;
+
+  // Whether a pass was scheduled for the trailing draw, so a paint there that
+  // leaves the change flag set does not schedule another.
+  bool _trailingPassScheduled = false;
+
+  @override
+  bool get needsSharedPaint {
+    final panelRenderBox =
+        shared.panelKey.currentContext?.findRenderObject() as RenderBox?;
+    if (panelRenderBox == null) {
+      // Nothing can be drawn until the panel is laid out.
+      return false;
+    }
+    return forceDraw ||
+        (rivePainter?.needsPaint ?? false) ||
+        panelRenderBox.size != _drawnPanelSize ||
+        getTransformTo(panelRenderBox) != _drawnTransform;
+  }
+
+  @override
+  void paintIntoSharedTexture(RenderTexture texture) {
     final panelKeyContext = shared.panelKey.currentContext;
     if (panelKeyContext == null) {
-      // Can't compute a transform without the panel laid out yet — bail and
-      // report settled. A subsequent layout will [markNeedsPaint] which kicks
-      // the shared ticker via the painter's listener.
-      _shouldAdvance = false;
-      return false;
+      // Can't compute a transform without the panel laid out yet. A
+      // subsequent layout will [markNeedsPaint], which schedules a pass.
+      return;
     }
     final panelRenderBox = panelKeyContext.findRenderObject() as RenderBox;
 
@@ -232,8 +263,8 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
     // and mirror) rather than reading only the scale diagonal — otherwise
     // the texture content drawn here desyncs from how the Texture widget
     // composites at the widget tree's real transform.
-    final widgetToPanel =
-        Mat2D.fromMat4(getTransformTo(panelRenderBox).storage);
+    final transform = getTransformTo(panelRenderBox);
+    final widgetToPanel = Mat2D.fromMat4(transform.storage);
     final dpr = devicePixelRatio;
 
     // Scale into the texture's actual pixels relative to the panel size, so
@@ -244,18 +275,31 @@ class SharedTextureViewRenderObject extends RiveNativeRenderBox
       fallbackY: dpr,
     );
 
+    // A draw that consumed an artboard change draws again next pass, which
+    // schedulePaint also runs when everything settled on this one. See
+    // [RiveRenderBox.forceDraw].
+    final artboard = switch (rivePainter) {
+      RiveArtboardLayoutMixin(:final artboard) => artboard,
+      _ => null,
+    };
+    final changed = artboard?.didChange ?? false;
+    final onTrailingPass = _trailingPassScheduled;
+    _trailingPassScheduled = false;
+    forceDraw = false;
     final renderer = texture.renderer;
     renderer.save();
     renderer.transform(Mat2D.fromScale(sx, sy).mul(widgetToPanel));
-    _shouldAdvance = rivePainter?.paint(
-          texture,
-          dpr,
-          size,
-          elapsedSeconds,
-        ) ??
-        false;
+    rivePainter?.paint(texture, dpr, size);
     renderer.restore();
-    return _shouldAdvance;
+    if (changed) {
+      forceDraw = true;
+      if (!onTrailingPass || !artboard!.didChange) {
+        _trailingPassScheduled = true;
+        _shared.schedulePaint();
+      }
+    }
+    _drawnTransform = transform;
+    _drawnPanelSize = panelRenderBox.size;
   }
 
   @override
