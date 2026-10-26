@@ -1,8 +1,12 @@
-## Upcoming
+## 0.15.0-dev.4
+
+- Bumps to `rive_native: 0.2.0-dev.4`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
 
 ### Changes
 
 - Breaking: custom painters separate advancing from drawing. A `RenderTexturePainter` implements `advance(elapsedSeconds)` and `paint(texture, devicePixelRatio, size)`; a `SharedTexturePainter` implements `advanceSharedTexture(elapsedSeconds)`, `needsSharedPaint` and `paintIntoSharedTexture(texture)`. The paint methods no longer take the elapsed time or return whether to keep advancing.
+- A focused text input now blurs when a primary press lands outside it, as a platform text field does.
+- Adds `PointerButton` and a `button` argument to `StateMachine.pointerDown`, `pointerUp`, `dragStart` and `dragEnd`, so listeners can match secondary and middle mouse buttons. `button` defaults to `PointerButton.primary`. `StateMachine.listensToButtonAt` reports whether a listener under a position responds to a button.
 
 ### Performance
 
@@ -13,9 +17,11 @@
 
 - `RiveWidgetBuilder` loads when `artboardSelector` or `stateMachineSelector` changes before the file finishes loading. It used to throw `LateInitializationError` and stay in `RiveLoading`. See [#653](https://github.com/rive-app/rive-flutter/issues/653).
 - `RiveWidgetBuilder` shows the new file when a selector changes while a new `fileLoader` is still loading. It used to keep showing the previous loader's file, which may already be disposed.
-- Android, OpenGL: Rive content that a script draws into a GPU canvas now renders. It came out empty, so a blur of it drew nothing, or a black band on Mali GPUs.
+- Android, OpenGL: Rive content that a script draws into a GPU canvas now renders. It came out empty, so a blur of it drew nothing, or a black band on Mali GPUs. See [#662](https://github.com/rive-app/rive-flutter/issues/662).
 - Android: the Rive Renderer releases the memory it allocated for drawing once the last Rive widget is gone.
-- Disposing a Rive widget no longer leaves its render target registered in the renderer. Over many widget lifetimes that let frames run further ahead of rendering.
+- Disposing a Rive widget no longer leaves its render target registered in the renderer. Over many widget lifetimes that let frames run further ahead of rendering. See [#660](https://github.com/rive-app/rive-flutter/issues/660).
+- `RiveSemantics`: semantics inside a nested artboard come back when its hidden host is shown again.
+- Windows: the app no longer hangs or crashes on exit while releasing the GPU device.
 - Web: with Chrome's draft WebGL extensions enabled, content no longer stops rendering after the first frame with `GL_INVALID_OPERATION: glBlitFramebuffer: Blit feedback loop`. See [#635](https://github.com/rive-app/rive-flutter/issues/635).
 - Passing a new controller to `RiveWidget` no longer leaves the internal `ArtboardWidgetPainter` that wrapped the previous controller undisposed. Disposing the controller is still up to you. See [#636](https://github.com/rive-app/rive-flutter/issues/636).
 - `Factory.flutter`: `File.decode()` no longer waits for images from unrelated `Factory.decodeImage()` calls. If one of those never completed, for example an image decode started in a widget test that has since ended, every later file decode hung. See [#658](https://github.com/rive-app/rive-flutter/issues/658).
