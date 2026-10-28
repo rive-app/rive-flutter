@@ -1,3 +1,9 @@
+## Upcoming
+
+### Fixes
+
+- Web: an image drawn by more than one widget with `Factory.rive`, such as one from `Factory.rive.decodeImage`, uploads to the GPU once per widget instead of on every draw, which dropped frames while the widgets animated. See [#652](https://github.com/rive-app/rive-flutter/issues/652).
+
 ## 0.15.0-dev.4
 
 - Bumps to `rive_native: 0.2.0-dev.4`. Updates the Rive C++ runtime and renderer for the latest features, bug fixes, and performance improvements.
