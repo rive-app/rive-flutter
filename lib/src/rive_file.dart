@@ -182,11 +182,11 @@ class RiveFile {
       String? path,
    }) {
 
-    final clock = dumpLoadAndInstancePhases.active ? Stopwatches().create() : null;
+    final clock = dumpLoadAndInstancePhases.active ? Watch() : null;
 
     final skipInterpolation = path != null && RiveSettings().skipInterpolation(path);
-    if (skipInterpolation) {
-      _logr.info('RIVE-FILE >> $path${skipInterpolation ? ' > SKIP_INTERPOLATION' : ''}');
+    if (kDebugMode && skipInterpolation) {
+      // _logr.log(() => 'RIVE-FILE >> $path${skipInterpolation ? ' > SKIP_INTERPOLATION' : ''}');
     }
 
     /// Property fields table of contents
@@ -338,7 +338,7 @@ class RiveFile {
       _logr.info('RIVE-FILE >> $path >> artboards=${_artboards.length} objects=$objectsCount keyedProperties=$keyedProperties '
           'latests=${importStack.latests.length} > '
           // '$t2 $t3 >> '
-          '${clock.elapsedMilliseconds}');
+          '${clock.millis}');
       // if (objectsCount > 100000) dump('objects', objects!);
       // if (objectsCount > 100000) dump('imports', imports!);
     }
@@ -380,12 +380,6 @@ class RiveFile {
     bool loadCdnAssets = true,
     String? path,
   }) {
-    // TODO: in the next major version add an assert here to make this a requirement
-    if (!_initializedText) {
-      /// STOKANAL-FORK-EDIT
-      // debugPrint('''Rive: RiveFile.import called before RiveFile.initialize(). Consider calling `await RiveFile.initialize()` before using `RiveFile.import`''');
-    }
-
     var reader = BinaryReader(bytes);
     return RiveFile._(
       path: path,

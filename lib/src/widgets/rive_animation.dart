@@ -258,14 +258,14 @@ class _RiveAnimationPayload {
     artboard = null;
   }
 
-  final _watch = Stopwatches().create();
+  final _watch = Watch();
 
   bool inited = false;
 
   /// Criteria for a short lived state payload
   /// Short lived payloads are stored to avoid unnecessary duplicate RiveAnimationState._init calls
   bool get shortLived =>
-      _watch.elapsedMilliseconds < 2000;
+      _watch.millis < 2000;
 
   bool get loose =>
       _onDisposed && !shortLived;

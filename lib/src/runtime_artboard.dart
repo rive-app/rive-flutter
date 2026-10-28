@@ -203,7 +203,7 @@ final class RuntimeArtboard extends Artboard implements CoreContext {
   @override
   Artboard instance() {
 
-    final clock = dumpLoadAndInstancePhases.active ? Stopwatches().create() : null;
+    final clock = dumpLoadAndInstancePhases.active ? Watch() : null;
     final firstInstance = _firstInstance;
     _firstInstance = false;
 
@@ -290,7 +290,7 @@ final class RuntimeArtboard extends Artboard implements CoreContext {
     artboard.clean();
 
     if (clock != null) {
-      _logr.info('INSTANCE > $this > ops=${ops.length} ${clock.elapsedMilliseconds}');
+      _logr.info('INSTANCE > $this > ops=${ops.length} ${clock.millis}');
       if (!_everDumped && objects.length > 100000) {
         _everDumped = true;
         dump();
