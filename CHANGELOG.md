@@ -2,6 +2,7 @@
 
 ### Fixes
 
+- Web: a still artboard redraws when its images finish decoding. It used to show without them until something else changed it. Adds `RenderTexture.imageDecoded` for code that drives its own texture.
 - Web: an image drawn by more than one widget with `Factory.rive`, such as one from `Factory.rive.decodeImage`, uploads to the GPU once per widget instead of on every draw, which dropped frames while the widgets animated. See [#652](https://github.com/rive-app/rive-flutter/issues/652).
 - Android: supports Flutter's built-in Kotlin on Android Gradle Plugin 9. Builds with `android.builtInKotlin=true` no longer fail, and Flutter's "plugins that apply Kotlin Gradle Plugin (KGP)" warning no longer lists `rive_native`. See [#639](https://github.com/rive-app/rive-flutter/issues/639).
 
