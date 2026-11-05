@@ -7,7 +7,7 @@
 
 ![Rive hero image](https://cdn.rive.app/rive_logo_dark_bg.png)
 
-Rive Flutter is a runtime library for [Rive](https://rive.app), a real-time interactive design tool.
+Rive Flutter is the Flutter runtime for [Rive](https://rive.app).
 
 This library allows you to fully control Rive files in your Flutter apps and games.
 
@@ -16,6 +16,7 @@ This library allows you to fully control Rive files in your Flutter apps and gam
 - [Rive Flutter](#rive-flutter)
   - [Table of contents](#table-of-contents)
   - [Overview of Rive](#overview-of-rive)
+  - [Build with your agent](#build-with-your-agent)
   - [Getting started](#getting-started)
   - [Choosing a Renderer](#choosing-a-renderer)
     - [Note on the Impeller renderer](#note-on-the-impeller-renderer)
@@ -30,7 +31,7 @@ This library allows you to fully control Rive files in your Flutter apps and gam
 
 ## Overview of Rive
 
-[Rive](https://rive.app) combines an interactive design tool, a new stateful graphics format, a lightweight multi-platform runtime, and a blazing-fast vector renderer. This end-to-end pipeline guarantees that what you build in the Rive Editor is exactly what ships in your apps, games, and websites.
+[Rive](https://rive.app) is an agent-native 2D and 3D engine for games, apps, and interactive UI. Use it as your whole engine, or add it to the products you already have. Build with your coding agent through the [Rive CLI](https://rive.app/agents), or draw, rig, and animate by hand with the professional design and animation tools in the [Rive Editor](https://rive.app/editor). Both work on the same files. Open-source runtimes, no royalties or runtime fees. Rive files (`.riv`) play natively on web, mobile, desktop, game engines, consoles, smart TVs, and cars.
 
 For more information, check out the following resources:
 
@@ -38,6 +39,16 @@ For more information, check out the following resources:
 - [General Docs](https://rive.app/docs/)
 - [Flutter Docs](https://rive.app/docs/runtimes/flutter/flutter)
 - [Rive Community / Support](https://community.rive.app/c/support/)
+
+## Build with your agent
+
+Paste this into Claude Code, Codex, Cursor, or any agent that runs commands on your computer:
+
+```text
+Install the Rive CLI from rive.app/cli. Build an animated onboarding screen as a Rive file and add it to my Flutter app with the Rive runtime.
+```
+
+Your agent installs the [Rive CLI](https://rive.app/agents), writes the scene, and opens a preview window that rebuilds every time it saves. Keep giving it notes, or open the same file in the [Rive Editor](https://editor.rive.app/) and shape it by hand. Trying it needs no account. Writing the `.riv` that ships in your app needs a free Rive account. Free exports play a short Rive splash screen; [paid plans](https://rive.app/pricing) export without it. See [Getting started with the Rive CLI](https://rive.app/docs/cli/getting-started).
 
 ## Getting started
 
