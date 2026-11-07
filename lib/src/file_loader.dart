@@ -1,7 +1,9 @@
 import 'dart:async' show Completer;
+import 'dart:typed_data';
 
 import 'package:rive/rive.dart' as rive;
 import 'package:rive/src/errors.dart';
+import 'package:rive_native/rive_native.dart' show AssetLoaderCallback;
 
 /// {@template FileLoader}
 /// A class that loads a Rive file from an asset, URL, or file.
@@ -18,29 +20,46 @@ class FileLoader {
   final rive.Factory riveFactory;
   final rive.File? _providedFile;
   final String? _asset;
+  final Uint8List? _bytes;
   final String? _url;
+  final AssetLoaderCallback? assetLoader;
+
   Completer<rive.File>? _loadCompleter;
   rive.File? _loadedFile;
 
   /// {@macro FileLoader}
   /// - The [asset] parameter is the asset to load the Rive file from.
-  FileLoader.fromAsset(String asset, {required this.riveFactory})
+  FileLoader.fromAsset(String asset,
+      {required this.riveFactory, this.assetLoader})
       : _asset = asset,
+        _bytes = null,
         _providedFile = null,
         _url = null;
 
   /// {@macro FileLoader}
   /// - The [url] parameter is the URL to load the Rive file from.
-  FileLoader.fromUrl(String url, {required this.riveFactory})
+  FileLoader.fromUrl(String url, {required this.riveFactory, this.assetLoader})
       : _url = url,
+        _asset = null,
+        _bytes = null,
+        _providedFile = null;
+
+  /// {@macro FileLoader}
+  /// - The [bytes] parameter is the bytes to load the Rive file from.
+  FileLoader.fromBytes(Uint8List bytes,
+      {required this.riveFactory, this.assetLoader})
+      : _bytes = bytes,
+        _asset = null,
         _providedFile = null,
-        _asset = null;
+        _url = null;
 
   /// {@macro FileLoader}
   /// - The [file] parameter is the file to load the Rive file from.
   FileLoader.fromFile(rive.File file, {required this.riveFactory})
-      : _providedFile = file,
+      : assetLoader = null,
+        _providedFile = file,
         _asset = null,
+        _bytes = null,
         _url = null;
 
   Future<rive.File> file() async {
@@ -60,7 +79,8 @@ class FileLoader {
 
       if (_asset != null) {
         try {
-          file = await rive.File.asset(_asset, riveFactory: riveFactory);
+          file = await rive.File.asset(_asset,
+              riveFactory: riveFactory, assetLoader: assetLoader);
         } catch (e) {
           // Handle the case where the asset doesn't exist or has empty data
           throw RiveFileLoaderException(
@@ -70,9 +90,23 @@ class FileLoader {
           throw RiveFileLoaderException(
               'Failed to decode Rive file from asset: $_asset');
         }
+      } else if (_bytes != null) {
+        try {
+          file = await rive.File.decode(_bytes,
+              riveFactory: riveFactory, assetLoader: assetLoader);
+        } catch (e) {
+          // Handle the case where the bytes are invalid or empty
+          throw RiveFileLoaderException(
+              'Failed to load Rive file from bytes. Error: $e');
+        }
+        if (file == null) {
+          throw RiveFileLoaderException(
+              'Failed to decode Rive file from bytes');
+        }
       } else if (_url != null) {
         try {
-          file = await rive.File.url(_url, riveFactory: riveFactory);
+          file = await rive.File.url(_url,
+              riveFactory: riveFactory, assetLoader: assetLoader);
         } catch (e) {
           // Handle the case where the URL fails to load
           throw RiveFileLoaderException(
