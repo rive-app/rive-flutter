@@ -160,6 +160,12 @@ class _RiveExampleAppState extends State<RiveExampleApp> {
         'Tab, arrows and typed keys drive the focus tree in focus.riv; pick '
             'an artboard per scenario.',
       ),
+      _Page(
+        'Scroll',
+        ExampleScroll(),
+        'A list of interactive rows with a scroll bar from scroll.riv, in '
+            'elastic, clamped and virtualized variants.',
+      ),
       _Page('Events', ExampleEvents(), 'Handle Rive events.'),
       _Page('Audio', ExampleRiveAudio(), 'Example Rive file with audio.'),
     ]),

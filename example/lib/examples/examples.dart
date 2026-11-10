@@ -18,6 +18,7 @@ export 'render_resolution.dart';
 export 'responsive_layouts.dart';
 export 'rive_audio.dart';
 export 'rive_widget.dart';
+export 'scroll.dart';
 export 'semantics.dart';
 export 'semantics_omni.dart';
 export 'rive_widget_builder.dart';
