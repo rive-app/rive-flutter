@@ -316,7 +316,7 @@ class _ShortLivedPayloadCache {
       return false;
     });
 
-    if (length >= 100 && !_excessiveDumped) {
+    if (length >= 200 && !_excessiveDumped) { // was 100
       _excessiveDumped = true;
       _logr.telemeter
         ..log(() => '$this')
