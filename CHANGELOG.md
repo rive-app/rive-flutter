@@ -2,6 +2,8 @@
 
 ### Fixes
 
+- macOS, Windows: apps with several Flutter windows no longer crash when more than one window shows `Factory.rive` content.
+- Windows: closing one of several Flutter windows no longer frees the Rive renderer state the others still draw with.
 - Web: a still artboard redraws when its images finish decoding. It used to show without them until something else changed it. Adds `RenderTexture.imageDecoded` for code that drives its own texture.
 - Web: an image drawn by more than one widget with `Factory.rive`, such as one from `Factory.rive.decodeImage`, uploads to the GPU once per widget instead of on every draw, which dropped frames while the widgets animated. See [#652](https://github.com/rive-app/rive-flutter/issues/652).
 - Android: supports Flutter's built-in Kotlin on Android Gradle Plugin 9. Builds with `android.builtInKotlin=true` no longer fail, and Flutter's "plugins that apply Kotlin Gradle Plugin (KGP)" warning no longer lists `rive_native`. See [#639](https://github.com/rive-app/rive-flutter/issues/639).
