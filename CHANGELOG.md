@@ -14,6 +14,7 @@
 - Web: apps built with `--wasm` can read the values of `File.enums`, which threw a type error. Looking up view model properties, state machines or text runs by name, setting string and enum values, and typing into Rive text inputs keep working after Rive's memory grows. They failed with a detached `ArrayBuffer` error once enough files had loaded. Thanks [rydmike](https://github.com/rydmike) for the diagnosis and fix. See [#670](https://github.com/rive-app/rive-flutter/issues/670).
 - Web: `File.enums` returns an empty list after `dispose()`, as on native. It threw a `TypeError`.
 - Web, `--wasm`: `ArtboardPaintSource.updateDataBinds` and `RenderPaint.modulatedArtboard` return their result. They threw `JS value is not a boolean`.
+- Web: `RiveNative.init()` no longer hangs when the browser cannot load Rive's wasm files, for example when their host is unreachable, answers with an error, or serves a page in their place. It now completes and reports the failure.
 
 ## 0.15.0-dev.4
 
