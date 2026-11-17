@@ -12,6 +12,8 @@
 - Android: supports Flutter's built-in Kotlin on Android Gradle Plugin 9. Builds with `android.builtInKotlin=true` no longer fail, and Flutter's "plugins that apply Kotlin Gradle Plugin (KGP)" warning no longer lists `rive_native`. See [#639](https://github.com/rive-app/rive-flutter/issues/639).
 - Android: removing a Rive widget no longer blocks the UI until Rive finishes the rendering already queued. While a script compiled its shaders for the first time, that froze the app for seconds. See [#661](https://github.com/rive-app/rive-flutter/issues/661).
 - Web: apps built with `--wasm` can read the values of `File.enums`, which threw a type error. Looking up view model properties, state machines or text runs by name, setting string and enum values, and typing into Rive text inputs keep working after Rive's memory grows. They failed with a detached `ArrayBuffer` error once enough files had loaded. Thanks [rydmike](https://github.com/rydmike) for the diagnosis and fix. See [#670](https://github.com/rive-app/rive-flutter/issues/670).
+- Web: `File.enums` returns an empty list after `dispose()`, as on native. It threw a `TypeError`.
+- Web, `--wasm`: `ArtboardPaintSource.updateDataBinds` and `RenderPaint.modulatedArtboard` return their result. They threw `JS value is not a boolean`.
 
 ## 0.15.0-dev.4
 
