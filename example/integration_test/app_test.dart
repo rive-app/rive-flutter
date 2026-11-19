@@ -25,7 +25,7 @@ const _contentDivisor = 100;
 /// Decodes an asset under [Factory.rive], the way every on-device test
 /// needs it.
 Future<File> _decodeAsset(String name) async {
-  await RiveNative.init();
+  expect(await RiveNative.init(), isNot(isA<RiveNativeInitFailed>()));
   final bytes = await rootBundle.load('assets/$name');
   final file = await File.decode(
     bytes.buffer.asUint8List(),
@@ -217,7 +217,7 @@ void main() {
     'the centaur example (custom RenderTexturePainter, own texture) draws '
     'content on the native deferred path',
     (tester) async {
-      await RiveNative.init();
+      expect(await RiveNative.init(), isNot(isA<RiveNativeInitFailed>()));
 
       await tester.pumpWidget(const CentaurGameWidget());
 

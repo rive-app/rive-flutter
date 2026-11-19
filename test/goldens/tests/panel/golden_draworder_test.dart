@@ -29,7 +29,8 @@ import '../../../src/headless_support.dart';
 ///   remount.
 void main() {
   setUpAll(() async {
-    expect(await rive.RiveNative.init(), isTrue);
+    expect(await rive.RiveNative.init(),
+        isNot(isA<rive.RiveNativeInitFailed>()));
   });
 
   Future<List<RiveWidgetController>> controllers(WidgetTester tester) async {

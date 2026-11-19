@@ -200,7 +200,8 @@ Future<void> _settle(WidgetTester tester) async {
 
 void main() {
   setUpAll(() async {
-    expect(await rive.RiveNative.init(), isTrue);
+    expect(await rive.RiveNative.init(),
+        isNot(isA<rive.RiveNativeInitFailed>()));
   });
 
   // Spy-only (no recording session), so it runs under any native lib and is

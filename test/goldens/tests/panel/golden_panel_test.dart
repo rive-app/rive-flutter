@@ -24,7 +24,8 @@ import '../../../src/headless_support.dart';
 /// native lib lacks the headless symbols.
 void main() {
   setUpAll(() async {
-    expect(await rive.RiveNative.init(), isTrue);
+    expect(await rive.RiveNative.init(),
+        isNot(isA<rive.RiveNativeInitFailed>()));
   });
 
   testWidgets('RivePanel composites multiple .riv files into one texture',

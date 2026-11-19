@@ -27,7 +27,8 @@ void main() {
   }
 
   setUpAll(() async {
-    expect(await rive.RiveNative.init(), isTrue);
+    expect(await rive.RiveNative.init(),
+        isNot(isA<rive.RiveNativeInitFailed>()));
   });
 
   group('shared-texture semantics', () {

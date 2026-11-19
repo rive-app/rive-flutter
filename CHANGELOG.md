@@ -1,5 +1,10 @@
 ## Upcoming
 
+### Changes
+
+- Breaking: `RiveNative.init()` returns a `RiveNativeInit` instead of a `bool`, on every platform. `RiveNativeReady` means Rive is ready. `RiveRendererUnavailable` means the device has no Rive renderer, so use `Factory.flutter`; its `reason` says why. `RiveNativeInitFailed` carries a `message` with the cause and fix, and the `error` and `stackTrace` behind it. `init()` never throws, a call after a failure tries again, and ignoring the result is an analyzer warning. Under `flutter test`, the published native libraries report `RiveRendererUnavailable`.
+- `File.decode`, `File.asset`, `File.url` and `File.path` throw a `StateError` with that message when `init()` failed. They used to decode against a runtime that never started.
+
 ### Fixes
 
 - macOS, Windows: apps with several Flutter windows no longer crash when more than one window shows `Factory.rive` content.
@@ -15,6 +20,9 @@
 - Web: `File.enums` returns an empty list after `dispose()`, as on native. It threw a `TypeError`.
 - Web, `--wasm`: `ArtboardPaintSource.updateDataBinds` and `RenderPaint.modulatedArtboard` return their result. They threw `JS value is not a boolean`.
 - Web: `RiveNative.init()` no longer hangs when the browser cannot load Rive's wasm files, for example when their host is unreachable, answers with an error, or serves a page in their place. It now completes and reports the failure.
+- `RiveNative.init()` no longer hangs on every later call after the native library fails to load or the render context fails to start. It reports the failure.
+- Web: when the browser refuses a WebGL2 context, `Factory.rive.isSupported` is false and decoding with `Factory.rive` returns null, as on a native device without the Rive renderer. `isSupported` was always true and the file drew nothing.
+- Web: when the first wasm build refuses to start and the host answers the compatibility build's path with a page, the failure names the compatibility build instead of rerunning the first one.
 
 ## 0.15.0-dev.4
 

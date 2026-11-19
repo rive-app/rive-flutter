@@ -35,7 +35,8 @@ void main() {
   late File file;
 
   setUpAll(() async {
-    expect(await rive.RiveNative.init(), isTrue);
+    expect(await rive.RiveNative.init(),
+        isNot(isA<rive.RiveNativeInitFailed>()));
   });
 
   setUp(() async {

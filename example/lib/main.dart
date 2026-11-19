@@ -11,7 +11,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // The example opts Android in to the hardware buffer present; it is off by
   // default for apps.
-  await rive.RiveNative.init(androidHardwareBuffers: true);
+  switch (await rive.RiveNative.init(androidHardwareBuffers: true)) {
+    case rive.RiveNativeReady():
+      break;
+    case rive.RiveRendererUnavailable(:final reason):
+      debugPrint('Rive renderer unavailable ($reason), using Flutter');
+      RiveExampleApp.factoryToUse = RiveFactoryToUse.flutter;
+    case rive.RiveNativeInitFailed(:final message):
+      throw StateError(message);
+  }
 
   // Scripted benchmark runs open the page straight from a deep link, e.g.
   // `riveexample://bench?asset=rewards.riv&count=4&stats=1`. Everything else
