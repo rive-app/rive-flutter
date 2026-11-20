@@ -23,6 +23,9 @@
 - `RiveNative.init()` no longer hangs on every later call after the native library fails to load or the render context fails to start. It reports the failure.
 - Web: when the browser refuses a WebGL2 context, `Factory.rive.isSupported` is false and decoding with `Factory.rive` returns null, as on a native device without the Rive renderer. `isSupported` was always true and the file drew nothing.
 - Web: when the first wasm build refuses to start and the host answers the compatibility build's path with a page, the failure names the compatibility build instead of rerunning the first one.
+- Android: builds no longer fail with `sh: dart: command not found` when `dart` is not on `PATH`, as with FVM, builds started from an IDE, and CI. The setup task runs the `dart` of the Flutter SDK building the app. See [#646](https://github.com/rive-app/rive-flutter/issues/646).
+- Windows: `dart run rive_native:setup` no longer fails with `Expand-Archive : A positional parameter cannot be found` when the package path contains a space. See [#647](https://github.com/rive-app/rive-flutter/issues/647).
+- `dart run rive_native:setup` with several platforms sets up all of them. It used to stop at the first one already set up. It also restores the libraries `flutter test` loads after a `flutter clean`.
 
 ## 0.15.0-dev.4
 
