@@ -1,5 +1,3 @@
-import 'dart:async' show Completer;
-
 import 'package:rive/rive.dart' as rive;
 import 'package:rive/src/errors.dart';
 
@@ -19,8 +17,9 @@ class FileLoader {
   final rive.File? _providedFile;
   final String? _asset;
   final String? _url;
-  Completer<rive.File>? _loadCompleter;
+  Future<rive.File>? _load;
   rive.File? _loadedFile;
+  int _disposeCount = 0;
 
   /// {@macro FileLoader}
   /// - The [asset] parameter is the asset to load the Rive file from.
@@ -43,18 +42,22 @@ class FileLoader {
         _asset = null,
         _url = null;
 
+  /// Loads the file, or returns the one already loaded.
+  ///
+  /// Throws a [RiveFileLoaderException] if loading fails, or if [dispose] runs
+  /// before the load finishes.
   Future<rive.File> file() async {
     if (_providedFile != null) {
       _loadedFile = _providedFile;
       return _providedFile;
     }
 
-    if (_loadCompleter != null) {
-      return _loadCompleter!.future;
-    }
+    // One shared load: concurrent callers get the same file or the same error.
+    return _load ??= _loadFile();
+  }
 
-    _loadCompleter = Completer<rive.File>();
-
+  Future<rive.File> _loadFile() async {
+    final disposeCount = _disposeCount;
     try {
       rive.File? file;
 
@@ -87,17 +90,19 @@ class FileLoader {
             'No asset, URL, or file provided to RiveFileLoader');
       }
 
+      // dispose() ran while the file was loading: nothing owns it anymore.
+      if (_disposeCount != disposeCount) {
+        file.dispose();
+        throw RiveFileLoaderException(
+            'FileLoader was disposed before the Rive file finished loading');
+      }
+
       _loadedFile = file;
-      _loadCompleter!.complete(file);
       return file;
-    } on RiveFileLoaderException catch (e) {
-      _loadCompleter!.completeError(e);
+    } on RiveFileLoaderException {
       rethrow;
     } on Exception catch (e) {
-      final riveException =
-          RiveFileLoaderException('Unexpected error loading Rive file: $e');
-      _loadCompleter!.completeError(riveException);
-      throw riveException;
+      throw RiveFileLoaderException('Unexpected error loading Rive file: $e');
     }
   }
 
@@ -114,8 +119,10 @@ class FileLoader {
   bool get isFileAvailable => fileSync != null;
 
   void dispose() {
+    _disposeCount++;
     _providedFile?.dispose();
     _loadedFile?.dispose();
-    _loadCompleter = null;
+    _loadedFile = null;
+    _load = null;
   }
 }

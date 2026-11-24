@@ -76,7 +76,14 @@ class _ExampleRivePanelOverlayState extends State<ExampleRivePanelOverlay>
   }
 
   Future<void> _loadControllers() async {
-    final file = await _fileLoader.file();
+    final File file;
+    try {
+      file = await _fileLoader.file();
+    } on RiveFileLoaderException {
+      // The page closed mid-load: dispose() already released the file.
+      if (!mounted) return;
+      rethrow;
+    }
     if (!mounted) return;
     setState(() {
       _controllers = List.generate(

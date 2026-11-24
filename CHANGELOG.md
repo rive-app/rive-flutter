@@ -9,6 +9,7 @@
 - iOS/macOS: apps that use Swift Package Manager load Rive files after Xcode archives them for TestFlight, the App Store or distribution. The archive strip removed the symbols Rive looks up at runtime, and loading failed with `Failed to lookup symbol` for `loadRiveFile`, `init` or `makeFlutterFactory`. Setting the app's Strip Style to Non-Global Symbols is no longer needed. See [#617](https://github.com/rive-app/rive-flutter/issues/617) and [#641](https://github.com/rive-app/rive-flutter/issues/641).
 - iOS/macOS: Rive looks up its native functions in its own framework, so a function of the same name in the app or in another library no longer runs in place of Rive's. See [#618](https://github.com/rive-app/rive-flutter/issues/618).
 - iOS/macOS: Rive's Swift Package Manager framework ships a privacy manifest that declares the required-reason APIs it calls, `mach_absolute_time` and `fstat`.
+- Disposing a `FileLoader` while its file is still loading, for example by leaving a screen before its `RiveWidgetBuilder` shows the artboard, no longer fails with "Null check operator used on a null value", or "Unexpected null value" on web. The loader releases the late file and `FileLoader.file()` throws a `RiveFileLoaderException`, which an unmounted `RiveWidgetBuilder` ignores. A `FileLoader` that fails to load reports the error once instead of also raising an unhandled one. See [#615](https://github.com/rive-app/rive-flutter/issues/615).
 
 ## 0.15.0-dev.5
 

@@ -7,8 +7,7 @@ import 'package:rive/rive.dart';
 /// The .riv file is decoded once and shared by every tile — each tile owns
 /// only its controller and (on web) its WebGL context — so scroll churn
 /// exercises exactly the texture/context lifecycle, with no file loading in
-/// the loop (which also sidesteps the known FileLoader dispose-during-load
-/// race).
+/// the loop.
 ///
 /// Two access patterns, two outcomes:
 ///
