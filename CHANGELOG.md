@@ -4,6 +4,10 @@
 
 - Breaking: macOS apps that use Swift Package Manager need a deployment target of macOS 11 or later, which Rive's macOS libraries already required. Flutter 3.47 and later raise it for you. With earlier versions, set the Runner target's macOS Deployment Target to 11.0.
 
+### Performance
+
+- Web: looking up properties, state machines and text runs by name, and reading and setting string values and text, are faster.
+
 ### Fixes
 
 - iOS/macOS: apps that use Swift Package Manager load Rive files after Xcode archives them for TestFlight, the App Store or distribution. The archive strip removed the symbols Rive looks up at runtime, and loading failed with `Failed to lookup symbol` for `loadRiveFile`, `init` or `makeFlutterFactory`. Setting the app's Strip Style to Non-Global Symbols is no longer needed. See [#617](https://github.com/rive-app/rive-flutter/issues/617) and [#641](https://github.com/rive-app/rive-flutter/issues/641).
