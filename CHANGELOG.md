@@ -15,6 +15,8 @@
 - iOS/macOS: Rive's Swift Package Manager framework ships a privacy manifest that declares the required-reason APIs it calls, `mach_absolute_time` and `fstat`.
 - Disposing a `FileLoader` while its file is still loading, for example by leaving a screen before its `RiveWidgetBuilder` shows the artboard, no longer fails with "Null check operator used on a null value", or "Unexpected null value" on web. The loader releases the late file and `FileLoader.file()` throws a `RiveFileLoaderException`, which an unmounted `RiveWidgetBuilder` ignores. A `FileLoader` that fails to load reports the error once instead of also raising an unhandled one. See [#615](https://github.com/rive-app/rive-flutter/issues/615).
 - iOS/macOS (CocoaPods): builds that download the native libraries no longer fail with `Could not find a file named "pubspec.yaml" in ".../ios/Pods"` on Flutter 3.32 to 3.47. See [#566](https://github.com/rive-app/rive-flutter/issues/566).
+- `File.decode`, `File.asset`, `File.url` and `File.path` throw the init failure's `StateError` with either factory. After a failed `init()`, reading `Factory.flutter` threw `LateInitializationError: Field 'makeFlutterFactory' has not been initialized` on web. On native platforms without the library, `Factory.flutter` threw an `ArgumentError`, and so did `Factory.rive` on Android.
+- Web: `Factory.flutter` can be passed to `File.decode`, `File.asset` and `File.url` before `init()` has completed. It threw the same `LateInitializationError`.
 
 ## 0.15.0-dev.5
 
