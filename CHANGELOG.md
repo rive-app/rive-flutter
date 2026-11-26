@@ -18,6 +18,7 @@
 - iOS/macOS (CocoaPods): builds that download the native libraries no longer fail with `Could not find a file named "pubspec.yaml" in ".../ios/Pods"` on Flutter 3.32 to 3.47. See [#566](https://github.com/rive-app/rive-flutter/issues/566).
 - `File.decode`, `File.asset`, `File.url` and `File.path` throw the init failure's `StateError` with either factory. After a failed `init()`, reading `Factory.flutter` threw `LateInitializationError: Field 'makeFlutterFactory' has not been initialized` on web. On native platforms without the library, `Factory.flutter` threw an `ArgumentError`, and so did `Factory.rive` on Android.
 - Web: `Factory.flutter` can be passed to `File.decode`, `File.asset` and `File.url` before `init()` has completed. It threw the same `LateInitializationError`.
+- Windows, Linux and Android: setup downloads Rive's native libraries again when their folder in the package is missing or empty, instead of reporting them as already present. Windows builds failed with `LNK1181` on `rive_native.lib`, Linux builds failed to link, and Android built the app without them. See [#566](https://github.com/rive-app/rive-flutter/issues/566).
 
 ## 0.15.0-dev.5
 
